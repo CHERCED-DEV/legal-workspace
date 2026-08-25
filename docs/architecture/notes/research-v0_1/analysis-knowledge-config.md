@@ -1,0 +1,87 @@
+﻿## Hallazgos
+
+1. **Doble taxonomía superpuesta en la sección 23 — REFINAR.** El documento propone `knowledge/jurisdictions/CO/{sources, hierarchy, citation, procedures}` y, "además", `practice-areas/`, `procedures/`, `source-hierarchies/`, `citation-rules/` como categorías aparentemente de primer nivel. No se define si `procedures` vive dentro de la jurisdicción o fuera de ella, ni cuál gana en caso de conflicto. Son dos particiones distintas del mismo espacio (por territorio vs. por tipo de conocimiento) presentadas como si fueran complementarias sin regla de composición.
+
+2. **Los "packs" mezclan tres naturalezas distintas — RIESGO.** La sección 7 dice literalmente que los Knowledge Packs contienen "conocimiento/configuración". Bajo ese paraguas caben (i) contenido-conocimiento (jerarquía de fuentes, reglas de citación como texto normativo de referencia), (ii) reglas ejecutables (validaciones tipo `require_citation_verification`) y (iii) configuración-datos de la firma (áreas de práctica, conectores). Si las tres viajan en el mismo mecanismo de distribución, las validaciones críticas terminan siendo datos editables por el cliente — exactamente lo que la sección 12 prohíbe ("no prohibir una operación solamente mediante un prompt"; su corolario es: no hacer cumplir una regla solamente mediante un archivo de configuración).
+
+3. **`role` anclado a organización/oficina contradice al primer usuario — RIESGO.** La sección 24 coloca `role: litigant` bajo `organization`/`office`, pero la sección 5 describe que la misma profesional opera en ambos contextos. Si el YAML es fiel, el primer caso de estudio ya rompe el modelo: el rol parece ser propiedad del asunto/expediente (o al menos de un perfil de trabajo activo), no de la organización. El documento no resuelve esto.
+
+4. **Políticas de cliente sin piso de producto — RIESGO.** `allow_unverified_authorities_in_final: false` implica que `true` es configurable. El documento no declara mínimos no negociables ni quién hace cumplir las políticas (¿Core en commit/export? ¿el Skill?). Sin enforcement en Core, la política es decorativa; sin piso, el producto puede ser configurado para producir exactamente el riesgo n.º 1 de la sección 3 (jurisprudencia inventada en documentos finales).
+
+5. **Los packs no tienen versionado definido, pero los artifacts sí — REFINAR.** La sección 17 registra `generated_with: skill: fact-builder 1.4.2` pero no registra con qué versión de conocimiento jurisdiccional se generó el artifact. Un `FactAnalysis` o una investigación jurídica depende tanto del pack como del skill; omitirlo rompe la cadena de provenance de la sección 16.
+
+6. **La procedencia del contenido del pack no está exigida — RIESGO.** El documento exige procedencia para todo lo que entra al caso (secciones 14–16), pero la jerarquía de fuentes del pack CO es en sí misma una afirmación jurídica ("en Colombia, X prevalece sobre Y") y nada en las secciones 23–24 dice de dónde sale ni quién responde por ella. Es una asimetría epistemológica: el sistema desconfía de Claude pero confía ciegamente en un archivo.
+
+7. **La intención anti-acoplamiento de la sección 4 es correcta pero indemostrable hoy — SÓLIDO con reserva.** Con un solo caso real (CO, una abogada, dos contextos) no se puede validar que la partición jurisdiccional sea la correcta. La disciplina adecuada es la que el encargo enuncia: abstraer con el segundo caso real, no antes; hoy solo parametrizar lo que ya varía dentro del propio caso CO.
+
+8. **`CO` como nodo monolítico es simplificación aceptable para arrancar — SÓLIDO / PREMATURO subdividir.** HECHO VERIFICADO a nivel general: Colombia tiene jurisdicciones internas y niveles territoriales con procedimientos distintos (el propio documento lo insinúa: querellas policivas vs. demandas laborales/civiles). El detalle exacto de esa subdivisión es POR VERIFICAR con la profesional; el esquema debe permitirla sin exigirla hoy.
+
+9. **La separación Client Pack / Knowledge Pack (secciones 7, 9, 24) es conceptualmente correcta pero sin frontera formal — REFINAR.** No hay criterio operativo para decidir dónde cae un elemento dado (¿una plantilla de demanda de la firma es conocimiento o configuración? ¿una jerarquía de fuentes "preferida" por la firma puede contradecir la del pack jurisdiccional?).
+
+## Respuestas
+
+### K1 — ¿La taxonomía particiona el conocimiento por la dimensión correcta?
+
+Parcialmente, y la evidencia disponible no alcanza para cerrarla. La jurisdicción **sí** es el eje primario correcto para *validez normativa* (qué es derecho, qué jerarquía rige, cómo se cita): eso varía por país y es la dimensión que la sección 4 exige no hardcodear. Pero `practice-areas` y `procedures` no anidan limpiamente bajo jurisdicción ni fuera de ella: un procedimiento concreto es función de jurisdicción × materia × a veces nivel territorial × rol procesal. Codificar la partición en una jerarquía de carpetas obliga a elegir un orden de anidamiento que siempre será incorrecto para algún caso (el clásico problema de taxonomía única para un espacio multidimensional).
+
+Alternativa con mejor trade-off: **la unidad no es la carpeta sino el pack con manifest de dimensiones** — cada pack declara `jurisdiction`, `practice_area`, `procedure_type`, `applicable_roles` como metadata, y la resolución en runtime compone los packs aplicables a un asunto. Costo: exige un resolutor de composición y reglas de precedencia explícitas (¿qué pasa si dos packs aplicables discrepan?), que hay que diseñar. Beneficio: la estructura de disco deja de ser semántica y puede reorganizarse sin migración conceptual. La carpeta `jurisdictions/CO/` puede conservarse como convención de organización humana, no como mecanismo de resolución. SUPUESTO: que habrá más de una dimensión activa por asunto; el caso de estudio (labor + civil + policivo dentro de CO) ya lo sugiere. DECISIÓN PENDIENTE: reglas de precedencia entre packs; no diseñarlas en abstracto sino con el primer conflicto real.
+
+### K2 — ¿Qué mecanismo concreto hace que `role` cambie el comportamiento sin duplicar el sistema?
+
+Tres opciones con consecuencias muy distintas:
+
+1. **Prompt parametrizado**: un único skill `adversarial-review` que lee `role` y ajusta instrucciones. Barato, pero la neutralidad del decisor queda garantizada solo por Markdown — viola el espíritu de la sección 12 y es incomprobable.
+2. **Dos productos/perfiles duplicados**: máxima separación, pero duplica core, skills y mantenimiento; rechazable con el tamaño actual del equipo y del problema.
+3. **Perfil de rol resuelto en tres planos** (la opción que recomiendo evaluar como ADR, no adoptar por defecto):
+   - **Plano metodológico (Skills):** variantes pequeñas y versionadas por rol donde el método realmente difiere (`adversarial-review/litigant` simula contraparte; `adversarial-review/decision-maker` busca sesgos e insuficiencia probatoria — exactamente la distinción de la sección 24). Prefiero dos skills pequeños a uno con condicionales: son comprobables y versionables por separado (coherente con sección 21). Costo: n variantes si aparecen n roles; aceptable mientras los roles sean 2.
+   - **Plano de validación (Core/Application):** el rol selecciona el *conjunto de validaciones de commit/export*. Ejemplo: en modo decisor, exportar una providencia exige que el análisis registre consideración de los argumentos de ambas partes; eso es una regla ejecutable del producto activada por el perfil, no un prompt.
+   - **Plano de superficie (MCP):** el perfil condiciona qué tools se exponen a la sesión. Un decisor quizá no debe tener herramientas de evaluación de "fortaleza estratégica de mi posición". Esto materializa "si no debería ser posible, no se expone".
+
+POR VERIFICAR: el mecanismo exacto por el que Claude Code/Cowork puede cargar skills condicionalmente por perfil y restringir tools MCP por sesión depende de capacidades actuales de la plataforma que no debo afirmar de memoria. El diseño debe asumir que al menos el plano Core (validación en commit/export) es implementable con independencia de la plataforma, y tratarlo como la garantía dura; los otros dos planos son refuerzo.
+
+Consecuencia clave del hallazgo 3: sea cual sea el mecanismo, `role` debe poder resolverse **por asunto/perfil de trabajo activo**, con default por oficina, o el primer usuario necesitará dos instalaciones.
+
+### K3 — ¿Cómo se versionan los packs y qué pasa con artifacts generados con una versión anterior?
+
+Propuesta mínima: cada pack lleva manifest con `id`, versión (semver), dimensiones (K1), **procedencia del contenido** (fuente, fecha de corte de vigencia, responsable de curaduría), checksum, y **changelog tipado**. El Artifact Registry (sección 17) se extiende: `generated_with` registra también `knowledge_packs: [co-sources@2.1.0, ...]`. Sin esto, la cadena de la sección 16 tiene un eslabón invisible.
+
+Sobre invalidación, "última versión gana" es incorrecto en este dominio por dos razones:
+
+- **No todo cambio invalida.** El changelog tipado debe distinguir: *correctivo* (una fuente del pack estaba mal → artifacts que la usaron pasan a "requiere revisión", invalidación fuerte), *aditivo* (nueva jurisprudencia → artifacts marcados "posiblemente desactualizado", flag suave que la profesional decide atender), *formal* (cambio de formato de citación → afecta solo render futuro, no invalida fondo).
+- **Vigencia temporal jurídica.** Un artifact generado bajo la norma vigente en su momento puede seguir siendo correcto *para ese momento procesal* aunque la norma cambie después. HECHO VERIFICADO a nivel de principio general del derecho (la aplicabilidad temporal de las normas es un problema jurídico real); su tratamiento concreto en CO es POR VERIFICAR con la profesional. Implicación arquitectónica: el pack necesita noción de vigencia del contenido, no solo versión del archivo, y la invalidación de artifacts no puede ser un simple `pack_version < current`.
+
+DECISIÓN PENDIENTE: política exacta de invalidación por clase de cambio. Lo que **no** puede esperar es registrar la versión del pack en cada artifact desde el día 1: sin ese dato, ninguna política futura de invalidación es aplicable retroactivamente.
+
+## Invariantes candidatos
+
+1. **Todo artifact registra la versión exacta de cada knowledge pack y el rol activo con que se generó.** Capa: Application (Artifact Registry). Prueba: test que genera un artifact y verifica metadata completa; test que falla si un skill consume contenido de pack no declarado.
+2. **Los knowledge packs son de solo lectura en runtime; no existe tool MCP que los mute.** Capa: MCP + Infraestructura (permisos de filesystem). Prueba: enumerar la superficie MCP y verificar ausencia de operación de escritura sobre `knowledge/`; test de integridad por checksum al cargar.
+3. **Ninguna afirmación jurídica proveniente de un pack carece de procedencia declarada (fuente, fecha, curador).** Capa: Configuración (esquema de pack) + Application (rechazo en carga). Prueba: validación de esquema; pack sin procedencia no carga.
+4. **Configuración de cliente inválida se rechaza visiblemente; nunca se degradar a defaults silenciosos.** Capa: Application + Configuración. Prueba: suite de configs malformadas/parciales; verificar mensaje en lenguaje profesional (sección 10) y no-carga.
+5. **Existe un conjunto sellado de políticas de producto cuyo override por Client Pack es rechazado en commit/export.** Capa: Core (Domain/Application), evaluado en el momento del commit/export — nunca en el prompt. Prueba: config que intenta `allow_unverified_authorities_in_final: true` sobre una política sellada → el export falla o marca de forma no suprimible. (El *contenido* del conjunto es DECISIÓN PENDIENTE de producto; el *mecanismo* es invariante.)
+6. **Un cambio de versión de pack dispara reevaluación del estado de los artifacts dependientes (mínimo: marcado stale según clase de cambio).** Capa: Application. Prueba: bump de versión de pack de prueba; verificar flags en artifacts que lo registran.
+7. **La pertenencia de una cita al pack no la convierte en "verificada" para el caso.** La verificación (sección 16) es por uso concreto; el pack aporta jerarquía y formato, no verificación. Capa: Application (citation-verification) + Domain (estados de la referencia). Prueba: test de que una cita tomada del pack nace en estado "no verificada".
+
+## ADR candidatos
+
+1. **Granularidad del `role`.** Contexto: hallazgo 3; el YAML lo ancla a oficina, el primer usuario opera ambos contextos. Decisión posible: `role` como atributo del asunto/perfil de trabajo activo, con default por oficina. Alternativas: por organización (statu quo del doc); dos instalaciones/productos. Consecuencias: la primera exige que el modelo de dominio de Case conozca el rol y que la sesión resuelva perfil al abrir caso; la segunda rompe el caso de estudio; la tercera duplica todo. Información faltante: cómo separa realmente la abogada ambos contextos (máquina, horario, expedientes).
+2. **Tres artefactos distintos, tres mecanismos distintos.** Contexto: hallazgo 2. Decisión posible: (a) *Content Packs* = datos declarativos con procedencia, distribuibles y versionables; (b) *reglas ejecutables* = código del producto sellado, parametrizado por (c) *Client Config* = datos validados por esquema. Los packs jamás contienen código ejecutable. Alternativas: packs-como-plugins con código (más expresivo; rompe el sello del producto de la sección 9 y crea superficie de ataque); todo-en-YAML (las reglas críticas quedan editables). Consecuencias: la opción propuesta limita lo que un pack puede expresar — habrá reglas procesales que no quepan en datos declarativos y exigirán release del producto. Información faltante: cuánta variación *lógica* (no de datos) hay realmente entre jurisdicciones; solo el segundo caso real lo dirá.
+3. **Manifest de pack con dimensiones, procedencia y changelog tipado** (K1/K3). Alternativa: jerarquía de carpetas semántica. Consecuencia: exige resolutor de composición y precedencia. Información faltante: primer conflicto real entre packs.
+4. **Piso de producto (políticas no negociables).** Contexto: hallazgo 4. Decisión posible: mínimos sellados con enforcement en Core en commit/export; el cliente solo puede endurecer, nunca relajar por debajo del piso. Alternativas: todo configurable (mercado más flexible, riesgo reputacional/jurídico grave); todo sellado (inviable entre litigante y decisor, que legítimamente difieren). Información faltante: postura de negocio de los dueños; y POR VERIFICAR si existe normativa colombiana sobre uso de IA en actuaciones judiciales/administrativas que imponga mínimos externos — no lo afirmo de memoria.
+
+## Decisiones bloqueantes
+
+1. **Esquema de identidad y versión de packs registrado en artifacts desde el primer artifact.** El vertical slice (sección 34, puntos 6 y 9: provenance y detección de trabajo realizado) fija el formato del registry; retrofit de provenance sobre artifacts ya generados es costoso o imposible. Basta decidir el *esquema*, no el contenido de los packs.
+2. **ADR-2 (packs sin código ejecutable).** Define la frontera del producto sellado y la superficie del MCP, ambas presentes en el slice. Cambiarla después reabre seguridad e integridad (sección 25).
+3. **Dónde vive `role` en el modelo (ADR-1), aunque su comportamiento se implemente después.** Afecta el esquema de Case y de configuración que el slice persiste; migrar el atributo después es barato solo si se decidió su ubicación ahora.
+4. **El mecanismo de enforcement de políticas en Core (punto de extensión en commit/export)** debe existir en el slice aunque con una sola política trivial; injertarlo después de que los flujos de commit existan invita a que las políticas se implementen en prompts "mientras tanto".
+
+No bloquean: el contenido real del pack CO, la lista definitiva de políticas del piso, la subdivisión interna de CO, y las reglas de precedencia entre packs.
+
+## Preguntas para los dueños
+
+1. **¿La abogada gestiona casos de ambos contextos (litigante/decisora) en la misma instalación, potencialmente el mismo día?** Importa: decide ADR-1 (granularidad de `role`). **Bloquea** el diseño del esquema de Case/config del slice.
+2. **¿Quién cura y responde profesionalmente por el contenido jurídico del pack CO (jerarquía de fuentes, reglas de citación)?** Importa: sin dueño con procedencia, el pack es una afirmación jurídica anónima — lo que el proyecto prohíbe para todo lo demás. No bloquea el slice base; **bloquea** el primer slice con capacidad jurídica.
+3. **¿Están dispuestos a que existan políticas que ningún cliente pueda desactivar, aun perdiendo una venta?** Importa: es decisión de negocio que determina el diseño del enforcement (ADR-4). El mecanismo bloquea (decisión 4 arriba); el contenido puede esperar.
+4. **En el contexto decisor, ¿la oficina ejerce función de autoridad pública o función privada cuasi-decisora?** Importa: condiciona qué garantías de neutralidad y auditoría son exigibles legalmente (marco aplicable POR VERIFICAR) y si el modo decisor necesita restricciones duras adicionales en MCP. No bloquea el slice base.
+5. **¿Se contempla que terceros autoren packs en el horizonte visible, o solo el equipo del producto?** Importa: decide si el formato de pack necesita firma/verificación de origen desde el diseño (afecta ADR-2 y sección 25). Puede esperar, pero conviene responderla antes de congelar el manifest.

@@ -1,0 +1,44 @@
+﻿**(1) RUTAS ESCRITAS**
+- `C:/Users/HITMA/Desktop/legal-workspace/docs/research/runtime-dependencies-spike-v0.md` (creado; también se creó el directorio `docs/research/`, que no existía)
+- No se escribió nada bajo `experiments/` ni en `src/`. Ningún archivo previo fue modificado.
+
+**(2) HALLAZGOS CLAVE**
+
+- **HECHO VERIFICADO — Node ya tiene UUIDv7 nativo, y es reciente.** `crypto.randomUUIDv7()` se añadió en **v26.1.0** (2026-05-07) y fue retroportada a **v24.16.0** (2026-05-21, LTS), PR #62553. **NO existe en la línea 22.x.** Esto cambia el cálculo del kernel §11: la identidad puede resolverse con cero dependencias de npm. Fuentes: nodejs.org/api/crypto.html, releases/tag/v26.1.0, blog/release/v24.16.0.
+- **HECHO VERIFICADO — la doc oficial de Node advierte lo contrario de lo que sugiere "ordenable por tiempo".** Cita verbatim (commit `1684ab8ff8`, PR #62600): *"The embedded timestamp relies on a non-monotonic clock and is not guaranteed to be strictly increasing."* Concuerda con RFC 9562 §6.1 (el reloj puede retroceder por NTP o ajuste manual) y §6.2, donde la monotonicidad es **SHOULD**, no MUST.
+- **HECHO VERIFICADO — UUIDv7 está plenamente estandarizado.** RFC 9562, *Proposed Standard*, 2024, **obsoleta RFC 4122**. §6.11 prescribe ordenación como bytes opacos, §6.12 prescribe opacidad, §8 prohíbe usar UUIDs como *security capabilities*. ULID, en contraste: **especificación comunitaria sin cuerpo de estandarización**.
+- **HECHO VERIFICADO — el propio proyecto Node desaconseja `node:sqlite` en producción.** Es Stability **1.2 - Release candidate** (v24/v26; RC desde v25.7.0) y **1.1** en v22. El texto de nivel 1 aplica igualmente: *"not subject to semantic versioning rules… Use of the feature is not recommended in production environments."* Citar solo "1.2" y omitir esa frase sería seleccionar evidencia.
+- **HECHO VERIFICADO — la doc de `node:sqlite` NO menciona WAL, NI FTS5, NI la versión de SQLite embebida.** Sí documenta: síncrono (`DatabaseSync`/`StatementSync`, con `backup()` como única excepción async), prepared statements, `loadExtension`, `timeout`, `defensive`, `limits`. `better-sqlite3` sí documenta WAL con ejemplo y lista `SQLITE_ENABLE_FTS5` entre sus flags por defecto (SQLite 3.53.4).
+- **VERIFIED como build config, NO como garantía de API** — `SQLITE_ENABLE_FTS5` aparece en `deps/sqlite/sqlite.gyp` de `nodejs/node` rama `main`. Distinción registrada explícitamente en el documento: es el fichero de build del proyecto, no una promesa de API, y `main` no es una línea de release.
+- **HECHO VERIFICADO — `remove_diacritics` existe, acepta 0/1/2, y por defecto vale 1.** El valor **1 tiene un bug documentado y conservado por compatibilidad** (falla con codepoints de múltiples diacríticos, ej. 0x1ED9); solo **2** elimina diacríticos correctamente de todos los caracteres latinos.
+- **HECHO VERIFICADO POR AUSENCIA — SQLite no trae stemmer de español.** El único stemmer integrado es `porter`, que la propia doc declara para inglés. Además `lower()`/`upper()` integrados operan **solo sobre ASCII** (lang_corefunc.html), y no existe `unaccent`: el índice FTS5 normaliza y las comparaciones ordinarias no ⇒ dos semánticas de búsqueda sobre el mismo texto.
+- **HECHO VERIFICADO / RIESGO OPERATIVO — WAL no funciona sobre sistemas de ficheros en red** y exige que todos los procesos estén en el mismo host. En el entorno objetivo (Windows, despacho) esto colisiona directamente con guardar el `case.db` en OneDrive/Drive/unidad de red.
+- **DESCARTADA — `sqlite3` (TryGhost)**: su README se declara *"currently unmaintained"*. Inadmisible como almacén canónico de expedientes.
+- **observed in current environment (NO garantía) — la máquina de desarrollo corre Node v20.19.0, línea EOL desde 2026-04-30.** Sonda: `randomUUIDv7 → undefined`, `require('node:sqlite') → ERR_UNKNOWN_BUILTIN_MODULE`. Confirma por vía independiente las cotas de versión.
+
+**(3) IMPLICACIÓN ARQUITECTÓNICA**
+
+La consecuencia central es una **corrección al kernel §11**: donde dice "ordenables por tiempo", la doc de Node obliga a leer *ordenables aproximadamente, sin garantía de monotonicidad*. Propuesta de invariante: **`event_seq` es el orden canónico del Case Event Log; queda prohibido ordenar por identificador**. La ordenabilidad de UUIDv7 es localidad de índice y conveniencia de depuración, nunca fuente de verdad — crítico porque el producto corre en la máquina de la usuaria, donde el reloj puede retroceder y desordenar el relato de un expediente jurídico. El hash-chain no se degrada: encadena por `event_seq`, no por tiempo.
+
+De ahí se derivan cuatro consecuencias de diseño: (a) **`IdGenerator` y `ContentHasher` son puertos separados** — nunca uno, porque un puerto que hiciera ambas cosas invita al error que la regla dura `entity identity ≠ content identity` prohíbe; (b) **el puerto de persistencia se define asíncrono aunque ambos drivers verificados sean síncronos**, por asimetría de coste: envolver síncrono en Promise es trivial, desenvolver no lo es, y congelar el contrato al driver bloquearía PostgreSQL post-V0 y cualquier movimiento a worker thread; (c) **la cláusula `tokenize` de FTS5 es parte del contrato de datos persistido**, no configuración — debe versionarse en el `case.db`, cambiarla exige migración con reindexación (evento `SYSTEM`), y su desajuste es un disparador legítimo y tipado de `SEARCH_INCONCLUSIVE`; (d) **el piso de Node deja de ser preferencia y pasa a ser consecuencia**: elegir UUIDv7 nativo implica `>= 24.16.0` y excluye 22.x.
+
+Recomendación de driver: **`better-sqlite3` para V0 detrás del puerto**, con condición de reversión objetiva y verificable (cuando `node:sqlite` muestre *Stability 2 - Stable* en la línea LTS en uso). Razón única: no se construye el almacén canónico de expedientes jurídicos sobre una API que su propio proyecto declara fuera de semver y no recomendada en producción. Coste aceptado sin disimulo: dependencia nativa y riesgo de instalación en Windows sin prebuild.
+
+**(4) NOT_TESTED / INCONCLUSIVE**
+
+**Este spike fue documental, no experimental** — no se escribió ni ejecutó nada bajo `experiments/`; la única ejecución fue la sonda de tres líneas de §5.
+
+*NOT_TESTED* (no se ejecutó prueba alguna):
+- **Comportamiento de `remove_diacritics` sobre `ñ` — el de mayor impacto.** La doc de sqlite.org **no enumera codepoints**. Si `ñ` colapsa a `n`, entonces "año"/"ano", "peña"/"pena", "señor"/"senor" comparten token. **Bloquea la decisión D-11 y el esquema FTS**. El documento deja escrito el spike requerido (corpus, método, salida) y deliberadamente **no propone valor** — proponerlo sería decidir sobre una hipótesis.
+- Que `node:sqlite` acepte `PRAGMA journal_mode=WAL` vía `exec()`: HIPÓTESIS razonable (expone `exec()`, el PRAGMA es SQL), pero la doc no lo afirma y el módulo no existe en el runtime local.
+- Instalación de `better-sqlite3` en Windows y disponibilidad de prebuild; FTS5 compilado en un binario de *release* (no solo en `main`); monotonicidad intra-ms de `randomUUIDv7()`; que cambiar `tokenize` no reindexe; método fiable de detectar carpeta sincronizada en Windows (no se identificó siquiera fuente documental — condiciona la viabilidad de D-8).
+
+*INCONCLUSIVE*:
+- **Etiquetas LTS en `nodejs.org/en/about/previous-releases`**: la extracción devolvió etiquetas mutuamente contradictorias (22.x como "Active LTS" y 20.x simultáneamente "EOL" y "Maintenance"). Se resolvió con la fuente autoritativa (`nodejs/Release`) y **se dejó constancia de la discrepancia** en vez de ocultarla — indica que esa página no sirve para automatismos.
+- **Rendimiento de `better-sqlite3`**: `vendor self-reported` y la extracción invirtió el sentido de la comparación. **Cifras deliberadamente no reproducidas**; ninguna decisión del documento se apoya en rendimiento.
+- Estado monótono interno de `uuid@14`: indicios fuertes en changelog (`updateV7State`), pero el changelog no es documentación de API.
+- `SQLITE_THREADSAFE` en el build de Node (no observado; ausencia ≠ valor conocido); cobertura de Unicode 6.1 sobre el repertorio español (no verificada carácter a carácter); madurez de `uuidv7-js` (no evaluada — el Camino A la hace innecesaria).
+
+*NOT_FOUND* (la doc oficial simplemente no lo dice): WAL, FTS5 y versión de SQLite embebida en `nodejs.org/api/sqlite.html`; contador monótono en `randomUUIDv7()`; codepoints de `remove_diacritics`; función `unaccent` en SQLite.
+
+**No se citó ningún blog de terceros como autoridad.** Los resultados de búsqueda web se usaron exclusivamente para *localizar* documentación oficial; toda afirmación VERIFIED se leyó en la fuente oficial. Todas las verificaciones llevan fecha 2026-08-24 y el documento cierra con advertencia de caducidad y una lista ejecutable de 11 puntos POR VERIFICAR al implementar.
