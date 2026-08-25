@@ -1,0 +1,14 @@
+{
+  "name": "legal-workspace",
+  "description": "Arnes de trabajo juridico asistido: la oficina virtual de un despacho.",
+  "owner": {
+    "name": "camilo hernandez"
+  },
+  "plugins": [
+    {
+      "name": "despacho",
+      "source": "./plugins/despacho",
+      "description": "Copiloto de despacho: convierte entrevistas y documentos en hechos con su prueba, revisa lo que llega, arma cronologias e inventarios de anexos y redacta borradores."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "despacho",
+  "displayName": "Despacho",
+  "version": "0.1.0",
+  "description": "Copiloto de despacho para trabajo juridico: hechos con su prueba, revision de documentos recibidos, cronologias, inventario de anexos y borradores.",
+  "author": {
+    "name": "camilo hernandez"
+  },
+  "keywords": ["legal", "derecho", "despacho", "expediente", "hechos", "prueba"]
+}
