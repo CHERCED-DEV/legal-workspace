@@ -427,7 +427,7 @@ interface Artifact          { /* kernel §10 / boundaries §3 — FactAnalysis e
 type   CaseRevision = CaseRevisionNumber;  /* ADR-004 — administrada por Application */
 ```
 
-**Nota de aritmética de revisiones (no es decisión de este documento).** El kernel §5 registra un **ADR AMENDMENT CANDIDATE** sobre ADR-004: separar `event_seq` (todo evento) de `case_revision` (sólo mutación epistémica canónica), con `ProposalReviewed` avanzando el primero y no la segunda. **No está aprobado y no se aplica.** El modelo de dominio es **invariante bajo ambos modelos**: `FactStatusEntry.at_case_revision` registra la revisión que dejó el evento que escribió la entrada, cualquiera sea la aritmética vigente. Ninguna interfaz de §3 cambia si el amendment se aprueba.
+**Nota de aritmética de revisiones (APROBADA — enmienda AC-02).** Los dueños **aprobaron** separar `event_seq` (todo evento) de `case_revision` (sólo mutación epistémica canónica), con `ProposalReviewed` avanzando el primero y no la segunda. **No está aprobado y no se aplica.** El modelo de dominio es **invariante bajo ambos modelos**: `FactStatusEntry.at_case_revision` registra la revisión que dejó el evento que escribió la entrada, cualquiera sea la aritmética vigente. Ninguna interfaz de §3 cambia si el amendment se aprueba.
 
 **Nota de aprobación parcial (no es decisión de este documento).** ADR-005 deja `authorized_items[]` *preparado, no activado* (DECISIÓN PENDIENTE de dueños); el kernel §3.2 propone en su lugar **una autorización por item**. La diferencia es enteramente de Application: el Domain sólo exige que la entrada `ALLEGED` de cada Fact porte el `authorization_id` bajo el cual entró (INV-D-21), y eso se cumple con cualquiera de las dos formas.
 
@@ -766,7 +766,7 @@ Tres anti-patrones que hoy parecen simplificaciones y mañana obligan a reescrib
 
 **Ninguno.** Dos tensiones conocidas, ya registradas en sus documentos de origen, que este documento **no** resuelve ni agrava:
 
-- Kernel §5 (`event_seq` / `case_revision` separados) es **ADR AMENDMENT CANDIDATE** sobre ADR-004 y **no está aprobado**. El modelo de dominio es invariante bajo ambos modelos (§4).
+- Kernel §5 (`event_seq` / `case_revision` separados): **enmienda AC-02 APROBADA** sobre ADR-004 y ADR-005 (supersedes §16.16 y §16.19); el Modelo B es el **vigente**. El modelo de dominio es invariante ante esa decisión: ninguna interfaz de §3 cambia, y los números del ejemplo de §5 ya son coherentes con el modelo vigente.
 - Kernel §3.2 (una autorización por item) frente a `authorized_items[]` de ADR-005, que es **DECISIÓN PENDIENTE de los dueños**. Enteramente de Application (§4).
 
 ### 8.3 `POR VERIFICAR`

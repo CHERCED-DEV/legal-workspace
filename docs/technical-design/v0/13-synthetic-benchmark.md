@@ -653,7 +653,7 @@ Lectura aplicada (kernel §6 y §7): la superficie es de **8 tools**; `register_
 
 > **Divergencia documental detectada, registrada aquí sin resolverse.** El documento `docs/architecture/vertical-slice-v0.md` (nivel 2) todavía describe 9 tools con `register_artifact` como paso 12 explícito. El kernel técnico v0.4 §6 lo retira. Por precedencia (kernel §14), **este documento sigue al kernel** y señala la divergencia para corrección del slice.
 
-| # | `event_seq` | Evento | `case_revision` (Modelo A) | `case_revision` (Modelo B, kernel §5.2) |
+| # | `event_seq` | Evento | `case_revision` **VIGENTE** (Modelo B · enmienda AC-02 aprobada) | `case_revision` (Modelo A — anterior, superado) |
 |---|---|---|---|---|
 | 1 | 1 | `CaseCreated` | 1 | 1 |
 | 2 | 2 | `EvidenceIncorporated` (audio) | 2 | 2 |
@@ -661,13 +661,13 @@ Lectura aplicada (kernel §6 y §7): la superficie es de **8 tools**; `register_
 | 4–11 | 4–11 | `EvidenceIncorporated` + `DerivedRepresentationGenerated` × 4 (DOC-01…DOC-04) | 4–11 | 4–11 |
 | 12 | 12 | `FactsProposed` | 12 | 12 |
 | 13 | 13 | `ArtifactRegistered` (`FactAnalysis`, misma transacción) | 13 | 13 |
-| 14 | 14 | `ProposalReviewed(approved)` | **14** | **NULL** (no muta estado canónico) |
-| 15 | 15 | `FactsCommitted` | 15 | **14** |
-| 16 | 16 | `EvidenceIncorporated` (DOC-05) | 16 | 15 |
-| 17 | 17 | `ArtifactMarkedStale` (misma transacción) | 17 | 16 |
-| 18 | 18 | `DerivedRepresentationGenerated` (DOC-05) | 18 | 17 |
+| 14 | 14 | `ProposalReviewed(approved)` | **NULL** (no muta estado canónico; el contador sigue en 13) | **14** |
+| 15 | 15 | `FactsCommitted` | **14** | 15 |
+| 16 | 16 | `EvidenceIncorporated` (DOC-05) | 15 | 16 |
+| 17 | 17 | `ArtifactMarkedStale` (misma transacción) | 16 | 17 |
+| 18 | 18 | `DerivedRepresentationGenerated` (DOC-05) | 17 | 18 |
 
-**DECISIÓN PENDIENTE que el benchmark expone y no resuelve.** El kernel §5.2 describe el flujo como *"la propuesta se genera contra la revisión N, se revisa contra N y se commitea exigiendo que el caso siga en N"*. Pero el kernel §7 registra que `ProposeFacts` **sí avanza** `case_revision`, y §6 añade `ArtifactRegistered` en la misma transacción. Ambas afirmaciones solo son compatibles si "N" designa la revisión vigente **después** de `FactsProposed` + `ArtifactRegistered` — es decir, `expected_case_revision = 13`, distinta de `base_case_revision = 11` de la `Proposal` (kernel §2.1). Bajo el Modelo A, en cambio, `expected_case_revision = 14`.
+**RESUELTO — enmienda AC-02 aprobada.** El valor esperado es único: `expected_case_revision = 13`, coherente con `12-testing-strategy.md` §4.2. El fixture **no** registra valor alternativo. Registro histórico del análisis que lo expuso: El kernel §5.2 describe el flujo como *"la propuesta se genera contra la revisión N, se revisa contra N y se commitea exigiendo que el caso siga en N"*. Pero el kernel §7 registra que `ProposeFacts` **sí avanza** `case_revision`, y §6 añade `ArtifactRegistered` en la misma transacción. Ambas afirmaciones solo son compatibles si "N" designa la revisión vigente **después** de `FactsProposed` + `ArtifactRegistered` — es decir, `expected_case_revision = 13`, distinta de `base_case_revision = 11` de la `Proposal` (kernel §2.1). Bajo el Modelo A, en cambio, `expected_case_revision = 14`.
 
 **El fixture no elige.** Registra ambos valores como resultado esperado alternativo y la corrida revela cuál implementa el Core. **POR VERIFICAR con los dueños**; y **POR VERIFICAR** si `ArtifactRegistered` avanza `case_revision` por separado (la biyección mutación↔evento sugiere que sí; el kernel §7 lo agrupa bajo un único "sí" del use case).
 
