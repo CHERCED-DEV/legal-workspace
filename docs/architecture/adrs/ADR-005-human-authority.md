@@ -50,14 +50,17 @@ HumanAuthorization
   authorization_id
   case_id
   proposal_id
-  proposal_content_hash      ← AÑADIDO al esquema de los dueños: vincula la autorización
+  item_content_hash          ← ENMIENDA AC-01: vincula la autorización al contenido exacto
+                                del ProposalItem revisado (antes `proposal_content_hash`,
+                                por Proposal). Vincula la autorización
                                exactamente a lo revisado; sin él, una propuesta editada
                                tras la revisión podría commitearse
   [ELIMINADO por ENMIENDA AC-01] authorized_items[]   ← la granularidad por item lo hace
                                 innecesario. Texto superado: «null = toda la propuesta;
                                 subconjunto si la profesional
                                aprueba solo algunos hechos (pregunta abierta a dueños)»
-  operation                  ← enum v0: COMMIT_FACTS (genérico para futuras ops sensibles)
+  authorized_operation       ← enum v0: COMMIT_FACT (singular — ENMIENDA AC-01: la
+                                autorización es por item). Genérico para futuras ops sensibles
   principal_id, principal_type=HUMAN, principal_role      ← quién autorizó
   provenance_kind = HUMAN_DECISION                        ← naturaleza epistémica del acto
   expected_case_revision     ← ENMIENDA AC-02: la revisión VIGENTE del Case al momento de
@@ -109,7 +112,7 @@ La revisión se modela como un único use case de Application: `ReviewProposal(d
 
 1. **consentimiento humano explícito por acto** — una decisión deliberada por cada operación sensible, nunca una habilitación general ni un consentimiento reutilizable;
 2. **superficie de decisión no inspeccionable ni accionable por el cliente ni por el LLM** — el modelo no puede leer lo que se decide ni responder en lugar de la profesional;
-3. **vinculación verificable** de la decisión al `proposal_content_hash` y al `expected_case_revision` de la Proposal revisada.
+3. **vinculación verificable** de la decisión al `item_content_hash` (**ENMIENDA AC-01 aprobada** (supersede §16.17)) y al `expected_case_revision` de la Proposal revisada.
 
 El **modo URL de elicitation MCP** (HECHO VERIFICADO, kernel §1; fuente: spec MCP — elicitation, 2025-11-25) satisface (1) y (2), y por eso es el candidato principal; pero sirve de **referencia, no de definición**: el criterio se enuncia en términos del sistema y cualquier canal que lo cumpla —UI local o CLI incluidas— es admisible sin tocar el contrato.
 
@@ -124,7 +127,7 @@ Decisión de los dueños: el registro de autorización **no** lleva firma cripto
 1. Ningún actor `AI_*` crea, modifica ni consume una HumanAuthorization; **`provenance_kind = HUMAN_DECISION` con `principal_type = HUMAN`** es obligatorio en el registro (enum canónico del kernel §2; regla dura del kernel §3 y ADR-003). El kernel v0.2 §5 escribió `HUMAN` por errata: normalización al enum canónico, **supersede §16.7 — cambio de nombre, no de semántica**.
 2. Ningún parámetro provisto por el modelo constituye prueba de revisión humana; el contrato de `commit_reviewed_facts` no admite tal parámetro.
 3. Toda HumanAuthorization es de un solo uso: `consumed_at` no nulo la inutiliza definitivamente.
-4. `commit_reviewed_facts` exige autorización viva, no consumida, con `proposal_content_hash` y `expected_case_revision` coincidentes; cualquier discrepancia ⇒ rechazo sin mutación.
+4. `commit_reviewed_facts` exige, **por cada item**, autorización viva, no consumida, con `item_content_hash` (**ENMIENDA AC-01 aprobada** (supersede §16.17)) y `expected_case_revision` coincidentes; cualquier discrepancia ⇒ rechazo sin mutación.
 5. Una Proposal editada tras la revisión invalida de facto su autorización (el hash deja de coincidir); commitearla exige nueva revisión.
 6. Operación sensible sin autorización vigente ⇒ `HUMAN_REVIEW_REQUIRED {proposal_id, item_ids[], pending_item_count}`; **jamás commit NO AUTORIZADO, degradado ni silencioso** (reformulado por la **enmienda AC-01**, supersede §16.18). La letra anterior —"jamás commit parcial"— prohibía, leída literalmente, la aprobación parcial que los dueños aprobaron: con granularidad por item, commitear el subconjunto autorizado es el comportamiento **exigido**, no una degradación. Lo que el invariante protege se conserva íntegro: ningún item se commitea sin autorización válida, ningún item se commitea a medias, y el resultado se reporta ítem por ítem sin silencios.
 7. Mismatch de revisión ⇒ `REVISION_CHANGED {expected, current, preserved_proposal_id}` + Proposal preservada; el trabajo nunca se descarta.
@@ -135,7 +138,7 @@ Decisión de los dueños: el registro de autorización **no** lleva firma cripto
 ## Consecuencias positivas
 
 - **Nada que fabricar, nada que filtrar.** Sin token en el contexto, la falsificación por el operador IA deja de ser una clase de ataque; la superficie de suplantación se reduce al canal humano, que es donde debe estar.
-- **Cierre de la ventana revisión→commit.** `proposal_content_hash` y `expected_case_revision` garantizan que se commitea exactamente lo revisado, sobre el estado sobre el que se revisó.
+- **Cierre de la ventana revisión→commit.** `item_content_hash` (**ENMIENDA AC-01 aprobada** (supersede §16.17)) y `expected_case_revision` garantizan que se commitea exactamente lo revisado, sobre el estado sobre el que se revisó.
 - **Transporte intercambiable.** El spike de canal puede resolverse en cualquier dirección sin tocar Domain ni Application.
 - **Auditabilidad completa:** quién autorizó, qué contenido exacto, sobre qué revisión, cuándo y cuándo se consumió — todo reconstruible desde el registro y el event log.
 - **La fricción es verificable, no declarativa:** los tests negativos de abajo son criterios de aceptación de primera clase del slice (kernel §11).
@@ -172,7 +175,7 @@ Tests negativos, criterios de aceptación de primera clase (kernel §11); cada u
 | 1 | `commit_reviewed_facts` sin ninguna HumanAuthorization para la Proposal | Rechazo; `HUMAN_REVIEW_REQUIRED {proposal_id}`; cero mutaciones | 6 |
 | 2 | **Aprobación inventada:** el modelo afirma —en el commit o en conversación— que la humana ya revisó | Idéntico al #1: el contrato no admite esa afirmación como entrada | 2 |
 | 3 | **Reuso:** segundo commit con una autorización ya consumida (`consumed_at` no nulo) | Rechazo; la autorización no se revive | 3 |
-| 4 | Autorización cuyo `proposal_content_hash` no coincide con el contenido actual de la Proposal (editada tras la revisión) | Rechazo; se exige nueva revisión | 4, 5 |
+| 4 | Autorización cuyo `item_content_hash` no coincide con el contenido actual del ProposalItem (editado tras la revisión) | Rechazo; se exige nueva revisión | 4, 5 |
 | 5 | Autorización **expirada** (`expires_at` vencido) | Rechazo; se exige nueva revisión | 4 |
 | 6 | **Revisión cambiada** tras la autorización (`expected_case_revision` ≠ vigente) | Rechazo; `REVISION_CHANGED {expected, current, preserved_proposal_id}`; Proposal en `PRESERVED_FOR_RECONCILIATION`; re-revisión humana | 7, 10 |
 

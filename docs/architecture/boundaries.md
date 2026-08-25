@@ -38,7 +38,7 @@ Superficie cerrada y clasificada de **ocho tools v0** (**ENMIENDA AC-03 aprobada
 | `get_evidence_fragment` | QUERY |
 | `create_case` | COMMAND |
 | `ingest_evidence` | COMMAND |
-| `register_artifact` | COMMAND |
+| ~~`register_artifact`~~ | **RETIRADA de la superficie** — **ENMIENDA AC-03 aprobada** (supersede §16.14): es operación **interna**, ejecutada dentro de la transacción de `ProposeFacts`. Se conserva la fila tachada por trazabilidad; **no cuenta** en el total de ocho. |
 | `propose_facts` | PROPOSAL |
 | `commit_reviewed_facts` | SENSITIVE_COMMAND |
 
@@ -51,7 +51,7 @@ Superficie cerrada y clasificada de **ocho tools v0** (**ENMIENDA AC-03 aprobada
 
 **Señalamiento explícito:** la revisión humana **entra al sistema por un driving adapter distinto del modelo**. No es una variante de la superficie MCP ni un parámetro de una tool: es una segunda puerta de entrada a Application, y esa separación es precisamente lo que hace no falsificable la autoridad humana. Si la aprobación entrara por el mismo canal que el operador no confiable, sería un dato que el modelo produce.
 
-- **Use case invocado:** `ReviewProposal` con decisión `approve` o `reject` (y, si los dueños confirman `authorized_items[]`, aprobación parcial). Con `approve` crea la **HumanAuthorization**; con `reject` marca la Proposal como `REJECTED`.
+- **Use case invocado:** `ReviewProposal` con decisión `approve` o `reject` (y, ****ENMIENDA AC-01 aprobada** (supersede §16.17)** (los dueños la confirmaron; `authorized_items[]` quedó eliminado y la autorización es por `ProposalItem`), aprobación parcial). Con `approve` crea la **HumanAuthorization**; con `reject` marca la Proposal como `REJECTED`.
 - **Decisión de arquitectura:** el canal existe, es distinto del canal del modelo, y la autorización que produce es un **registro server-side del Core** — no un token portador que viaje por el contexto del modelo (ADR-005).
 - **Detalle de implementación de plataforma — DECISIÓN PENDIENTE (spike).** Candidatos: MCP elicitation en **modo URL**, UI local mínima del producto, o CLI del runtime. **HECHO VERIFICADO** (kernel §1; fuente: spec MCP, versiones 2025-06-18 y 2025-11-25): elicitation existe desde la spec 2025-06-18; el **modo form NO garantiza respuesta humana** (los controles de aprobación son solo SHOULD), por lo que no basta como canal de autorización; el **modo URL** (desde 2025-11-25) sí impone MUSTs fuertes — consentimiento explícito, URL visible antes de abrir, apertura en una superficie que ni el cliente ni el LLM pueden inspeccionar. **POR VERIFICAR:** soporte de elicitation, y de su modo URL, en el host concreto. Cualquiera de los tres transportes termina invocando el mismo `ReviewProposal` y produciendo el mismo registro: el Domain no se acopla a ninguno.
 
