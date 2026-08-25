@@ -316,16 +316,30 @@ Cowork ──registro: LA ÚNICA RUTA ABSOLUTA DEL SISTEMA──► <clon>/insta
 | **(ii) Solo existe la cuenta de ella y el dueño la usa** | **No**, mientras la ACL esté puesta | Obliga a levantar la protección para actualizar y volver a ponerla al final |
 | **(iii) Como (ii), pero el procedimiento de actualización levanta y repone la ACL** | Sí, mientras nada falle | **RECHAZADO.** Es una protección que está **apagada exactamente durante la única operación que escribe en la zona 1**, y si el procedimiento se interrumpe a mitad, el árbol queda desprotegido y **nadie se entera**. Una protección cuyo estado depende de que un script termine bien no es una protección: es una variable |
 
-**PROPUESTA, en consecuencia:**
+**DECISIÓN DE LOS DUEÑOS — D-11 RESUELTA: el dueño tendrá cuenta propia de Windows en el equipo. Se aplica el escenario (i) y, con él, la ACL.**
 
-1. **Aplicar siempre 1 y 2** (posición y atributo oculto). Coste cero, sin interacción con el `pull`, y cubren el caso que motivó la decisión: que ella no navegue hasta ahí y no toque nada por curiosidad.
-2. **Aplicar 3 (ACL) solo en el escenario (i).** Si el dueño va a tener cuenta propia en el equipo —lo cual es razonable si va a instalar y actualizar presencialmente— la ACL es una mejora real y sin fricción diaria.
-3. **Si solo hay una cuenta, NO aplicar la ACL** y decirlo en voz alta en vez de simularla. La razón es de fondo: §1 ya garantiza que la zona 1 es **desechable** (pérdida cero, se vuelve a clonar) y §2.4 ya **detecta** cualquier modificación local al arrancar. Con detección y reparación triviales, la ACL convierte "accidente detectado y reparable en un minuto" en "accidente imposible", y ese salto **no vale** el riesgo de dejar la protección apagada por un procedimiento a medias.
-4. **Regla dura si se aplica: se protege el árbol completo del clon, o no se protege nada.** Proteger `.git` y dejar escribible el árbol de trabajo —o al revés— produce actualizaciones que fallan a la mitad, que es el peor de los tres estados posibles.
+En consecuencia, el instalador aplica **los tres mecanismos**:
+
+1. **Posición** (§1 y P4 de §4.1): el clon fuera de todo árbol que ella navegue y fuera de todo árbol que adjunte. Coste cero.
+2. **Atributo oculto** sobre `.git` y sobre la raíz del clon. Cosmético, y así debe llamarse: no impide ninguna escritura.
+3. **ACL NTFS**, ahora habilitada por la decisión:
+
+| Cuenta | Permiso sobre el árbol del clon | Por qué exactamente ese |
+|---|---|---|
+| **Del dueño** (instala y actualiza) | **Control total** | `git pull` escribe en `.git` **y** en el árbol de trabajo; sin escritura completa, la actualización falla a mitad |
+| **De ella** (bajo la que corre Cowork) | **Lectura y ejecución. Escritura DENEGADA** | **No es opcional conceder lectura y ejecución:** Cowork corre bajo su cuenta y es quien ejecuta el lanzador (§8.3). Una ACL que le niegue lectura o ejecución **impide que el producto arranque**. La protección es contra la escritura, exclusivamente |
+
+**Regla dura: se protege el árbol completo del clon, o no se protege nada.** Proteger `.git` y dejar escribible el árbol de trabajo —o al revés— produce actualizaciones que fallan a la mitad, que es el peor de los tres estados posibles.
+
+**Escenario (iii) queda RECHAZADO y no se reabre:** levantar la ACL para actualizar y reponerla al final es una protección apagada exactamente durante la única operación que escribe en la zona 1; si el procedimiento se interrumpe, el árbol queda desprotegido y nadie se entera. Con cuenta propia esa concesión ya no hace falta.
+
+**Lo que la ACL compra de verdad, sin exagerarlo:** convierte «el Core no escribe en la zona 1» (§2.1) de invariante escrito en **propiedad impuesta por el sistema operativo**. No es inmutabilidad —§2.4 ya lo dice— y no protege de alguien con control deliberado del equipo. Protege del accidente, que es la amenaza real y frecuente.
+
+**Verificación obligatoria en la instalación (V-9, nueva):** después de aplicar la ACL, el instalador **comprueba que Cowork puede arrancar el lanzador** bajo la cuenta de ella. Es la única forma de detectar en el momento —y no la primera vez que ella abre el programa— que la ACL quedó demasiado restrictiva. Un fallo aquí es silencioso y se manifestaría como «el programa no responde».
 
 **Coste declarado de ocultar:** una carpeta oculta también es una carpeta que el dueño tarda más en encontrar cuando algo va mal, y todo diagnóstico empieza por volver a mostrarla. Es aceptable porque el diagnóstico lo hace quien puso la protección.
 
-**DECISIÓN PENDIENTE** (§12, D-11): si el dueño tendrá cuenta propia en el equipo. De esa respuesta —y solo de ella— depende si se aplica la ACL.
+**RESUELTA** (§12, D-11): el dueño tendrá cuenta propia en el equipo. La ACL se aplica según el escenario (i).
 
 ---
 
@@ -1066,7 +1080,7 @@ Para que nadie tenga que reconstruirlo:
 |---|---|---|---|
 | **A-1** | **La instalación la hace el dueño presencialmente. Ella no toca el repositorio jamás** y no tiene credenciales de git | §2.5, §5.1, §2.2 | **Cierra el `push` accidental por construcción**: no hay permiso que revocar porque nunca se concede. Elimina del Escritorio de ella los dos accesos directos que había (arrancar y actualizar): ninguno era ya suyo |
 | **A-2** | **La actualización también la dispara el dueño**, no ella | §2.5, §9.1, §9.2 | Pone un humano deliberando en la puerta de cada actualización, lo que **degrada D-7 de requisito a higiene**. Abre R-9: la disponibilidad del dueño es ahora una dependencia operativa del producto |
-| **A-3** | **Proteger `.git` y la zona 1 contra escritura accidental de ella, y ocultarlas** | §2.7 | Cierra el **qué**. El **cómo** depende de D-11: la ACL solo se aplica si existe una cuenta distinta de la de ella, y si no existe **no se aplica y se dice**, en vez de simularla |
+| **A-3** | **Proteger `.git` y la zona 1 contra escritura accidental de ella, y ocultarlas** | §2.7 | Cierra el **qué** y ahora también el **cómo**: con D-11 resuelta (cuenta propia del dueño), se aplican los tres mecanismos — posición, atributo oculto y ACL. Ver §2.7. |
 | **A-4** | **Rutas relativas**, resueltas por un lanzador dentro del repositorio | §2.6, §4.1 (P7), §11 | **Resuelve la `DECISIÓN PENDIENTE` que §4.1 tenía abierta** sobre el mecanismo de entrega de rutas al Core. Deja **una sola ruta absoluta** en todo el sistema —el registro del MCP— y abre R-10: esa ruta es un contrato de instalación que un `pull` puede romper en silencio |
 | **A-5** | **La migración NO genera evento canónico en V0**; queda en el plano operacional | §9.3 | Cierra la pregunta y protege la lista cerrada de eventos. Abre R-8: la trazabilidad de la migración vive **fuera** del expediente, en un log podable y en un backup que puede rotarse |
 | **A-6** | **La jerarquía se piensa como infraestructura profesional real** —despacho, oficina, área, caso, anexos—, intuitiva y no ruidosa | §6.5–§6.10 | Fija el **criterio de admisión** de un nivel (§6.5), las **dos formas legítimas** (§6.6) y la **regla de profundidad uniforme** (§6.8). **No fija la forma**: la decide ella (D-10) |
@@ -1086,7 +1100,7 @@ Para que nadie tenga que reconstruirlo:
 | **D-8** | **`install/` como carpeta nueva del repositorio** (§2.2), añadida al árbol de `14` §2.1 | El procedimiento de actualización tendría que vivir fuera del repositorio, y entonces **no se actualiza a sí mismo** |
 | **D-9** | **La edición manual del espejo NO se detecta**; se sobrescribe sin condiciones (§7.6). Conserva el resultado que pidieron los dueños y cambia el mecanismo, para no abrir un camino de lectura que `INV-P-2` cierra | Habría que abrir ese camino de lectura y diseñar el aviso. El resultado para ella sería idéntico |
 | **D-10** | **La forma de la jerarquía: A (la oficina es el área) o B (oficina y área separadas)** (§6.6). **NO la aprueban los dueños: se le pregunta a ELLA** (§6.7), y el baseline puede observarla antes de preguntar | Si no se decide, se instala en **forma A** —la más plana, y la que la regla de desempate ya elige ante la duda—. Migrar después cuesta lo que dice §6.9: un archivo de config, mover carpetas de ella, reescribir una etiqueta por caso, y **cero** sobre el estado canónico |
-| **D-11** | **Si el dueño tendrá cuenta propia de Windows en el equipo de ella.** De esa respuesta —y solo de ella— depende si se aplica la ACL de §2.7 | Si no la tiene: **no se aplica ACL**, y se aplica solo posición + atributo oculto. Lo que **no** se hace es una ACL que el procedimiento de actualización tenga que apagar (§2.7, escenario iii) |
+| ~~**D-11**~~ | **RESUELTA — el dueño tendrá cuenta propia de Windows en el equipo.** Se aplica la ACL del escenario (i) de §2.7: control total para su cuenta, y lectura + ejecución (sin escritura) para la de ella. Movida a §12.1 como **A-7**. | §2.7 | — |
 | **D-12** | **`attachment_unit`: oficina o área** (§8.2, §6.9). **Solo se plantea si la respuesta a D-10 es la forma B** | Por defecto, oficina. En la forma B eso significa que adjuntar "su oficina" expone **todas** sus materias, y ese hecho hay que decírselo a ella con esas palabras |
 
 ### 12.3 POR VERIFICAR abiertos por esta revisión
