@@ -115,7 +115,7 @@ sequenceDiagram
     A-->>C: Facts ALLEGED + FactsCommitted
 ```
 
-Secuencia normativa. Las revisiones son ilustrativas del **mecanismo** (seq == CaseRevision resultante, kernel §6–§7), no valores fijos:
+Secuencia normativa. Las revisiones son ilustrativas del **mecanismo** (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19): `event_seq` avanza en todo evento y `case_revision` solo en los canónicos), no valores fijos:
 
 | # | Acción de la usuaria (lenguaje natural) | Tool (clase) | Use case | Efecto en el estado canónico | Evento | Rev. |
 |---|---|---|---|---|---|---|
@@ -145,11 +145,11 @@ Caso concreto en esta tabla: los pasos 15–16 son **un solo COMMAND** que produ
 
 **Regla normativa de emisión de `ProposalReviewed` y valor de `expected_case_revision` (addendum v0.3 B.2, supersede §16.10; ADR-005 inv. 9 y 10).** Regla fijada, no divergencia entre documentos:
 
-1. `ReviewProposal(approve)` emite **`ProposalReviewed(approved)`** y avanza la CaseRevision. En ese mismo acto se crea la **HumanAuthorization**.
+1. `ReviewProposal(approve)` emite **`ProposalReviewed(approved)`**, avanza **`event_seq`** y deja **`case_revision` NULL — NO avanza la revisión del Case** (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19)). En ese mismo acto se crea la **HumanAuthorization** (una por item aprobado, AC-01).
 2. `commit_reviewed_facts` emite **`FactsCommitted`** y avanza la CaseRevision de nuevo. Son **dos eventos en dos revisiones distintas**; nunca los dos en el mismo acto.
-3. El **`expected_case_revision` de la HumanAuthorization es la revisión resultante del acto de revisión** — la que deja `ProposalReviewed` —, no la revisión contra la que se creó la Proposal. Semántica: *la revisión del expediente que la profesional tenía a la vista al aprobar*.
+3. El **`expected_case_revision` de la HumanAuthorization es la revisión contra la que se generó y se revisó la Proposal** (= `base_case_revision`) — **ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19), con lo que desaparece la circularidad. Formulación superada: «la revisión resultante del acto de revisión», no la revisión contra la que se creó la Proposal. Semántica: *la revisión del expediente que la profesional tenía a la vista al aprobar*.
 
-Los pasos 10 y 11 de la tabla aplican esta regla tal cual: `ProposalReviewed(approved)` deja el Case en 7 y la autorización porta `expected_case_revision = 7`; `FactsCommitted` lo deja en 8.
+Los pasos 10 y 11 de la tabla aplican esta regla tal cual: `ProposalReviewed(approved)` **no mueve el contador — el Case sigue en 7** — y la autorización porta `expected_case_revision = 7`; `FactsCommitted` lo deja en 8.
 
 ---
 
@@ -666,7 +666,7 @@ Exigida por ADR-003 §Validación 6 y por el addendum v0.3 B.17. **Lo que no se 
 | ADR-005 inv. 1 — `provenance_kind = HUMAN_DECISION` con `principal_type = HUMAN` obligatorio en el registro | F7 | — | **Sí** |
 | ADR-005 inv. 2 y 8 — ningún parámetro del modelo prueba revisión; ningún secreto de autorización en su contexto | Adversarial 2 | `HUMAN_REVIEW_REQUIRED {proposal_id}` | **Sí** |
 | ADR-005 inv. 3 y 5 — un solo uso (`consumed_at`); propuesta editada invalida su autorización | F7, F8; *Negative paths* (autorización expirada / consumida / hash distinto) | `HUMAN_REVIEW_REQUIRED {proposal_id}` | **Sí** |
-| ADR-005 inv. 9 y 10 — dos eventos en dos revisiones distintas; `expected_case_revision` = revisión resultante del acto de revisión | F7, F8; pasos 10–11 del happy path | — | **Sí** |
+| ADR-005 inv. 9 y 10 (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19)) — dos eventos, **una sola revisión**; `expected_case_revision` = revisión contra la que se generó y revisó la Proposal | F7, F8; pasos 10–11 del happy path | — | **Sí** |
 | ADR-006 inv. 1 — EvidenceLink solo contra Evidence incorporada | Adversarial 3 | Error semántico estable (**DECISIÓN PENDIENTE**: sin condición propia en el catálogo v0) | **Sí** |
 | ADR-006 inv. 3 — `inputs[]` de artifact validados contra el Case Store | F9 | Error semántico estable | **Sí** |
 | ADR-006 inv. 4 — la incorporación es el único productor de Sources | F16, F18 | — | **Sí** |
@@ -685,7 +685,7 @@ Solo lo que impide **diseñar y escribir código**; todo lo demás abierto está
 2. **DECISIÓN PENDIENTE (spike) — Transporte de la autorización humana.** Candidatos: MCP elicitation **modo URL** (HECHO VERIFICADO, kernel §1; fuente: spec MCP — elicitation, modo URL introducido en la revisión 2025-11-25; **POR VERIFICAR** el soporte en el host concreto), UI local mínima, CLI del runtime. **Criterio de salida del spike, enunciado como propiedad del sistema** (addendum v0.3 B.15): (1) **consentimiento humano explícito por acto**; (2) **superficie de decisión no inspeccionable ni accionable por el cliente ni por el LLM**; (3) **vinculación verificable al `proposal_content_hash` y al `expected_case_revision`**. El modo URL de elicitation satisface (1) y (2) y sirve de **referencia, no de definición**: el criterio no se remite a los MUSTs de una versión de la spec MCP, y un candidato se evalúa contra los tres puntos. Sin resolverlo, el slice corre con stub declarado, pero no cierra.
 3. **POR VERIFICAR — Proveedor de transcripción y sus capacidades de timestamps.** Bloquea el diseño del adapter y, sobre todo, el anclaje de fragmentos: el contrato exige rangos temporales **sobre la línea de tiempo del original**. Si el proveedor no los entrega con esa semántica, cambia el diseño del locator, no el invariante.
 4. **POR VERIFICAR — Configuración de acceso del host al private state.** Necesaria para el **test negativo 4** (modificar un Source): sin conocer qué herramientas genéricas concede el host y con qué granularidad, ese test no puede ejecutarse de forma concluyente. HECHO VERIFICADO (kernel §1; fuente: code.claude.com/docs — permissions, hooks, sandboxing): Claude Code ofrece deny/ask/allow por herramienta y por ruta y hooks `PreToolUse` bloqueantes, y su sandbox de Bash no es nativo en Windows. POR VERIFICAR: granularidad de permisos y garantías de sandbox/filesystem de Cowork Desktop. Es prueba de plataforma, no del Domain.
-5. **DECISIÓN PENDIENTE (dueños) — Aprobación parcial (`authorized_items`).** El contrato la deja preparada sin activarla. Si los dueños la confirman, cambian el use case `ReviewProposal`, el commit parcial de la Proposal (estado `APPROVED (parcial)`), el evento `ProposalReviewed(partial)` y varias filas de la matriz de pruebas. Implementar sin la respuesta obliga a rehacer esa zona.
+5. **RESUELTA — Aprobación parcial (ENMIENDA AC-01 aprobada, supersede §16.17).** Los dueños la aprobaron: la autorización es **por ProposalItem** con `item_content_hash`, agrupadas por `review_session_id`; `authorized_items[]` queda eliminado. Registro histórico: «el contrato la deja preparada sin activarla; si los dueños la confirman, cambian el use case `ReviewProposal`, el commit parcial de la Proposal (estado `APPROVED (parcial)`), el evento `ProposalReviewed(partial)` y varias filas de la matriz de pruebas. Implementar sin la respuesta obliga a rehacer esa zona.
 
 ---
 
