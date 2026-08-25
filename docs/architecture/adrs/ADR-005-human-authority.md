@@ -53,7 +53,9 @@ HumanAuthorization
   proposal_content_hash      ← AÑADIDO al esquema de los dueños: vincula la autorización
                                exactamente a lo revisado; sin él, una propuesta editada
                                tras la revisión podría commitearse
-  authorized_items[]         ← null = toda la propuesta; subconjunto si la profesional
+  [ELIMINADO por ENMIENDA AC-01] authorized_items[]   ← la granularidad por item lo hace
+                                innecesario. Texto superado: «null = toda la propuesta;
+                                subconjunto si la profesional
                                aprueba solo algunos hechos (pregunta abierta a dueños)
   operation                  ← enum v0: COMMIT_FACTS (genérico para futuras ops sensibles)
   principal_id, principal_type=HUMAN, principal_role      ← quién autorizó
@@ -76,7 +78,7 @@ Dos **refinamientos respecto del esquema propuesto por los dueños**, señalados
 1. **`proposal_content_hash` → `item_content_hash` (AC-01).** Vincula la autorización exactamente al contenido revisado. Sin este campo, una Proposal editada después de la revisión podría commitearse amparada en una autorización que aprobó otra cosa: la firma de una revisión sobre un texto que ya no existe.
 2. **`single_use` ELIMINADO como campo → promovido a invariante.** Toda HumanAuthorization v0 es de un solo uso por definición y `consumed_at` lo materializa; un booleano que siempre vale lo mismo es ruido de esquema. Simplificación, no cambio de significado.
 
-`authorized_items[]` habilita la **aprobación parcial** (aprobar solo algunos hechos de la propuesta), coherente con el estado `APPROVED (parcial o total)` de la Proposal. Está propuesta en el contrato pero es **DECISIÓN PENDIENTE** de los dueños (kernel §17): el campo queda preparado, no activado.
+****ENMIENDA AC-01 aprobada** (supersede §16.17): la aprobación parcial se materializa con una autorización por `ProposalItem`, no con `authorized_items[]`, que queda eliminado.** Texto superado: «`authorized_items[]` habilita la aprobación parcial (aprobar solo algunos hechos de la propuesta), coherente con el estado `APPROVED (parcial o total)` de la Proposal. Está propuesta en el contrato pero es **DECISIÓN PENDIENTE** de los dueños (kernel §17): el campo queda preparado, no activado.
 
 `expires_at` impone **vigencia corta configurable por política**; no existen autorizaciones de duración indefinida.
 
@@ -177,7 +179,7 @@ Complementos: test positivo del flujo feliz (PROPOSAL → HUMAN REVIEW → AUTHO
 
 ## Preguntas pendientes
 
-1. **DECISIÓN PENDIENTE (dueños):** ¿se admite aprobación parcial vía `authorized_items[]`, o toda Proposal se aprueba/rechaza en bloque? El contrato la deja preparada sin activarla.
+1. **RESUELTA — **ENMIENDA AC-01 aprobada** (supersede §16.17):** los dueños aprobaron la aprobación parcial **por item**, con `item_content_hash` y una autorización por `ProposalItem`. Registro histórico de la pregunta: «¿se admite aprobación parcial vía `authorized_items[]`, o toda Proposal se aprueba/rechaza en bloque? El contrato la deja preparada sin activarla.
 2. **DECISIÓN PENDIENTE (spike):** transporte/UI de la revisión humana — elicitation MCP modo URL (soporte del host POR VERIFICAR), UI local mínima o CLI.
 3. **SUPUESTO a validar:** valor por defecto y política de `expires_at` (¿minutos? ¿una sesión de trabajo?), a calibrar con la usuaria real.
 4. **DECISIÓN PENDIENTE:** qué otras operaciones entrarán en el enum `operation` cuando la superficie crezca, y con qué criterio de admisión — hoy solo `COMMIT_FACTS`.

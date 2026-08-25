@@ -28,7 +28,7 @@ Un driving adapter traduce una solicitud externa en una invocación de use case.
 
 ### 2.1 Legal MCP — adapter del operador
 
-Superficie cerrada y clasificada de **nueve tools v0** (kernel §4; **kernel §16.3: supersede de la superficie de 10 tools de v0.1.1** — `verify_legal_source` sale del slice). La clase es parte del contrato, no documentación:
+Superficie cerrada y clasificada de **ocho tools v0** (**ENMIENDA AC-03 aprobada** (supersede §16.14: `register_artifact` retirado por ser consecuencia necesaria de `propose_facts`)) (kernel §4; **kernel §16.3: supersede de la superficie de 10 tools de v0.1.1** — `verify_legal_source` sale del slice). La clase es parte del contrato, no documentación:
 
 | Tool | Clase |
 |---|---|

@@ -204,7 +204,7 @@ La tabla cubre los dos planos, que el addendum v0.3 B.4 separa: **Domain** (enti
 
 ## Application use cases required
 
-**MCP Tool ≠ Use Case 1:1.** La superficie externa es deliberadamente pequeña; el Core puede tener más casos internos de los que expone. En v0 los nueve use cases externos coinciden con las nueve tools, pero esa coincidencia es circunstancial, no un principio: la presión estructural es **muchos use cases dentro, pocas tools fuera**.
+**MCP Tool ≠ Use Case 1:1.** La superficie externa es deliberadamente pequeña; el Core puede tener más casos internos de los que expone. En v0 los use cases externos **ya no coinciden** con las **ocho** tools (**ENMIENDA AC-03 aprobada** (supersede §16.14: `register_artifact` retirado por ser consecuencia necesaria de `propose_facts`)): `RegisterArtifact` existe como use case interno sin tool que lo exponga. La antigua coincidencia era circunstancial, no un principio: la presión estructural es **muchos use cases dentro, pocas tools fuera**.
 
 **Externos (invocables desde la superficie MCP):**
 
