@@ -1,6 +1,7 @@
 # Informe de inspección — Legal Workspace / Legal OS
 
-**Fecha de inspección:** 2026-08-25  
+**Fecha de inspección inicial:** 2026-08-25
+**Revisión tras los cambios confirmados:** 2026-08-25
 **Alcance:** todos los archivos versionados del repositorio, estructura Git, documentación, experimentos y código presente.  
 **Método:** lectura de la estructura completa, títulos y contenido de los documentos rectores, estado técnico, ADRs, spikes y el único archivo de código. No se modificó ningún artefacto existente.
 
@@ -32,12 +33,12 @@ El V0 pretende probar un único flujo completo: crear un caso, incorporar eviden
 
 | Métrica | Resultado |
 |---|---:|
-| Archivos versionados | 98 |
-| Markdown | 95 |
+| Archivos versionados | 112 |
+| Markdown | 109 |
 | JavaScript | 1 |
 | Fixtures de texto | 2 |
-| Líneas aproximadas | 20.496 |
-| Tamaño total aproximado | 3,11 MB |
+| Líneas aproximadas | 24.605 |
+| Tamaño total aproximado | 3,69 MB |
 | Código de producto | No presente |
 | Estado de Git | Limpio, sin cambios locales |
 
@@ -47,6 +48,7 @@ La raíz contiene:
 .
 ├── docs/                         Diseño, arquitectura, investigación y backlog
 ├── experiments/                  Spikes no productivos
+├── plugin/                       Skill operativo para el baseline y el futuro producto
 ├── .claude/scheduled_tasks.lock  Estado local ignorado por Git
 ├── .gitignore
 ├── revision-arquitectonica-legal-os.md
@@ -98,7 +100,7 @@ El glosario es esencial: fija diferencias que no pueden relajarse, por ejemplo e
 
 ### 4.3 ADRs
 
-Hay once ADRs. Los seis primeros son la base **Accepted**; los ADRs 007–011 están diseñados y requieren ratificación o se relacionan con decisiones pendientes.
+Hay trece ADRs. Los seis primeros son la base **Accepted**; los ADRs 007–013 están diseñados y requieren ratificación o se relacionan con decisiones pendientes.
 
 | ADR | Decisión principal |
 |---|---|
@@ -113,6 +115,8 @@ Hay once ADRs. Los seis primeros son la base **Accepted**; los ADRs 007–011 es
 | ADR-009 | Log canónico hash-chained, log operacional podable y dos contadores. |
 | ADR-010 | Superficie MCP mínima y clasificación de comandos. |
 | ADR-011 | Locators de evidencia basados en un subconjunto adoptado de W3C Web Annotation. |
+| ADR-012 | Distribución y actualización: repositorio clonado, tres zonas físicas disjuntas y arranque que migra o no arranca. |
+| ADR-013 | Respaldo y recuperación: copia local, disco externo cifrado y restauración verificada. |
 
 `AMENDMENT-CANDIDATES.md` mantiene enmiendas que deben decidir los dueños, en lugar de introducir cambios silenciosos en ADRs aceptados.
 
@@ -138,6 +142,9 @@ Hay once ADRs. Los seis primeros son la base **Accepted**; los ADRs 007–011 es
 | `14-repository-layout.md` | Layout esperado del futuro código y reglas de dependencia. |
 | `15-product-floor-proposal.md` | Cinco políticas no relajables y cómo validar configuración cliente. |
 | `16-open-implementation-decisions.md` | Clasificación de bloqueantes de Fase 1 y decisiones mitigadas. |
+| `17-deployment-layout.md` | Materialización física de tres zonas: programa, mesa de trabajo y expediente privado. |
+| `18-update-and-recovery.md` | Arranque, actualización, migración, degradación a solo lectura y recuperación. |
+| `19-integraciones-y-herramientas.md` | Perímetro para conectar herramientas: explorar, incorporar y producir; incluye Word, M365 y Cowork. |
 
 Las subcarpetas `notes-designers/` y `notes-verification/` preservan informes de diseño, controles de consistencia, análisis de drift y comprobaciones finales. Son evidencia útil de la revisión del corpus, no implementación.
 
@@ -189,6 +196,16 @@ La documentación está madura para iniciar implementación controlada, pero el 
 - Paquetización, distribución, despliegue, telemetría o configuración de producción.
 - Ejecución de los spikes manuales de plataforma.
 
+### Ampliación confirmada en esta revisión
+
+Desde la inspección inicial se añadieron **14 archivos y 5.859 líneas**, todos confirmados en la rama `master`. El proyecto ya no solo describe el Core: ahora especifica también su operación alrededor del Core.
+
+- **Distribución y operación local.** ADR-012 y los documentos 17–18 separan físicamente tres árboles: programa versionado, mesa de trabajo visible y expediente privado. El objetivo es que una actualización o reparación con Git nunca toque datos de clientes.
+- **Respaldo.** ADR-013 introduce una política concreta: estado pequeño con copia local frecuente, evidencia/originales en disco externo, retención escalonada y restauración ensayada. Git queda explícitamente descartado como mecanismo de respaldo de expedientes.
+- **Uso con personas reales antes del Core.** Se añadieron protocolo de baseline, hoja de observación y rúbrica para medir el trabajo real con la abogada antes de atribuir mejoras al diseño.
+- **Skill `fact-builder`.** Vive en `plugin/skills/fact-builder/` y transforma material del caso en hechos candidatos con soporte, contradicciones y ausencias de soporte. Está diseñado para proponer, nunca decidir, y puede operar sin Core (sin garantías técnicas) o posteriormente integrado con `propose_facts`.
+- **Integraciones.** El documento 19 separa lo que el modelo puede explorar de lo que se incorpora formalmente al expediente y de lo que se produce para la profesional. Identifica los riesgos de prompt injection en documentos externos y las limitaciones de control/auditoría del complemento de Word.
+
 ---
 
 ## 6. Bloqueantes y riesgos prioritarios
@@ -206,6 +223,15 @@ El documento `16-open-implementation-decisions.md` clasifica cinco asuntos que b
 El riesgo de plataforma más severo es la pregunta B-04 del spike de Cowork: si un servidor MCP local no puede acceder al estado privado sin que el host también lo pueda leer, la forma concreta prevista para ADR-002 no es realizable en Cowork Desktop. La alternativa contemplada es ejecutar el Core como proceso independiente con sus propios permisos del sistema operativo.
 
 Hay además decisiones mitigadas por el diseño, pero relevantes antes de un primer uso real: transporte de autorización humana, proveedor de transcripción, formato de ID, aprobación del Product Floor y ratificación de ADRs posteriores.
+
+Los cambios nuevos añaden decisiones operativas que conviene verificar antes de instalar en una máquina real:
+
+- Confirmar B-04: si el MCP local puede acceder al expediente privado sin exponerlo a Cowork.
+- Verificar la ubicación y el formato de registro de un servidor MCP local en Cowork.
+- Confirmar que la zona privada y los destinos de backup no están dentro de OneDrive, otra carpeta sincronizada ni una unidad de red.
+- Verificar el mecanismo de cifrado disponible para el disco externo de respaldo en la edición real de Windows.
+- Confirmar si OneDrive/Microsoft 365 es corporativo y qué plan/versiones hacen viable cualquier integración planteada.
+- Verificar si un plugin puede transportar el runtime del Core, no solo skills y conectores.
 
 ---
 
@@ -235,6 +261,6 @@ Hay además decisiones mitigadas por el diseño, pero relevantes antes de un pri
 
 ## 9. Conclusión
 
-El proyecto es una **especificación arquitectónica y de producto muy detallada**, no una aplicación en funcionamiento. Su mayor fortaleza es la claridad sobre límites: la IA no es autoridad, la evidencia debe ser rastreable, el estado canónico debe estar fuera del alcance directo del host y el diseño no inventa garantías de plataforma no verificadas.
+El proyecto es una **especificación arquitectónica, operativa y de producto muy detallada**, no una aplicación en funcionamiento. Su mayor fortaleza es la claridad sobre límites: la IA no es autoridad, la evidencia debe ser rastreable, el estado canónico debe estar fuera del alcance directo del host y el diseño no inventa garantías de plataforma no verificadas.
 
-El siguiente paso razonable no es escribir código de forma indiscriminada: es resolver los cuatro bloqueantes de diseño/decisión de Fase 1, ejecutar el spike de Cowork si se planea usarlo como host, y después crear el esqueleto de implementación definido por `14-repository-layout.md`, empezando por Domain, Application y sus pruebas.
+El siguiente paso razonable no es escribir código de forma indiscriminada: es ejecutar primero el baseline con la profesional, resolver los bloqueantes de diseño/decisión de Fase 1, comprobar el perímetro de Cowork y las condiciones de instalación/backup, y después crear el esqueleto de implementación definido por `14-repository-layout.md`, empezando por Domain, Application y sus pruebas.
