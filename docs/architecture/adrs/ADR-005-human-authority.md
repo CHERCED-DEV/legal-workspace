@@ -33,13 +33,13 @@ Ninguna operación sensible se ejecuta en una sola llamada:
 ```mermaid
 flowchart LR
     P["PROPOSAL<br/>propose_facts crea Proposal<br/>con content_hash<br/>(evento FactsProposed)"] --> R["HUMAN REVIEW<br/>fuera del canal del modelo"]
-    R --> A["AUTHORIZATION<br/>ReviewProposal emite ProposalReviewed,<br/>avanza la CaseRevision y crea<br/>la HumanAuthorization (o marca REJECTED)"]
+    R --> A["AUTHORIZATION<br/>ReviewProposal emite ProposalReviewed,<br/>avanza event_seq (NO la CaseRevision)<br/>y crea la HumanAuthorization por item<br/>(o marca REJECTED)"]
     A --> C["COMMIT<br/>commit_reviewed_facts verifica,<br/>consume la autorización y emite<br/>FactsCommitted (avanza de nuevo)"]
 ```
 
 `propose_facts` (clase PROPOSAL) registra la Proposal y no muta el Case más allá de ese registro. La revisión ocurre en un canal que el modelo no controla. Solo entonces `commit_reviewed_facts` puede commitear. Intentar el commit sin autorización vigente emite `HUMAN_REVIEW_REQUIRED {proposal_id}` y no muta nada — condición que absorbe la `PENDING_CONFIRMATION` de v0.1.1 (kernel §16.1, superseded).
 
-**Aritmética de revisiones del two-phase.** El acto de revisión y el commit son **dos eventos en dos revisiones distintas** del Case: `ReviewProposal(approve)` emite `ProposalReviewed(approved)` y avanza la CaseRevision — y en ese mismo acto se crea la HumanAuthorization —; `commit_reviewed_facts` emite **solo** `FactsCommitted` y avanza la CaseRevision de nuevo. Si `FactsProposed` deja el Case en la revisión N, `ProposalReviewed` lo deja en N+1 (y la autorización porta N+1 como `expected_case_revision`) y `FactsCommitted` lo deja en N+2.
+**Aritmética de revisiones del two-phase (ENMIENDA AC-02 aprobada, supersede §16.19).** El acto de revisión y el commit son **dos eventos**, pero **no en dos revisiones distintas**: `ReviewProposal(approve)` emite `ProposalReviewed(approved)`, avanza `event_seq` y deja `case_revision` **NULL** — la revisión del Case **no cambia** —, y en ese mismo acto se crea la HumanAuthorization —; `commit_reviewed_facts` emite **solo** `FactsCommitted` y avanza la CaseRevision de nuevo. Si `FactsProposed` deja el Case en la revisión N, `ProposalReviewed` lo deja en N+1 (y la autorización porta N+1 como `expected_case_revision`) y `FactsCommitted` lo deja en N+2.
 
 ### 2. Contrato semántico HumanAuthorization
 
@@ -58,7 +58,9 @@ HumanAuthorization
   operation                  ← enum v0: COMMIT_FACTS (genérico para futuras ops sensibles)
   principal_id, principal_type=HUMAN, principal_role      ← quién autorizó
   provenance_kind = HUMAN_DECISION                        ← naturaleza epistémica del acto
-  expected_case_revision     ← la revisión RESULTANTE del acto de revisión (la que deja
+  expected_case_revision     ← ENMIENDA AC-02: la revisión CONTRA LA QUE se generó y se
+                                revisó la Proposal (= base_case_revision). Texto superado:
+                                «la revisión RESULTANTE del acto de revisión (la que deja
                                ProposalReviewed): "la revisión del expediente que la
                                profesional tenía a la vista al aprobar", NO la revisión
                                contra la que se creó la Proposal
@@ -80,7 +82,7 @@ Dos **refinamientos respecto del esquema propuesto por los dueños**, señalados
 
 **Normalización v0.4: `provenance_kind = HUMAN_DECISION` con `principal_type = HUMAN`.** La escritura previa `actor_type = HUMAN_DECISION` colapsaba dos preguntas distintas —quién ejecutó y cuál es la naturaleza del origen— en un solo campo; la separación las reparte entre `Principal` y `provenance_kind` (supersede §16.13). Lo que sigue conserva el registro histórico de la corrección anterior: El enum canónico de `ProvenanceRecord` es `EXTERNAL_SOURCE | AI_DERIVATION | AI_INFERENCE | HUMAN_DECISION | SYSTEM` (kernel §2). El kernel v0.2 §5 escribió `HUMAN` **por errata**, valor que no pertenece a ese enum; el valor correcto es `HUMAN_DECISION`. Registrado como **supersede §16.7 — cambio de nombre, no de semántica**: no altera qué actor autoriza ni con qué fuerza.
 
-**Precisión sobre `expected_case_revision`.** La autorización congela la revisión **resultante del acto de revisión** — la que deja `ProposalReviewed` —, no la revisión contra la que se creó la Proposal. La semántica es literal: es la revisión del expediente que la profesional tenía a la vista al aprobar. Cualquier evento posterior al acto de revisión desincroniza autorización y estado, y el commit debe rechazarse (punto 3).
+**Precisión sobre `expected_case_revision` (ENMIENDA AC-02 aprobada, supersede §16.19).** La autorización congela **la revisión contra la que se generó y se revisó la Proposal** (= `base_case_revision`). `ProposalReviewed` ya no avanza `case_revision`, de modo que desaparece la definición circular anterior — que hacía portar a la autorización *la revisión resultante de su propio acto de revisión*. Formulación superada: «la revisión resultante del acto de revisión». La semántica es literal: es la revisión del expediente que la profesional tenía a la vista al aprobar. Cualquier evento posterior al acto de revisión desincroniza autorización y estado, y el commit debe rechazarse (punto 3).
 
 ### 3. La autorización es un registro server-side del Core
 
@@ -90,7 +92,7 @@ Si la revisión cambió entre autorización y commit, el commit se rechaza con `
 
 ### 4. Use case del canal humano: `ReviewProposal`
 
-La revisión se modela como un único use case de Application: `ReviewProposal(decision: approve | reject, items?)`. **El acto de revisión es en sí mismo una mutación registrada:** emite `ProposalReviewed(approved | rejected | partial)` y avanza la CaseRevision. Con `approve`, en ese mismo acto se crea la HumanAuthorization (total o, si los dueños confirman la aprobación parcial, restringida a `items`), que porta como `expected_case_revision` la revisión resultante de ese mismo acto; con `reject` marca la Proposal como `REJECTED` y no nace autorización alguna. El commit posterior es un acto distinto, con su propio evento (`FactsCommitted`) y su propia revisión. **Refinamiento a señalar:** consolida en `ReviewProposal` lo que en borradores previos era un `ApproveProposal` separado — aprobar y rechazar son dos salidas del mismo acto de revisión, no dos operaciones. No altera la intención aprobada; evita que "rechazar" quede sin dueño.
+La revisión se modela como un único use case de Application: `ReviewProposal(decision: approve | reject, items?)`. **El acto de revisión queda registrado en el log, pero NO muta el estado epistémico canónico** (ENMIENDA AC-02 aprobada): emite `ProposalReviewed(approved | rejected | partial)` y avanza la CaseRevision. Con `approve`, en ese mismo acto se crea la HumanAuthorization (total o, si los dueños confirman la aprobación parcial, restringida a `items`), que porta como `expected_case_revision` la revisión resultante de ese mismo acto; con `reject` marca la Proposal como `REJECTED` y no nace autorización alguna. El commit posterior es un acto distinto, con su propio evento (`FactsCommitted`) y su propia revisión. **Refinamiento a señalar:** consolida en `ReviewProposal` lo que en borradores previos era un `ApproveProposal` separado — aprobar y rechazar son dos salidas del mismo acto de revisión, no dos operaciones. No altera la intención aprobada; evita que "rechazar" quede sin dueño.
 
 ### 5. Separación entre contrato semántico y transporte
 
@@ -125,7 +127,7 @@ Decisión de los dueños: el registro de autorización **no** lleva firma cripto
 7. Mismatch de revisión ⇒ `REVISION_CHANGED {expected, current, preserved_proposal_id}` + Proposal preservada; el trabajo nunca se descarta.
 8. No existe ningún secreto de autorización en el contexto del modelo.
 9. Toda revisión y todo commit quedan en el Case Event Log con `Principal` humano identificado (`principal_id`, `principal_type = HUMAN`, `principal_role`), como **dos eventos en dos revisiones distintas**: el acto de revisión emite `ProposalReviewed` y avanza la CaseRevision; el commit emite solo `FactsCommitted` y la avanza de nuevo. Nunca los dos eventos en el mismo acto.
-10. El `expected_case_revision` de la HumanAuthorization es **la revisión resultante del acto de revisión** — la que deja `ProposalReviewed`, es decir, la revisión del expediente que la profesional tenía a la vista al aprobar —, nunca la revisión contra la que se creó la Proposal.
+10. **(ENMIENDA AC-02 aprobada, supersede §16.19)** El `expected_case_revision` de la HumanAuthorization es **la revisión contra la que se generó y se revisó la Proposal** (= `base_case_revision`), que es también la revisión del expediente que la profesional tenía a la vista al aprobar — porque `ProposalReviewed` avanza `event_seq` y deja `case_revision` NULL, sin alterar lo que el expediente sabe. Formulación superada: «la revisión resultante del acto de revisión» — era circular. Texto anterior conservado por trazabilidad: «la que deja `ProposalReviewed`, es decir, la revisión del expediente que la profesional tenía a la vista al aprobar —, nunca la revisión contra la que se creó la Proposal.
 
 ## Consecuencias positivas
 
