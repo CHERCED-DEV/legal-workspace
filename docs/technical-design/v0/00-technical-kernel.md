@@ -143,7 +143,8 @@ HumanAuthorization
   proposal_id
   proposal_item_id            UNA autorización POR ITEM (ver §3.2)
   item_content_hash           vincula al contenido exacto revisado
-  expected_case_revision      revisión que la profesional tenía a la vista
+  expected_case_revision      revisión VIGENTE del Case al revisar (NO base_case_revision:
+                              FactsProposed y ArtifactRegistered ya la avanzaron)
   authorized_operation        enum; v0: COMMIT_FACT
   principal_id                quién autorizó (principal_type = HUMAN)
   authorization_source        REAL | DEV_STUB   ← ver §4
@@ -231,7 +232,7 @@ Esto conserva la auditoría completa de A, elimina los conflictos espurios y la 
 
 > **APROBADO — enmienda AC-02.** Los dueños aprobaron este amendment. **El Modelo B es ahora el vigente en todo el corpus**: `event_seq` avanza en todo evento; `case_revision` avanza solo en eventos que mutan el estado epistémico canónico; `ProposalReviewed` avanza `event_seq` y lleva `case_revision` nula. ADR-004 y ADR-005 quedan enmendados (supersedes §16.16 y §16.19). Queda sin efecto el aviso anterior de esta sección, que mantenía el Modelo A mientras la decisión estuviera pendiente.
 
-Consecuencia sobre el addendum v0.3 B.2, **ya en vigor**: su punto 1 ("`ReviewProposal` … avanza la CaseRevision") queda **enmendado y superado**; su punto 3 se simplifica — `expected_case_revision` es la revisión contra la que se generó y se revisó la propuesta, con lo que desaparece la circularidad de la definición anterior. Los documentos técnicos aplican el Modelo B como norma y conservan el Modelo A solo como columna de trazabilidad, rotulada *anterior (superado)*.
+Consecuencia sobre el addendum v0.3 B.2, **ya en vigor**: su punto 1 ("`ReviewProposal` … avanza la CaseRevision") queda **enmendado y superado**; su punto 3 se corrige — `expected_case_revision` es la **revisión vigente del Case en el momento del acto de revisión** — la que la profesional tiene a la vista al aprobar. **No es `base_case_revision`**: entre la generación de la Proposal y su revisión, los eventos `FactsProposed` y `ArtifactRegistered` ya avanzaron el contador, con lo que desaparece la circularidad de la definición anterior (que hacía portar a la autorización *la revisión resultante de su propio acto de revisión*). Los documentos técnicos aplican el Modelo B como norma y conservan el Modelo A solo como columna de trazabilidad, rotulada *anterior (superado)*.
 
 ---
 
