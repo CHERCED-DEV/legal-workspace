@@ -107,7 +107,7 @@ El mecanismo concreto de perímetro del host (deny rules/hooks/proceso separado)
 - **DECISIÓN PENDIENTE — Transporte/UI de la autorización humana** (spike: MCP elicitation modo URL — spec-verificada, soporte del host POR VERIFICAR —, UI local mínima, CLI). No afecta esta frontera: el Domain no se acopla a ningún transporte (detalle en ADR-005).
 - **POR VERIFICAR — Granularidad de permisos y garantías de sandbox/filesystem de Cowork Desktop**, condición para elegirlo como host sin perímetro adicional.
 - **DECISIÓN PENDIENTE — Mecanismo concreto de enforcement del perímetro en Windows** (deny rules + hooks verificados en Claude Code vs Core como proceso separado con permisos de SO propios). Detalle de implementación de plataforma; la decisión de arquitectura de este ADR no depende de él.
-- **DECISIÓN PENDIENTE (dueños) — Aprobación parcial de propuestas** (`authorized_items` en HumanAuthorization): propuesta en el contrato, pendiente de confirmación; no altera la frontera.
+- **RESUELTA — Aprobación parcial de propuestas (**ENMIENDA AC-01 aprobada** (supersede §16.17)).** Los dueños la aprobaron: la autorización es **por `ProposalItem`** con `item_content_hash`, agrupadas por `review_session_id`; el campo `authorized_items[]` queda **eliminado**. No altera la frontera.
 
 ## Relaciones con otros ADRs
 

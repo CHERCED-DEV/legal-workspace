@@ -320,7 +320,7 @@ La estructura de carpetas es consecuencia, no diseño. La frontera correcta es p
 - **POR VERIFICAR — Proveedor de transcripción** y sus capacidades de timestamps (adapter detrás del AI-capability port).
 - **DECISIÓN PENDIENTE — Deduplicación física de Sources entre Cases** (v0: copia por caso es aceptable).
 - **DECISIÓN PENDIENTE — Lenguaje/runtime de implementación del Core**: no decidido por los dueños; bloqueante para código, no para estos documentos.
-- **DECISIÓN PENDIENTE (dueños) — Aprobación parcial de propuestas** (`authorized_items[]` en HumanAuthorization): propuesta en el contrato, pendiente de confirmación.
+- **RESUELTA — Aprobación parcial de propuestas (**ENMIENDA AC-01 aprobada** (supersede §16.17)).** Aprobada por los dueños: una `HumanAuthorization` **por `ProposalItem`** con `item_content_hash`, agrupadas por `review_session_id`. El campo `authorized_items[]` queda **eliminado**.
 
 Pendientes vivos que este documento hereda de los ADRs que lo fundamentan, y que aquí se listan para que no queden solo en ellos:
 
