@@ -176,6 +176,35 @@ Tres formas concretas de romperlo todo, cada una plausible y ninguna con aspecto
 
 **Frecuencia del externo — `DECISIÓN PENDIENTE`, y la pregunta correcta no es técnica.** La formulación en sus términos, que es la que hay que llevarle a ella: ***«¿cuántos días de trabajo está usted dispuesta a repetir?»***. Esa respuesta *es* la frecuencia. **PROPUESTA de partida: semanal, en un día fijo**, porque un ritmo sin día fijo no es un ritmo. **El ritmo de visitas del dueño no sirve como respaldo** y no se propone como tal.
 
+### 6.bis Retención — **DECISIÓN DE LOS DUEÑOS: tres copias, un mes**
+
+**Lo decidido:** se conservan **tres copias** con **un mes de retención**.
+
+**La tensión que hay que resolver antes de implementarlo.** Las copias locales se disparan en el **arranque** (§6), no en un reloj. Si ella abre el programa casi todos los días, tres copias planas —las tres últimas— cubren **tres días de trabajo**, no un mes. Los dos números que fijaron los dueños son incompatibles bajo un esquema plano: o se conservan las tres últimas (y la retención es de días), o se conserva un mes (y hacen falta muchas más de tres).
+
+**Cómo se cumplen ambos: escalonado por antigüedad.** Las tres copias no son «las tres últimas» sino **tres ventanas distintas**:
+
+| Ranura | Qué conserva | Se sustituye cuando | Para qué sirve |
+|---|---|---|---|
+| **Reciente** | La copia del último arranque verificado | En cada arranque | Deshacer lo de hoy. Es la que se usa el 90 % de las veces |
+| **Intermedia** | La copia verificada más antigua con **al menos 7 días** | Cuando la reciente que va a desplazar supera los 7 días | Recuperar de un error que se descubre a la semana |
+| **Antigua** | La copia verificada más antigua con **al menos 30 días** | Cuando la intermedia que va a desplazar supera los 30 días | Cierra la retención del mes |
+
+Con exactamente tres ranuras se obtiene: recuperación inmediata, recuperación de hace una semana, y **un mes de retención**. Es el esquema clásico de rotación por generaciones, y es la única forma de que «tres» y «un mes» convivan sin mentir.
+
+**La asimetría de §5 se aplica también aquí, y ahorra casi todo el espacio.** Las tres ranuras son de la **mitad pequeña** —`case.db` y el event log, del orden de MB—. Los **originales no rotan**: son inmutables por diseño (ADR-006, `PF-002`), de modo que una copia en el destino externo es correcta y suficiente, y lo que se hace con ellos periódicamente es **verificar** que siguen íntegros, no volver a copiarlos. Tres copias del expediente **no cuestan tres veces el expediente**: cuestan tres veces la parte que cambia.
+
+**Regla de purga, con dos guardas duras:**
+
+1. **Nunca se purga una copia que no ha sido sustituida por otra verificada.** Si la copia entrante falla su verificación, la saliente **se conserva** aunque exceda su ventana. Es preferible ocupar más espacio que quedarse con un hueco.
+2. **La copia previa a una migración no rota mientras la migración sea la última aplicada.** Es la única vía de vuelta atrás del trinquete (§ del trinquete y `18` §3.3); rotarla por antigüedad dejaría al expediente sin retorno posible. Sale de la rotación normal y se libera cuando llega la siguiente migración verificada.
+
+**Consecuencia declarada, para que nadie la descubra tarde:** con un mes de retención, **un error que se descubra a los treinta y un días ya no tiene copia de la que volver**. Es el precio de la ventana elegida y hay que decirlo. Si en el uso real aparece la necesidad de ir más atrás, la ranura antigua puede ampliarse a trimestral sin cambiar la estructura — solo el umbral.
+
+**Lo que sigue abierto:** el espacio que esto ocupa en el destino externo no puede estimarse sin conocer el volumen real de originales, que es una de las preguntas de negocio pendientes. La rotación de la mitad pequeña es despreciable; el tamaño lo fijan los originales, que no rotan.
+
+---
+
 ### 7. Dos niveles de verificación, y solo uno habilita migrar
 
 De la Decisión 1 se sigue un problema honesto: copiar es barato, **verificar del todo no**. `source_bytes_match` de `01` §8.2 re-hashea todos los originales de la copia y recorre los GB cada vez. Hacerlo en cada arranque haría el arranque inaceptable, y un respaldo que molesta es un respaldo que alguien acaba desactivando.
@@ -324,7 +353,7 @@ Se aplica sin excepción `INV-UX-04`: **ningún mensaje de respaldo nombra una r
 |---|---|
 | Nube cifrada como tercer destino | La decisión de confidencialidad (Decisión 12) |
 | Planificador o servicio residente de copias | Que el disparador por arranque demuestre no cubrir (pregunta 6) |
-| Política de retención y purga | Alarma de espacio, o la primera vez que el disco se acerque a llenarse (pregunta 3) |
+| ~~Política de retención y purga~~ **RESUELTA** — tres copias escalonadas, un mes de retención (§6.bis) | — |
 | Respaldo incremental con cadenas de incrementos | Ninguno previsible: la asimetría de la Decisión 1 hace que no haga falta |
 | Restauración parcial por Case | Un expediente tan grande que restaurar todo sea inviable |
 | Restauración ejecutable por ella | Una validación de UX que demuestre que puede hacerlo sin riesgo |
