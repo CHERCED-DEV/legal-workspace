@@ -176,6 +176,37 @@ Qué hizo ella **realmente**, en el orden en que lo hizo. Una línea por paso, a
 
 ---
 
+
+## 5.bis Cómo agrupa ella su trabajo (§6.bis del protocolo)
+
+> Se rellena **a lo largo de las tres sesiones**, cada vez que aparezca. No hay que provocarlo.
+
+| Momento | Qué dijo o hizo, textual | ¿Apunta a? |
+|---|---|---|
+| | | Oficina / Materia / Ninguno |
+| | | Oficina / Materia / Ninguno |
+| | | Oficina / Materia / Ninguno |
+
+**Cómo están rotuladas sus carpetas hoy** (mírelas si le deja; anote los nombres reales):
+
+**Cómo busca un expediente antiguo:**  ☐ navega carpeta por carpeta  ☐ escribe el nombre en el buscador
+
+**¿Una sede o varias?** ¿Las mismas personas en todas las materias?
+
+---
+
+**Respuesta a la pregunta de cierre** (sesión 3, después de todo lo demás):
+
+> *«Cuando piensa en su trabajo, ¿piensa en "la oficina" o piensa en "los casos laborales"?»*
+
+Respuesta textual:
+
+☐ Forma A (la oficina)   ☐ Forma B (la materia)   ☐ Dudó / «las dos» → Forma A
+
+**¿La respuesta contradice lo observado?**  ☐ No  ☐ **Sí** — anótelo tal cual, sin resolverlo. Es el dato más informativo:
+
+---
+
 ## 6. Frases textuales
 
 Tal cual las dijo. Aunque estén a medias, mal dichas o con groserías. **No las arregle ni las resuma.**

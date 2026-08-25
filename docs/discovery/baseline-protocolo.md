@@ -341,6 +341,51 @@ Se comprueba esa frase en el documento. Si la frase no está ahí, o está en ot
 
 ---
 
+## 6.bis Cómo organiza ella su trabajo — observar primero, preguntar al final
+
+**Por qué está aquí.** Hay una decisión de diseño que **no la toman los dueños ni el equipo técnico: la toma ella**, aunque no lo sepa. Es cómo se agrupan sus casos: si el nivel de arriba es *la oficina* o *la materia*. Elegirlo mal no rompe nada, pero le cobra un nivel de carpeta a todos sus expedientes durante años.
+
+Este ejercicio da acceso a algo que una entrevista no da: **verla trabajar**. Y en esto la observación vale más que la respuesta, porque la gente describe su trabajo como cree que debería ser y lo hace como realmente le sirve.
+
+### A. Observar durante las tres sesiones — sin preguntar nada
+
+Anótese en la hoja de registro, en «El flujo observado», cada vez que ocurra:
+
+| Qué observar | Qué significa |
+|---|---|
+| **Cómo llama a los asuntos espontáneamente**, sin que nadie le haya ofrecido vocabulario: ¿*«el caso de Pérez»*, *«lo de la oficina del norte»*, *«mis laborales»*? | Si agrupa por materia sin que se lo sugieran, es señal fuerte |
+| **Cómo están rotuladas sus carpetas hoy**, en el computador y en papel: ¿por sede, por materia, por cliente, por año? | Es la evidencia más honesta que existe: ya la construyó ella, sin nadie mirando |
+| **Cómo busca un expediente antiguo**: ¿navega carpeta por carpeta, o escribe el nombre en el buscador? | **Si busca por nombre, un nivel de materia compra mucho menos de lo que parece** |
+| **Si tiene una sede o varias**, y si trabaja con las mismas personas en todas las materias | Varias sedes con equipos distintos empuja hacia la oficina; una sola sede con varias materias, hacia la materia |
+
+### B. La pregunta, al cerrar la sesión 3 — para **confirmar** lo observado
+
+Se hace una sola vez, al final, cuando ya no hay nada que medir. Literal:
+
+> **«Cuando piensa en su trabajo, ¿piensa en "la oficina" o piensa en "los casos laborales"?»**
+
+Si duda o pide aclaración, la versión operativa —que se contesta sin teorizar:
+
+> **«Si le digo "tráigame el expediente de Pérez", ¿usted me diría de qué oficina es, o de qué materia es?»**
+
+| Lo que responde | Se registra como |
+|---|---|
+| *«la oficina»* — nombra sedes, equipos, unidades de trabajo | **Forma A** |
+| *«los laborales»* — nombra materias y las trata como conjuntos | **Forma B** |
+| Duda, o *«las dos cosas»* | **Forma A** — una duda no basta para cobrarle un nivel a todos sus casos |
+
+### C. Cómo NO preguntar
+
+**Nunca:** *«¿quiere una carpeta por área?»*. A esa pregunta casi todo el mundo dice que sí, porque una carpeta más **suena gratis** y no lo es. Se estaría midiendo la amabilidad de la respuesta, no su forma de trabajar.
+
+Tampoco se le explica para qué es la pregunta antes de hacerla. En cuanto sepa que de su respuesta sale una estructura de carpetas, responderá pensando en carpetas y no en su trabajo.
+
+### D. Si observación y respuesta se contradicen, **manda la observación**
+
+Es el caso más informativo de todos y hay que anotarlo tal cual, sin resolverlo en el momento: *«dijo la oficina, pero tiene sus carpetas por materia»*. Esa contradicción dice más que cualquiera de las dos respuestas por separado.
+
+---
+
 ## 7. Lo que NO hay que hacer
 
 | Prohibido | Por qué |
