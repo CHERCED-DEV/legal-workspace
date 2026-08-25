@@ -117,7 +117,7 @@ sequenceDiagram
 
 Secuencia normativa. Las revisiones son ilustrativas del **mecanismo** (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19): `event_seq` avanza en todo evento y `case_revision` solo en los canónicos), no valores fijos:
 
-| # | Acción de la usuaria (lenguaje natural) | Tool (clase) | Use case | Efecto en el estado canónico | Evento | Rev. |
+| # | Acción de la usuaria (lenguaje natural) | Tool (clase) | Use case | Efecto en el estado canónico | Evento | `case_revision` (AC-02) |
 |---|---|---|---|---|---|---|
 | 1 | "Abre un expediente para el asunto X" | `create_case` (COMMAND) | CreateCase | Case con `case_id` opaco emitido por el Core; idempotency key | `CaseCreated` | 1 |
 | 2 | "Trabajemos en el caso de X" | `open_case` (QUERY) | OpenCase | Ninguno. Resuelve identificador natural → `case_id` + overview + revision; ante ambigüedad devuelve candidatos, **jamás adivina** | — | 1 |
@@ -127,15 +127,15 @@ Secuencia normativa. Las revisiones son ilustrativas del **mecanismo** (**ENMIEN
 | 6 | "Incorpora también el contrato del Inbox" | `ingest_evidence` (COMMAND) | IngestEvidence | Segundo Source + Evidence; derivación de texto en `PENDING` | `EvidenceIncorporated` | 4 |
 | 7 | *(asíncrono)* | — | GenerateDerivedRepresentation | Texto normalizado `READY` | `DerivedRepresentationGenerated` | 5 |
 | 8 | "Construyamos los hechos con lo que hay" | `search_case`, `get_evidence_fragment` (QUERY) | SearchCase, GetEvidenceFragment | Ninguno. Fragmentos con id + provenance; contenido exacto + cadena completa de provenance hasta el original | — | 5 |
-| 9 | *(el skill `fact-builder` produce hechos candidatos)* | `propose_facts` (PROPOSAL) | ProposeFacts | **Proposal `PENDING` con `content_hash`**; hechos propuestos y links candidatos existen *dentro de la propuesta*, no como estado curado del Case. Rechazo sintáctico si un hecho llega sin referencia de provenance ni marca explícita "solo alegado" | `FactsProposed` | 6 |
-| 10 | *(la profesional revisa, fuera del canal del modelo)* | — | **ReviewProposal(approve)** | Proposal `APPROVED`; se crea **HumanAuthorization** (registro server-side) con `proposal_content_hash` y `expected_case_revision` = revisión resultante de este mismo acto | `ProposalReviewed(approved)` | 7 |
+| 9 | *(el skill `fact-builder` produce hechos candidatos)* | `propose_facts` (PROPOSAL) | ProposeFacts **+ RegisterArtifact (interno)** | **Proposal `PENDING` con `content_hash`**; hechos propuestos y links candidatos existen *dentro de la propuesta*, no como estado curado del Case; **y** el Artifact `FactAnalysis` queda registrado en la **misma transacción** (**ENMIENDA AC-03 aprobada**: `register_artifact` retirado de la superficie por ser consecuencia necesaria de `propose_facts`; su schema, en el paso 12). Rechazo sintáctico si un hecho llega sin referencia de provenance ni marca explícita "solo alegado" | `FactsProposed` **+** `ArtifactRegistered` (dos mutaciones, una transacción) | 6, 7 |
+| 10 | *(la profesional revisa, fuera del canal del modelo)* | — | **ReviewProposal(approve)** | Proposal `APPROVED`; se crea **HumanAuthorization** (registro server-side, una **por item aprobado** — AC-01) con `item_content_hash` y `expected_case_revision` = **la revisión VIGENTE del Case en el momento de este acto** (7), la que la profesional tiene a la vista al aprobar — **no** `base_case_revision` | `ProposalReviewed(approved)` | **NULL** — el Case sigue en **7** |
 | 11 | "Incorpóralos al expediente" | `commit_reviewed_facts` (SENSITIVE_COMMAND) | CommitReviewedFacts | Facts `PROPOSED → ALLEGED` (entrada nueva en `status_history`, nunca sobrescritura); EvidenceLinks `ACTIVE` con polaridad; autorización marcada `consumed_at` | `FactsCommitted` | 8 |
-| 12 | "Deja registrado el análisis" | `register_artifact` (COMMAND) | RegisterArtifact | Artifact `FactAnalysis` `REGISTERED` con `inputs[]` por `entity_id` + `content_hash` — **incluida la DerivedRepresentation exacta consumida** —, `methodology_version` (fact-builder v0), `model_id`, `case_revision` vigente (8), `knowledge_pack_versions[]` vacío | `ArtifactRegistered` | 9 |
-| 13 | *(cierre de sesión)* | — | — | **Ninguno.** Cerrar sesión no es operación del Core: no hay use case, ni tool, ni evento. El chat es canal, nunca registro (ADR-004) | — | 9 |
-| 14 | *(nueva sesión)* "Retomemos el caso de X" | `open_case` + `get_case_context(overview)` + `get_case_context(changes_since(7))` (QUERY) | OpenCase, GetCaseContext | Ninguno. La orientación se reconstruye **desde el estado canónico**, sin depender de memoria conversacional. El punto de referencia es **la última revisión que la usuaria conoció antes del commit** (7, la que dejó su acto de revisión), de modo que el delta entrega lo ocurrido desde entonces: `FactsCommitted` (8) y `ArtifactRegistered` (9) | — | 9 |
-| 15 | "Llegó este documento nuevo, incorpóralo" | `ingest_evidence` (COMMAND) | IngestEvidence | Tercer Source + Evidence | `EvidenceIncorporated` | 10 |
-| 16 | *(dentro del mismo mutador)* | — | Propagación de staleness | Artifact `FactAnalysis`: `stale = true`, `stale_reasons = [NEW_EVIDENCE]`. **No se regenera nada automáticamente** | `ArtifactMarkedStale` | 11 |
-| 17 | "¿Qué queda pendiente?" | `get_case_context(pending)` (QUERY) | GetCaseContext | Ninguno. Devuelve el artifact stale con `ANALYSIS_STALE {reasons:[NEW_EVIDENCE]}` y el delta como **contenido** de `changes_since`, no como condición | — | 11 |
+| 12 | *(sin orden de la usuaria: no hay invocación que dar)* | — (**interno**, AC-03) | RegisterArtifact (interno) | **Ninguno nuevo.** El Artifact `FactAnalysis` `REGISTERED` con `inputs[]` por `entity_id` + `content_hash` — **incluida la DerivedRepresentation exacta consumida** —, `methodology_version` (fact-builder v0), `model_id`, `case_revision` vigente al registrarlo (7), `knowledge_pack_versions[]` vacío ya quedó escrito en la transacción del paso 9 | — (`ArtifactRegistered` se emitió en el paso 9) | 8 |
+| 13 | *(cierre de sesión)* | — | — | **Ninguno.** Cerrar sesión no es operación del Core: no hay use case, ni tool, ni evento. El chat es canal, nunca registro (ADR-004) | — | 8 |
+| 14 | *(nueva sesión)* "Retomemos el caso de X" | `open_case` + `get_case_context(overview)` + `get_case_context(changes_since, { since_event_seq: 8 })` (QUERY) | OpenCase, GetCaseContext | Ninguno. La orientación se reconstruye **desde el estado canónico**, sin depender de memoria conversacional. El punto de referencia es **el último evento que la usuaria conoció antes del commit**: su propio acto de revisión, `event_seq` 8, que dejó el Case en la revisión 7. El ancla es `event_seq`, **no la revisión**, porque ese acto no tiene revisión que citar (`case_revision` NULL, AC-02). El delta entrega lo ocurrido desde entonces: `FactsCommitted` (`event_seq` 9, revisión 8) | — | 8 |
+| 15 | "Llegó este documento nuevo, incorpóralo" | `ingest_evidence` (COMMAND) | IngestEvidence | Tercer Source + Evidence | `EvidenceIncorporated` | 9 |
+| 16 | *(dentro del mismo mutador)* | — | Propagación de staleness | Artifact `FactAnalysis`: `stale = true`, `stale_reasons = [NEW_EVIDENCE]`. **No se regenera nada automáticamente** | `ArtifactMarkedStale` | 10 |
+| 17 | "¿Qué queda pendiente?" | `get_case_context(pending)` (QUERY) | GetCaseContext | Ninguno. Devuelve el artifact stale con `ANALYSIS_STALE {reasons:[NEW_EVIDENCE]}` y el delta como **contenido** de `changes_since`, no como condición | — | 10 |
 
 **Definición normativa de *mutación* que la tabla aplica (ADR-004, invariante 5; addendum v0.3 B.3, supersede §16.11).** No es una lectura que este documento proponga: es la definición fijada, y aquí se cita.
 
@@ -146,8 +146,8 @@ Caso concreto en esta tabla: los pasos 15–16 son **un solo COMMAND** que produ
 **Regla normativa de emisión de `ProposalReviewed` y valor de `expected_case_revision` (addendum v0.3 B.2, supersede §16.10; ADR-005 inv. 9 y 10).** Regla fijada, no divergencia entre documentos:
 
 1. `ReviewProposal(approve)` emite **`ProposalReviewed(approved)`**, avanza **`event_seq`** y deja **`case_revision` NULL — NO avanza la revisión del Case** (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19)). En ese mismo acto se crea la **HumanAuthorization** (una por item aprobado, AC-01).
-2. `commit_reviewed_facts` emite **`FactsCommitted`** y avanza la CaseRevision de nuevo. Son **dos eventos en dos revisiones distintas**; nunca los dos en el mismo acto.
-3. El **`expected_case_revision` de la HumanAuthorization es la revisión contra la que se generó y se revisó la Proposal** (= `base_case_revision`) — **ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19), con lo que desaparece la circularidad. Formulación superada: «la revisión resultante del acto de revisión», no la revisión contra la que se creó la Proposal. Semántica: *la revisión del expediente que la profesional tenía a la vista al aprobar*.
+2. `commit_reviewed_facts` emite **`FactsCommitted`** y es **el único de los dos que avanza `case_revision`**. Son **dos eventos, pero una sola revisión de conocimiento**; nunca los dos en el mismo acto. Formulación superada: «dos eventos en dos revisiones distintas».
+3. El **`expected_case_revision` de la HumanAuthorization es la revisión VIGENTE del Case en el momento del acto de revisión** — la que la profesional tiene a la vista al aprobar — **ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19), con lo que desaparece la circularidad. **No es `base_case_revision`**: entre la generación de la Proposal y su revisión, los eventos `FactsProposed` y `ArtifactRegistered` ya avanzaron el contador. Formulación superada: «la revisión resultante del acto de revisión».
 
 Los pasos 10 y 11 de la tabla aplican esta regla tal cual: `ProposalReviewed(approved)` **no mueve el contador — el Case sigue en 7** — y la autorización porta `expected_case_revision = 7`; `FactsCommitted` lo deja en 8.
 
@@ -165,7 +165,7 @@ Caminos no-felices que el slice debe recorrer **como parte del flujo**, no como 
 | No hay hechos con soporte | Es **dato de proyección** (`facts` / `pending`): Facts en estado derivado `UNSUPPORTED`. No es condición (kernel §16.5) | — |
 | `propose_facts` con un hecho sin referencia de provenance ni marca "solo alegado" | Rechazo sintáctico; no se crea Proposal | Error semántico estable |
 | Commit sin HumanAuthorization viva | Rechazo; cero mutaciones | `HUMAN_REVIEW_REQUIRED {proposal_id}` |
-| Autorización expirada, ya consumida, o `proposal_content_hash` que no coincide (propuesta editada tras la revisión) | Rechazo; se exige nueva revisión | `HUMAN_REVIEW_REQUIRED {proposal_id}` |
+| Autorización expirada, ya consumida, o `item_content_hash` que no coincide (el ProposalItem fue editado tras la revisión) | Rechazo; se exige nueva revisión | `HUMAN_REVIEW_REQUIRED {proposal_id}` |
 | Entra evidencia mientras se preparaba el análisis; el commit llega con `expected_revision` obsoleta | Rechazo del commit + Proposal preservada en `PRESERVED_FOR_RECONCILIATION`; **el trabajo nunca se descarta** | `REVISION_CHANGED {expected, current, preserved_proposal_id}` |
 | La profesional rechaza la propuesta | Proposal `REJECTED`; ningún Fact cambia de estado | `ProposalReviewed(rejected)` |
 | Reintento de incorporación del mismo material | Idempotente por hash de contenido: un solo Source, cero duplicados | Respuesta idéntica; sin evento nuevo |
@@ -327,7 +327,10 @@ Proposal
 
 HumanAuthorization                       ── contrato exacto del kernel §5
   authorization_id, case_id, proposal_id
-  proposal_content_hash        ← AÑADIDO al esquema de los dueños
+  proposal_item_id
+  item_content_hash            ← autorización POR ProposalItem (ENMIENDA AC-01);
+                                 sustituye al proposal_content_hash que se había
+                                 AÑADIDO al esquema de los dueños
   authorized_items[]           ← null = toda la propuesta (parcial: pendiente de dueños)
   operation                    ← enum v0: COMMIT_FACTS
   principal_id, principal_type = HUMAN, principal_role
@@ -404,7 +407,7 @@ Contrato de ADR-005, aplicado al slice.
 
 **1. Two-phase obligatorio.** `propose_facts` registra la Proposal y no muta el Case más allá de ese registro. La revisión ocurre en un canal que el modelo no controla. Solo entonces `commit_reviewed_facts` puede commitear.
 
-**2. La autorización es un REGISTRO SERVER-SIDE del Core, no un token portador.** `commit_reviewed_facts(proposal_id)` **no recibe ninguna credencial del modelo**. En el commit, el Core verifica contra su propio registro que exista una HumanAuthorization **viva** (no expirada), **no consumida**, con `proposal_content_hash` coincidente con el hash actual de la Proposal y `expected_case_revision` coincidente con la revisión vigente. Si todo coincide, ejecuta y marca `consumed_at`.
+**2. La autorización es un REGISTRO SERVER-SIDE del Core, no un token portador.** `commit_reviewed_facts(proposal_id)` **no recibe ninguna credencial del modelo**. En el commit, el Core verifica contra su propio registro que exista una HumanAuthorization **viva** (no expirada), **no consumida**, con `item_content_hash` coincidente con el hash actual del ProposalItem que autoriza y `expected_case_revision` coincidente con la revisión vigente. Si todo coincide, ejecuta y marca `consumed_at`.
 
 > **Refinamiento clave a señalar (kernel §5, §16.6; ADR-005 Alternativas).** El diseño previo (v0.1.1) emitía un **token de un solo uso** que el modelo presentaba en el commit. Queda **superseded** por el registro server-side. El modelo no transporta ningún secreto: **no hay nada que fabricar ni nada que filtrar**. Esto **REFUERZA** la intención aprobada — "un `humanReviewed: true` enviado por Claude es inválido" — y no la altera: lleva la invalidez del testimonio del modelo hasta su consecuencia final.
 
@@ -416,7 +419,7 @@ Contrato de ADR-005, aplicado al slice.
 
 > 1. **Consentimiento humano explícito por acto** — un acto de revisión, un consentimiento; nada implícito, nada por defecto, nada acumulado.
 > 2. **Superficie de decisión no inspeccionable ni accionable por el cliente ni por el LLM** — ni leerla, ni rellenarla, ni dispararla.
-> 3. **Vinculación verificable al `proposal_content_hash` y al `expected_case_revision`** — el acto queda atado a exactamente lo que la profesional tuvo a la vista y a la revisión en que lo tuvo.
+> 3. **Vinculación verificable al `item_content_hash` y al `expected_case_revision`** — el acto queda atado a exactamente lo que la profesional tuvo a la vista y a la revisión en que lo tuvo.
 
 El **modo URL de elicitation MCP** (HECHO VERIFICADO, kernel §1; fuente: spec MCP 2025-11-25) satisface (1) y (2) y sirve de **referencia**, no de definición: si el host no lo soporta, el criterio sigue en pie y lo cumple otro transporte. Un candidato se evalúa contra los tres puntos, no contra la spec.
 
@@ -425,7 +428,7 @@ El **modo URL de elicitation MCP** (HECHO VERIFICADO, kernel §1; fuente: spec M
 | El stub GARANTIZA | El stub NO GARANTIZA |
 |---|---|
 | Que el registro de autorización se crea **fuera de la superficie MCP** y el modelo no lo produce ni lo transporta | Que quien accionó el canal fue efectivamente la profesional — v0 asume una máquina de una sola usuaria (**SUPUESTO** declarado, no verificado por autenticación) |
-| Vinculación exacta a `proposal_content_hash` y a `expected_case_revision` | No repudio: sin firma criptográfica en v0 (kernel §5), la fuerza probatoria es la del hash-chain y la del perímetro del private state |
+| Vinculación exacta a `item_content_hash` y a `expected_case_revision` | No repudio: sin firma criptográfica en v0 (kernel §5), la fuerza probatoria es la del hash-chain y la del perímetro del private state |
 | Un solo uso, materializado por `consumed_at` | Inaccesibilidad del canal para el modelo si el host le concede herramientas genéricas capaces de invocarlo — **RIESGO** dependiente del perímetro (ADR-002; POR VERIFICAR en Cowork) |
 | Auditoría del acto con actor humano identificado en el Case Event Log | Los tres puntos del **criterio de salida del spike** en su totalidad: el stub cubre (3) y parcialmente (1), pero no puede garantizar (2) —superficie no inspeccionable ni accionable por cliente ni por LLM— mientras dependa del perímetro del host |
 
@@ -611,7 +614,7 @@ Los tests negativos son **criterios de aceptación de primera clase** (kernel §
 | F4 | `ingest_evidence` del documento | Segundo Source + Evidence; derivación de texto |
 | F5 | `search_case` + `get_evidence_fragment` | Fragmentos con id y provenance; el contenido exacto resuelve hasta el original; los timestamps refieren a la línea de tiempo del **original**, no del derivado |
 | F6 | `propose_facts` | Proposal `PENDING` con `content_hash`; **ningún Fact del Case cambia de estado**; hecho sin provenance ni marca "solo alegado" ⇒ rechazo sintáctico |
-| F7 | `ReviewProposal(approve)` | HumanAuthorization creada con `proposal_content_hash` y `expected_case_revision`; `ProposalReviewed(approved)` |
+| F7 | `ReviewProposal(approve)` | HumanAuthorization creada con `item_content_hash` y `expected_case_revision`; `ProposalReviewed(approved)` |
 | F7b | `ReviewProposal(reject)` | Proposal `REJECTED`; ningún Fact cambia; `ProposalReviewed(rejected)` |
 | F8 | `commit_reviewed_facts` | Facts `PROPOSED → ALLEGED` como entrada nueva de `status_history`; EvidenceLinks `ACTIVE`; `consumed_at` marcado; `FactsCommitted` |
 | F9 | `register_artifact` | `FactAnalysis` con `inputs[]` por id + hash incluida la DerivedRepresentation exacta, `methodology_version`, `model_id`, `case_revision`, `knowledge_pack_versions[]` vacío; input inexistente o con hash no registrado ⇒ rechazo |
@@ -666,7 +669,7 @@ Exigida por ADR-003 §Validación 6 y por el addendum v0.3 B.17. **Lo que no se 
 | ADR-005 inv. 1 — `provenance_kind = HUMAN_DECISION` con `principal_type = HUMAN` obligatorio en el registro | F7 | — | **Sí** |
 | ADR-005 inv. 2 y 8 — ningún parámetro del modelo prueba revisión; ningún secreto de autorización en su contexto | Adversarial 2 | `HUMAN_REVIEW_REQUIRED {proposal_id}` | **Sí** |
 | ADR-005 inv. 3 y 5 — un solo uso (`consumed_at`); propuesta editada invalida su autorización | F7, F8; *Negative paths* (autorización expirada / consumida / hash distinto) | `HUMAN_REVIEW_REQUIRED {proposal_id}` | **Sí** |
-| ADR-005 inv. 9 y 10 (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19)) — dos eventos, **una sola revisión**; `expected_case_revision` = revisión contra la que se generó y revisó la Proposal | F7, F8; pasos 10–11 del happy path | — | **Sí** |
+| ADR-005 inv. 9 y 10 (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19)) — dos eventos, **una sola revisión**; `expected_case_revision` = revisión vigente del Case al revisar (no `base_case_revision`) | F7, F8; pasos 10–11 del happy path | — | **Sí** |
 | ADR-006 inv. 1 — EvidenceLink solo contra Evidence incorporada | Adversarial 3 | Error semántico estable (**DECISIÓN PENDIENTE**: sin condición propia en el catálogo v0) | **Sí** |
 | ADR-006 inv. 3 — `inputs[]` de artifact validados contra el Case Store | F9 | Error semántico estable | **Sí** |
 | ADR-006 inv. 4 — la incorporación es el único productor de Sources | F16, F18 | — | **Sí** |
@@ -682,10 +685,10 @@ Exigida por ADR-003 §Validación 6 y por el addendum v0.3 B.17. **Lo que no se 
 Solo lo que impide **diseñar y escribir código**; todo lo demás abierto está registrado en su ADR y no bloquea (kernel §17).
 
 1. **DECISIÓN PENDIENTE — Lenguaje y runtime del Core.** No decidida por los dueños. No afecta a ninguna decisión de arquitectura de esta consolidación (todos los contratos son independientes de plataforma), pero **bloquea la primera línea de código**: el modelo de concurrencia, la forma de los esquemas y el empaquetado del runtime dependen de ella.
-2. **DECISIÓN PENDIENTE (spike) — Transporte de la autorización humana.** Candidatos: MCP elicitation **modo URL** (HECHO VERIFICADO, kernel §1; fuente: spec MCP — elicitation, modo URL introducido en la revisión 2025-11-25; **POR VERIFICAR** el soporte en el host concreto), UI local mínima, CLI del runtime. **Criterio de salida del spike, enunciado como propiedad del sistema** (addendum v0.3 B.15): (1) **consentimiento humano explícito por acto**; (2) **superficie de decisión no inspeccionable ni accionable por el cliente ni por el LLM**; (3) **vinculación verificable al `proposal_content_hash` y al `expected_case_revision`**. El modo URL de elicitation satisface (1) y (2) y sirve de **referencia, no de definición**: el criterio no se remite a los MUSTs de una versión de la spec MCP, y un candidato se evalúa contra los tres puntos. Sin resolverlo, el slice corre con stub declarado, pero no cierra.
+2. **DECISIÓN PENDIENTE (spike) — Transporte de la autorización humana.** Candidatos: MCP elicitation **modo URL** (HECHO VERIFICADO, kernel §1; fuente: spec MCP — elicitation, modo URL introducido en la revisión 2025-11-25; **POR VERIFICAR** el soporte en el host concreto), UI local mínima, CLI del runtime. **Criterio de salida del spike, enunciado como propiedad del sistema** (addendum v0.3 B.15): (1) **consentimiento humano explícito por acto**; (2) **superficie de decisión no inspeccionable ni accionable por el cliente ni por el LLM**; (3) **vinculación verificable al `item_content_hash` y al `expected_case_revision`**. El modo URL de elicitation satisface (1) y (2) y sirve de **referencia, no de definición**: el criterio no se remite a los MUSTs de una versión de la spec MCP, y un candidato se evalúa contra los tres puntos. Sin resolverlo, el slice corre con stub declarado, pero no cierra.
 3. **POR VERIFICAR — Proveedor de transcripción y sus capacidades de timestamps.** Bloquea el diseño del adapter y, sobre todo, el anclaje de fragmentos: el contrato exige rangos temporales **sobre la línea de tiempo del original**. Si el proveedor no los entrega con esa semántica, cambia el diseño del locator, no el invariante.
 4. **POR VERIFICAR — Configuración de acceso del host al private state.** Necesaria para el **test negativo 4** (modificar un Source): sin conocer qué herramientas genéricas concede el host y con qué granularidad, ese test no puede ejecutarse de forma concluyente. HECHO VERIFICADO (kernel §1; fuente: code.claude.com/docs — permissions, hooks, sandboxing): Claude Code ofrece deny/ask/allow por herramienta y por ruta y hooks `PreToolUse` bloqueantes, y su sandbox de Bash no es nativo en Windows. POR VERIFICAR: granularidad de permisos y garantías de sandbox/filesystem de Cowork Desktop. Es prueba de plataforma, no del Domain.
-5. **RESUELTA — Aprobación parcial (ENMIENDA AC-01 aprobada, supersede §16.17).** Los dueños la aprobaron: la autorización es **por ProposalItem** con `item_content_hash`, agrupadas por `review_session_id`; `authorized_items[]` queda eliminado. Registro histórico: «el contrato la deja preparada sin activarla; si los dueños la confirman, cambian el use case `ReviewProposal`, el commit parcial de la Proposal (estado `APPROVED (parcial)`), el evento `ProposalReviewed(partial)` y varias filas de la matriz de pruebas. Implementar sin la respuesta obliga a rehacer esa zona.
+5. **RESUELTA — Aprobación parcial (ENMIENDA AC-01 aprobada, supersede §16.17).** Los dueños la aprobaron: la autorización es **por ProposalItem** con `item_content_hash`, agrupadas por `review_session_id`; `authorized_items[]` queda eliminado. Registro histórico: «el contrato la deja preparada sin activarla; si los dueños la confirman, cambian el use case `ReviewProposal`, el commit parcial de la Proposal (estado `APPROVED (parcial)`), el evento `ProposalReviewed(partial)` y varias filas de la matriz de pruebas. Implementar sin la respuesta obliga a rehacer esa zona.»
 
 ---
 

@@ -65,7 +65,7 @@ flowchart TB
 |---|---|---|
 | `FactsProposed` | `event_seq +1`, `case_revision = N` | dejaba el Case en `N` |
 | `ProposalReviewed` | `event_seq +1`, `case_revision` **NULL** — no muta el estado epistémico canónico, luego no avanza el reloj | **avanzaba** a `N+1` |
-| `expected_case_revision` de la autorización | **`N`** — la revisión contra la que se generó y se revisó la Proposal | `N+1` (la resultante del propio acto de revisión: definición circular, motivo de la enmienda) |
+| `expected_case_revision` de la autorización | **`N`** — la revisión **vigente** del Case al revisar (la que dejó `FactsProposed`; **no** `base_case_revision`) | `N+1` (la resultante del propio acto de revisión: definición circular, motivo de la enmienda) |
 | `FactsCommitted` | `event_seq +1`, `case_revision = N+1` | dejaba el Case en `N+2` |
 
 **Regla de aplicación:** manda el **Modelo B**. La biyección mutación↔evento se expresa sobre `event_seq`, con `case_revision` como **subsecuencia** de los eventos canónicos; el hash-chain usa `event_seq` (kernel §8.1). Todo lo demás de este documento era **idéntico bajo ambos modelos**: la condición de validez sigue siendo `authorization.expected_case_revision == case.current_revision`; lo único que cambió es el número congelado. Ningún escenario de §9 cambia de resultado por la enmienda — verificado explícitamente en AT-008.
@@ -278,10 +278,12 @@ interface HumanAuthorization {
   proposal_id:            UUID;
   proposal_item_id:       UUID;          // UNA autorización POR ITEM (§3.3)
   item_content_hash:      Sha256Hex;     // vincula al contenido exacto revisado
-  expected_case_revision: number;        // la revisión contra la que se GENERÓ y se REVISÓ la Proposal
-                                         //   — la que la profesional tenía a la vista (AC-02, §1.2).
-                                         //   NO es "la que dejó ProposalReviewed": ese evento ya no
-                                         //   avanza case_revision, con lo que desaparece la circularidad.
+  expected_case_revision: number;        // la revisión VIGENTE del Case en el momento del acto de
+                                         //   revisión — la que la profesional tenía a la vista
+                                         //   (AC-02, §1.2). NO es base_case_revision: FactsProposed y
+                                         //   ArtifactRegistered ya avanzaron el contador. Tampoco es
+                                         //   "la que dejó ProposalReviewed": ese evento ya no avanza
+                                         //   case_revision, con lo que desaparece la circularidad.
   authorized_operation:   AuthorizedOperation;
   principal_id:           UUID;          // principal_type = HUMAN (invariante estructural, §3.2)
   authorization_source:   AuthorizationSource;

@@ -622,7 +622,7 @@ Repetición exacta dentro de una ventana corta (PROPUESTA: 10 minutos) ⇒ misma
 
 **side effects.** Ninguna fuera del Case; **no** dispara la revisión humana: el modelo no puede convocar a la profesional por esta superficie.
 
-**revision behavior.** `expected_revision` opcional; si viaja y no coincide ⇒ `REVISION_MISMATCH` sin mutación. Avanza `case_revision` en 2 (los dos eventos mutan el estado epistémico canónico). **La revisión resultante *es* la que la autorización congelará** en `expected_case_revision`: bajo el Modelo B —**vigente por la enmienda AC-02 aprobada** (kernel §5.2)— `ProposalReviewed` avanza `event_seq` y lleva `case_revision` **nula**, de modo que el acto de revisión no mueve el reloj epistémico y la propuesta se genera, se revisa y se commitea contra **la misma** revisión (§12).
+**revision behavior.** `expected_revision` opcional; si viaja y no coincide ⇒ `REVISION_MISMATCH` sin mutación. Avanza `case_revision` en 2 (los dos eventos mutan el estado epistémico canónico). **La revisión resultante de esta llamada *es* la que la autorización congelará** en `expected_case_revision` —la revisión **vigente** del Case en el momento del acto de revisión, **no** `base_case_revision`, que estos dos eventos dejan atrás—: bajo el Modelo B —**vigente por la enmienda AC-02 aprobada** (kernel §5.2)— `ProposalReviewed` avanza `event_seq` y lleva `case_revision` **nula**, de modo que el acto de revisión no mueve el reloj epistémico y la propuesta se revisa y se commitea contra **la misma** revisión (§12).
 
 ---
 
@@ -908,7 +908,7 @@ Enviado y no coincidente ⇒ `REVISION_MISMATCH` sin mutación, siempre.
 | | **Modelo B — VIGENTE** (kernel §5.2; **enmienda AC-02 aprobada**) | Modelo A — anterior, **superado** por AC-02 (ADR-005 §1, ADR-004 (b)1 antes de la enmienda) |
 |---|---|---|
 | `ProposalReviewed` | avanza **solo `event_seq`**; `case_revision` **NULL** | avanzaba `case_revision` |
-| `expected_case_revision` de la autorización | revisión contra la que **se generó y se revisó** la Proposal (N) | revisión **resultante** del acto de revisión (N+1) — definición circular |
+| `expected_case_revision` de la autorización | revisión **vigente del Case al revisar** (N) — no `base_case_revision` | revisión **resultante** del acto de revisión (N+1) — definición circular |
 | Lo que el modelo envía en `commit_reviewed_facts` | **la `case_revision` vigente que observó** | **idéntico** |
 
 > **El contrato de la tool fue invariante frente a la enmienda.** El modelo siempre envía la revisión vigente que el Core le devolvió; lo que cambió es el valor que la autorización congela internamente. Por eso la aprobación de **AC-02** **no altera ninguna firma de esta superficie**: lo que cambia es la aritmética del ciclo, no el schema. La columna del Modelo A se conserva por trazabilidad — es el registro de qué se superó —, **no rige**.

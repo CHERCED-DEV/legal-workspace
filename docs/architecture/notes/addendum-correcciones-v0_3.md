@@ -37,7 +37,9 @@ Tres hallazgos de veracidad (H3, H4, H5) sostenían que ciertas reglas se había
 
 **Problema real (estructura H2, consistencia C2 y C3):** ADR-005 emitía `ProposalReviewed` en el commit; slice y glosario lo emiten en el acto de revisión. No es cosmético: cambia la aritmética de revisiones.
 
-**Corrección normativa — se fija la versión del slice y el glosario:**
+**ESTADO v0.4 — ENMIENDA AC-02 aprobada: supersede los puntos 1, 3 y 4 de este apartado** (kernel §5.2; ADR-004 supersede §16.16, ADR-005 supersede §16.19). **Vigente:** `ProposalReviewed` avanza `event_seq` y lleva `case_revision` **NULL** —**no** avanza la revisión del Case—; `expected_case_revision` es **la revisión vigente del Case en el momento del acto de revisión**, la que la profesional tiene a la vista al aprobar, y **no** `base_case_revision`: `FactsProposed` y `ArtifactRegistered` ya avanzaron el contador. Ejemplo recalculado: si `propose_facts` deja el Case en **14**, `ProposalReviewed` lo deja **en 14** (`case_revision` NULL) y `FactsCommitted` en **15**. El punto 2 conserva lo único que AC-02 no toca: el **momento de emisión** en el acto de revisión. Lo que sigue es el texto histórico de v0.3, conservado por trazabilidad.
+
+**Corrección normativa de v0.3 — texto superado en su aritmética por AC-02:**
 
 1. `ReviewProposal(approve)` emite **`ProposalReviewed(approved)`** y avanza la CaseRevision. En ese mismo acto se crea la `HumanAuthorization`.
 2. `commit_reviewed_facts` emite **`FactsCommitted`** y avanza la CaseRevision de nuevo. Son dos eventos en dos revisiones distintas.

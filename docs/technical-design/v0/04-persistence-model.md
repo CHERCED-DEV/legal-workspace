@@ -367,9 +367,11 @@ TABLE human_authorizations
   proposal_item_id  id    NOT NULL FK -> proposal_items(proposal_item_id)   -- UNA por item (kernel §3.2)
   review_id         id    NOT NULL FK -> proposal_item_reviews(review_id)
   item_content_hash sha256 NOT NULL
-  expected_case_revision int NOT NULL           -- la revisión contra la que se GENERÓ y se REVISÓ la
-                                                -- Proposal, no la que deja ProposalReviewed —que no
-                                                -- avanza la revisión— (AC-02; §10 C3)
+  expected_case_revision int NOT NULL           -- la revisión VIGENTE del Case en el momento del acto
+                                                -- de revisión; NO base_case_revision (FactsProposed y
+                                                -- ArtifactRegistered ya la avanzaron) y NO la que deja
+                                                -- ProposalReviewed —que no avanza la revisión—
+                                                -- (AC-02; §10 C3)
   authorized_operation enum{COMMIT_FACT} NOT NULL   -- singular: UNA operación por autorización (AC-01);
                                                     -- SIN authorized_items[] ni proposal_content_hash
   authorization_source enum{REAL,DEV_STUB} NOT NULL                          -- kernel §4
@@ -796,7 +798,7 @@ Dos escenarios, dos respuestas:
 
 ### C3 — RESUELTO — enmienda AC-02 aprobada: `event_seq` vs `case_revision`
 
-> **DESENLACE (dueños, enmienda AC-02).** El amendment fue **aprobado**: el **Modelo B es el vigente**. `event_seq` es monotónico por Case y avanza en **todo** evento; `case_revision` avanza **solo** en eventos que mutan el estado epistémico canónico y es **NULL** en los que no; `ProposalReviewed` avanza `event_seq` y escribe `case_revision` nula; `expected_case_revision` es la revisión contra la que se generó y se revisó la Proposal; la biyección se expresa sobre `event_seq`, con `case_revision` como subsecuencia; el hash-chain encadena por `event_seq`. **ADR-004 y ADR-005 quedan enmendados** (supersedes §16.16 y §16.19). El análisis se conserva abajo.
+> **DESENLACE (dueños, enmienda AC-02).** El amendment fue **aprobado**: el **Modelo B es el vigente**. `event_seq` es monotónico por Case y avanza en **todo** evento; `case_revision` avanza **solo** en eventos que mutan el estado epistémico canónico y es **NULL** en los que no; `ProposalReviewed` avanza `event_seq` y escribe `case_revision` nula; `expected_case_revision` es la revisión vigente del Case en el momento del acto de revisión (no `base_case_revision`); la biyección se expresa sobre `event_seq`, con `case_revision` como subsecuencia; el hash-chain encadena por `event_seq`. **ADR-004 y ADR-005 quedan enmendados** (supersedes §16.16 y §16.19). El análisis se conserva abajo.
 
 - **ADR afectado:** ADR-004 (c) e inv. 5 (Accepted): *cada* evento incrementa `CaseRevision` y `seq == revision`; ADR-005 inv. 9–10 y el vertical slice (paso 10) hacían que `ProposalReviewed` avanzara la revisión. **Ambos enmendados por AC-02.**
 - **Hecho nuevo (en su momento):** kernel §5.2 propuso separar `event_seq` (todo evento) de `case_revision` (solo mutación epistémica canónica), declarándolo no aplicable hasta la aprobación de los dueños. **Esa aprobación llegó.**

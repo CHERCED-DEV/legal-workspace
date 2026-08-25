@@ -345,10 +345,12 @@ interface ProposalReviewedP {
   authorizations_issued: Array<{     // una por item APPROVED (kernel §3.2; enmienda AC-01:
                                      // sin `authorized_items[]`, sin `proposal_content_hash`)
     authorization_id: Uuid; proposal_item_id: Uuid;
-    expected_case_revision: number;  // ENMIENDA AC-02 (aprobada): la revisión contra la que se
-                                     // GENERÓ y se REVISÓ la Proposal — la misma
-                                     // `FactsProposed.base_case_revision`, NO la resultante de
-                                     // este evento (que no avanza `case_revision`). §7
+    expected_case_revision: number;  // ENMIENDA AC-02 (aprobada): la revisión VIGENTE del Case
+                                     // en el momento del acto de revisión — NO
+                                     // `FactsProposed.base_case_revision` (`FactsProposed` y
+                                     // `ArtifactRegistered` ya avanzaron el contador) y NO la
+                                     // resultante de este evento (que no avanza
+                                     // `case_revision`). §7
     authorized_operation: 'COMMIT_FACT';
     authorization_source: 'REAL'|'DEV_STUB';   // marca INDELEBLE (kernel §4)
     expires_at: Iso8601Utc;
@@ -761,7 +763,7 @@ FactsCommitted       → rev N+2
 [MODELO VIGENTE — AC-02]
 FactsProposed        → event_seq S,   rev N
 ProposalReviewed     → event_seq S+1, rev NULL     ← avanza el registro, NO el reloj
-   HumanAuthorization.expected_case_revision = N   (la revisión contra la que se generó y se revisó)
+   HumanAuthorization.expected_case_revision = N   (la revisión VIGENTE al revisar, no base_case_revision)
 FactsCommitted       → event_seq S+2, rev N+1
 ```
 
@@ -771,7 +773,7 @@ FactsCommitted       → event_seq S+2, rev N+1
 
 1. **Semántica del reloj.** `case_revision` es el reloj del *estado epistémico canónico*: qué sabe el expediente. Una decisión de revisión aún no commiteada **no añade hechos, ni evidencia, ni links**: el expediente sabe exactamente lo mismo antes y después. Avanzar el reloj sin cambio de conocimiento **vacía de significado al reloj** — y con él, a `expected_revision`, que es el mecanismo entero de concurrencia optimista.
 2. **Conflictos espurios.** Con A, revisar la propuesta P-1 invalida cualquier análisis en vuelo generado contra la revisión anterior, **aunque no tenga ninguna relación con P-1**. Es exactamente el falso conflicto que ADR-004 declara como riesgo de granularidad y que ADR-008 hereda como riesgo propio.
-3. **Circularidad ya detectada y ya corregida una vez.** Con A, `expected_case_revision` era *la revisión resultante del propio acto de revisión*: la autorización se vinculaba a un número que ella misma causó. Esa definición circular ya obligó a la corrección del addendum B.2. Con B desaparece: la propuesta se genera contra N, se revisa contra N, y el commit exige que el caso siga en N. Limpio, y **verificable con una sola comparación**.
+3. **Circularidad ya detectada y ya corregida una vez.** Con A, `expected_case_revision` era *la revisión resultante del propio acto de revisión*: la autorización se vinculaba a un número que ella misma causó. Esa definición circular ya obligó a la corrección del addendum B.2. Con B desaparece: `expected_case_revision` es la revisión **vigente** del Case al revisar —N—, y el commit exige que el caso siga en N. Limpio, y **verificable con una sola comparación**. **Precisión:** esa N **no** es `base_case_revision`; mientras `FactsProposed` y `ArtifactRegistered` sigan avanzando el contador (tensión abierta, §7.9), la revisión contra la que se *generó* la Proposal es `N − 2`. Lo que AC-02 cierra es la circularidad del acto de revisión, no esa distancia.
 4. **Efecto compuesto con la aprobación por item.** Con autorización por item (kernel §3.2, decisión aprobada), una sesión de revisión emite *k* autorizaciones. Bajo A todas congelan N+1, la revisión que el propio acto creó; bajo B todas congelan N, la revisión del material que la profesional efectivamente leyó. La segunda es la que corresponde a la frase "la revisión que tenía a la vista".
 
 ### 7.4 La decisión aprobada: separar los dos contadores
@@ -822,7 +824,7 @@ El addendum v0.3 §B.2 es una corrección normativa de cuatro puntos. **Con AC-0
 |---|---|---|
 | **1** | `ReviewProposal(approve)` emite `ProposalReviewed(approved)` **y avanza la CaseRevision**; en ese mismo acto se crea la `HumanAuthorization` | **ENMENDADO en su segunda mitad.** Se conserva íntegro el momento de emisión —el evento se emite en el acto de revisión, que era el problema real que B.2 resolvía— y **decae** "y avanza la CaseRevision": el evento lleva `case_revision` **nula** |
 | **2** | `commit_reviewed_facts` emite `FactsCommitted` y avanza la revisión de nuevo; son **dos eventos en dos revisiones distintas** | **PARCIALMENTE ENMENDADO.** Siguen siendo dos eventos; son **una sola revisión de conocimiento**, con dos `event_seq` distintos |
-| **3** | `expected_case_revision` = la revisión **resultante** del acto de revisión | **SIMPLIFICADO.** Es la revisión **contra la que se generó y se revisó** la propuesta. **La semántica aprobada —"la revisión que la profesional tenía a la vista al aprobar"— se conserva LITERALMENTE**; lo que decae es la definición circular (ADR-005 supersede §16.19) |
+| **3** | `expected_case_revision` = la revisión **resultante** del acto de revisión | **SIMPLIFICADO.** Es la revisión **vigente del Case en el momento del acto de revisión** (no `base_case_revision`). **La semántica aprobada —"la revisión que la profesional tenía a la vista al aprobar"— se conserva LITERALMENTE**; lo que decae es la definición circular (ADR-005 supersede §16.19) |
 | **4** | Recalcular los ejemplos numéricos del glosario §10 y §12 (si `FactsProposed` deja el Case en 14, `ProposalReviewed` lo deja en 15 y la autorización porta 15) | **RECALCULADOS OTRA VEZ**: `FactsProposed` deja 14, `ProposalReviewed` **no mueve el contador** (lleva `case_revision` nula y el Case sigue en 14), la autorización porta **14** |
 
 **Lo que B.2 resolvió y la enmienda NO toca:** el desacuerdo sobre **cuándo** se emite `ProposalReviewed` (ADR-005 lo emitía en el commit; slice y glosario, en el acto de revisión). B.2 fijó el acto de revisión y **eso sigue en pie**. AC-02 enmienda la aritmética, no el momento.
@@ -835,7 +837,7 @@ La enmienda está aprobada, de modo que la primera columna **no es una hipótesi
 |---|---|---|
 | ADR-004 (c) e inv. 5 | **ENMENDADO** (supersede §16.16): `seq == revision` deja de ser identidad; biyección sobre `event_seq`, `case_revision` como subsecuencia | Sin cambios |
 | ADR-004 (b)1, "momento de emisión" | **ENMENDADO**: decae "y avanza la CaseRevision"; el momento se conserva | Sin cambios |
-| ADR-005 §1, §4, inv. 9 y 10 | **ENMENDADO** (supersede §16.19): `expected_case_revision` = la revisión contra la que se generó y se revisó la Proposal | Sin cambios |
+| ADR-005 §1, §4, inv. 9 y 10 | **ENMENDADO** (supersede §16.19): `expected_case_revision` = la revisión vigente del Case en el momento del acto de revisión (no `base_case_revision`) | Sin cambios |
 | Addendum v0.3 B.2 | Puntos 1, 2 y 4 enmendados; punto 3 simplificado (§7.6) | Sin cambios |
 | `vertical-slice-v0.md` pasos 10–11, test F7 | **Renumerar la aritmética** — pendiente de aplicar en ese documento | Sin cambios |
 | Kernel §7 (tabla de use cases) | **Correcto y ya actualizado**: `ReviewProposal → no avanza case_revision` (AC-02) | Habría debido corregirse |
@@ -884,7 +886,7 @@ Proponer una segunda propuesta invalida la autorización ya obtenida para la pri
 | `01-system-design.md` §4.2–§4.3, §9.2 | **Modelo A**, por precedencia, con columna explícita del Modelo B | **Debe quedar con los valores del Modelo B.** POR VERIFICAR: si ya se normalizó |
 | `03-application-use-cases.md` §0.5, §0.7, §10.6, §10.9, §10.10, §13.1 | **Modelo A**, por precedencia, con columna explícita del Modelo B | **Debe quedar con los valores del Modelo B.** POR VERIFICAR: si ya se normalizó |
 | `04-persistence-model.md` §10 C3 | **Ninguno**: esquema neutral | Sin cambio de esquema: ya admite `case_revision` nula |
-| `06-human-authorization.md` §1.2 | Ambos, "dos modelos vivos" | **Un solo modelo vivo**: el B. `expected_case_revision` = la revisión contra la que se generó y se revisó la Proposal |
+| `06-human-authorization.md` §1.2 | Ambos, "dos modelos vivos" | **Un solo modelo vivo**: el B. `expected_case_revision` = la revisión vigente del Case en el momento del acto de revisión (no `base_case_revision`) |
 | ADR-008, pregunta 1 | **Neutral** por construcción | **Resuelta** por AC-02; ADR-008 sigue siendo neutral en su contenido |
 | Este documento | **Ninguno**: dos columnas | **Modelo B aplicado**; la columna A se conserva rotulada como *anterior (superado)* |
 
@@ -901,7 +903,7 @@ Desarrollado íntegramente en **§7**. Se conserva aquí el registro completo de
 - **ADRs afectados:** ADR-004 (c), (b)1 e inv. 5; ADR-005 §1, §4, inv. 9–10. También addendum v0.3 B.2 y `vertical-slice-v0.md` pasos 10–11.
 - **Hecho que abrió el conflicto:** kernel §5.2 propuso dos contadores y declaró que **no se aplicaba** hasta aprobación de los dueños.
 - **Evidencia que se registró entonces:** kernel §5.1–§5.2 y §7 frente a ADR-004 (b)1 y ADR-005 inv. 9–10. Una versión anterior del kernel se contradecía a sí misma —§5.2 decía "no se aplica" y §7, §8.1 y §9 ya aplicaban el candidato—; el kernel v0.4 lo corrigió imponiendo el Modelo A mientras la decisión estuviera pendiente.
-- **DESENLACE — los dueños aprobaron la enmienda AC-02.** El **Modelo B es el vigente**: `event_seq` avanza en todo evento; `case_revision` avanza solo en los eventos que mutan el estado epistémico canónico y es **`NULL` en `ProposalReviewed`**; `expected_case_revision` es la revisión **contra la que se generó y se revisó** la Proposal, con lo que **desaparece la circularidad**. ADR-004 (supersede §16.16) y ADR-005 (supersede §16.19) quedan enmendados; el kernel §5.2, §7, §8.1 y §9 ya lo recogen. El **Modelo A queda superado**.
+- **DESENLACE — los dueños aprobaron la enmienda AC-02.** El **Modelo B es el vigente**: `event_seq` avanza en todo evento; `case_revision` avanza solo en los eventos que mutan el estado epistémico canónico y es **`NULL` en `ProposalReviewed`**; `expected_case_revision` es la revisión **vigente del Case en el momento del acto de revisión** (no `base_case_revision`), con lo que **desaparece la circularidad**. ADR-004 (supersede §16.16) y ADR-005 (supersede §16.19) quedan enmendados; el kernel §5.2, §7, §8.1 y §9 ya lo recogen. El **Modelo A queda superado**.
 - **Impacto:** §7.7, tabla completa — ahora leída como consecuencias **en vigor**, no como ramas hipotéticas.
 - **Opciones que hubo:** aprobar B (§7.3) — **la elegida** · confirmar A (§7.2) — descartada · opción C (§7.8) — descartada.
 - **Lo que hace este documento:** **aplicar el Modelo B**. Conserva la columna del Modelo A rotulada como *anterior (superado)* por trazabilidad, no como alternativa viva.
@@ -986,7 +988,7 @@ ADR-004 (b)1 escribe tres variantes; el addendum v0.3 §D.1 ya señaló que la v
 - ADR-004 (b)3 / kernel §1 (fuente: sqlite.org): en modo WAL lectores y escritores concurren con **un solo escritor a la vez**; **WAL no funciona sobre filesystems de red**. Sostiene la regla de un solo escritor lógico, sin la cual el cálculo de `prev_event_hash` dentro de la transacción tendría una carrera (`01` §4.1, regla 2).
 - `ESTADO-Y-HALLAZGOS-CRITICOS.md` §1.1 (fuente: documentación oficial de Cowork): Cowork **no** hereda la configuración de Claude Code; **no existe deny por ruta**; los servidores MCP locales corren en el host; el modo Auto delega la decisión de seguridad en el propio modelo; la elicitation en modo form no prueba acto humano en este stack. Consecuencia para este documento: la protección del log es **posicional** (ADR-002), nunca una regla del host (§4.6, punto 5).
 
-**DECISIONES APROBADAS que este documento aplica sin reabrir.** Dos persistencias y tres conceptos (ADR-004 (b)); unificación de Domain Event y Audit Record; NO full event sourcing; tamper-evident y no tamper-proof, con el usuario hostil local fuera de alcance (ADR-002, kernel §8.3); separación `Principal` / `provenance_kind` (kernel §1); aprobación parcial por item (kernel §2, §3); marca indeleble `DEV_STUB` propagada al evento (kernel §4). **Y las enmiendas aprobadas por los dueños:** **AC-01** (autorización por item: `item_content_hash`, una autorización por `ProposalItem` agrupadas por `review_session_id`, sin `authorized_items[]`, `authorized_operation = COMMIT_FACT`); **AC-02** (dos contadores; `ProposalReviewed` con `case_revision` nula; `expected_case_revision` = la revisión contra la que se generó y se revisó la Proposal — §7); **AC-03** (superficie MCP de **ocho** tools, `register_artifact` retirado — §5.1); **AC-04** (`ProposalPreservedForReconciliation` sin productor en v0 — §3.4, §8.2).
+**DECISIONES APROBADAS que este documento aplica sin reabrir.** Dos persistencias y tres conceptos (ADR-004 (b)); unificación de Domain Event y Audit Record; NO full event sourcing; tamper-evident y no tamper-proof, con el usuario hostil local fuera de alcance (ADR-002, kernel §8.3); separación `Principal` / `provenance_kind` (kernel §1); aprobación parcial por item (kernel §2, §3); marca indeleble `DEV_STUB` propagada al evento (kernel §4). **Y las enmiendas aprobadas por los dueños:** **AC-01** (autorización por item: `item_content_hash`, una autorización por `ProposalItem` agrupadas por `review_session_id`, sin `authorized_items[]`, `authorized_operation = COMMIT_FACT`); **AC-02** (dos contadores; `ProposalReviewed` con `case_revision` nula; `expected_case_revision` = la revisión vigente del Case al revisar, no `base_case_revision` — §7); **AC-03** (superficie MCP de **ocho** tools, `register_artifact` retirado — §5.1); **AC-04** (`ProposalPreservedForReconciliation` sin productor en v0 — §3.4, §8.2).
 
 **POR VERIFICAR.**
 

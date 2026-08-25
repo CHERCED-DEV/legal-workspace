@@ -634,8 +634,9 @@ WITH effective AS (
                    WHERE a.proposal_item_id       = i.proposal_item_id
                      AND a.consumed_at            IS NULL
                      AND a.item_content_hash      = i.item_content_hash
-                     -- AC-02: `expected_case_revision` es la revisión contra la que se GENERÓ y se
-                     --   REVISÓ la Proposal; `ProposalReviewed` NO la avanza. Sin circularidad
+                     -- AC-02: `expected_case_revision` es la revisión VIGENTE del Case en el momento
+                     --   del acto de revisión (no `base_case_revision`); `ProposalReviewed` NO la
+                     --   avanza. Sin circularidad
                      AND a.expected_case_revision = :current_revision
                      AND a.authorized_operation   = 'COMMIT_FACT'   -- AC-01: singular, por item
                      AND a.expires_at             > :now )
@@ -669,7 +670,7 @@ ADR-008 §Consecuencias no admite lectura suave: *"Exige que las proyecciones ex
 | Regla | Contenido |
 |---|---|
 | Nombre del valor proyectado | **`effective_decision`**. `proposal_items.review_decision` es **dato almacenado, no dato de salida**: ninguna proyección de §5 lo emite, lo cuenta ni lo filtra |
-| Predicado | `effective_decision = 'APPROVED'` **⇔** `review_decision = 'APPROVED'` **y** existe autorización **viva** para el item: no consumida, con `item_content_hash` **y** `expected_case_revision` coincidentes con el estado vigente, `authorized_operation = 'COMMIT_FACT'` (singular y **por `ProposalItem`**, enmienda AC-01) y no expirada (kernel §2.3, condiciones 1–5; `06` §2.5). En cualquier otro caso el item se proyecta `PENDING`. **Lectura de `expected_case_revision` bajo la enmienda AC-02:** es la revisión contra la que se **generó y se revisó** la Proposal, no la que dejaría el propio acto de revisión —`ProposalReviewed` no avanza `case_revision`—. La comparación con la revisión vigente no cambia de forma (sigue exigiendo que el Case no haya mutado) pero sí de significado, y desaparece la circularidad que el Modelo A anterior obligaba a corregir |
+| Predicado | `effective_decision = 'APPROVED'` **⇔** `review_decision = 'APPROVED'` **y** existe autorización **viva** para el item: no consumida, con `item_content_hash` **y** `expected_case_revision` coincidentes con el estado vigente, `authorized_operation = 'COMMIT_FACT'` (singular y **por `ProposalItem`**, enmienda AC-01) y no expirada (kernel §2.3, condiciones 1–5; `06` §2.5). En cualquier otro caso el item se proyecta `PENDING`. **Lectura de `expected_case_revision` bajo la enmienda AC-02:** es la revisión **vigente** del Case en el momento del acto de revisión —no `base_case_revision`—, no la que dejaría el propio acto de revisión —`ProposalReviewed` no avanza `case_revision`—. La comparación con la revisión vigente no cambia de forma (sigue exigiendo que el Case no haya mutado) pero sí de significado, y desaparece la circularidad que el Modelo A anterior obligaba a corregir |
 | Nombres de salida | `items_by_effective_decision` y `items_effective_approved_uncommitted` (aquí); `counters.items_pending` / `counters.proposals_pending` (aquí); `proposal_items_pending` / `proposals_with_pending_items` (§5.1). **Todos** computados sobre el CTE `effective` de arriba, que es su **definición única** |
 | Locus | **Application**, al construir la proyección. No es columna: almacenarla reintroduciría el estado derivable-que-puede-divergir que ADR-008 inv. 3 elimina (*"la invalidación de una aprobación es derivada, jamás almacenada"*) |
 
@@ -745,7 +746,7 @@ interface ChangesSinceParams {
 |---|---|---|
 | `ProposalReviewed` y `case_revision` | Avanzaba `case_revision` | Avanza `event_seq`; `case_revision` **nula** |
 | Cursor suficiente para el delta | `case_revision` habría bastado | **Solo `event_seq`**; por revisión el acto de revisión es invisible |
-| `expected_case_revision` de la autorización | La revisión resultante del propio acto de revisión (circular) | La revisión contra la que se generó **y se revisó** la propuesta; sin circularidad |
+| `expected_case_revision` de la autorización | La revisión resultante del propio acto de revisión (circular) | La revisión **vigente** del Case al revisar (no `base_case_revision`); sin circularidad |
 
 Lo que este documento eligió antes de la aprobación —cursar por `event_seq`— era correcto bajo los dos modelos y el único correcto bajo B; por eso el diseño del delta **no cambió** al aprobarse la enmienda. Lo que sí cambia, y está aplicado en §6.3, §6.4 y §9.2, es la **aritmética**: qué eventos llevan `case_revision` no nula y, en consecuencia, qué revisión declara el sobre para un `event_seq` dado.
 

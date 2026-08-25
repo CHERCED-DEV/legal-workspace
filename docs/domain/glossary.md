@@ -531,7 +531,7 @@ El skill `fact-builder` v0 produce un análisis de hechos candidatos a partir de
 
 - **`case_revision`** — la **revisión vigente** del Case que el Core reporta en el sobre de toda respuesta de tool (kernel §4, §8).
 - **`expected_revision`** — la revisión que **declara el invocador** de una tool `COMMAND` / `SENSITIVE_COMMAND` para que el Core detecte el cambio; su mismatch produce `REVISION_CHANGED` (kernel §7).
-- **`expected_case_revision`** — la revisión **congelada en la `HumanAuthorization`**: la revisión **contra la que se generó y se revisó la Proposal** (= `base_case_revision`), que es la que la profesional tenía a la vista al aprobar (§12; addendum B.2).
+- **`expected_case_revision`** — la revisión **congelada en la `HumanAuthorization`**: la revisión **vigente del Case en el momento del acto de revisión**, que es la que la profesional tenía a la vista al aprobar; **no** `base_case_revision` (§12; addendum B.2; **ENMIENDA AC-02 aprobada**).
 
 ### No significa
 
@@ -544,7 +544,9 @@ El skill `fact-builder` v0 produce un análisis de hechos candidatos a partir de
 
 ```text
 CaseCreated  --> revisión inicial
-cada evento del Case Event Log --> revisión + 1   (seq == revisión resultante)
+cada evento del Case Event Log                 --> event_seq + 1
+solo si muta el estado epistémico canónico     --> case_revision + 1
+   (case_revision NULL en los demás eventos; AC-02: seq != revisión)
 nunca decrece, nunca se reordena, nunca se reutiliza
 ```
 
@@ -554,12 +556,12 @@ nunca decrece, nunca se reordena, nunca se reutiliza
 2. **Biyección mutación↔evento** (ADR-004 inv. 5; addendum v0.3 B.3): toda mutación produce exactamente un evento del Case Event Log y todo evento corresponde a exactamente una mutación, donde **mutación = cambio de estado canónico registrado, no invocación de tool**. Una sola invocación puede producir de 1 a n mutaciones y avanzar la CaseRevision en n; el property test verifica la biyección, no el conteo de llamadas.
 3. Mismatch de `expected_revision` ⇒ rechazo + preservación + `REVISION_CHANGED`: **nunca sobrescritura silenciosa, nunca descarte del trabajo**.
 4. Las proyecciones se generan **siempre** desde la revisión vigente en el momento de la llamada (sin caché). **Simplificación señalada (kernel §8):** por eso `generated_from_revision` se eliminó del envelope — sería idéntico a `case_revision`; si algún día se cachean proyecciones, el campo vuelve.
-5. Una `HumanAuthorization` porta `expected_case_revision` = **la revisión contra la que se generó y se revisó la Proposal** (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19); `ProposalReviewed` no avanza la revisión, con lo que desaparece la circularidad). Formulación superada: «la revisión resultante del acto de revisión», no aquella contra la que se creó la Proposal (addendum B.2). Si la revisión cambió entre la autorización y el commit, el commit se rechaza (ADR-005).
+5. Una `HumanAuthorization` porta `expected_case_revision` = **la revisión vigente del Case en el momento del acto de revisión** —la que la profesional tenía a la vista al aprobar, **no** `base_case_revision`— (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19); `ProposalReviewed` no avanza la revisión, con lo que desaparece la circularidad). Formulación superada: «la revisión resultante del acto de revisión, no aquella contra la que se creó la Proposal» (addendum B.2). Si la revisión cambió entre la autorización y el commit, el commit se rechaza (ADR-005).
 6. `ReviewProposal(approve)` y `commit_reviewed_facts` son **dos actos**, pero **no en dos revisiones distintas** (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19)): el primero emite `ProposalReviewed`, avanza `event_seq` y deja `case_revision` NULL; el segundo emite `FactsCommitted` y la avanza de nuevo (addendum B.2).
 
 ### Ejemplo
 
-`propose_facts` registra la Proposal `P-3`: el evento `FactsProposed` deja el Case en la revisión **14**. La profesional revisa y aprueba: `ReviewProposal(approve)` emite `ProposalReviewed`, que avanza `event_seq` pero **deja `case_revision` NULL — el Case sigue en 14** (ENMIENDA AC-02 aprobada); en ese mismo acto se crea la `HumanAuthorization` con `expected_case_revision = 14` — la revisión que ella tenía a la vista al aprobar (addendum B.2). Antes de que se ejecute el commit se incorpora un documento nuevo: el Case pasa a **15**. Al intentar el commit con `expected_revision = 14`, el Core lo rechaza y emite `REVISION_CHANGED {expected: 14, current: 15, preserved_proposal_id: P-3}`; `P-3` queda en `PRESERVED_FOR_RECONCILIATION` y aparece en `get_case_context(pending)`. Su trabajo de revisión no se perdió: se reconcilia contra la revisión 15.
+`propose_facts` registra la Proposal `P-3` contra `base_case_revision = 12` y deja el Case en la revisión **14** (`FactsProposed` + `ArtifactRegistered`, misma transacción). La profesional revisa y aprueba: `ReviewProposal(approve)` emite `ProposalReviewed`, que avanza `event_seq` pero **deja `case_revision` NULL — el Case sigue en 14** (ENMIENDA AC-02 aprobada); en ese mismo acto se crea la `HumanAuthorization` con `expected_case_revision = 14` — la revisión **vigente** que ella tenía a la vista al aprobar, no la **12** contra la que se generó la Proposal (addendum B.2). Antes de que se ejecute el commit se incorpora un documento nuevo: el Case pasa a **15**. Al intentar el commit con `expected_revision = 14`, el Core lo rechaza y emite `REVISION_CHANGED {expected: 14, current: 15, preserved_proposal_id: P-3}`; `P-3` queda en `PRESERVED_FOR_RECONCILIATION` y aparece en `get_case_context(pending)`. Su trabajo de revisión no se perdió: se reconcilia contra la revisión 15.
 
 ### Preguntas abiertas
 
@@ -595,7 +597,7 @@ propose_facts --> PENDING  [content_hash calculado; evento FactsProposed]
    SUPERSEDED: estado del enum aprobado; el kernel no fija su trigger exacto.
 ```
 
-**Momento de emisión (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19)):** `ProposalReviewed` lo emite **`ReviewProposal`**, en el acto de revisión, y **avanza solo `event_seq`: NO avanza la `CaseRevision`**; el commit posterior emite **`FactsCommitted`** y la avanza de nuevo. Son dos eventos en dos revisiones distintas.
+**Momento de emisión (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19)):** `ProposalReviewed` lo emite **`ReviewProposal`**, en el acto de revisión, y **avanza solo `event_seq`: NO avanza la `CaseRevision`**; el commit posterior emite **`FactsCommitted`** y la avanza de nuevo. Son dos eventos, pero **una sola revisión de conocimiento**.
 
 **NO TENEMOS INFORMACIÓN SUFICIENTE** para afirmar cuándo se aplica `SUPERSEDED` más allá de que una Proposal deje de ser la vigente; no se inventa la regla.
 
@@ -637,11 +639,12 @@ HumanAuthorization
   operation                ← enum v0: COMMIT_FACTS
   principal_id, principal_type=HUMAN, principal_role     ← quién autorizó
   provenance_kind = HUMAN_DECISION                       ← naturaleza epistémica
-  expected_case_revision   ← ENMIENDA AC-02: la revisión CONTRA LA QUE se generó y se
-                             revisó la Proposal (= base_case_revision). Texto superado:
+  expected_case_revision   ← ENMIENDA AC-02: la revisión VIGENTE del Case en el momento
+                             del acto de revisión — la que la profesional tiene a la
+                             vista al aprobar. NO es base_case_revision. Texto superado:
                              «la revisión resultante del acto de revisión (la que deja
                              ProposalReviewed), NO aquella contra la que se creó la
-                             Proposal (addendum B.2)
+                             Proposal» (addendum B.2)
   created_at
   expires_at               ← vigencia corta configurable por política
   consumed_at              ← null hasta consumo
@@ -653,7 +656,7 @@ HumanAuthorization
 2. **`single_use` ELIMINADO como campo → promovido a invariante:** toda autorización v0 es de un solo uso; `consumed_at` lo materializa. Es simplificación del esquema, no cambio de semántica.
 3. **Registro server-side, no token portador (kernel §5, §16.6):** `commit_reviewed_facts(proposal_id)` no lleva credencial alguna; el Core resuelve la autorización en su propio registro. Esto **REFUERZA** la intención aprobada ("un `humanReviewed: true` enviado por Claude es inválido"), no la altera: lleva la invalidez del testimonio del modelo hasta su consecuencia final — que el modelo no transporte ninguna prueba de autorización, ni verdadera ni falsa.
 4. **`provenance_kind = HUMAN_DECISION` con `principal_type = HUMAN` (normalización v0.4, supersede §16.13; subsume el addendum B.1 / supersede §16.7):** la escritura previa `actor_type = HUMAN_DECISION` mezclaba *quién ejecutó* con *naturaleza del origen*; ahora son dos campos. Registro histórico de la corrección anterior: el kernel v0.2 §5 escribió `actor_type=HUMAN`, valor que **no pertenece al enum canónico** de `ProvenanceRecord` (`EXTERNAL_SOURCE | AI_DERIVATION | AI_INFERENCE | HUMAN_DECISION | SYSTEM`, kernel §2 y §7 de este glosario). Es una **errata del kernel ya corregida**: se registra como **normalización de nombre, no de semántica**, y el valor es `HUMAN_DECISION` en el contrato, en el lifecycle y en los invariantes.
-5. **`expected_case_revision` = la revisión contra la que se generó y se revisó la Proposal (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19)):** `ReviewProposal(approve)` emite `ProposalReviewed`, que avanza la `CaseRevision` y en ese mismo acto crea la `HumanAuthorization`; la revisión que ésta congela es la que **deja ese evento**, no aquella contra la que se creó la Proposal. Semántica: *"la revisión del expediente que la profesional tenía a la vista al aprobar"*. El commit posterior emite `FactsCommitted` y avanza la revisión de nuevo: son dos eventos en dos revisiones distintas.
+5. **`expected_case_revision` = la revisión vigente del Case en el momento del acto de revisión (**ENMIENDA AC-02 aprobada** (supersede §16.16/§16.19)):** `ReviewProposal(approve)` emite `ProposalReviewed`, que avanza `event_seq` y deja `case_revision` **NULL** —la revisión del Case no cambia—, y en ese mismo acto crea la `HumanAuthorization`; la revisión que ésta congela es la **vigente al revisar**, **no** `base_case_revision` (`FactsProposed` y `ArtifactRegistered` ya avanzaron el contador) y **no** la resultante de ese mismo acto de revisión (definición circular, superada). Semántica: *"la revisión del expediente que la profesional tenía a la vista al aprobar"*. El commit posterior emite `FactsCommitted` y avanza la revisión: son dos eventos, pero **una sola revisión de conocimiento**.
 
 ### No significa
 
@@ -667,8 +670,8 @@ HumanAuthorization
 
 ```text
 ReviewProposal(approve) --> creada  [provenance_kind=HUMAN_DECISION, principal_type=HUMAN; hash +
-                                     expected_case_revision = revisión contra la que
-                                     se generó y revisó la Proposal (AC-02)]
+                                     expected_case_revision = revisión VIGENTE del Case
+                                     al revisar, no base_case_revision (AC-02)]
    --commit válido-->  consumida (consumed_at)      [FactsCommitted]
    --tiempo-->         expirada (expires_at)        --> exige nueva revisión
    --Proposal editada / revisión del Case cambiada--> inválida de facto
@@ -688,7 +691,7 @@ Sin autorización viva, la operación sensible emite `HUMAN_REVIEW_REQUIRED {pro
 
 ### Ejemplo
 
-`FactsProposed` dejó el Case en la revisión **14**. Revisada `P-3` (hash `H1`) en un canal que el modelo no controla, `ReviewProposal(approve)` emite `ProposalReviewed` —que avanza `event_seq` y deja `case_revision` NULL: **el Case sigue en 14** (ENMIENDA AC-02 aprobada)— y en ese mismo acto se registra `AUTH-9 {proposal_id: P-3, item_content_hash: H1, operation: COMMIT_FACTS, principal_type: HUMAN, provenance_kind: HUMAN_DECISION, expected_case_revision: 14, expires_at: corto, consumed_at: null}`: la autorización porta **15**, la revisión que la profesional tenía a la vista al aprobar, no la 14 contra la que se creó la Proposal. Claude invoca `commit_reviewed_facts(proposal_id = P-3)` **sin credencial alguna**; el Core encuentra `AUTH-9`, verifica hash y revisión, ejecuta el commit, marca `consumed_at` y registra los eventos. Si Claude reintenta —conducta normal de un agente—, el segundo intento se rechaza. Si Claude afirmara en el commit o en la conversación que "la profesional ya revisó", el resultado sería idéntico a no tener autorización: `HUMAN_REVIEW_REQUIRED`.
+`propose_facts` —`FactsProposed` + `ArtifactRegistered`, misma transacción— dejó el Case en la revisión **14**, partiendo de `base_case_revision = 12`. Revisada `P-3` (hash `H1`) en un canal que el modelo no controla, `ReviewProposal(approve)` emite `ProposalReviewed` —que avanza `event_seq` y deja `case_revision` NULL: **el Case sigue en 14** (ENMIENDA AC-02 aprobada)— y en ese mismo acto se registra `AUTH-9 {proposal_id: P-3, item_content_hash: H1, operation: COMMIT_FACT, principal_type: HUMAN, provenance_kind: HUMAN_DECISION, expected_case_revision: 14, expires_at: corto, consumed_at: null}`: la autorización porta **14** — la revisión **vigente** del Case cuando la profesional aprobó, la que ella tenía a la vista; **no** `base_case_revision` (**12**), que `FactsProposed` y `ArtifactRegistered` ya dejaron atrás. Claude invoca `commit_reviewed_facts(proposal_id = P-3)` **sin credencial alguna**; el Core encuentra `AUTH-9`, verifica hash y revisión, ejecuta el commit —emite `FactsCommitted`, que **deja el Case en 15**—, marca `consumed_at` y registra el evento en el Case Event Log. Si Claude reintenta —conducta normal de un agente—, el segundo intento se rechaza. Si Claude afirmara en el commit o en la conversación que "la profesional ya revisó", el resultado sería idéntico a no tener autorización: `HUMAN_REVIEW_REQUIRED`.
 
 ### Preguntas abiertas
 
