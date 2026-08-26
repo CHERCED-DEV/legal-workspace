@@ -1,0 +1,90 @@
+{
+ "version": "inventario-v0.2.0",
+ "caso": "caso-01-familia",
+ "medido": "2026-08-26 15:43",
+ "veracidad": {
+  "fabricaciones": 0,
+  "paginas_ilegibles": 25,
+  "declaradas": 0,
+  "sin_declarar": [
+   4,
+   5,
+   7,
+   9,
+   10,
+   11,
+   13,
+   14,
+   15,
+   17,
+   18,
+   19,
+   21,
+   22,
+   24,
+   27,
+   30,
+   31,
+   32,
+   33,
+   34,
+   36,
+   37,
+   38,
+   39
+  ]
+ },
+ "coste": {
+  "comandos": 2,
+  "turnos": 290,
+  "herramientas": 186,
+  "input_nuevo": 580,
+  "output": 238879,
+  "cache_read": 45663130,
+  "cache_write": 1867536,
+  "segundos": 3896
+ },
+ "volumen": {
+  "archivos": 1,
+  "bytes": 52814,
+  "lineas": 0,
+  "decisiones_humanas": 0
+ },
+ "por_comando": [
+  {
+   "turnos": 175,
+   "input": 350,
+   "output": 88580,
+   "cache_read": 30208815,
+   "cache_write": 829679,
+   "herramientas": 112,
+   "id": "a964fef0",
+   "agente": "inventario-de-anexos",
+   "es_comando": true,
+   "segundos": 2158
+  },
+  {
+   "turnos": 115,
+   "input": 230,
+   "output": 150299,
+   "cache_read": 15454315,
+   "cache_write": 1037857,
+   "herramientas": 74,
+   "id": "aa75ea1b",
+   "agente": "inventario-de-anexos",
+   "es_comando": true,
+   "segundos": 1738
+  }
+ ],
+ "por_salida": [
+  {
+   "archivo": "Inventario de anexos — [caso de familia] Díaz c. [caso de familia] Muñoz — 2026-08-26 — pasada 1.docx",
+   "bytes": 52814,
+   "lineas": null,
+   "palabras": null,
+   "decisiones": null,
+   "nota": "binario, no se analiza"
+  }
+ ],
+ "fabricaciones": []
+}
