@@ -1,0 +1,139 @@
+{
+ "version": "0.1.0",
+ "caso": "caso-01-familia",
+ "medido": "2026-08-26 14:27",
+ "veracidad": {
+  "fabricaciones": 0,
+  "paginas_ilegibles": 25,
+  "declaradas": 25,
+  "sin_declarar": []
+ },
+ "coste": {
+  "comandos": 5,
+  "turnos": 264,
+  "herramientas": 132,
+  "input_nuevo": 528,
+  "output": 359757,
+  "cache_read": 33823292,
+  "cache_write": 2186179,
+  "segundos": 4760
+ },
+ "volumen": {
+  "archivos": 6,
+  "bytes": 267420,
+  "lineas": 3290,
+  "decisiones_humanas": 76
+ },
+ "por_comando": [
+  {
+   "turnos": 30,
+   "input": 60,
+   "output": 64332,
+   "cache_read": 2879095,
+   "cache_write": 399891,
+   "herramientas": 13,
+   "agente": "cronologia",
+   "es_comando": true,
+   "segundos": 819
+  },
+  {
+   "turnos": 16,
+   "input": 32,
+   "output": 19223,
+   "cache_read": 939783,
+   "cache_write": 182618,
+   "herramientas": 7,
+   "agente": "redactar-escrito",
+   "es_comando": true,
+   "segundos": 283
+  },
+  {
+   "turnos": 84,
+   "input": 168,
+   "output": 152237,
+   "cache_read": 15267952,
+   "cache_write": 985174,
+   "herramientas": 47,
+   "agente": "hechos-con-prueba",
+   "es_comando": true,
+   "segundos": 1762
+  },
+  {
+   "turnos": 97,
+   "input": 194,
+   "output": 75524,
+   "cache_read": 12004765,
+   "cache_write": 320293,
+   "herramientas": 48,
+   "agente": "inventario-de-anexos",
+   "es_comando": true,
+   "segundos": 1206
+  },
+  {
+   "turnos": 37,
+   "input": 74,
+   "output": 48441,
+   "cache_read": 2731697,
+   "cache_write": 298203,
+   "herramientas": 17,
+   "agente": "revisar-documento",
+   "es_comando": true,
+   "segundos": 690
+  }
+ ],
+ "por_salida": [
+  {
+   "archivo": "Cronologia - el caso de familia - 2026-08-26.md",
+   "bytes": 34339,
+   "lineas": 203,
+   "palabras": 5898,
+   "decisiones": 0,
+   "citas": 134,
+   "fabricaciones": 0
+  },
+  {
+   "archivo": "Hechos - el caso de familia - 2026-08-26.md",
+   "bytes": 127563,
+   "lineas": 2157,
+   "palabras": 17646,
+   "decisiones": 76,
+   "citas": 191,
+   "fabricaciones": 0
+  },
+  {
+   "archivo": "Inventario de anexos — el caso de familia — 2026-08-26 — pasada 1.docx",
+   "bytes": 51710,
+   "lineas": null,
+   "palabras": null,
+   "decisiones": null,
+   "nota": "binario, no se analiza"
+  },
+  {
+   "archivo": "No se pudo redactar el borrador — 2026-08-26.txt",
+   "bytes": 18634,
+   "lineas": 332,
+   "palabras": 2533,
+   "decisiones": 0,
+   "citas": 33,
+   "fabricaciones": 0
+  },
+  {
+   "archivo": "Revision - Demanda custodia visitas y alimentos.txt",
+   "bytes": 35012,
+   "lineas": 598,
+   "palabras": 5327,
+   "decisiones": 0,
+   "citas": 197,
+   "fabricaciones": 0
+  },
+  {
+   "archivo": "~$ventario de anexos — el caso de familia — 2026-08-26 — pasada 1.docx",
+   "bytes": 162,
+   "lineas": null,
+   "palabras": null,
+   "decisiones": null,
+   "nota": "binario, no se analiza"
+  }
+ ],
+ "fabricaciones": []
+}
