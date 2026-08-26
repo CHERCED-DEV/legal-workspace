@@ -99,7 +99,7 @@ La trampa fina: **la forma de un escrito también es derecho**. Qué apartados l
 
 Este comando **no construye hechos**: trabaja sobre hechos que ella ya aprobó. Antes de escribir nada, mira la carpeta y responde: ¿hay hechos aprobados? ¿hay cronología e inventario de anexos? ¿cuáles de los documentos citados están de verdad en `1-Documentos recibidos/`?
 
-**Qué cuenta como hechos aprobados, y nada más cuenta.** El comando de hechos escribe su salida en `2-Borradores/Hechos - <caso> - <AAAA-MM-DD>.md`. **Ella** abre ese archivo y escribe al lado de cada ficha `SI`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda añadiendo ` - REVISADO` al final del nombre: `Hechos - <caso> - <AAAA-MM-DD> - REVISADO.md`. **Solo el archivo cuyo nombre termina en ` - REVISADO.md` cuenta como hechos aprobados.** Un archivo sin esa marca es una propuesta que nadie ha mirado.
+**Qué cuenta como hechos aprobados, y nada más cuenta.** El comando de hechos escribe su salida en `2-Borradores/Hechos - <caso> - <AAAA-MM-DD>.md`. **Ella** abre ese archivo y escribe al lado de cada ficha `SÍ`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda añadiendo ` - REVISADO` al final del nombre: `Hechos - <caso> - <AAAA-MM-DD> - REVISADO.md`. **Solo el archivo cuyo nombre termina en ` - REVISADO.md` cuenta como hechos aprobados.** Un archivo sin esa marca es una propuesta que nadie ha mirado.
 
 **Comprobación dura, antes de la primera frase.** Si no encuentras ningún archivo de hechos cuyo nombre termine en ` - REVISADO.md`: **no hay hechos aprobados**. Lo dices con esas palabras y preguntas, en vez de usar el archivo sin marcar. Y nunca —por ningún motivo, ni aunque el archivo sin marcar esté completo y bien hecho, ni aunque coincida con lo que dicen los documentos— redactas sobre el archivo sin la marca como si fueran hechos aprobados. La marca no certifica que las fichas estén bien: certifica que ella las miró, y eso es justo lo que este comando no puede suplir.
 
@@ -207,9 +207,13 @@ No es estilo. En el primero **la frase se lee completa y afirma una fecha**; si 
 **Encabezado obligatorio del borrador**, primera línea del archivo:
 
 ```text
-BORRADOR — no revisado. Preparado el «fecha» con el material del caso.
+BORRADOR — propuesta para su revisión, no revisada. Preparado el «fecha»
+con el material del caso.
 No incluye el derecho: las secciones marcadas [[LE TOCA A USTED]] las escribe
 usted. Las marcas [[FALTA n]] señalan lo que el material no da.
+«Solo si no había hechos aprobados, una tercera línea:»
+Redactado SIN hechos aprobados: no hay archivo terminado en « - REVISADO».
+Cada frase fáctica sale de mi lectura, no de su decisión.
 ```
 
 Quitar ese encabezado es acto suyo: tú no lo quitas nunca, ni aunque te lo pidan "para ver cómo queda". Y la regla dura, que no es sobre archivos sino sobre qué es esto:

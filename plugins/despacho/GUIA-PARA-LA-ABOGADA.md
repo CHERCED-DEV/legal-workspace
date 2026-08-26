@@ -145,25 +145,33 @@ Pasada del 25 de agosto de 2026. Preparado para su revisión.
 
 2. HOJA DE DECISIONES
 
-| Hecho | Enunciado (una línea)                            | Respaldo                                                   | Sí | No | A medias |
-|-------|--------------------------------------------------|------------------------------------------------------------|----|----|----------|
-| H-01  | El 14 de marzo salieron $12.000.000 hacia Andes  | 2 a favor: comprobante del banco + correo de la otra parte | [] | [] | []       |
-| H-02  | La máquina se entregó el 2 de abril              | 1 en contra: acta firmada por ambas · 1 de contexto        | [] | [] | []       |
-| H-03  | Andes aceptó por escrito cubrir la instalación   | Sin respaldo: solo alegado por la interesada               | [] | [] | []       |
-| H-04  | Se pagaron $800.000 por concepto de instalación  | 1 a favor: recibo de Andes (no cubre la fecha)             | [] | [] | []       |
-| H-05  | Ese pago se hizo el 3 de marzo de 2024           | Sin respaldo: solo alegado (va con H-04)                   | [] | [] | []       |
+| Hecho | Enunciado (una línea)                            | Estado y apoyo                                                       | Sí | No | A medias |
+|-------|--------------------------------------------------|----------------------------------------------------------------------|----|----|----------|
+| H-01  | El 14 de marzo salieron $12.000.000 hacia Andes  | Apoyado — 2 a favor: comprobante del banco + correo de la otra parte | [] | [] | []       |
+| H-02  | La máquina se entregó el 2 de abril              | Contradicho — 1 en contra: acta firmada por ambas · 1 que solo sitúa | [] | [] | []       |
+| H-03  | Andes aceptó por escrito cubrir la instalación   | Sin apoyo — solo alegado por la interesada                           | [] | [] | []       |
+| H-04  | Se pagaron $800.000 por concepto de instalación  | Apoyado — 1 a favor: recibo de Andes (no cubre la fecha)             | [] | [] | []       |
+| H-05  | Ese pago se hizo el 3 de marzo de 2024           | Sin apoyo — solo alegado (va con H-04)                               | [] | [] | []       |
+
+Marque aquí de un vistazo, o escriba SÍ / NO / A MEDIAS al lado de cada
+ficha. «A MEDIAS» = el hecho sirve pero hay que corregirlo, y la corrección
+se escribe al lado de la ficha.
+
+Cuando termine, guarde este archivo añadiendo « - REVISADO» al final del
+nombre. Solo así cuenta como hechos aprobados: un archivo sin esa marca es
+una propuesta que nadie ha mirado.
 
 3. LAS FICHAS
 ────────────────────────────────────────────────────────────────────
 H-01 · El 14 de marzo de 2024 salieron $12.000.000 de la cuenta de la
 señora Ríos hacia una cuenta a nombre de Distribuidora Andes.
 
-  Respaldo: 2 a favor — un comprobante del banco y un correo escrito por
-  la otra parte. Ninguno es la propia interesada.
+  Estado: apoyado — 2 a favor: un comprobante del banco y un correo
+  escrito por la otra parte. Ninguno es la propia interesada.
   De dónde salió el enunciado: entrevista, 00:08:12.
 
   Pruebas:
-   1) APOYA — Comprobante de transferencia bancaria, página 1
+   1) Apoya — Comprobante de transferencia bancaria, página 1
       Cita: «14/03/2024 — Transferencia enviada $12.000.000 — Destino:
       DISTRIBUIDORA ANDES S.A.S.»
       Qué establece exactamente: que ese día salió esa suma hacia una
@@ -173,7 +181,7 @@ señora Ríos hacia una cuenta a nombre de Distribuidora Andes.
   Alcance de la cita: ninguno de los dos documentos dice a qué concepto
   se imputó ese pago.
 
-  Su decisión:  [ ] sí   [ ] no   [ ] a medias — corregir: ______________
+  Su decisión (escriba SÍ, NO o A MEDIAS): ____________________________
 ────────────────────────────────────────────────────────────────────
 
 5. LO QUE SE BUSCÓ Y NO SE ENCONTRÓ
@@ -261,7 +269,7 @@ Al no entrar ahí, todo lo que él sí le entrega queda **comprobable de un vist
 
 **Todo lo que produce está *propuesto*, no decidido.** Los hechos son "hechos propuestos". La cronología es "cronología propuesta". El inventario y el borrador dicen "propuesta para su revisión" en la primera línea. Nada de eso es del caso hasta que usted lo mira y lo acepta, uno por uno. Por eso las hojas traen casillas: `[ ] sí  [ ] no  [ ] a medias`.
 
-**Cómo queda aprobado un hecho — el paso que hace usted, y sin el cual lo demás no arranca.** Cuando le pide los hechos con su prueba, las fichas le quedan en un archivo dentro de `2-Borradores`, llamado `Hechos - <caso> - <fecha>.md`. Usted lo abre y escribe al lado de cada ficha `SI`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda **añadiendo ` - REVISADO` al final del nombre**:
+**Cómo queda aprobado un hecho — el paso que hace usted, y sin el cual lo demás no arranca.** Cuando le pide los hechos con su prueba, las fichas le quedan en un archivo dentro de `2-Borradores`, llamado `Hechos - <caso> - <fecha>.md`. Usted lo abre y escribe al lado de cada ficha `SÍ`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda **añadiendo ` - REVISADO` al final del nombre**:
 
 ```text
 Hechos - Ríos - 2026-08-25.md              <- lo que él le propuso

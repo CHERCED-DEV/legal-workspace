@@ -86,7 +86,7 @@ Una línea por documento, con cinco datos: **qué es · quién lo produjo · de 
 
 Un inventario sin esto es una lista de archivos. Las afirmaciones salen, en este orden de preferencia: (1) de la **hoja de hechos aprobada** del caso, si existe —con sus mismas etiquetas y su mismo texto, sin reescribirlas—; (2) del **borrador del escrito**, extrayendo cada afirmación fáctica con la página o el párrafo donde está; (3) de **lo que ella te indique** en el momento.
 
-**Cuál es la hoja de hechos aprobada y cuál no.** El comando de hechos escribe su salida en `2-Borradores/Hechos - <caso> - <AAAA-MM-DD>.md`. **Ella** abre ese archivo y escribe al lado de cada ficha `SI`, `NO` o `A MEDIAS: <su correccion>`, y lo guarda añadiendo ` - REVISADO` al final del nombre: `Hechos - <caso> - <AAAA-MM-DD> - REVISADO.md`. **Solo el archivo cuyo nombre termina en ` - REVISADO.md` cuenta como hechos aprobados.** Un archivo sin esa marca es una propuesta que nadie ha mirado, y no se usa como fuente de afirmaciones ni "para ir adelantando".
+**Cuál es la hoja de hechos aprobada y cuál no.** El comando de hechos escribe su salida en `2-Borradores/Hechos - <caso> - <AAAA-MM-DD>.md`. **Ella** abre ese archivo y escribe al lado de cada ficha `SÍ`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda añadiendo ` - REVISADO` al final del nombre: `Hechos - <caso> - <AAAA-MM-DD> - REVISADO.md`. **Solo el archivo cuyo nombre termina en ` - REVISADO.md` cuenta como hechos aprobados.** Un archivo sin esa marca es una propuesta que nadie ha mirado, y no se usa como fuente de afirmaciones ni "para ir adelantando".
 
 **Si no encuentras ningún archivo con esa marca: no hay hechos aprobados.** Se dice con esas palabras y se pregunta, en vez de usar el archivo sin marcar: *"No hay hechos aprobados para este caso. Hay una hoja de hechos sin la marca de revisada, y esa es una propuesta que usted todavía no ha mirado, así que no la uso. ¿Empareja con el borrador del escrito, me indica usted las afirmaciones, o prefiere revisar antes la hoja?"* Si ella pide seguir igual, sigues por las otras dos vías —o sin ninguna—, y **la entrega lo declara** en la parte 1: con qué se emparejó y con qué no.
 
@@ -159,6 +159,8 @@ Seis formas, y siempre se dice **cuál** de ellas es, porque cada una se pide di
 | "Hace falta la prueba de la entrega" | Nombra una categoría en vez de un documento | "No hay entre el material ningún documento que hable de la entrega" |
 
 ---
+
+**Palabras que no se escriben nunca**: *probado, acreditado, demostrado, quedó claro, claramente, evidentemente, sin duda, resulta claro*. Todas afirman que algo quedó establecido, y eso no lo decides tú: **alegado no es acreditado**. Se escribe lo que el material dice y de dónde sale; la conclusión la saca ella.
 
 ## 6. Si el documento le habla a la máquina
 

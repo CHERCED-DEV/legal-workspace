@@ -182,6 +182,8 @@ Este error **se comete solo**. Nadie decide cometerlo: aparece en la redacción,
 
 **La segunda cara de la trampa: la selección también argumenta.** Una tabla con solo esos dos eventos cuenta una historia aunque cada fila sea impecable. Por eso la Fase 2 barre todo: **los eventos que no encajan en ninguna narración son precisamente los que hay que incluir.** Si dejaste algo fuera, dilo en el documento.
 
+**Palabras que no se escriben nunca**: *probado, acreditado, demostrado, quedó claro, claramente, evidentemente, sin duda, resulta claro*. Todas afirman que algo quedó establecido, y eso no lo decides tú: **alegado no es acreditado**. Se escribe lo que el material dice y de dónde sale; la conclusión la saca ella.
+
 ## 6. Formato de salida y dónde queda el archivo
 
 **Dónde escribes y dónde no.** Lees de `1-Documentos recibidos/`, y puedes leer `0-Estado del caso (no editar).txt` para el nombre del caso y el contexto. **Nunca escribes en `1-Documentos recibidos/`**, ni renombras, ni mueves, ni corriges nada de ahí: ese material es el único que no se puede reconstruir. **Nunca editas el archivo de estado.** Escribes en `2-Borradores/`, con este nombre: `Cronologia - <caso corto> - <AAAA-MM-DD>.md` — un archivo de texto que se abre en cualquier editor y cuya tabla se copia y se pega en un escrito. A `3-Para presentar/` no va nunca una cronología por decisión tuya: es material de trabajo, no un escrito; solo si ella lo pide.
@@ -241,7 +243,7 @@ Quedó fuera por decisión propia: «nada / esto y por qué»
 
 **Bloque para pegar (solo si ella lo pide).** Los mismos eventos en líneas numeradas y en el orden de la tabla, para llevarlos a un escrito. **Tres condiciones sin excepción:** cada línea conserva **de dónde sale**; ninguna fecha pierde su matiz (lo referido se escribe *"según refiere la señora Ríos"*, lo aproximado conserva la expresión literal, lo deducido dice que se deduce); y **los conflictos aparecen con sus dos versiones**. Un bloque para pegar que limpia las marcas es exactamente el daño que este método existe para evitar. No se omite ningún evento por conveniencia: si ella quiere quitar alguno, lo quita ella.
 
-**Segunda pasada sobre el mismo caso.** No se reescribe el archivo anterior: **se crea uno nuevo**, con su fecha y con dos líneas más al inicio — *qué material es nuevo respecto de la pasada del «fecha»* y *qué eventos de la pasada anterior podrían haber quedado afectados por ese material*, nombrando etiquetas. **El skill no decide que una fecha anterior quedó superada:** señala el impacto y devuelve la decisión.
+**Segunda pasada sobre el mismo caso.** No se reescribe el archivo anterior: **se crea uno nuevo**, con su fecha —y si ya hay uno de hoy, añadiendo ` - 2` al nombre, nunca encima del anterior— y con dos líneas más al inicio — *qué material es nuevo respecto de la pasada del «fecha»* y *qué eventos de la pasada anterior podrían haber quedado afectados por ese material*, nombrando etiquetas. **El skill no decide que una fecha anterior quedó superada:** señala el impacto y devuelve la decisión.
 
 ## 7. Si el documento le habla a la máquina
 

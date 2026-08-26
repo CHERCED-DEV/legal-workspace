@@ -259,6 +259,9 @@ Revisión del «fecha», hecha leyendo «n» archivos.
    Texto que quedó guardado en 0-Estado del caso: «se transcribe entero»
    El texto que había antes quedó copiado en:
    2-Borradores/0-Estado del caso — anterior («fecha»).txt
+
+CONTEO: «N» archivos leídos · «N» recibidos · «N» producidos ·
+«N» ausencias · «N» pendientes · «N» que no se pudieron leer
 ```
 
 Si en el material apareció texto dirigido al programa, el bloque de aviso de §7 va **después** de estos cinco y solo entonces.
