@@ -26,7 +26,7 @@ material no da, se marca como faltante en vez de rellenarse.
 
 | Comando | Qué hace de verdad |
 |---|---|
-| `/fact-builder` | Recorre el material del caso y devuelve **hechos candidatos**, cada uno emparejado con el fragmento concreto que lo apoya, lo contradice o lo sitúa; los que no tienen nada detrás quedan marcados como tales. No valora prueba ni decide estrategia. |
+| `/hechos-con-prueba` | Recorre el material del caso y devuelve **hechos candidatos**, cada uno emparejado con el fragmento concreto que lo apoya, lo contradice o lo sitúa; los que no tienen nada detrás quedan marcados como tales. No valora prueba ni decide estrategia. |
 | `/revisar-documento` | Lee **un** documento que llegó (escrito de contraparte, requerimiento, contrato, respuesta) y devuelve en una pasada qué es, qué afirma, qué pide, qué decide, qué referencias de tiempo trae **textualmente** y qué parece exigir actuación. No calcula plazos ni dice si algo está vencido. |
 | `/estado-del-caso` | Lee la carpeta del caso y reconstruye **solo con lo que dicen los archivos** qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta y qué quedó a medias o sin respuesta. No pronostica ni valora solidez. |
 | `/cronologia` | Extrae **todo evento con fecha**, con el documento y la página de donde sale cada una y **el grado de certeza de esa fecha** (documentada, referida, aproximada, deducida, en conflicto); añade los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. No cuenta plazos ni decide cuál fecha es la buena. |
@@ -40,6 +40,20 @@ si no aparecen, lo primero que hay que revisar es que el plugin esté instalado 
 **POR COMPROBAR:** que `/redactar-escrito` consiga producir de verdad un archivo `.docx`
 en el entorno de ella. El propio método contempla el fallo (si no puede, escribe el mismo
 contenido en texto y lo dice), pero conviene verlo funcionar una vez.
+
+**POR COMPROBAR — con material real de ella, antes de sentarse a trabajar.** Dos capacidades
+que los métodos dan por supuestas y que nadie ha visto funcionar aquí. No se comprueban leyendo
+documentación: se comprueban abriendo un archivo suyo.
+
+- **Que pueda transcribir o citar el minuto exacto de una grabación.** `/hechos-con-prueba`
+  promete citar la entrevista con su minuto (`entrevista, 00:08:12`), y el Ejemplo 2 de la guía
+  de ella lo imprime así. Si no puede oír el audio, o puede pero no sitúa el minuto, ese ejemplo
+  es falso y media promesa del método se cae: habría que decirle que la entrevista entra
+  transcrita por ella, no en audio.
+- **Qué hace con un PDF escaneado sin capa de texto.** Es el formato en que llegan la mitad de
+  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los seis parten de
+  leer el material y citar página. Hay que saber si lo lee, si lo lee mal en silencio, o si avisa
+  de que no puede — y las tres respuestas llevan a instrucciones distintas para ella.
 
 ---
 
@@ -168,9 +182,10 @@ publican cambios sin leerlos completos.
 
 ---
 
-## 6. Comprobación previa obligatoria — dónde corre la sesión
+## 6. Dónde se procesa el material de la clienta
 
-Esto hoy no bloquea nada. **Va aquí para que no se descubra tarde.**
+Esto **no** es un problema de arquitectura futura. Es un problema de **secreto profesional hoy**,
+desde el primer expediente que ella abra y aunque el Core no exista nunca.
 
 **HECHO VERIFICADO:** *"Cowork sessions run in the cloud by default: the agent loop and code
 execution run on Anthropic's servers"*, y *"The agent's work, including any local files it
@@ -179,23 +194,34 @@ the device."*
 
 **HECHO VERIFICADO:** *"Local MCP servers don't run in sessions in the cloud."*
 
-**Por qué hoy da igual.** Despacho es **solo texto**: seis archivos de método, sin servidor,
-sin proceso, sin código que ejecutar. Un método funciona igual si el modelo lo lee en la nube
-o en la máquina de ella. Nada de lo que trae este plugin depende de correr localmente.
+**Qué significa esto hoy.** Que el plugin sea solo texto no cambia nada: lo que viaja no es el
+plugin, es **el material de la clienta**. Un expediente que vive en el disco de ella, sin copia
+en ningún sitio, deja de estar confinado en el momento en que ella lo abre en una sesión — los
+archivos locales que la sesión abre se procesan fuera de la máquina. **El confinamiento del
+material de una clienta no depende de que exista un servidor propio**: depende de dónde se
+procesa lo que ella abre, y eso ya está decidido por defecto, hoy, con Core o sin él.
 
-**Por qué deja de dar igual mañana.** En el momento en que se le añada a esto un **servidor
-MCP propio** —el Core: el expediente con garantías, el registro de autorizaciones, la copia
-inmutable de la prueba—, esas dos frases pasan a ser el problema central: **un servidor MCP
-local no corre en una sesión en la nube**, y las sesiones son en la nube por defecto. Un Core
-local instalado bajo ese supuesto sin comprobarlo simplemente no aparecería.
+**Qué obliga a hacer.** Decírselo a ella **antes** de que abra el primer caso, en esos términos
+y sin adornos, porque es de lo poco que puede cambiar lo que ella hace: hay material que decidirá
+no abrir aquí, y esa decisión es suya y es de su oficio. Está escrito para ella en
+`GUIA-PARA-LA-ABOGADA.md`, §3. **Entregar el plugin sin esa conversación es entregarlo mal**, y
+no es un descuido reparable después: el material que ya se abrió, ya se abrió.
 
-**La comprobación, antes de añadir el servidor propio** (no antes de instalar el plugin):
+**Lo que sí es problema de mañana**, y que no sustituye a lo anterior: cuando se le añada un
+**servidor MCP propio** —el Core: el expediente con garantías, el registro de autorizaciones, la
+copia inmutable de la prueba—, la tercera cita pasa a ser el problema de ingeniería central: **un
+servidor MCP local no corre en una sesión en la nube**, y las sesiones son en la nube por defecto.
+Un Core local instalado bajo ese supuesto sin comprobarlo simplemente no aparecería.
+
+**Las comprobaciones, en su máquina y antes de que abra material real:**
 
 1. Verificar en la máquina de ella si su sesión corre en la nube o en local, y si en su plan
    existe algún control para cambiarlo. **POR COMPROBAR:** el interruptor documentado
    ("Run Cowork in the cloud") aparece como control de administrador en planes Team y
-   Enterprise; **para Pro no se ha localizado un control equivalente**. Si no lo hay, el
-   diseño del Core tiene que asumirlo, no desearlo.
+   Enterprise; **para Pro no se ha localizado un control equivalente** — no localizado no es
+   inexistente, hay que mirarlo en su cuenta. Lo que se encuentre se le dice a ella tal cual,
+   incluido que no se encontró nada; y si no lo hay, el diseño del Core tiene que asumirlo,
+   no desearlo.
 2. Verificar qué ve la sesión de la carpeta del caso en cada modo. Los seis métodos leen y
    escriben archivos de su carpeta; conviene saber con qué ruta trabaja realmente antes de
    apoyar nada encima.
@@ -216,15 +242,15 @@ legal-workspace/
 │     ├─ .claude-plugin/
 │     │  └─ plugin.json         <- nombre, version, descripcion del plugin
 │     ├─ README.md              <- este archivo
+│     ├─ GUIA-PARA-LA-ABOGADA.md  <- lo que lee ella; viaja con el plugin
 │     └─ skills/
 │        ├─ cronologia/
 │        │  └─ SKILL.md
 │        ├─ estado-del-caso/
 │        │  └─ SKILL.md
-│        ├─ fact-builder/
+│        ├─ hechos-con-prueba/
 │        │  ├─ SKILL.md
-│        │  ├─ FORMATO-DE-SALIDA.md          <- material de apoyo del metodo
-│        │  └─ COMO-USARLO-EN-EL-BASELINE.md
+│        │  └─ FORMATO-DE-SALIDA.md          <- material de apoyo del metodo
 │        ├─ inventario-de-anexos/
 │        │  └─ SKILL.md
 │        ├─ redactar-escrito/
@@ -232,10 +258,19 @@ legal-workspace/
 │        └─ revisar-documento/
 │           └─ SKILL.md
 └─ docs/                        <- arquitectura del proyecto; NO es parte del plugin
+   └─ discovery/                <- material de pruebas y guias de trabajo del dueno
 ```
 
 Dos archivos mandan: `marketplace.json` (raíz) dice qué plugins hay y dónde están;
 `plugin.json` (dentro del plugin) dice cómo se llama y qué versión es.
+
+**Dos movimientos ya hechos, para que nadie los busque donde estaban:** la carpeta
+`fact-builder/` se llama ahora `hechos-con-prueba/` —el nombre de la carpeta es el nombre del
+comando, así que el comando cambió con ella—, y el `COMO-USARLO-EN-EL-BASELINE.md` que vivía
+dentro de esa carpeta **salió del plugin**: hoy es
+`docs/discovery/baseline-como-usar-fact-builder.md` y no se instala. Era
+material de pruebas del dueño, no método; dentro del plugin viajaba a la máquina de ella sin
+tener nada que hacer allí.
 
 ### Añadir un comando nuevo
 
@@ -261,8 +296,9 @@ Dos archivos mandan: `marketplace.json` (raíz) dice qué plugins hay y dónde e
    carpeta nueva dentro de `skills/`. Sí conviene subir `version` en `plugin.json` (§5).
 5. Publicar según §5, y decirle a ella que pulse **Update**.
 
-Material de apoyo: los archivos extra junto a un `SKILL.md` (como en `fact-builder/`) son
-parte del método y viajan con él.
+Material de apoyo: los archivos extra junto a un `SKILL.md` (como el `FORMATO-DE-SALIDA.md` de
+`hechos-con-prueba/`) son parte del método y viajan con él — con el mismo criterio al revés: lo
+que no sea método no debe estar ahí, porque se instala en la máquina de ella.
 
 ---
 
@@ -308,4 +344,6 @@ corrientes**, y así hay que presentarlo — a ella la primera.
 | Que los comandos aparezcan con el nombre esperado (§1) | En la primera sesión. Se ve en un intento. |
 | Que **Update** traiga lo nuevo sin subir `version` (§5) | Al publicar el primer cambio. |
 | Que `/redactar-escrito` produzca `.docx` en su entorno (§1) | En el primer borrador real. |
-| Nube o local, y si en Pro hay control para elegirlo (§6) | **Antes de añadir el Core.** Hoy no bloquea. |
+| Que pueda transcribir o citar minutos de una grabación (§1) | **Antes de sentarse a trabajar**, con un archivo real de ella. Bloquea el Ejemplo 2 de su guía y media promesa de `/hechos-con-prueba`. |
+| Qué hace con un PDF escaneado sin capa de texto (§1) | **Antes de sentarse a trabajar**, con un archivo real de ella. Si no lo lee, no funciona ninguno de los seis. |
+| Nube o local, y si en Pro hay control para elegirlo (§6) | **Antes de que abra material de una clienta.** Es secreto profesional hoy, no arquitectura de mañana. |
