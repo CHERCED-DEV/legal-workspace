@@ -21,17 +21,17 @@
 | información faltante / remediación | Explicar qué comprobar o fortalecer. |
 | riesgo residual / soporte | Declarar lo que sigue abierto. |
 
-Si un hallazgo no tiene soporte factual o jurídico suficiente, usar **UNSUPPORTED_REVIEW_OBSERVATION** y no presentarlo como defecto confirmado.
+Si un hallazgo no tiene soporte factual o jurídico suficiente, usar **`UNSUPPORTED_REVIEW_OBSERVATION` — observación de revisión sin soporte** y no presentarlo como defecto confirmado.
 
 ## Escala de evaluación
 
 | Estado | Significado |
 |---|---|
-| ROBUST | No se encontraron vulnerabilidades materiales con el material disponible; no es garantía. |
-| DEFENSIBLE_WITH_RISKS | Hay una postura seria, con riesgos visibles y acciones posibles. |
-| MATERIAL_WEAKNESSES | Existen fallas materiales que requieren revisión antes de usar el producto. |
-| HIGH_RISK | Material insuficiente, contradicción grave o regla/fuente crítica pendiente. |
-| INSUFFICIENT_BASIS | No existe base suficiente para una evaluación responsable. |
+| `ROBUST` | No se detectaron debilidades materiales en el material revisado; **no es un pronóstico ni garantía**. |
+| `DEFENSIBLE_WITH_RISKS` | Hay una postura seria, con riesgos visibles y acciones posibles. |
+| `MATERIAL_WEAKNESSES` | Hay debilidades materiales que requieren revisión antes de usar el producto. |
+| `HIGH_RISK` | Hay material insuficiente, contradicción grave o regla/fuente crítica pendiente. |
+| `INSUFFICIENT_BASIS` | No existe base suficiente para una evaluación responsable. |
 
 ## Restricciones
 

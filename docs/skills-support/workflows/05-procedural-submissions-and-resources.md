@@ -9,7 +9,7 @@ Asistir la preparación y revisión de actuaciones procesales sin reducirlas a u
 
 ## Cuándo ocurre este flujo
 
-Al preparar demanda/contestación, aportar o solicitar prueba, subsanar, informar, oponerse, aclarar, corregir, reponer, apelar, desistir, cumplir requerimiento o pronunciarse sobre traslado.
+Al preparar demanda/contestación, aportar o solicitar prueba, subsanar, informar, oponerse, aclarar, corregir, reponer, apelar, desistir, cumplir requerimiento, solicitar una medida cautelar o pronunciarse sobre traslado.
 
 ## Roles y ejemplos de activación
 
@@ -30,7 +30,8 @@ Contexto del Case, fuente/providencia incorporada y su locator, propuesta de Fac
 3. Separar requisitos comunes de requisitos específicos del procedimiento.
 4. Vincular cada afirmación fáctica a Evidence o marcar falta de soporte.
 5. Para recursos: formular objeto, agravios, fundamentos, expediente relevante y petición concreta; solicitar verificación humana de disponibilidad/término.
-6. Redactar/revisar como composición de capacidades y entregar riesgos visibles.
+6. Para una medida cautelar: separar finalidad, hechos/evidencia, medida solicitada, fuente/regla por verificar, urgencia alegada y decisión humana; no afirmar procedencia.
+7. Redactar/revisar como composición de capacidades y entregar riesgos visibles.
 
 ## Salidas esperadas
 

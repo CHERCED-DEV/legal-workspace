@@ -27,8 +27,8 @@ Este trabajo no crea código del Core, tablas, nuevas herramientas MCP, agentes 
 
 | Etiqueta | Uso |
 |---|---|
-| HECHO_VERIFICADO | Hecho comprobado contra fuente identificada y fechada. |
-| FUENTE_OFICIAL_VERIFICADA | Fuente oficial consultada; no equivale por sí sola a pertinencia jurídica. |
+| HECHO_VERIFICADO | Afirmación respaldada por evidencia o fuente identificada y por el nivel de revisión definido; no significa que el modelo resuelva un hecho controvertido. |
+| FUENTE_OFICIAL_VERIFICADA | Se comprobó la identidad/origen de una fuente oficial; no equivale por sí sola a vigencia, pertinencia ni aplicabilidad jurídica. |
 | FUENTE_SECUNDARIA_VERIFICADA | Fuente institucional o secundaria identificada; sirve como apoyo, no como cierre de punto crítico. |
 | HIPOTESIS / SUPUESTO | Propuesta de trabajo o premisa todavía no confirmada. |
 | POR_VERIFICAR | Falta comprobar fuente, texto, versión, alcance o hecho. |

@@ -14,7 +14,7 @@ Usar antes de presentar una demanda, contestación, recurso, concepto o borrador
 
 ## Salida
 
-Informe breve con ataques críticos, vulnerabilidades de evidencia, procedimiento, derecho sustantivo, temporalidad, contraargumentos previsibles, información faltante y riesgo residual. Un ataque sin sustento queda marcado UNSUPPORTED_REVIEW_OBSERVATION.
+Informe breve con ataques críticos, vulnerabilidades de evidencia, procedimiento, derecho sustantivo, temporalidad, contraargumentos previsibles, información faltante y riesgo residual. Un ataque sin sustento queda marcado `UNSUPPORTED_REVIEW_OBSERVATION` (observación sin soporte).
 
 ## Límite humano
 

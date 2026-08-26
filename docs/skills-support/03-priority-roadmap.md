@@ -1,5 +1,7 @@
 # 03 — Roadmap cualitativo
 
+> **Nota de navegación:** esta hoja de ruta conserva el detalle de la primera iteración. La hoja de ruta de referencia de la revisión v1 es [03-skill-priority-roadmap.md](03-skill-priority-roadmap.md).
+
 **Estado:** propuesta de investigación; no es plan de implementación del Core.
 **Criterios sin pesos:** frecuencia, tiempo consumido, severidad de error, repetición, disponibilidad de input, verificabilidad del output, costo de revisión humana, riesgo jurídico, reutilización y dependencia de derecho no verificado.
 

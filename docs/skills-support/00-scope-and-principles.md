@@ -1,5 +1,7 @@
 # 00 — Alcance y principios
 
+> **Nota de navegación:** este es un documento complementario de la primera iteración. Para el alcance, gobierno, etiquetas y resultado de cobertura de la revisión v1, prevalece [00-scope-and-governance.md](00-scope-and-governance.md).
+
 **Estado:** guía de investigación.
 **Checked at:** 2026-08-25.
 **Autoridad arquitectónica de referencia:** ADR-001 a ADR-006 Accepted, Technical Design V0, `principles.md`, `boundaries.md`, `vertical-slice-v0.md` y glosario.

@@ -8,6 +8,8 @@ Cada dossier cubre: objetivo; rol y activadores; entradas; contexto canónico e 
 
 Cuando una sección menciona un Knowledge Pack, este aporta datos versionados y fechados. No verifica el estado del expediente ni impone autorizaciones, transiciones o invariantes: esas responsabilidades siguen siendo del Core y de la persona competente.
 
+La [matriz de cobertura](coverage-matrix.md) vincula los 29 workflows obligatorios del prompt v1 con su dossier y sus brechas abiertas. Es un inventario de investigación, no una certificación de cumplimiento jurídico.
+
 ## Cobertura de familias
 
 | Familia de trabajo | Dossier principal | Estado de producto |
@@ -27,6 +29,11 @@ Cuando una sección menciona un Knowledge Pack, este aporta datos versionados y 
 | Policivo y querellas | [13 — Policivo y querellas](13-policivo-y-querellas.md) | P3 DEFER |
 | Redacción de decisiones de autoridad | [14 — Apoyo a autoridad](14-apoyo-redaccion-decisiones-autoridad.md) | P3 DEFER |
 | Conciliación y negociación | [15 — Conciliación](15-conciliacion-y-negociacion.md) | P3 DEFER |
+| Clasificación de documentos | [16 — Clasificación](16-document-classification.md) | capacidad transversal P1 |
+| Revisión del estado del caso | [17 — Estado del caso](17-case-status-review.md) | P2 DEFER |
+| Audiencia pre y post | [18 — Audiencias pre/post](18-pre-and-post-hearing.md) | composición P2 |
+| Demanda, revisión y contestación | [19 — Demanda y contestación](19-demand-response-and-review.md) | composición P2 |
+| Rigor judicial | [20 — Rigor judicial](20-judicial-rigor-review.md) | modo de revisión P2 |
 
 ## Regla para información no confiable
 

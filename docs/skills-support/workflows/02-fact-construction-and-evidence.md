@@ -2,7 +2,7 @@
 
 **Fuente funcional:** OBSERVED / USER-CONFIRMED.
 **Prioridad:** `fact-builder` P0; `evidence-analysis` P1.
-**Arquitectura de referencia:** ADR-003, ADR-006, kernel y `plugin/skills/fact-builder/`.
+**Arquitectura de referencia:** ADR-003, ADR-006, kernel y `plugins/despacho/skills/fact-builder/`.
 
 ## Objetivo de trabajo
 

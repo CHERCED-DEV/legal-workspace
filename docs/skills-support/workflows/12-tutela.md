@@ -42,13 +42,14 @@ Texto oficial aplicable, jurisprudencia de la Corte Constitucional, fuente de la
 1. Precisar el producto pedido: exploración, borrador, revisión, respuesta o impugnación.
 2. Separar relato, hecho con soporte, alegación, supuesto, documento disponible y dato faltante.
 3. Formular los problemas jurídicos como preguntas a investigar, sin convertirlos en conclusiones.
-4. Identificar hechos, evidencia, fechas, autoridades y pasajes que requieren verificación.
-5. Consultar fuentes oficiales por jurisdicción, fecha relevante y versión; distinguir existencia, vigencia y pertinencia.
-6. Construir una estructura de borrador o revisión que haga visibles alternativas, riesgos y decisiones humanas pendientes.
+4. Separar, como preguntas de investigación independientes, subsidiariedad, inmediatez, posible perjuicio irremediable, medidas provisionales, legitimación, hechos probados y reglas especiales que puedan aplicar.
+5. Identificar hechos, evidencia, fechas, autoridades y pasajes que requieren verificación.
+6. Consultar fuentes oficiales por jurisdicción, fecha relevante y versión; distinguir existencia, vigencia y pertinencia.
+7. Construir una estructura de borrador o revisión que haga visibles alternativas, riesgos y decisiones humanas pendientes.
 
 ## Salidas esperadas
 
-Una matriz de hechos/evidencia/faltantes, preguntas jurídicas, fuentes y pasajes por comprobar, borrador estructurado o informe de revisión falsable. La salida debe indicar qué fue leído, qué no se pudo confirmar y qué debe decidir la profesional.
+Una matriz de hechos/evidencia/faltantes, preguntas jurídicas, fuentes y pasajes por comprobar, borrador estructurado o informe de revisión falsable. Debe separar las preguntas sobre subsidiariedad, inmediatez, perjuicio irremediable y medidas provisionales; no debe resolverlas por nombre o por plantilla. La salida debe indicar qué fue leído, qué no se pudo confirmar y qué debe decidir la profesional.
 
 ## Decisiones humanas
 

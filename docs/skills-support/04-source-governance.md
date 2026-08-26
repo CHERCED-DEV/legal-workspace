@@ -46,6 +46,30 @@ La fuente de acceso no sustituye el análisis de autoridad, vigencia ni ámbito 
 | `CONFLICTING` | Mostrar conflicto y escalar | Elegir silenciosamente una versión |
 | `OUTDATED` | Conservar trazabilidad histórica | Aplicar al caso sin nueva verificación |
 
+### Equivalencia con las etiquetas visibles del corpus
+
+Los estados técnicos anteriores se conservan para compatibilidad con materiales de la primera iteración. En una salida para una persona usuaria o en una conclusión de investigación, usar además la etiqueta en español que corresponda:
+
+| Estado técnico | Etiqueta legible | Consecuencia |
+|---|---|---|
+| `VERIFIED_OFFICIAL` | `FUENTE_OFICIAL_VERIFICADA` | La identidad de la fuente fue comprobada; todavía se debe verificar pasaje, fecha y pertinencia. |
+| `VERIFIED_SECONDARY` | `FUENTE_SECUNDARIA_VERIFICADA` | Sirve para orientar la búsqueda; no cierra un punto jurídico crítico por sí sola. |
+| `UNVERIFIED` | `POR_VERIFICAR` | No se presenta como regla, requisito ni hecho. |
+| `CONFLICTING` | `CONFLICTO_DE_FUENTES` | Se explica el conflicto y se escala a revisión; no se elige una versión en silencio. |
+| `OUTDATED` | `VIGENCIA_POR_VERIFICAR` | Se conserva como antecedente, pero no se aplica sin una nueva comprobación. |
+
+Para una sentencia o una transición aún no cerrada, usar respectivamente `JURISPRUDENCIA_POR_VERIFICAR` o `TRANSICION_POR_VERIFICAR`. Cuando la evidencia no alcance, la conclusión correcta es `NO_TENEMOS_INFORMACION_SUFICIENTE`.
+
+## 4.1 Clase de fuente y verificación crítica
+
+| Clase | Uso permitido | Control adicional |
+|---|---|---|
+| `PRIMARY_OFFICIAL` | Promulgación o publicación oficial con identificador verificable | Confirmar el texto, el pasaje y la fecha del caso. |
+| `OFFICIAL_CONSOLIDATED` | Localizar y leer una versión institucional integrada | Cruzar el punto crítico con publicación, reforma o versión aplicable. |
+| `OFFICIAL_JURISPRUDENCE` | Localizar una providencia oficial | Registrar corporación, sala/sección, fecha, identificador, pasaje, hechos y autoridad posterior/contraria. |
+| `OFFICIAL_INTERPRETIVE` | Orientar una consulta o explicar un trámite | No usar como única base de una conclusión sensible. |
+| `SECONDARY` | Descubrir fuentes o formular preguntas | No cerrar identidad, vigencia, alcance o estrategia. |
+
 ## 5. Protocolo de investigación jurídica
 
 1. Formular la pregunta y el resultado que necesita justificarse.
@@ -60,3 +84,6 @@ La fuente de acceso no sustituye el análisis de autoridad, vigencia ni ámbito 
 
 Un snapshot de fuente externa debe guardar provenance y fecha de consulta, pero no habilita que una Skill escriba en el expediente. Ningún recurso de Skill contiene credenciales, documentos reales, nombres de clientes ni resultados de búsquedas de un Case. Las operaciones de retrieval y persistencia pertenecen a conectores/adapters futuros y al Core.
 
+## 7. Antilavado de conocimiento
+
+Copiar una norma, resumen o enlace a este directorio no la vuelve una regla permanente ni una verdad que una Skill pueda aplicar de memoria. Cada afirmación jurídica operativa debe responder: **fuente, fecha de revisión, pasaje o identificador, aplicabilidad, estado y límite**. Si falta uno de esos elementos, la afirmación se marca `POR_VERIFICAR` o `NO_TENEMOS_INFORMACION_SUFICIENTE`.

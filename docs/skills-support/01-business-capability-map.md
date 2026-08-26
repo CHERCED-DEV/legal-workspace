@@ -1,7 +1,7 @@
 # 01 — Mapa de capacidades jurídicas
 
 **Estado:** mapa inicial; no estima frecuencias no observadas.
-**Base:** discovery existente + research metodológico. “UNKNOWN — preguntar a la profesional” significa que aún no se ha medido para esta profesional.
+**Base:** discovery existente + research metodológico. “`OBSERVED / USER-CONFIRMED`” significa que la actividad aparece en el material disponible o fue indicada por la usuaria; no sustituye una validación profesional adicional de frecuencia, alcance o prioridad. “UNKNOWN — preguntar a la profesional” significa que aún no se ha medido para esta profesional.
 
 | ID | Familia funcional | Capacidad | Valor | Evidencia | Rol y alcance | Áreas | Frecuencia estimada | Dependencia del Core | Candidata / dueño | Riesgo | Prioridad | Confianza |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -33,3 +33,30 @@
 - **P1:** siguiente ola, cuando haya baseline, fuentes y gates suficientes.
 - **P2/P3:** capacidad valiosa pero dependiente de Knowledge Packs declarativos, de contexto de autoridad aún no levantado o de descubrimiento adicional.
 - **Límite del Knowledge Pack:** puede aportar reglas y fuentes fechadas; nunca sustituye validaciones, autorizaciones, transiciones o control de estado del Core.
+
+### Campos complementarios de evaluación v1
+
+Los valores cualitativos de riesgo son **RESEARCH_INFERRED** hasta que la profesional los valide. Frecuencia y costo de tiempo permanecen en UNKNOWN para no fabricar datos.
+
+| ID | frequency_source | time_cost | error_risk | legal_risk | knowledge_dependency | human_boundary | open_questions |
+|---|---|---|---|---|---|---|---|
+| CAP-01 | UNKNOWN — entrevista pendiente | UNKNOWN | medio | medio | ninguno si solo ordena relato | aceptar encargo, prioridad y alcance | Q1, Q2 |
+| CAP-02 | UNKNOWN — uso V0 no mide frecuencia profesional | UNKNOWN | alto | alto | prueba/procedimiento por área | revisión, autorización y commit | Q2, Q8 |
+| CAP-03 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | alto | evidencia, regla probatoria y fecha | relevancia, peso y consecuencia | Q2, Q8, Q10 |
+| CAP-04 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | alto | tipo documental y procedimiento | corrección y uso final | Q3, Q11 |
+| CAP-05 | UNKNOWN — entrevista pendiente | UNKNOWN | medio | alto | jurisdicción, materia y fecha | qué investigar y cómo encuadrarlo | Q4 |
+| CAP-06 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | muy alto | fuentes, jurisprudencia, transición y territorio | pertinencia, lectura y cita final | Q4, Q5 |
+| CAP-07 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | muy alto | requisitos por producto, área y fecha | afirmaciones, estrategia, firma y presentación | Q3, Q11 |
+| CAP-08 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | muy alto | checklist procedimental y fuente fechada | juicio jurídico y aprobación | Q3, Q11 |
+| CAP-09 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | muy alto | procedimiento, estado y plazo verificable | admisiones, excepciones y estrategia | Q3, Q10 |
+| CAP-10 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | alto | actuación, canal, fuente y fecha | intención, firma y envío | Q3, Q5 |
+| CAP-11 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | alto | audiencia, transcripción y regla especial | preguntas, estrategia y compromisos | Q9 |
+| CAP-12 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | alto | efecto jurídico por área | materialidad y respuesta | Q10 |
+| CAP-13 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | alto | derecho adverso y procedimiento | aceptación de riesgo y respuesta | Q11 |
+| CAP-14 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | muy alto | Ley 1755, transparencia, datos y sector | modalidad, reserva, traslado, firma y envío | Q5, Q13 |
+| CAP-15 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | muy alto | regla fechada más estado procesal | procedencia, agravios y firma | Q3, Q5 |
+| CAP-16 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | alto | derecho sustantivo, temporalidad y fuentes | recomendación y grado de certeza | Q4 |
+| CAP-17 | UNKNOWN — entrevista pendiente | UNKNOWN | alto | alto | materia, mecanismo y regla especial | negociación, oferta, aceptación y acuerdo | Q15 |
+| CAP-18 | UNKNOWN — discovery de autoridad pendiente | UNKNOWN | muy alto | muy alto | procedimiento, territorio y expediente oficial | competencia, prueba, decisión y firma | Q6 |
+| CAP-19 | UNKNOWN — entrevista pendiente | UNKNOWN | medio | alto | confidencialidad, reserva y estado autorizado | revelación, compromiso y envío | Q12 |
+| CAP-20 | UNKNOWN — evaluación de práctica pendiente | UNKNOWN | muy alto | muy alto | ética, datos, secreto y políticas | conflicto, riesgo crítico y autorización | Q2, Q6 |

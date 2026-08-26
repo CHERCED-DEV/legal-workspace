@@ -1,11 +1,12 @@
 # Fuentes normativas y red de dependencias — Colombia
 
-**Fecha de corte:** 2026-08-25.  
+**Fecha de corte:** 2026-08-25.
+**verified_as_of:** 2026-08-25.
 **Uso:** catálogo de investigación, no Knowledge Pack ejecutable ni confirmación automática para un caso.
 
 ## Regla de verificación
 
-El Diario Oficial es la referencia primaria para promulgación/publicación. SUIN-Juriscol y Función Pública son fuentes institucionales útiles para localizar y leer textos integrados, pero sus avisos informan que no certifican por sí solos la vigencia. Cuando un efecto jurídico sea material, conservar Diario Oficial, texto/pasaje, fecha relevante, reformas, transición y jurisprudencia aplicable. Estado crítico: **CROSS_CHECK_REQUIRED**.
+El Diario Oficial es la referencia primaria para promulgación/publicación. SUIN-Juriscol y Función Pública son fuentes institucionales útiles para localizar y leer textos integrados, pero sus avisos informan que no certifican por sí solos la vigencia. Cuando un efecto jurídico sea material, conservar Diario Oficial, texto/pasaje, fecha relevante, reformas, transición y jurisprudencia aplicable. Estado crítico: **`CROSS_CHECK_REQUIRED` (se requiere contraste adicional)**.
 
 ## Esquema de registro
 
@@ -17,6 +18,7 @@ Cada ID se puede ampliar con: tipo, número, año, título, emisor, jurisdicció
 | N-CIVIL | Código Civil y reformas | fuente oficial del texto consolidado por identificar para el artículo concreto | POR_VERIFICAR | familia, sucesiones, personas y bienes según asunto | UNVERIFIED; no usar como fuente de requisito sin artículo y versión |
 | N-CST | Código Sustantivo del Trabajo | [SUIN — D. 2663/1950](https://www.suin-juriscol.gov.co/viewDocument.asp?ruta=Decretos%2F1874133), [Función Pública](https://www1.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=199983) | expedido 1950-08-05; D.O. 27.407, 1950-09-09; vigencia indicada desde 1951-01-01 | Leyes 50/1990, 789/2002, 2101/2021, 2466/2025; D. 1072/2015; no confundir con Ley 2452 procesal | FUENTE_OFICIAL_VERIFICADA; versión/artículo/vínculo/fecha POR_VERIFICAR |
 | N-CGP | Ley 1564 de 2012, Código General del Proceso | [SUIN](https://www.suin-juriscol.gov.co/viewDocument.asp?id=1683572), [Rama Judicial PDF](https://www.ramajudicial.gov.co/documents/6342549/27434411/Ley_1564_2012.pdf/3dc3d888-db54-4fe5-8173-8911d110efca) | D.O. 48.489, 2012-07-12; entrada escalonada por art. 627 | civil/familia; reformas, artículo y fecha deben revisarse | FUENTE_OFICIAL_VERIFICADA; transición/artículo concreto POR_VERIFICAR |
+| N-DL2158 | Decreto Ley 2158 de 1948, procedimiento laboral anterior | [Función Pública](https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=5259) | fuente institucional identificada; publicación, artículo y versión por corroborar cuando sean materiales | régimen anterior frente a N-L2452; no aplicar por defecto a una demanda nueva | FUENTE_OFICIAL_VERIFICADA para localización; publicación, artículo y transición POR_VERIFICAR |
 | N-CPACA | Ley 1437 de 2011, CPACA | [SUIN](https://www.suin-juriscol.gov.co/viewDocument.asp?ruta=Leyes%2F1680117), [Función Pública](https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=41249) | D.O. 47.956, 2011-01-18; vigencia general 2012-07-02 | Ley 2080/2021 y régimen especial aplicable | FUENTE_OFICIAL_VERIFICADA; medio de control/fecha POR_VERIFICAR |
 | N-L2080 | Ley 2080 de 2021, reforma CPACA | fuente oficial y texto consolidado por registrar | POR_VERIFICAR | modifica CPACA; no asumir regla original de Ley 1437 | POR_VERIFICAR |
 | N-L1755 | Ley 1755 de 2015, derecho de petición | [SUIN](https://www.suin-juriscol.gov.co/viewDocument.asp?id=30043679), [Función Pública](https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=65334) | D.O. 49.559, 2015-06-30; vigente desde publicación | sustituyó Título II, arts. 13–33, Ley 1437; procedimiento judicial puede seguir código especial | FUENTE_OFICIAL_VERIFICADA; modalidad/sector/término POR_VERIFICAR |

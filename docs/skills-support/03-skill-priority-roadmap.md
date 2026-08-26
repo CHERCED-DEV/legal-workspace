@@ -34,4 +34,4 @@ No se asignan frecuencias ni tiempos inventados. La posición se explica por reu
 5. El Core conserva cualquier validación, autorización o transición sensible.
 6. La salida muestra el material, la incertidumbre y la decisión humana pendiente.
 
-Ver [03-priority-roadmap.md](03-priority-roadmap.md) para el razonamiento de la primera iteración y [skill-candidates/INDEX.md](skill-candidates/INDEX.md) para el índice operativo.
+Para el razonamiento histórico de la primera iteración, consulte [03-priority-roadmap.md](03-priority-roadmap.md). El índice operativo vigente está en [skill-candidates/INDEX.md](skill-candidates/INDEX.md).

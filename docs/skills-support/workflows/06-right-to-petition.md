@@ -28,14 +28,15 @@ Facts/Evidence incorporados cuando existan, Case context selectivo y comunicaci�
 ## Etapas del método y razonamiento
 
 1. Separar solicitudes explícitas, antecedentes, anexos y afirmaciones.
-2. Identificar posible destinatario, modalidad y puntos que necesitan contestación, declarando incertidumbre.
-3. Mapear cada punto a información/evidencia disponible, no disponible o que requiere consulta humana.
-4. Preparar estructura clara de petición o respuesta punto por punto.
-5. Revisar completitud lógica, tono y referencias, sin afirmar cumplimiento legal definitivo.
+2. Identificar posible destinatario, modalidad, competencia aparente y puntos que necesitan contestación, declarando incertidumbre.
+3. Clasificar si hay una cuestión que exige verificar: traslado por falta de competencia, petición incompleta, atención prioritaria, reserva/confidencialidad, información de terceros, solicitud de documentos o regla sectorial especial.
+4. Mapear cada punto a información/evidencia disponible, no disponible o que requiere consulta humana; no asumir que una ausencia de documento prueba que no existe.
+5. Preparar estructura clara de petición o respuesta punto por punto, incluyendo la acción que debe confirmar la persona responsable cuando haya competencia, traslado, completitud o prioridad pendientes.
+6. Revisar completitud lógica, tono y referencias, sin afirmar cumplimiento legal definitivo, término aplicable ni radicación.
 
 ## Salidas esperadas
 
-Tabla de solicitudes/puntos, información disponible/faltante, borrador estructurado, matriz de respuesta y alertas de fuente/fecha/canal. Una respuesta debe mostrar qué punto queda pendiente y por qué; no simular que una búsqueda fallida prueba inexistencia.
+Tabla de solicitudes/puntos, información disponible/faltante, borrador estructurado, matriz de respuesta y alertas de fuente/fecha/canal. La matriz debe distinguir **competencia por verificar**, **posible traslado**, **petición incompleta**, **posible atención prioritaria**, **reserva por verificar** y **revisión humana requerida**. Una respuesta debe mostrar qué punto queda pendiente y por qué; no simular que una búsqueda fallida prueba inexistencia.
 
 ## Decisiones humanas y límites de la IA
 

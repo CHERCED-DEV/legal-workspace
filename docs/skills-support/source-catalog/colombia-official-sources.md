@@ -1,9 +1,9 @@
 # Catálogo de fuentes oficiales — Colombia
 
 **Propósito:** orientar recuperación y verificación; no sustituye el texto publicado, la lectura del pasaje ni la revisión profesional.
-**Checked at:** 2026-08-25. **Estado general:** VERIFIED_OFFICIAL para identidad institucional y acceso; vigencia/aplicabilidad se verifica por norma y Case.
+**Última verificación:** 2026-08-25. **verified_as_of:** 2026-08-25. **Estado general:** `FUENTE_OFICIAL_VERIFICADA` para identidad institucional y acceso; vigencia y aplicabilidad se verifican por norma y caso.
 
-| Fuente | Institución / contenido | Nivel de autoridad | Acceso y consideraciones de uso | Búsqueda e identificadores | Fechas / versión | Snapshot y límites | Checked at |
+| Fuente | institución / contenido / cobertura (`institution / content / coverage`) | estado oficial (`official_status`) | acceso / búsqueda / estabilidad de identificador | fechas / vigencia | snapshot / límites / disclaimer | última verificación |
 |---|---|---|---|---|---|---|---|
 | [Diario Oficial](https://svrpubindc.imprenta.gov.co/diario/index.xhtml) | Imprenta Nacional; publicación oficial | Primaria oficial para promulgación/publicación | Consulta web pública; confirmar disponibilidad histórica y condiciones de descarga antes de uso automatizado o masivo | edición, fecha y PDF | fecha/número de Diario Oficial | preservar PDF/edición cuando sea necesario; no reemplaza la interpretación de vigencia | 2026-08-25 |
 | [SUIN-Juriscol](https://www.suin-juriscol.gov.co/) | Sistema Único de Información Normativa; normas, decretos y consulta | Oficial, compilación informativa | Consulta web pública; sus avisos no sustituyen certificación autónoma de vigencia; contrastar publicación/reforma | ley/decreto, ruta, texto y metadatos | muestra datos de documento y compilación | útil para localizar y consolidar; guardar URL, identificador y fecha de consulta | 2026-08-25 |

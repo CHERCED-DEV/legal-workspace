@@ -10,8 +10,12 @@
 | `jurisdiction` | ¿Qué orden jurídico/procedimiento gobierna? |
 | `published_at` | ¿Cuándo fue publicada/expedida la fuente? |
 | `effective_from` / `effective_to` | ¿Cuándo produce/dejó de producir efectos según fuente? |
+| `repealed_at` | ¿Cuándo perdió vigencia total o parcialmente, si la fuente lo indica? |
 | `transition_rule` | ¿Qué ocurre con procesos o hechos iniciados antes del cambio? |
 | `case_relevant_date` | ¿Qué fecha del caso importa: hecho, presentación, inicio del proceso, decisión u otra? |
+| `procedural_start_date` | ¿Cuándo se inició la actuación o proceso que puede activar un régimen transitorio? |
+| `event_date` | ¿Cuándo ocurrió el hecho, conducta, pago, comunicación o evento material? |
+| `decision_date` | ¿Cuándo se emitió el acto, providencia o decisión que se analiza? |
 | `checked_at` | ¿Cuándo se volvió a comprobar esta información? |
 | `status` | ¿Está verificada, en conflicto, desactualizada o pendiente? |
 
@@ -22,6 +26,7 @@
 3. Comparar las fechas del caso contra ese régimen, declarando datos faltantes.
 4. Recuperar el texto oficial aplicable y registrar su versión/consulta.
 5. Si el resultado depende de interpretación, presentar alternativas y pedir revisión humana.
+6. Buscar si una norma especial, por sujeto, materia, procedimiento o territorio desplaza la regla general; documentar fuente, alcance y base temporal.
 
 ## 3. Fixture de calidad: procesos laborales colombianos
 
