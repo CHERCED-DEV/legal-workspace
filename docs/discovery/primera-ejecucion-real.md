@@ -88,3 +88,43 @@ Pendiente del informe de evaluación en curso: si alguien citó una página ileg
 El proyecto no tenía **ningún** fixture ejecutable ni forma de medir si una versión de skill mejora a la anterior. Ahora tiene un caso real con **truth set conocido**: 25 páginas cuya mención es, por construcción, una fabricación. Cualquier versión futura de los métodos puede medirse contra él.
 
 **Condición de uso:** el material vive fuera del repositorio y no se distribuye. Lo reutilizable es el procedimiento y las 25 páginas de referencia, no los documentos.
+
+---
+
+## 8. HECHO MEDIDO — el coste, y es el problema más serio del producto
+
+**Planteado por el dueño el 2026-08-26:** *"la idea es que no se vaya a derrochar en tokens, que ella lo pueda utilizar con un plan Pro… que le pueda servir para todo un día de trabajo. Aquí hemos estado haciendo un monstruo… si no, esto no va a ser rentable."*
+
+Consumo real de la ejecución de hoy, por comando, sobre un caso de 56 páginas:
+
+| | Turnos | Salida | Contexto releído |
+|---|---:|---:|---:|
+| Comando más barato | **16** | 19.223 | 0,9 M |
+| | 37 | 48.441 | 2,7 M |
+| | 30 | 64.332 | 2,9 M |
+| Comando más caro | **97** | 75.524 | 12,0 M |
+
+**Total de la prueba: ~3 millones de tokens facturables y 50,8 M de contexto releído.**
+
+### Dónde está el derroche
+
+**El número que importa no es la salida: son los turnos.** Entre el comando barato y el caro hay 6× de diferencia en turnos (16 vs 97) y 13× en contexto releído. **Cada turno vuelve a arrastrar todo el contexto acumulado**, así que el coste crece con el cuadrado del trabajo, no linealmente. Un método que manda «lee todo antes de proponer nada» sobre 56 páginas, con un `SKILL.md` de 300+ líneas y un archivo de formato de 456 más, paga ese contexto en cada uno de sus turnos.
+
+Tres causas, por orden de peso:
+
+1. **Los métodos son largos y se releen enteros en cada turno.** Seis skills de 270 a 373 líneas, más `FORMATO-DE-SALIDA.md` con 456. Se escribieron optimizando exhaustividad, sin mirar el coste ni una vez.
+2. **El procedimiento es exhaustivo por diseño.** Fases obligatorias, autoevaluaciones de 20+ preguntas, releer cada anclaje. Todo eso es calidad, y todo eso son turnos.
+3. **La salida es desproporcionada** (§5): producir 125 KB cuesta, y además obliga a ella a revisarlos.
+
+### Lo que NO se puede afirmar todavía
+
+**No se puede traducir esto a «le alcanza para N horas de Pro».** Los límites del plan no están publicados en tokens —solo consta que Pro da *"at least five times the usage"* frente al gratuito— y además estas cifras vienen de agentes de orquestación, que cargan trabajo de herramientas que ella no tendrá. **El orden de magnitud es indicativo y preocupante; la conversión a jornadas sería inventada.**
+
+### Líneas de ataque, ninguna decidida
+
+- **Adelgazar los métodos** sin perder el método: lo que hace bueno a un skill es la distinción bien puesta, no la extensión. Hay margen.
+- **Bajar los turnos**, que es la palanca real: menos idas y vueltas por pasada.
+- **Graduar el esfuerzo**: no todo caso necesita la pasada exhaustiva. Una pasada rápida y una a fondo, y que ella elija.
+- **Acotar la salida** (§5), que abarata a la vez el producir y el revisar.
+
+**Medir antes y después es obligatorio**, y ahora se puede: el caso con truth set de §1 sirve también de banco de pruebas de coste.
