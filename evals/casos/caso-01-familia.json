@@ -88,5 +88,7 @@
   },
   "_correccion": "El plan de mejora atribuia los 97 turnos a hechos-con-prueba y los 16 a revisar-documento. Ambas atribuciones eran falsas: el de 97 es inventario-de-anexos y el de 16 es redactar-escrito, que se nego a trabajar. estado-del-caso no se ejecuto."
  },
- "_como_leerlo": "La veracidad manda sobre la economía. Una versión que baje el coste a la mitad y produzca una sola fabricación se descarta: la fiabilidad es lo caro de conseguir y lo que no se repara después. Toda mejora de coste se acepta solo si las fabricaciones siguen en cero y las páginas declaradas siguen en 25."
+ "_como_leerlo": "La veracidad manda sobre la economía. Una versión que baje el coste a la mitad y produzca una sola fabricación se descarta: la fiabilidad es lo caro de conseguir y lo que no se repara después. Toda mejora de coste se acepta solo si las fabricaciones siguen en cero y las páginas declaradas siguen en 25.",
+ "_INVALIDADO": "2026-08-26: el truth set de este caso queda INVALIDADO. Se construyo sobre la premisa de que las 25 paginas sin capa de texto eran ilegibles y que cualquier afirmacion sobre ellas era una invencion por construccion. FALSO: el modelo las lee como imagen (verificado, 40 bloques de imagen en el rastro de la ejecucion v0.2.0). Afirmar algo sobre esas paginas puede ser legitimo. Mientras no se reconstruya, la cifra de fabricaciones mide menos de lo que parece y hay que decirlo cada vez que se cite.",
+ "_como_rehacerlo": "El truth set deja de ser 'que paginas estan vacias' y pasa a ser 'que dice cada pagina': una transcripcion de referencia de las 25, contra la que se contrasta lo que el comando afirme. Mas caro de construir, y a cambio detecta el error que de verdad importa: no citar una pagina vacia, sino citarla mal."
 }

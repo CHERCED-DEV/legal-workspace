@@ -67,6 +67,20 @@ def metricas_de_agente(path):
 COMANDOS = ("hechos-con-prueba", "cronologia", "estado-del-caso",
             "inventario-de-anexos", "redactar-escrito", "revisar-documento")
 
+# Nombres de los archivos que hay ahora mismo en la carpeta de entregas.
+# Se rellena desde --salidas antes de clasificar a nadie.
+_ENTREGAS = []
+
+
+def registrar_entregas(dir_salidas):
+    _ENTREGAS[:] = []
+    if not dir_salidas or not os.path.isdir(dir_salidas):
+        return
+    for f in os.listdir(dir_salidas):
+        if f.startswith("~$") or os.path.isdir(os.path.join(dir_salidas, f)):
+            continue  # ~$ es el archivo de bloqueo que deja Word al abrir uno
+        _ENTREGAS.append(os.path.splitext(f)[0])
+
 
 def comando_de(path):
     """Qué comando ejecutó este agente, o None si no ejecutó ninguno.
@@ -81,8 +95,16 @@ def comando_de(path):
     etiquetado bien no es un instrumento.
     """
     texto = io.open(path, encoding="utf-8", errors="ignore").read()
-    entrega = re.search(r'"name":\s*"(?:Write|Edit)".{0,4000}?2-Borradores', texto, re.S)
-    if not entrega:
+
+    # Un agente cuenta como comando si nombró, dentro de una llamada a una
+    # herramienta, un archivo que EXISTE en la carpeta de entregas. Se
+    # comprueba contra el disco, no contra un patrón: el `.docx` se produce
+    # con un script y no con Write, y el agente que reescribe un método
+    # menciona la carpeta de entregas sin escribir en ella. Cualquier regla
+    # basada en el nombre de la herramienta falla en uno de los dos casos.
+    if not _ENTREGAS:
+        return None
+    if not any(n in texto for n in _ENTREGAS):
         return None
     for c in COMANDOS:
         if re.search(r"skills[/\\]%s[/\\]SKILL\.md" % re.escape(c), texto):
@@ -90,9 +112,16 @@ def comando_de(path):
     return "sin identificar"
 
 
-def leer_run(run_dir, solo_comandos=True):
-    """Métricas por agente. Por defecto mide **solo los comandos del arnés**:
-    incluir a los evaluadores mezcla el coste del producto con el de medirlo."""
+def leer_run(run_dir, solo_comandos=True, excluir=()):
+    """Métricas por agente. Mide solo los comandos del arnés: incluir a los
+    evaluadores mezclaría el coste del producto con el de medirlo.
+
+    **La clasificación automática es tentativa, no verdad.** Distinguir un
+    comando de un evaluador por su rastro no es fiable —el evaluador abre los
+    mismos métodos y nombra las mismas entregas— y afinar la heurística hasta
+    que acierte en un run la rompe en el siguiente. Por eso el instrumento
+    imprime el identificador de cada agente y acepta `--excluir`: cuando se
+    equivoque, se corrige a mano y queda escrito en el resultado."""
     etiquetas = {}
     jp = os.path.join(run_dir, "journal.jsonl")
     if os.path.exists(jp):
@@ -110,8 +139,9 @@ def leer_run(run_dir, solo_comandos=True):
         m = metricas_de_agente(f)
         if not m["turnos"]:
             continue
-        cmd = comando_de(f)
+        cmd = None if aid[:8] in excluir else comando_de(f)
         etiqueta = etiquetas.get(aid) or ""
+        m["id"] = aid[:8]
         m["agente"] = cmd or (etiqueta.split(":")[-1] if etiqueta else aid[:8])
         m["es_comando"] = cmd is not None
         m["segundos"] = int(os.path.getmtime(f) - os.path.getctime(f))
@@ -197,9 +227,10 @@ def volumen(path):
 
 # ─────────────────────────── informe ───────────────────────────
 
-def medir(run_dir, caso, dir_salidas, version):
+def medir(run_dir, caso, dir_salidas, version, excluir=()):
     ilegibles = set(caso["paginas_ilegibles"])
-    coste = leer_run(run_dir)
+    registrar_entregas(dir_salidas)
+    coste = leer_run(run_dir, excluir=excluir)
 
     salidas, fabs, decl_union = [], [], set()
     if dir_salidas and os.path.isdir(dir_salidas):
@@ -273,10 +304,12 @@ def imprimir(r):
     print("    decisiones que le exige ....... %d" % vol["decisiones_humanas"])
 
     print("\n  POR COMANDO")
-    print("    %-26s %6s %8s %10s %11s" % ("", "turnos", "salida", "cache_wr", "cache_rd"))
+    print("    %-9s %-22s %6s %8s %10s %11s" % ("id", "", "turnos", "salida", "cache_wr", "cache_rd"))
     for f in sorted(r["por_comando"], key=lambda x: -x["turnos"]):
-        print("    %-26s %6d %8s %10s %11s" % (
-            f["agente"][:26], f["turnos"], f'{f["output"]:,}', f'{f["cache_write"]:,}', f'{f["cache_read"]:,}'))
+        print("    %-9s %-22s %6d %8s %10s %11s" % (
+            f.get("id", ""), f["agente"][:22], f["turnos"],
+            f'{f["output"]:,}', f'{f["cache_write"]:,}', f'{f["cache_read"]:,}'))
+    print("\n    Si alguna fila no es un comando, vuelve a correr con --excluir <id>")
     print()
 
 
@@ -306,6 +339,7 @@ def main():
     ap.add_argument("--version", default="sin-versión")
     ap.add_argument("--guardar", help="ruta donde dejar el resultado en JSON")
     ap.add_argument("--comparar-con", help="resultado anterior, para el antes y después")
+    ap.add_argument("--excluir", default="", help="ids de agentes que NO son comandos, separados por coma")
     a = ap.parse_args()
 
     run = a.run_id
@@ -317,7 +351,8 @@ def main():
         run = cand[0]
 
     caso = json.load(io.open(a.caso, encoding="utf-8"))
-    r = medir(run, caso, a.salidas, a.version)
+    r = medir(run, caso, a.salidas, a.version,
+              excluir=tuple(x.strip() for x in a.excluir.split(",") if x.strip()))
     imprimir(r)
 
     if a.guardar:
