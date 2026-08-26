@@ -128,3 +128,46 @@ Tres causas, por orden de peso:
 - **Acotar la salida** (§5), que abarata a la vez el producir y el revisar.
 
 **Medir antes y después es obligatorio**, y ahora se puede: el caso con truth set de §1 sirve también de banco de pruebas de coste.
+
+---
+
+## 9. VEREDICTO DE LA EVALUACIÓN — la veracidad aguantó; el volumen no
+
+Comprobado **exhaustivamente, no por muestreo**, por un evaluador independiente y confirmado por una verificación propia hecha aparte con otro método.
+
+### 9.1 Lo que aguantó
+
+| Comprobación | Resultado |
+|---|---:|
+| Contenido atribuido a alguna de las 25 páginas ilegibles | **0** |
+| Páginas ilegibles declaradas como tales, una por una | **25 de 25** |
+| Fragmentos citados entre comillas contrastados contra el material | **647** |
+| Anclajes de página verificados contra *la página citada* | 104 + 81 + 54, **1 solo error** |
+| Derecho sustantivo propio · cálculo de días · escrituras fuera de `2-Borradores/` | **0 · 0 · 0** |
+| `1-Documentos recibidos/` tras la ejecución | **byte-idéntico** |
+
+**El fallo más peligroso del producto —la cita fantasma— no se produjo ni una vez**, teniendo 25 ocasiones servidas para producirlo. Es el resultado más importante que el proyecto ha obtenido, y solo era obtenible con material real.
+
+**Conducta emergente que nadie programó:** un comando usó los metadatos de las páginas legibles para deducir qué falta — *«dice "Página 1 de 2"; la segunda página llegó sin texto»*, *«el encabezado dice "8 mensajes" y el pie dice "1/3"»*. Convirtió una limitación técnica en un inventario de material faltante, que es exactamente lo que una abogada necesita.
+
+**`redactar-escrito` se negó a redactar, y por la razón correcta.** La corrección H-05 funcionó en su primera prueba real.
+
+### 9.2 Lo que falló — y es de producto, no de veracidad
+
+**~4.000 líneas de salida a partir de 31 páginas legibles.** El comando de hechos produjo **76 fichas**, cada una con su casilla `SÍ`/`NO`/`A MEDIAS`. Y entre ellas conviven una contradicción central del expediente y el lugar de expedición de una cédula: **ambas exigen la misma decisión formal de ella**.
+
+**El cuello de botella del sistema, que ningún método menciona:** hasta que ella marque las 76 fichas y renombre el archivo a ` - REVISADO.md`, `redactar-escrito` está bloqueado **por diseño**. La autoridad humana, que es la garantía del producto, es también su tapón. Cuanto más exhaustivo el método, más caro el tapón.
+
+Además, cuatro listas casi idénticas de material faltante repartidas en cuatro salidas distintas, sin que nadie las consolide.
+
+### 9.3 Hallazgo de método — una pregunta que el producto no contesta
+
+Ante el mismo texto dañado por la extracción del PDF, **dos comandos resolvieron al revés**: uno reparó la cita en silencio (`«31 y 1 de enero»`) y otro la transcribió tal cual y anotó el defecto (`«31y 1 de enero» [así, sin espacio]`).
+
+Ninguno de los dos hizo nada malo, y ninguna reparación cambió el sentido. **El problema es que el método no dice cuál es la conducta correcta**, y en un producto cuya promesa es la cita literal, eso no puede quedar al criterio de cada pasada. **DECISIÓN PENDIENTE.**
+
+### 9.4 Lo que esto significa para el rumbo
+
+El producto **no tiene un problema de fiabilidad: tiene un problema de proporción**. Eso es una noticia buena, porque la fiabilidad es lo caro de conseguir y lo que no se puede reparar después; la proporción se ajusta.
+
+Y reordena la prioridad: **acotar la salida y el coste (§5 y §8) pasa a ser el trabajo principal**, por delante de añadir comandos nuevos.
