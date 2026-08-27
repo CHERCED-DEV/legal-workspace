@@ -1,7 +1,7 @@
 ---
 name: cronologia
 description: Método para armar la línea de tiempo de un caso a partir del material recibido —contratos, correos, comprobantes, actas, entrevistas—, con la fuente exacta de cada fecha, su grado de certeza (documentada, referida, aproximada, deducida o en conflicto), los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. Úsalo cuando pidan una cronología, ordenar los hechos en el tiempo, reconstruir qué pasó cuándo, o revisar si las fechas del caso se contradicen. No lo uses para redactar escritos, contar plazos, valorar prueba, decidir qué fecha es la buena, ni establecer que una cosa causó otra.
-version: 0.1.2
+version: 0.1.3
 ---
 
 # cronologia — la línea de tiempo, con la calidad de cada fecha
@@ -18,13 +18,17 @@ version: 0.1.2
 
 **Y la frontera no es un tema, es una operación.** No basta con no contar plazos: nunca sumas ni restas días sobre una fecha para producir otra, aunque el resultado no sea un plazo. Lo único que se deduce es lo que una fuente enuncia como relativo (ayer, el día anterior) y ahí solo se traduce la palabra de la fuente; no se opera con números. Cuántos días hay entre dos fechas, qué día cayó tal cosa, cuánto duró un silencio: nada de eso lo escribes tú. Las dos fechas sí; la distancia entre ellas, no.
 
-**Relación con `hechos-con-prueba`.** Son métodos hermanos y no se sustituyen: aquel empareja cada hecho con la prueba que lo apoya o lo contradice; este toma un solo eje, el tiempo, y lo agota. Si el material ya pasó por `hechos-con-prueba`, úsalo como pista de dónde mirar, pero **vuelve siempre al material original**: la coordenada de una fecha sale del documento, nunca de un resumen intermedio.
+**Relación con `hechos-con-prueba`.** Son métodos hermanos y no se sustituyen: aquel empareja cada hecho con la prueba que lo apoya o lo contradice; este toma un solo eje, el tiempo, y lo agota. Si el material ya pasó por `hechos-con-prueba`, esa hoja es **pista de dónde mirar, nunca origen**: la cita y la coordenada de una fecha salen del documento (§2).
 
 ## 2. El principio rector
 
 > **Proponer, nunca decidir.** Y en el tiempo eso significa una cosa más: **ordenar no es explicar.**
 
-Nada de lo que produces queda establecido por el hecho de que lo hayas puesto en una tabla ordenada. Una tabla ordenada es el formato más persuasivo que existe, y por eso el más peligroso: se lee como si alguien ya lo hubiera verificado. No lo ha hecho nadie. **Las cuatro reglas duras:**
+Nada de lo que produces queda establecido por el hecho de que lo hayas puesto en una tabla ordenada. Una tabla ordenada es el formato más persuasivo que existe, y por eso el más peligroso: se lee como si alguien ya lo hubiera verificado. No lo ha hecho nadie.
+
+> **El trabajo del propio sistema no es fuente de nada.** Una cronología, un inventario, una hoja de hechos, el archivo de estado o un borrador sirven de **pista —para saber dónde mirar—, nunca de origen**: la cita y la coordenada salen del documento original, siempre. **La única excepción es lo que ella marcó como revisado**, el archivo cuyo nombre termina en ` - REVISADO`: no porque sea más correcto, sino porque la autoridad cambió de manos y deja de ser trabajo del sistema para ser una decisión suya registrada. Esa marca la pone ella y nunca tú, y no certifica que el contenido esté bien: certifica que ella lo miró. Si un dato solo aparece en una salida del sistema y no se encuentra en el material, **no se usa y se dice**. **Por qué:** que varios comandos vuelvan por separado al mismo material es lo único que delata un error; si uno lee del otro, la coincidencia deja de medir nada y el error se propaga sin que nadie lo note.
+
+**Las cuatro reglas duras:**
 
 1. **Ninguna fecha viaja sin su fuente.** Documento y página, cláusula o minuto exacto. *"Según el expediente"* no es una fuente; *"acta de entrega, p. 1"* sí.
 2. **Ninguna fecha viaja sin su grado.** Uno de los cinco del §3, con esas palabras y no otras.
@@ -188,7 +192,7 @@ Este error **se comete solo**. Nadie decide cometerlo: aparece en la redacción,
 
 ## 6. Formato de salida y dónde queda el archivo
 
-**Dónde escribes y dónde no.** Lees de `1-Documentos recibidos/`, y puedes leer `0-Estado del caso (no editar).txt` para el nombre del caso y el contexto. **Nunca escribes en `1-Documentos recibidos/`**, ni renombras, ni mueves, ni corriges nada de ahí: ese material es el único que no se puede reconstruir. **Nunca editas el archivo de estado.** Escribes en `2-Borradores/`, con este nombre: `Cronologia - <caso corto> - <AAAA-MM-DD>.md` — un archivo de texto que se abre en cualquier editor y cuya tabla se copia y se pega en un escrito. A `3-Para presentar/` no va nunca una cronología por decisión tuya: es material de trabajo, no un escrito; solo si ella lo pide.
+**Dónde escribes y dónde no.** Lees de `1-Documentos recibidos/`, y puedes leer `0-Estado del caso (no editar).txt` para el nombre del caso y el contexto —pista, no origen (§2)—. **Nunca escribes en `1-Documentos recibidos/`**, ni renombras, ni mueves, ni corriges nada de ahí: ese material es el único que no se puede reconstruir. **Nunca editas el archivo de estado.** Escribes en `2-Borradores/`, con este nombre: `Cronologia - <caso corto> - <AAAA-MM-DD>.md` — un archivo de texto que se abre en cualquier editor y cuya tabla se copia y se pega en un escrito. A `3-Para presentar/` no va nunca una cronología por decisión tuya: es material de trabajo, no un escrito; solo si ella lo pide.
 
 **Etiquetas: nombran el evento, no su puesto.** Cada evento lleva una etiqueta corta (`E-01`, `E-02`…) **solo para poder nombrarlo** ("el E-07 está mal"). Al reordenar no se renumera nada; si un evento se retira, su etiqueta se retira con él y **no se reutiliza jamás**. Si el enunciado o la fecha cambian, entra como etiqueta nueva con una línea `Sustituye a: E-07`.
 
@@ -269,7 +273,7 @@ Respóndelas **sobre tu propia salida**. Si alguna respuesta es la mala, corrige
 
 1. **Lectura.** ¿Leí todo el material antes de escribir la primera fila, y puedo decir qué quedó sin leer y por qué?
 2. ¿Barrí todas las fechas, incluidas las que no encajan en ninguna narración?
-3. **Cada fecha.** ¿Cada fecha tiene documento y coordenada exacta, y no un "según el expediente"?
+3. **Cada fecha.** ¿Cada fecha tiene documento y coordenada exacta, y no un "según el expediente"? ¿Cité como origen de algún dato una salida del propio sistema, en vez del documento original?
 4. ¿Estimé alguna coordenada —una página, un minuto— en vez de leerla? ¿Saqué algún evento de un documento que no pude leer o de una grabación que no pude oír, en vez de decir que no pude? ¿Di por ilegible algún documento sin haberlo abierto antes como imagen?
 5. ¿Cada fecha tiene uno de los cinco grados, escrito con esas palabras?
 6. ¿Hay alguna fecha **más precisa que su fuente**? ¿Convertí un "a mediados de" en un día, o un intervalo en un punto?

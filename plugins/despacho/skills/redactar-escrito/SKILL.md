@@ -1,14 +1,14 @@
 ---
 name: redactar-escrito
 description: Método para producir un borrador en Word a partir del material ya revisado de un caso: redacta la parte fáctica y monta la estructura, deja marcado y visible cada hueco que el material no permite llenar, y entrega aparte de dónde sale cada frase. Úsalo cuando pidan redactar, armar o preparar un escrito, una solicitud, un memorial o una respuesta con el material del caso. No lo uses para redactar fundamentos de derecho, citar normas o jurisprudencia, calificar jurídicamente los hechos, decidir qué clase de escrito presentar, ni construir los hechos (eso es hechos-con-prueba).
-version: 0.1.2
+version: 0.1.3
 ---
 
 # redactar-escrito — armar un borrador con lo que el caso sostiene
 
 ## 1. Qué es esto, y por qué es el comando más peligroso del despacho
 
-**Propósito.** Convertir material que **ella ya revisó** —los hechos que ella aprobó, cronología, inventario de anexos, documentos del caso— en un **borrador de Word** con tres cosas: la parte fáctica redactada, la estructura montada, y **cada hueco marcado a la vista**. Nada más. **No lo uses para:** decidir qué escrito presentar; redactar fundamentos de derecho; citar normas o jurisprudencia; calificar jurídicamente nada; elegir qué hechos entran; construir los hechos (eso es `hechos-con-prueba`); ni redactar sobre material que no se te ha entregado.
+**Propósito.** Convertir el material admitido del caso —los documentos, lo que ella dictó, y las salidas del sistema que ella marcó revisadas: la hoja de hechos que aprobó, y una cronología o un inventario solo si llevan esa marca (§2.1)— en un **borrador de Word** con tres cosas: la parte fáctica redactada, la estructura montada, y **cada hueco marcado a la vista**. Nada más. **No lo uses para:** decidir qué escrito presentar; redactar fundamentos de derecho; citar normas o jurisprudencia; calificar jurídicamente nada; elegir qué hechos entran; construir los hechos (eso es `hechos-con-prueba`); ni redactar sobre material que no se te ha entregado.
 
 **Por qué es distinto de los demás.** Los otros comandos producen listas que ella lee con el material al lado. Este produce **prosa jurídica bien escrita**, y la prosa bien escrita tiene una propiedad peligrosa: **se lee como verdadera**. Un hecho inventado dentro de una lista salta a la vista; el mismo hecho inventado dentro de un párrafo redactado con oficio, entre dos frases correctas, **no salta a la vista de nadie** — ni de ella, que sabe el caso. Y es el único producto del despacho que puede terminar **presentado ante una autoridad con su firma**. De ahí sale todo lo que sigue.
 
@@ -23,10 +23,12 @@ Una frase del borrador puede afirmar algo solo si sale de una de estas tres, y d
 | Fuente | Qué es | Cómo se registra |
 |---|---|---|
 | **Un documento del caso** | Está en la carpeta y lo abriste | Nombre del documento y página, cláusula o minuto exacto |
-| **Un hecho que ella aprobó** | Está en un archivo de hechos terminado en ` - REVISADO.md` y ella lo marcó `SI` —o `A MEDIAS`, y entonces vale su corrección, no la ficha original— (Fase 1) | La etiqueta del hecho (`H-04`) y la fecha del archivo revisado |
+| **Algo que ella marcó revisado** | Está en una salida del sistema cuyo nombre termina en ` - REVISADO` —hoja de hechos, cronología, inventario— y, en la hoja de hechos, ella lo marcó `SI` —o `A MEDIAS`, y entonces vale su corrección, no la ficha original— (Fase 1) | La etiqueta del dato (`H-04`, `E-07`, «anexo 3») y la fecha del archivo revisado |
 | **Lo que ella dijo** | Te lo dictó en la conversación | "Lo dijo usted el «fecha»", textual |
 
-**No son fuente:** tu conocimiento general; lo que suele decirse en escritos parecidos; un modelo de otro caso; lo que se deduce de que los números encajen; lo que "tiene que haber pasado" para que el relato cierre; una ficha de un archivo de hechos **sin** la marca ` - REVISADO`; y un hecho que ella marcó `NO`.
+**No son fuente:** tu conocimiento general; lo que suele decirse en escritos parecidos; un modelo de otro caso; lo que se deduce de que los números encajen; lo que "tiene que haber pasado" para que el relato cierre; cualquier salida del sistema —hoja de hechos, cronología, inventario, borrador, archivo de estado— **sin** la marca ` - REVISADO`; y un hecho que ella marcó `NO`.
+
+> **El trabajo del propio sistema no es fuente de nada.** Una cronología, un inventario, una hoja de hechos, el archivo de estado o un borrador sirven de **pista —para saber dónde mirar—, nunca de origen**: la cita y la coordenada salen del documento original, siempre. **La única excepción es lo que ella marcó como revisado**, el archivo cuyo nombre termina en ` - REVISADO`: no porque sea más correcto, sino porque la autoridad cambió de manos y deja de ser trabajo del sistema para ser una decisión suya registrada. Esa marca la pone ella y nunca tú, y no certifica que el contenido esté bien: certifica que ella lo miró. Si un dato solo aparece en una salida del sistema y no se encuentra en el material, **no se usa y se dice**. **Por qué:** que varios comandos vuelvan por separado al mismo material es lo único que delata un error; si uno lee del otro, la coincidencia deja de medir nada y el error se propaga sin que nadie lo note.
 
 ### 2.2 La prohibición central
 
@@ -101,9 +103,9 @@ La trampa fina: **la forma de un escrito también es derecho**. Qué apartados l
 
 ### Fase 1 — Comprobar que hay de dónde partir
 
-Este comando **no construye hechos**: trabaja sobre hechos que ella ya aprobó. Antes de escribir nada, mira la carpeta y responde: ¿hay hechos aprobados? ¿hay cronología e inventario de anexos? ¿cuáles de los documentos citados están de verdad en `1-Documentos recibidos/`? **Los documentos se abren y se leen por dentro; un escaneado sin texto extraíble se abre por rangos de páginas y se lee como imagen** —no se salta, no se resume por el nombre del archivo, no se estima ninguna página—, y el archivo de correspondencias (§6) dice cuáles se leyeron así: si cada pasada elige por su cuenta cómo accedió al material, **dos pasadas del mismo caso dejan de ser comparables**.
+Este comando **no construye hechos**: trabaja sobre hechos que ella ya aprobó. Antes de escribir nada, mira la carpeta y responde: ¿hay hechos aprobados? ¿hay cronología e inventario de anexos, y llevan la marca ` - REVISADO`? —sin ella son pista de dónde mirar, no fuente (§2.1)—. ¿Cuáles de los documentos citados están de verdad en `1-Documentos recibidos/`? **Los documentos se abren y se leen por dentro; un escaneado sin texto extraíble se abre por rangos de páginas y se lee como imagen** —no se salta, no se resume por el nombre del archivo, no se estima ninguna página—, y el archivo de correspondencias (§6) dice cuáles se leyeron así: si cada pasada elige por su cuenta cómo accedió al material, **dos pasadas del mismo caso dejan de ser comparables**.
 
-**Qué cuenta como hechos aprobados, y nada más cuenta.** El comando de hechos escribe su salida en `2-Borradores/Hechos - <caso> - <AAAA-MM-DD>.md`. **Ella** abre ese archivo y escribe al lado de cada ficha `SÍ`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda añadiendo ` - REVISADO` al final del nombre: `Hechos - <caso> - <AAAA-MM-DD> - REVISADO.md`. **Solo el archivo cuyo nombre termina en ` - REVISADO.md` cuenta como hechos aprobados.** Un archivo sin esa marca es una propuesta que nadie ha mirado.
+**Qué cuenta como hechos aprobados, y nada más cuenta.** El comando de hechos escribe su salida en `2-Borradores/Hechos - <caso> - <AAAA-MM-DD>.md`. **Ella** abre ese archivo y escribe al lado de cada ficha `SÍ`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda añadiendo ` - REVISADO` al final del nombre: `Hechos - <caso> - <AAAA-MM-DD> - REVISADO.md`. **Solo el archivo cuyo nombre termina en ` - REVISADO.md` cuenta como hechos aprobados.** Y lo mismo vale para cualquier otra salida que quieras usar como fuente —una cronología, un inventario—: sin esa marca es una propuesta que nadie ha mirado.
 
 **Comprobación dura, antes de la primera frase.** Si no encuentras ningún archivo de hechos cuyo nombre termine en ` - REVISADO.md`: **no hay hechos aprobados**. Lo dices con esas palabras y preguntas, en vez de usar el archivo sin marcar. Y nunca —por ningún motivo, ni aunque el archivo sin marcar esté completo y bien hecho, ni aunque coincida con lo que dicen los documentos— redactas sobre el archivo sin la marca como si fueran hechos aprobados. La marca no certifica que las fichas estén bien: certifica que ella las miró, y eso es justo lo que este comando no puede suplir.
 
@@ -152,7 +154,7 @@ Párrafo por párrafo. De cada frase, **antes de escribirla**, ten localizada su
 1. **Una afirmación por párrafo numerado.** Si une dos cosas que podrían ser ciertas por separado, son dos párrafos. No es estilo: es lo que permite que la contraparte acepte una y niegue la otra, y que la fila de correspondencias sea una sola.
 2. **En los términos del caso.** Nombres, montos y palabras de los documentos y de las partes, sin mejorarlos: "el sobre" no se convierte en "el paquete". Si un término es ambiguo, se conserva y el hueco anota la ambigüedad.
 3. **Sin adjetivos de valor y sin palabras de conclusión** (§3.1).
-4. **Los anexos se mencionan como están en el inventario**, con su nombre y su número. Un documento que no está en la carpeta no se menciona: se abre hueco.
+4. **Los anexos se mencionan como están en el inventario que ella marcó revisado**, con su nombre y su número; si no hay ninguno con la marca, el anexo se nombra por lo que el propio documento dice de sí mismo y el cierre lo advierte. Un documento que no está en la carpeta no se menciona: se abre hueco.
 5. **Ninguna frase de relleno.** "Como es de público conocimiento", "resulta necesario precisar" no dicen nada y ocupan el lugar de algo que sí.
 
 **Si un párrafo entero no se sostiene**, no se escribe a medias: hueco de párrafo (§5) y sigues. El borrador no tiene que estar completo; tiene que estar **limpio de invenciones**. Después: correspondencias (§6), guardar (§7) y cerrar (§8) — **la entrega sin cierre está prohibida**.
@@ -224,7 +226,7 @@ Quitar ese encabezado es acto suyo: tú no lo quitas nunca, ni aunque te lo pida
 
 > **Lo que produce este comando no es prueba de nada. Es trabajo, no evidencia.**
 
-Un borrador repite lo que dicen los documentos, con mejor redacción; semanas después esa mejor redacción se lee como si fuera la fuente. Por eso **ningún trabajo posterior cita el borrador como origen de un hecho**: el origen son los documentos y lo que ella dijo. El borrador es su forma ordenada, y una forma ordenada no acredita nada.
+Un borrador repite lo que dicen los documentos, con mejor redacción; semanas después esa mejor redacción se lee como si fuera la fuente. Por eso **ningún trabajo posterior cita el borrador como origen de un hecho** —es la regla de §2.1 aplicada a lo que tú produces—: el origen son los documentos y lo que ella dijo. El borrador es su forma ordenada, y una forma ordenada no acredita nada.
 
 ## 8. El cierre obligatorio de toda entrega
 
@@ -273,7 +275,7 @@ Este bloque solo aparece si hay algo que reportar. Ante la duda de si un texto r
 
 Respóndelas **sobre el borrador que acabas de escribir**. Si alguna respuesta es la que no toca, corrige; si no puedes corregir, dilo en el cierre.
 
-1. ¿De **cada** frase fáctica puedo señalar su fuente exacta, ahora mismo, sin volver a buscarla? ¿Los hechos que usé salieron de un archivo terminado en ` - REVISADO.md`, o estoy redactando sin hechos aprobados y lo dije?
+1. ¿De **cada** frase fáctica puedo señalar su fuente exacta, ahora mismo, sin volver a buscarla? ¿Los hechos que usé salieron de un archivo terminado en ` - REVISADO.md`, o estoy redactando sin hechos aprobados y lo dije? ¿Cité como origen de algún dato una salida del propio sistema, en vez del documento original?
 2. ¿Hay alguna frase con **más precisión que su fuente** — una fecha, una cifra, un medio, un nombre, un cargo? ¿Alguna fecha o alguna cifra que salga de una cuenta mía y no de un documento?
 3. ¿Completé alguna frase con algo verosímil en lugar de abrir un hueco? ¿Mencioné algún documento que no está en la carpeta? ¿Di por ilegible algún documento sin haberlo abierto antes como imagen?
 4. ¿Escribí "no existe" o "no hay" donde lo único que sé es que **no lo encontré en el material**?

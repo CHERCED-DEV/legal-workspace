@@ -1,7 +1,7 @@
 ---
 name: hechos-con-prueba
 description: Método para convertir el material de un caso (entrevistas, declaraciones, documentos, comprobantes) en hechos candidatos emparejados con la prueba que los apoya, los contradice o los sitúa. Úsalo cuando pidan construir, extraer u ordenar los hechos de un asunto, armar el relato fáctico, o establecer qué está apoyado y qué no. No lo uses para redactar escritos, valorar prueba, decidir estrategia ni responder preguntas de derecho.
-version: 0.1.2
+version: 0.1.3
 ---
 
 # hechos-con-prueba — construir hechos con su prueba
@@ -23,6 +23,8 @@ version: 0.1.2
 > **Proponer, nunca decidir.**
 
 Todo lo que produces es propuesta. Ni un solo hecho de tu salida está establecido, aceptado ni acreditado por el hecho de que tú lo hayas escrito. Quien decide qué es hecho del caso es la profesional; tú preparas el material para que ella pueda decidir en minutos lo que de otro modo le costaría horas.
+
+> **El trabajo del propio sistema no es fuente de nada.** Una cronología, un inventario, una hoja de hechos, el archivo de estado o un borrador sirven de **pista —para saber dónde mirar—, nunca de origen**: la cita y la coordenada salen del documento original, siempre. **La única excepción es lo que ella marcó como revisado**, el archivo cuyo nombre termina en ` - REVISADO`: no porque sea más correcto, sino porque la autoridad cambió de manos y deja de ser trabajo del sistema para ser una decisión suya registrada. Esa marca la pone ella y nunca tú, y no certifica que el contenido esté bien: certifica que ella lo miró. Si un dato solo aparece en una salida del sistema y no se encuentra en el material, **no se usa y se dice**. **Por qué:** que varios comandos vuelvan por separado al mismo material es lo único que delata un error; si uno lee del otro, la coincidencia deja de medir nada y el error se propaga sin que nadie lo note.
 
 ### 2.1 El corolario que gobierna todo lo demás
 
@@ -250,10 +252,10 @@ Lo que produce este método es un archivo, y el archivo tiene un sitio.
 **Y así vuelve revisado:**
 
 - **Ella** abre ese archivo y escribe al lado de cada ficha `SÍ`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda añadiendo ` - REVISADO` al final del nombre: `Hechos - <caso> - <AAAA-MM-DD> - REVISADO.md`.
-- **Solo el archivo cuyo nombre termina en ` - REVISADO.md` cuenta como hechos aprobados.** Un archivo sin esa marca es una propuesta que nadie ha mirado.
+- **Solo el archivo cuyo nombre termina en ` - REVISADO.md` cuenta como hechos aprobados.** Un archivo sin esa marca es una propuesta que nadie ha mirado. Ella puede marcar igual cualquier otra entrega —una cronología, un inventario—, y el efecto es el mismo (§2).
 - Si un comando necesita hechos aprobados y no encuentra ningún archivo con esa marca: **no hay hechos aprobados**. Lo dice con esas palabras y pregunta, en vez de usar el archivo sin marcar.
 
-Lo último te obliga también a ti: **la marca ` - REVISADO` no la pones tú nunca.** La pone ella al guardar. Escribirla tú sería decidir por ella justo la cosa que este método existe para no decidir.
+Lo último te obliga también a ti: **la marca ` - REVISADO` no la pones tú nunca** —ni en este archivo ni en ninguna otra salida del sistema—. La pone ella al guardar. Escribirla tú sería decidir por ella justo la cosa que este método existe para no decidir.
 
 ---
 
@@ -349,7 +351,7 @@ Responde estas preguntas **sobre tu propia salida**. Si alguna respuesta es "no"
 6. ¿Fusioné dos hechos que difieren en quién, qué, cuándo, cuánto o dónde? ¿Fundí dos nombres parecidos?
 
 **Sobre los emparejamientos**
-7. ¿Volví al material y comprobé, **uno por uno**, que cada fragmento citado dice lo que le atribuyo?
+7. ¿Volví al material y comprobé, **uno por uno**, que cada fragmento citado dice lo que le atribuyo? ¿Cité como origen de algún dato una salida del propio sistema, en vez del documento original?
 8. ¿Algún emparejamiento apunta a un documento entero en vez de a un fragmento localizable?
 9. ¿Usé "sitúa" donde en realidad quería decir "apoya a medias"? (Si sí: descomponer el hecho, o declarar el alcance de la cita.)
 10. ¿Forcé el uno a uno — dejé fuera una prueba por ya usada, o repartí pruebas para que a cada hecho le tocara una?

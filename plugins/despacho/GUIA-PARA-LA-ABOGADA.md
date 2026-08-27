@@ -280,6 +280,8 @@ Hechos - Ríos - 2026-08-25 - REVISADO.md   <- lo que usted aprobó
 
 Solo el archivo cuyo nombre termina en ` - REVISADO` cuenta como hechos aprobados. El otro es una propuesta que nadie ha mirado todavía, y él lo trata como tal. Si más adelante le pide un borrador y no encuentra ningún archivo con esa marca, se lo dirá con esas palabras —no hay hechos aprobados— y le preguntará, en vez de tirar del archivo sin marcar como si usted lo hubiera visto.
 
+**Y esa marca vale para cualquier entrega, no solo para la de hechos.** Si repasa una cronología o un inventario y le parece bien, guárdelo añadiendo ` - REVISADO` al nombre, igual que la hoja de hechos: desde ese momento él puede apoyarse en ese archivo. Sin la marca lo usa solo para saber dónde mirar y vuelve a sacar cada dato del documento original — que es más lento, y es justo lo que impide que un error de una entrega se cuele en la siguiente sin que nadie lo note. La marca no dice que el contenido esté perfecto; dice que usted lo miró, y eso es lo que cambia.
+
 **Los huecos y los "no encontrado" son la parte valiosa, no un defecto.** Cuesta acostumbrarse, porque un documento con huecos parece trabajo a medias. Es al revés: un borrador con siete marcas `[[FALTA]]` es el trabajo bien hecho. Lo que usted necesita saber antes de escribir no es solo qué tiene, sino **qué no tiene** — qué hecho se sostiene únicamente en el dicho de su clienta, qué anexo se menciona y no llegó, qué fecha nadie fijó, qué párrafo no se puede escribir. Esa información no se consigue de otra manera, y es la que evita las sorpresas.
 
 **Lea las ausencias con cuidado: él le dice que no lo encontró, no que no existe.** Es una diferencia que él respeta en todas sus salidas y que conviene que usted lea así:

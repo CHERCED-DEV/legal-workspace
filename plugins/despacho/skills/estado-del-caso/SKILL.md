@@ -1,7 +1,7 @@
 ---
 name: estado-del-caso
 description: Método para reconstruir el estado de un caso leyendo su carpeta: qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta, y qué falta, quedó a medias o no tiene respuesta. Úsalo cuando pidan retomar un caso, ponerse al día, saber en qué va un asunto, inventariar la carpeta o preparar una revisión antes de trabajar. No lo uses para valorar la solidez del caso, pronosticar resultados, decidir estrategia, calcular plazos ni redactar escritos.
-version: 0.1.2
+version: 0.1.3
 ---
 
 # estado-del-caso — reconstruir dónde está un caso a partir de su carpeta
@@ -31,6 +31,8 @@ La carpeta es un **reflejo parcial** del caso. Entre lo que pasó y lo que está
 Por eso una ausencia en la carpeta significa **cuatro cosas a la vez**, y la carpeta no permite separarlas: (1) la actuación no ocurrió; (2) ocurrió y el documento está en otro sitio; (3) ocurrió y nunca hubo documento; (4) el documento sí está y no lo supiste reconocer. La única frase honesta que cubre las cuatro es **"no está en la carpeta"**.
 
 **Por qué esto pesa más que cualquier otra regla del método.** Ella va a decidir sobre esta foto. Una foto incompleta **presentada como completa** es peor que no tener foto: no tener foto obliga a mirar; una foto que parece completa invita a decidir. Escribir "no se presentó" cuando lo único que sabes es "no está en la carpeta" es el error que convierte una herramienta útil en una peligrosa.
+
+> **El trabajo del propio sistema no es fuente de nada.** Una cronología, un inventario, una hoja de hechos, el archivo de estado o un borrador sirven de **pista —para saber dónde mirar—, nunca de origen**: la cita y la coordenada salen del documento original, siempre. **La única excepción es lo que ella marcó como revisado**, el archivo cuyo nombre termina en ` - REVISADO`: no porque sea más correcto, sino porque la autoridad cambió de manos y deja de ser trabajo del sistema para ser una decisión suya registrada. Esa marca la pone ella y nunca tú, y no certifica que el contenido esté bien: certifica que ella lo miró. Si un dato solo aparece en una salida del sistema y no se encuentra en el material, **no se usa y se dice**. **Por qué:** que varios comandos vuelvan por separado al mismo material es lo único que delata un error; si uno lee del otro, la coincidencia deja de medir nada y el error se propaga sin que nadie lo note.
 
 ### 2.1 Las cinco distinciones que sostienen el trabajo
 
@@ -62,7 +64,7 @@ La prudencia se expresa con la palabra exacta, no con el tono. Usa la columna de
 
 ### Fase 0 — Leer el resumen anterior, y luego apartarlo
 
-**Qué haces.** Abres `0-Estado del caso (no editar).txt`, lo lees entero, **copias aparte lo que dice** — y no vuelves a mirarlo hasta la Fase 6. Si lo tienes delante mientras inventarías, terminarás confirmándolo: leerás la carpeta buscando lo que el resumen anunció y no verás lo que el resumen calla. Es **una hipótesis de la pasada anterior**, no un punto de partida.
+**Qué haces.** Abres `0-Estado del caso (no editar).txt`, lo lees entero, **copias aparte lo que dice** — y no vuelves a mirarlo hasta la Fase 6. Si lo tienes delante mientras inventarías, terminarás confirmándolo: leerás la carpeta buscando lo que el resumen anunció y no verás lo que el resumen calla. Es **una hipótesis de la pasada anterior**: pista de dónde mirar, nunca origen de un dato (§2).
 
 **Qué conservas sin falta:** cualquier texto que ella haya escrito dentro del archivo. Aunque el nombre diga "no editar", si escribió algo **no se borra nunca**: vuelve intacto en la Fase 6. **Si el archivo no existe**, se dice en la salida ("es la primera revisión de esta carpeta") y se crea en la Fase 6.
 
@@ -169,7 +171,7 @@ Se llama **"parece pendiente"** y no "pendientes" a propósito: ella sabe cosas 
 
 ## 4. El archivo `0-Estado del caso (no editar).txt`
 
-**Qué es:** un resumen corto, para que ella lo abra y sepa dónde está sin tener que releer la carpeta. **Qué no es:** una fuente. **Si contradice a los documentos, mandan los documentos** — sin excepción. Nunca cites este archivo como respaldo de nada: su único respaldo son los documentos que lo produjeron, y un resumen envejece mientras la carpeta cambia.
+**Qué es:** un resumen corto, para que ella lo abra y sepa dónde está sin tener que releer la carpeta. **Qué no es:** una fuente (§2). **Si contradice a los documentos, mandan los documentos** — sin excepción. Nunca cites este archivo como respaldo de nada: su único respaldo son los documentos que lo produjeron, y un resumen envejece mientras la carpeta cambia.
 
 **Por qué dice "(no editar)".** Porque el sistema lo reescribe entero y ella perdería lo que escriba. Pero **si escribió algo, no se borra jamás**: se conserva palabra por palabra en el bloque de notas, que el sistema nunca toca. Y como conservarlo depende de volver a teclearlo bien, antes de cada reescritura queda una copia de la versión anterior en `2-Borradores/`: si algo suyo se alteró al copiarlo, ahí está el original para compararlo.
 
@@ -315,7 +317,7 @@ Responde sobre tu propia salida. Si alguna respuesta falla, corrige; si no puede
 5. ¿Convertí un plazo mencionado en una fecha, o dije si corría o si venció? ¿Sumé o resté días sobre alguna fecha, o conté cuántos días pasaron entre dos? Cada fecha de mi salida, ¿está escrita tal cual en un documento o en el nombre de un archivo, o hay alguna que yo calculé?
 6. ¿Hay en mi salida alguna norma, valoración del caso, pronóstico o recomendación de qué hacer? **No debe haber ninguna.**
 7. ¿Cada línea de "parece pendiente" señala el documento y la página de donde sale?
-8. ¿Volví a abrir cada archivo citado y comprobé que dice lo que le atribuyo?
+8. ¿Volví a abrir cada archivo citado y comprobé que dice lo que le atribuyo? ¿Cité como origen de algún dato una salida del propio sistema, en vez del documento original?
 9. ¿Conservé palabra por palabra lo que ella hubiera escrito en el archivo de estado? ¿Corregí el resumen guardado sin decirle qué corregí y por qué?
 10. **¿Guardé la copia íntegra del contenido anterior en `2-Borradores/` antes de reescribir el archivo de estado?** Si no pude, ¿me abstuve de reescribirlo y se lo dije?
 11. ¿Moví, renombré, borré o completé algo? **No debí tocar nada fuera de `0-Estado del caso (no editar).txt` y la copia del anterior en `2-Borradores/`.**

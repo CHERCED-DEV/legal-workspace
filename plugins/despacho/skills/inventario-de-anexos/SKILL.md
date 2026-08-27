@@ -1,7 +1,7 @@
 ---
 name: inventario-de-anexos
 description: Método para recorrer los documentos de un caso y producir un inventario de anexos numerado —qué es cada documento, quién lo produjo, de qué fecha es y a qué afirmación sirve—, más un bloque separado con lo que falta. Úsalo cuando pidan armar la lista de anexos, ordenar los documentos que se acompañan a un escrito, o establecer qué documentos faltan, se mencionan y no están, o están pero no se pueden usar. No lo uses para valorar prueba, decidir qué se aporta, redactar el escrito ni responder preguntas de derecho.
-version: 0.2.2
+version: 0.2.3
 ---
 
 # inventario-de-anexos — qué se acompaña, a qué sirve y qué falta
@@ -31,6 +31,8 @@ version: 0.2.2
 > **Proponer, nunca decidir.**
 
 El inventario ofrece: esto hay, esto parece ser, esto sirve para aquello, esto no está. Quién decide qué se acompaña, en qué orden y con qué finalidad es ella.
+
+> **El trabajo del propio sistema no es fuente de nada.** Una cronología, un inventario, una hoja de hechos, el archivo de estado o un borrador sirven de **pista —para saber dónde mirar—, nunca de origen**: la cita y la coordenada salen del documento original, siempre. **La única excepción es lo que ella marcó como revisado**, el archivo cuyo nombre termina en ` - REVISADO`: no porque sea más correcto, sino porque la autoridad cambió de manos y deja de ser trabajo del sistema para ser una decisión suya registrada. Esa marca la pone ella y nunca tú, y no certifica que el contenido esté bien: certifica que ella lo miró. Si un dato solo aparece en una salida del sistema y no se encuentra en el material, **no se usa y se dice**. **Por qué:** que varios comandos vuelvan por separado al mismo material es lo único que delata un error; si uno lee del otro, la coincidencia deja de medir nada y el error se propaga sin que nadie lo note.
 
 ### 2.1 Las cuatro distinciones que sostienen el trabajo
 
@@ -102,9 +104,9 @@ Este es **el único recorrido completo del material hasta la comprobación final
 
 ### Fase 2 — Reunir las afirmaciones que hay que sostener
 
-Un inventario sin esto es una lista de archivos. Las afirmaciones salen, en este orden de preferencia: (1) de la **hoja de hechos aprobada** del caso, si existe —con sus mismas etiquetas y su mismo texto, sin reescribirlas—; (2) del **borrador del escrito**, extrayendo cada afirmación fáctica con la página o el párrafo donde está; (3) de **lo que ella te indique** en el momento.
+Un inventario sin esto es una lista de archivos. Las afirmaciones salen, en este orden de preferencia: (1) de la **hoja de hechos aprobada** del caso, si existe —con sus mismas etiquetas y su mismo texto, sin reescribirlas—; (2) del **borrador del escrito** —que es salida del sistema: dice qué hay que sostener, y ni un solo dato de anexo sale de ahí (§2)—, extrayendo cada afirmación fáctica con la página o el párrafo donde está; (3) de **lo que ella te indique** en el momento.
 
-**Cuál es la hoja de hechos aprobada y cuál no.** El comando de hechos escribe su salida en `2-Borradores/Hechos - <caso> - <AAAA-MM-DD>.md`. **Ella** abre ese archivo y escribe al lado de cada ficha `SÍ`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda añadiendo ` - REVISADO` al final del nombre: `Hechos - <caso> - <AAAA-MM-DD> - REVISADO.md`. **Solo el archivo cuyo nombre termina en ` - REVISADO.md` cuenta como hechos aprobados.** Un archivo sin esa marca es una propuesta que nadie ha mirado, y no se usa como fuente de afirmaciones ni "para ir adelantando".
+**Cuál es la hoja de hechos aprobada y cuál no.** El comando de hechos escribe su salida en `2-Borradores/Hechos - <caso> - <AAAA-MM-DD>.md`. **Ella** escribe al lado de cada ficha `SÍ`, `NO` o `A MEDIAS: <su corrección>` y lo guarda añadiendo ` - REVISADO` al final del nombre. **Solo ese archivo cuenta como hechos aprobados** (§2): sin la marca es una propuesta que nadie ha mirado, y no se usa como fuente de afirmaciones ni "para ir adelantando".
 
 **Si no encuentras ningún archivo con esa marca: no hay hechos aprobados.** Se dice con esas palabras y se pregunta, en vez de usar el archivo sin marcar: *"No hay hechos aprobados para este caso. Hay una hoja de hechos sin la marca de revisada, y esa es una propuesta que usted todavía no ha mirado, así que no la uso. ¿Empareja con el borrador del escrito, me indica usted las afirmaciones, o prefiere revisar antes la hoja?"* Si ella pide seguir igual, sigues por las otras dos vías —o sin ninguna—, y **la entrega lo declara** en la parte 1: con qué se emparejó y con qué no.
 
@@ -315,7 +317,7 @@ Responde sobre tu propia salida. Si alguna respuesta es "no" donde debería ser 
 8. ¿Llamé a algún documento por lo que creo que prueba en vez de por lo que es?
 
 **Sobre el emparejamiento**
-9. ¿Las afirmaciones salieron de una hoja de hechos con la marca de revisada? Si no había ninguna con esa marca, ¿dije que no hay hechos aprobados, en vez de usar la que estaba sin marcar?
+9. ¿Las afirmaciones salieron de una hoja de hechos con la marca de revisada? Si no había ninguna con esa marca, ¿dije que no hay hechos aprobados, en vez de usar la que estaba sin marcar? ¿Cité como origen de algún dato una salida del propio sistema, en vez del documento original?
 10. ¿Emparejé sobre la captura, sin volver a abrir documentos?
 11. ¿Entregué las dos direcciones: por documento y por afirmación?
 12. ¿Contrasté las filas entre sí y reporté las discordancias —dos números de identificación para la misma persona, tres domicilios, dos fechas para el mismo hecho— con sus dos datos, cada uno con su anexo y su página, y sin decir cuál es el bueno?
