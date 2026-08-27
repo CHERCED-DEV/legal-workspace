@@ -162,6 +162,50 @@ ANIO_MAXIMO = 9990
 # blanca, y sustituye a la lista negra de seis subcadenas de A17.
 ESQUEMAS_PUBLICADOS = ("https://", "http://")
 
+# El alfabeto de una etiqueta de dominio. Se enumera en vez de usar
+# `str.isalnum()` porque `isalnum()` es verdadero para «á» y para «٣», y un
+# nombre de dominio del DNS público no se escribe con eso: aceptarlos sería
+# volver a decidir por parecido en lugar de por forma comprobable.
+ASCII_LETRAS = frozenset("abcdefghijklmnopqrstuvwxyz")
+ASCII_DIGITOS = frozenset("0123456789")
+CARACTERES_DE_ETIQUETA = ASCII_LETRAS | ASCII_DIGITOS | frozenset("-")
+
+# Los dominios de primer nivel que los propios estándares apartan del DNS
+# público (RFC 2606 §2, RFC 6761 §6). No es una lista negra de las de A17 —una
+# conjetura sobre qué nombres «parecen» del corpus, y lo que no se pensó es
+# infinito—: es un registro cerrado y escrito por alguien más, y lo que
+# enumera son nombres que por definición no designan nada fuera de la máquina
+# o de la red donde se escribe la ficha. Era B06: `localhost.localdomain` y
+# `127.0.0.1` señalan el mismo archivo del corpus servido por un
+# `python -m http.server`, y eso reabría N1 entero.
+TLD_RESERVADOS = frozenset({
+    "localhost", "localdomain", "local", "internal", "intranet", "lan",
+    "home", "corp", "private", "test", "example", "invalid", "onion", "alt",
+})
+
+# Los ejes con los que el pack decide una consulta, enumerados una sola vez.
+# Es la pieza central del rediseño del token (B01): el token registra la
+# consulta ENTERA y no una selección de campos, así que un eje nuevo entra en
+# la prueba de banco por añadirlo aquí y no por acordarse de tocar
+# `_emitir_token` y `verificar_token` a la vez. La ronda anterior cerró dos de
+# los cinco —la fecha del caso y su tipo (A03, A07)— y dejó los otros tres,
+# que es lo que costó B01: la materia y el nivel territorial se comprobaban en
+# `responder` y se evaporaban en la única puerta que llega a la publicación.
+EJES_DE_CONSULTA = ("identificador", "peticion", "proposicion", "fecha_del_caso",
+                    "tipo_de_fecha", "materia", "jurisdiccion", "nivel_territorial")
+
+# El nivel territorial de una consulta que no dice ninguno. Un pack nacional
+# contesta a una consulta que no declara nivel: el silencio es «nacional» y no
+# «indeterminable», porque lo contrario dejaría sin respuesta a toda consulta
+# que no conozca el manifiesto.
+NIVEL_POR_DEFECTO = "nacional"
+# El valor con que se lee un nivel escrito y no legible, o el `territorial`
+# booleano de A06. La cadena vacía no puede coincidir con ningún nivel
+# declarado —los declarados pasan por `_texto` y `_texto` nunca devuelve
+# vacío—, de modo que «hay algo territorial y no sé qué» cae fuera sin
+# necesidad de un centinela que alguien pudiera escribir dentro de una ficha.
+NIVEL_SIN_NOMBRAR = ""
+
 CODIGOS_CITABLES = frozenset({
     "CITABLE", "CITABLE_CON_REFORMA", "CITABLE_SIN_VIGENCIA_HOY", "CITABLE_PRECEDENTE",
 })
@@ -179,7 +223,7 @@ FRASES = {
     "VIGENCIA_PARCIAL": "El pack tiene {id} con vigencia parcial comprobada; nunca se sirve como citable.",
     "IDENTIDAD_POR_VERIFICAR": "Nadie ha comprobado que {id} sea la norma que dice ser. Esto no es un problema de vigencia: es anterior.",
     "CONFLICTO_DE_FUENTES": "Dos fuentes oficiales discrepan sobre {id}. El pack no elige.",
-    "CONFLICTO_ENTRE_FICHAS": "Dos fichas del mismo alcance de {id} discrepan en la vigencia comprobada. Es un problema de vigencia, no de identidad, y el pack no elige.",
+    "CONFLICTO_ENTRE_FICHAS": "Dos fichas de {id} que cubren lo que se pide discrepan en la vigencia comprobada. Es un problema de vigencia, no de identidad, y el pack no elige.",
     "FUERA_DEL_ALCANCE_COMPROBADO": "Lo comprobado de {id} no llega hasta lo que se pide.",
     "PRECEDENTE_SUPERADO_O_LIMITADO": "{id} está marcada como superada o limitada, o en conflicto con otra.",
     "SIN_BUSQUEDA_ADVERSA": "Nadie buscó autoridad en contra de {id}, o la búsqueda quedó en JURISPRUDENCE_GAP. Un solo resultado no es una revisión.",
@@ -240,6 +284,25 @@ def _fecha(valor):
     return f if ANIO_MINIMO <= f.year <= ANIO_MAXIMO else None
 
 
+def _reloj(hoy):
+    """El día en que se pregunta, leído por la misma puerta que las casillas.
+
+    B10: `hoy` era la única fecha del contrato que no pasaba por `_fecha`.
+    Entraba cruda en `evaluar`, `caducada`, `responder`, `verificar_token` y
+    `apagado`, y se comparaba con fechas de ficha que sí habían pasado. Un
+    `datetime` —lo que devuelve `datetime.now()`, el error de tecleo más
+    barato que hay— levantaba `TypeError` y dejaba el pack sin contestar a
+    nada, ni siquiera a las consultas sobre las fichas sanas: el daño exacto
+    de A11, por la puerta que A11 no cerró.
+
+    La asimetría era lo que lo delataba: el mismo `datetime` DENTRO de una
+    ficha se leía sin problema. Aquí se lee igual, y por eso esta función no
+    hace nada más que llamar a `_fecha`: existe para que la frontera se vea y
+    se pueda buscar, no para inventar una segunda regla de lectura.
+    """
+    return _fecha(hoy)
+
+
 def tipo_de(ficha):
     """`norma`, `providencia` o None. El único lector de `tipo` que hay.
 
@@ -272,6 +335,64 @@ def leer_materias(valor):
     if not limpias or any(m is None for m in limpias):
         return frozenset()
     return frozenset(limpias)
+
+
+def leer_nivel_territorial(consulta):
+    """El nivel territorial por el que se pregunta. Siempre una cadena.
+
+    B07: el manifiesto publica el eje con el nombre `nivel_territorial` y
+    `responder` preguntaba por `territorial`. Quien consumía el manifiesto y
+    escribía en la consulta el nombre que el manifiesto le había enseñado no
+    estaba declarando nada —su campo se ignoraba en silencio y el pack
+    contestaba como si la consulta fuera nacional—.
+
+    El nombre publicado manda, y `territorial` se conserva como su forma
+    booleana porque A06 la dejó establecida y quitarla rompería una respuesta
+    negativa que ya está en pie. Las dos formas entran por AQUÍ y por ningún
+    otro sitio: dos maneras de escribir el mismo eje son tolerables mientras
+    haya un solo lector que las resuelva; dos lectores no lo son, y eso era la
+    vía.
+    """
+    if not isinstance(consulta, dict):
+        return NIVEL_SIN_NOMBRAR
+    crudo = consulta.get("nivel_territorial")
+    if isinstance(crudo, (list, tuple)):
+        # Se lee con el mismo lector total de las materias: una lista de
+        # cadenas limpias o nada. Varios niveles a la vez no son un nivel.
+        leidos = leer_materias(crudo)
+        nombrado = sorted(leidos)[0] if len(leidos) == 1 else None
+    else:
+        nombrado = _texto(crudo)
+    if nombrado is not None:
+        return nombrado
+    if crudo is not None:
+        return NIVEL_SIN_NOMBRAR      # había algo escrito y no se pudo leer
+    return NIVEL_SIN_NOMBRAR if consulta.get("territorial") else NIVEL_POR_DEFECTO
+
+
+def leer_consulta(consulta):
+    """La consulta entera leída de una sola vez, eje por eje, o None si eso no
+    es una consulta. Ninguna clave cruda se lee dos veces en dos sitios.
+
+    Es el lector total que le faltaba a la consulta. Las fichas tenían cuatro
+    —`_fecha`, `leer_materias`, `tipo_de`, la ventana de `leer_fuente`— y la
+    consulta no tenía ninguno: cada camino sacaba las claves que necesitaba
+    con `_texto` por su cuenta, y por eso el token pudo quedarse con dos de
+    los cinco ejes sin que se notara (B01).
+    """
+    if not isinstance(consulta, dict):
+        return None
+    tipo_de_fecha = _texto(consulta.get("tipo_de_fecha"))
+    return {
+        "identificador": _texto(consulta.get("identificador")),
+        "peticion": leer_alcance(consulta.get("peticion")),
+        "proposicion": _texto(consulta.get("proposicion")),
+        "fecha_del_caso": _fecha(consulta.get("fecha_del_caso")),
+        "tipo_de_fecha": tipo_de_fecha if tipo_de_fecha in TIPOS_DE_FECHA else None,
+        "materia": _texto(consulta.get("materia")),
+        "jurisdiccion": _texto(consulta.get("jurisdiccion")),
+        "nivel_territorial": leer_nivel_territorial(consulta),
+    }
 
 
 def mas_meses(f, meses):
@@ -378,27 +499,73 @@ def _referencia_publicada(referencia):
     —«ver la ficha anterior», «consultado internamente»—. Una lista negra deja
     fuera lo que no se pensó, y lo que no se pensó es infinito.
 
-    Ahora se enumera lo que se ACEPTA: un esquema, un dominio con punto y sin
-    espacios dentro. Con eso, «no es del corpus» deja de ser una conjetura
-    sobre la forma del nombre y pasa a ser una propiedad comprobable de la
+    Ahora se enumera lo que se ACEPTA: un esquema y un nombre de dominio del
+    DNS público. Con eso, «no es del corpus» deja de ser una conjetura sobre
+    la forma del nombre y pasa a ser una propiedad comprobable de la
     referencia. El coste queda dicho, porque es real: una referencia legítima
     que no sea una URL —el ejemplar en papel de un diario oficial— se rechaza
     y obliga a rehacer la ficha con el enlace de la publicación. Rechazar de
     más cuesta trabajo; aceptar de más cuesta una cita fabricada.
+
+    B06 — «un dominio con punto» no era un nombre de dominio. `localhost` se
+    rechazaba por accidente, por no llevar punto, y no porque la función
+    supiera lo que es: bastaba el bucle local escrito con números, el nombre
+    largo de la misma máquina o cualquier dirección privada, y el archivo del
+    corpus servido por un `python -m http.server` volvía a ser una fuente
+    «publicada», o sea N1 entero otra vez. Ahora el nombre tiene que ser un
+    nombre —etiquetas del alfabeto del DNS, dos o más, y un primer nivel
+    alfabético—, lo que deja fuera todo literal IP sin nombrar ninguno, y su
+    primer nivel no puede ser de los que los estándares apartan del DNS
+    público.
+
+    QUEDA DICHO LO QUE ESTA FUNCIÓN NO HACE, porque la promesa de su nombre es
+    más grande que su cuerpo: comprueba la FORMA de un nombre público, no que
+    haya algo publicado detrás. Saber lo segundo exige la red, y este archivo
+    tiene que correr en la máquina de cualquiera sin dependencias. La lista
+    blanca sube el precio de la referencia inventada; no lo hace infinito.
     """
-    r = referencia.strip()
+    r = _texto(referencia)
+    if r is None:
+        return False
     if any(c.isspace() for c in r) or "\\" in r or ".." in r:
         return False
     minusculas = r.lower()
     for esquema in ESQUEMAS_PUBLICADOS:
         if minusculas.startswith(esquema):
-            resto = r[len(esquema):]
+            autoridad = r[len(esquema):].split("/")[0].split("?")[0].split("#")[0]
             break
     else:
         return False
-    dominio = resto.split("/")[0].split("?")[0].split("#")[0]
-    return ("." in dominio and not dominio.startswith(".")
-            and not dominio.endswith("."))
+    return _dominio_publicado(autoridad)
+
+
+def _dominio_publicado(autoridad):
+    """¿La autoridad de la URL es un nombre de dominio del DNS público?"""
+    # Credenciales dentro de la autoridad: además de no ser una forma en que
+    # se publique nada, `http://ejemplo.invalido@127.0.0.1/` pone un nombre
+    # creíble delante de la máquina de uno. Lo que decide es lo de después
+    # de la arroba, así que aquí no hay nada que leer.
+    if "@" in autoridad:
+        return False
+    host, hay_puerto, puerto = autoridad.partition(":")
+    if hay_puerto and not (puerto and all(c in ASCII_DIGITOS for c in puerto)):
+        return False
+    etiquetas = host.lower().split(".")
+    if len(etiquetas) < 2:
+        return False
+    for etiqueta in etiquetas:
+        if not 1 <= len(etiqueta) <= 63 or etiqueta[0] == "-" or etiqueta[-1] == "-":
+            return False
+        if any(c not in CARACTERES_DE_ETIQUETA for c in etiqueta):
+            return False
+    # El primer nivel alfabético es lo que descarta los literales IP sin
+    # tener que reconocerlos: `127.0.0.1` y `0.0.0.0` terminan en un número, y
+    # `[::1]` no pasa el alfabeto de las etiquetas. Se niega por lo que el
+    # nombre ES, no por parecerse a una dirección conocida.
+    tld = etiquetas[-1]
+    if not 2 <= len(tld) <= 24 or any(c not in ASCII_LETRAS for c in tld):
+        return False
+    return tld not in TLD_RESERVADOS
 
 
 def leer_fuente(valor, clases_admitidas, ventana):
@@ -484,11 +651,32 @@ def cadencia_de(ficha):
     N3 — las providencias no tenían ninguna fila, porque la tabla entera está
     escrita sobre `estado_vigencia`, campo que una providencia no tiene.
 
-    A18 — la cadencia colgaba de que la nota ESTUVIERA, no de que el estado la
-    obligara, y entonces dejarla vacía la alargaba de tres meses a doce: la
-    ficha peor llenada era la que más vivía. Se pregunta por la obligación,
-    que es un hecho del estado, y no por la casilla, que es un hecho de quien
-    la llenó.
+    A18 — la cadencia colgaba SOLO de que la nota estuviera, y entonces
+    dejarla vacía la alargaba de tres meses a doce: la ficha peor llenada era
+    la que más vivía. Se añadió la obligación, que es un hecho del estado, al
+    lado de la casilla, que es un hecho de quien la llenó.
+
+    B04 dijo que ese `or` era una vía y que la cadencia tenía que colgar solo
+    de la obligación, «como este docstring dice que hace». Lo segundo era
+    verdad —el párrafo anterior estaba escrito como si A18 hubiera sustituido
+    la regla de N6 en vez de sumarse a ella, y ese es el defecto que había que
+    arreglar aquí— y lo primero no: la casilla manda porque N6 lo decidió y
+    tiene test. Las dos condiciones son independientes y las dos acortan:
+
+      - N6 dice que **si hay nota, cadencia corta**, y con eso resuelve una
+        contradicción del instrumento, no un descuido. Quitarla devolvería a
+        doce meses la ficha que su autora marcó con algo pendiente.
+      - A18 dice que el estado que OBLIGA a nota acorta aunque la casilla esté
+        vacía, para que no llenarla no premie.
+
+    La objeción de fondo de B04 —quitar información de una ficha ensancha lo
+    que se acepta de ella— es real y no tiene arreglo por este lado: la ficha
+    sin nota no dice menos, dice otra cosa, y lo que dice es «no hay nada
+    pendiente», que es exactamente la fila 1 de la tabla. Un contrato no puede
+    leer la nota que nadie escribió, y darle a la ficha sin nota una cadencia
+    más corta que doce dejaría la fila 1 sin ningún caso. Lo que sí se puede
+    hacer, y se hace, es que ninguna de las dos condiciones pueda desaparecer
+    sin que un test lo diga.
     """
     if tipo_de(ficha) == "providencia":
         return CADENCIA_PROVIDENCIA_MESES
@@ -527,11 +715,19 @@ def caducada(ficha, hoy):
     por la caducidad —`recuento`, `cobertura`, la prueba de banco— mientras
     `_evaluar_norma` la rechaza. Que dos partes del pack cuenten distinto la
     misma ficha es el patrón de A09 y de A11; aquí hay un solo predicado.
+
+    B10 — el reloj entra por `_reloj` como cualquier otra fecha. Un día que no
+    se puede leer no da un `TypeError`: da una ficha caducada, que es el «no»
+    de esta función. Sin reloj no se puede sostener que una firma siga
+    valiendo, y una firma que no se puede sostener no se sirve.
     """
-    if _firma_valida(ficha, hoy) is None:
+    dia = _reloj(hoy)
+    if dia is None:
+        return True
+    if _firma_valida(ficha, dia) is None:
         return True
     limite = revisar_antes_de(ficha)
-    return limite is None or hoy > limite
+    return limite is None or dia > limite
 
 
 # ───────────────────────── §D. La respuesta ─────────────────────────
@@ -539,7 +735,22 @@ def caducada(ficha, hoy):
 class Respuesta(object):
     """Un código, un motivo técnico, la frase que lee ella y —si es citable—
     su token. `nota` viaja transcrita literal, sin interpretar, en toda
-    respuesta que hable de una ficha con nota."""
+    respuesta que hable de una ficha con nota.
+
+    B08 — esa promesa era falsa. `nota` se asignaba aquí y no la consultaba
+    ninguna línea del archivo: ni `frase`, ni `RespuestaCompuesta.frase`, ni
+    el token. La casilla que `obliga_nota` cobra —sin ella, `FICHA_INCOMPLETA`—
+    no se servía en ninguna parte, así que la ficha que declara que la norma
+    deja de regir dentro de cinco años y la que no declara nada producían el
+    mismo código y la misma frase, carácter por carácter. Es el silencio que
+    `FRASES` dice existir para impedir: el silencio se lee como «no hay
+    regla».
+
+    Se transcribe LITERAL y se dice que es transcrita. No se resume, no se
+    interpreta y no se convierte en un código: `01` campo 9 prohíbe leerla, y
+    servirla entre comillas es la única forma de respetar las dos cosas —que
+    llegue y que nadie la haya interpretado por el camino—.
+    """
 
     def __init__(self, codigo, motivo, ficha=None, nota=None):
         self.codigo = codigo
@@ -549,6 +760,9 @@ class Respuesta(object):
         self.token = None            # lo estampa el pack: solo él tiene el registro
         self.identificador = identificador_de(ficha) if ficha is not None else ""
         self.frase = FRASES.get(codigo, "").format(id=self.identificador or "la ficha")
+        transcribible = _texto(nota)
+        if transcribible is not None and self.frase:
+            self.frase += " Nota de la ficha, transcrita: «%s»" % transcribible
 
     @property
     def citable(self):
@@ -574,12 +788,16 @@ def _consulta_incompleta(consulta):
     Las dos las aporta quien consulta, tomadas de la carpeta del caso. Una
     norma no es vigente o no vigente: lo es *para una fecha*, y «la fecha del
     caso» no existe en singular.
+
+    Lee por `leer_consulta` y no por su cuenta: la consulta se lee en un solo
+    sitio, que es la mitad del rediseño de B01.
     """
-    if not isinstance(consulta, dict):
+    ejes = leer_consulta(consulta)
+    if ejes is None:
         return "la consulta no es una consulta"
-    if _fecha(consulta.get("fecha_del_caso")) is None:
+    if ejes["fecha_del_caso"] is None:
         return "falta `fecha_del_caso` o no es una fecha legible"
-    if _texto(consulta.get("tipo_de_fecha")) not in TIPOS_DE_FECHA:
+    if ejes["tipo_de_fecha"] is None:
         return "falta `tipo_de_fecha` o no es uno del vocabulario de `05`"
     return None
 
@@ -842,7 +1060,18 @@ def evaluar(ficha, consulta, hoy):
     Deducirlo es exactamente V4: la providencia recorría la tabla de las
     normas y salía citable precisamente porque no tenía sus campos, y lo único
     que la atrapaba era un desajuste de cadena que el renombrado iba a borrar.
+
+    El reloj se lee ANTES que nada (B10). Sin día no hay caducidad, no hay
+    ventana de consulta y no hay techo temporal: las tres condiciones que
+    separan «se comprobó» de «se afirmó» cuelgan de él, así que un reloj
+    ilegible no puede dar más que un no.
     """
+    dia = _reloj(hoy)
+    if dia is None:
+        return Respuesta("NO_TENEMOS_INFORMACION_SUFICIENTE",
+                         "el día en que se pregunta no es una fecha legible",
+                         ficha if isinstance(ficha, dict) else None)
+    hoy = dia
     problema = _consulta_incompleta(consulta)
     if problema is not None:
         return Respuesta("EL_PACK_NO_CONTESTA", problema, ficha if isinstance(ficha, dict) else None)
@@ -930,10 +1159,22 @@ class Pack(object):
     calcula al leer. Consecuencia buscada: si nadie lo mantiene, se apaga solo.
     """
 
-    def __init__(self, fichas, curator="", version="0.0.0"):
+    def __init__(self, fichas, curator="", version="0.0.0",
+                 jurisdiccion="colombia", niveles_territoriales=("nacional",)):
         self.fichas = list(fichas)
         self.curator = curator
         self.version = version
+        # B07 — los dos ejes que `cobertura` publicaba escritos a mano dentro
+        # de la función. `"colombia"` era la misma cadena tuviera el pack las
+        # fichas que tuviera, y ningún camino leía `consulta["jurisdiccion"]`:
+        # el manifiesto enumeraba tres ejes y el contrato solo sabía decir que
+        # no por uno de ellos. O se comparan o no se publican; se comparan, y
+        # para eso tienen que ser del pack y no de una constante escondida.
+        # Son del pack y no de las fichas a propósito: la competencia es una
+        # declaración de quien cura, no un dato que se pueda deducir de los
+        # registros que haya dentro.
+        self.jurisdiccion = jurisdiccion
+        self.niveles_territoriales = tuple(niveles_territoriales)
         self.registro = {}   # serie -> token servido. Sin esto no hay a qué
                              # resolver un token, y un token inventado pasa.
 
@@ -979,14 +1220,21 @@ class Pack(object):
         sobre las pocas que sí se mantienen. Se elige ese lado porque la
         alternativa es un aviso que viaja pegado a un `CITABLE`, y un aviso
         pegado a un sí es un aviso que nadie lee.
+
+        B10 — sin reloj legible el pack está apagado. No es una cortesía: la
+        pregunta que contesta esta función es «¿hay alguien manteniendo
+        esto?», y sin día no se puede contestar que sí.
         """
+        dia = _reloj(hoy)
+        if dia is None:
+            return True
         firmas = [f for f in (_fecha(x.get("verificado_el")) for x in self.fichas) if f]
         if not firmas:
             return True
         mediana = date.fromordinal(int(statistics.median([f.toordinal() for f in firmas])))
-        if hoy > mas_meses(mediana, MESES_DE_APAGADO):
+        if dia > mas_meses(mediana, MESES_DE_APAGADO):
             return True
-        return self.degradado(hoy)
+        return self.degradado(dia)
 
     def _citable_en_si(self, ficha, hoy):
         """Si la ficha pasa las condiciones que no dependen de la consulta.
@@ -995,7 +1243,25 @@ class Pack(object):
         Una ficha sin materias legibles no es contable como citable: no hay
         ninguna consulta que pueda casar con ella (`_materia`), de modo que
         contarla sería contar una ficha que nunca se va a servir.
+
+        B05 — ese razonamiento valía igual para otros dos campos y solo se
+        había aplicado a la materia. Un `alcance_comprobado` ilegible hace que
+        `contenido_en` sea False para toda petición, y un `vigencia_desde`
+        ilegible hace que A.6 corte siempre: ninguno de los dos depende de la
+        consulta y ninguno de los dos se miraba. La consecuencia no era de
+        precisión sino de seguridad, porque este censo gobierna: `citables_hoy`
+        es el denominador de `degradado` y `degradado` es el interruptor, así
+        que **tres fichas que no se pueden servir jamás encendían un pack que
+        sin ellas estaba apagado**, y de paso declaraban cubierta un área en la
+        que el pack no podía contestar nada.
+
+        La condición general, escrita una vez: es contable lo que alguna
+        consulta podría llegar a hacer citable. Lo demás es inventario.
         """
+        dia = _reloj(hoy)
+        if dia is None:
+            return False
+        hoy = dia
         firma = _firma_valida(ficha, hoy)
         if firma is None or caducada(ficha, hoy):
             return False
@@ -1014,6 +1280,10 @@ class Pack(object):
                         "materia": sorted(materias)[0]}, hoy).citable
         estado, _ = leer_estado_vigencia(ficha.get("estado_vigencia"))
         return (estado in ESTADOS_QUE_PUEDEN_SER_CITABLES
+                # B05, los dos campos que no dependen de la consulta y que
+                # ninguna consulta puede salvar si no se pueden leer.
+                and leer_alcance(ficha.get("alcance_comprobado")) is not None
+                and _fecha(ficha.get("vigencia_desde")) is not None
                 and not (obliga_nota(ficha) and _texto(ficha.get("nota_de_vigencia")) is None)
                 and _identidad(ficha, hoy, CLASES_DE_IDENTIDAD_NORMA) is None
                 and leer_fuente(ficha.get("fuente_vigencia"), CLASES_DE_VIGENCIA,
@@ -1023,7 +1293,11 @@ class Pack(object):
     def recuento(self, hoy):
         """Viaja en CADA respuesta, no solo en el manifiesto: un pack donde 22
         de 26 registros están sin vigencia comprobada tiene que verse así desde
-        fuera, y tiene que verlo quien consume."""
+        fuera, y tiene que verlo quien consume.
+
+        Sin reloj legible no hay nada fresco que contar: `caducada` devuelve
+        True y `_citable_en_si` False para todas, así que el recuento sale
+        entero de las mismas dos funciones y no de un caso aparte (B10)."""
         caducados = sum(1 for f in self.fichas if caducada(f, hoy))
         citables = sum(1 for f in self.fichas if self._citable_en_si(f, hoy))
         sin_comprobar = sum(1 for f in self.fichas
@@ -1054,50 +1328,90 @@ class Pack(object):
 
         Y las materias se leen con `leer_materias`: una cadena no es una lista
         de materias (A10).
+
+        Los otros dos ejes vienen ahora del pack y no de una constante escrita
+        aquí dentro (B07). Los tres se publican y los tres se comparan: el eje
+        que se publica sin compararse es una promesa que quien consume no
+        puede usar, y peor, una que el manifiesto le enseña a escribir.
         """
         declaradas = set()
         for f in self.fichas:
             if self._citable_en_si(f, hoy):
                 declaradas |= leer_materias(f.get("materia"))
-        return {"jurisdiccion": "colombia", "nivel_territorial": ["nacional"],
+        return {"jurisdiccion": self.jurisdiccion,
+                "nivel_territorial": list(self.niveles_territoriales),
                 "materias_declaradas": sorted(declaradas)}
 
     # ── responder ──
 
     def responder(self, consulta, hoy):
+        # B10 — el reloj primero, y por la misma puerta que las casillas. Todo
+        # lo que viene después cuenta días.
+        dia = _reloj(hoy)
+        if dia is None:
+            # Los dos banderines van en el lado que no dice «sano»: es la
+            # lección de B09 aplicada al caso en que no hay con qué medir.
+            return RespuestaCompuesta(
+                [Respuesta("NO_TENEMOS_INFORMACION_SUFICIENTE",
+                           "el día en que se pregunta no es una fecha legible")],
+                degradado=True, apagado=True)
+        hoy = dia
+
+        # B09 — el estado del pack se calcula ANTES del corte de R3 y viaja en
+        # todas las respuestas, la incompleta incluida. `recuento` dice de sí
+        # mismo que viaja en CADA respuesta, y `degradado`/`apagado` no son
+        # huecos rellenables por defecto: son afirmaciones. Un pack apagado que
+        # contestaba `apagado=False` a la primera consulta que hace cualquiera
+        # —la que todavía no trae la fecha del caso— le decía a quien consume
+        # que estaba sano. Un banderín de salud vale por lo que dice cuando
+        # dice que sí.
+        comunes = dict(cobertura=self.cobertura(hoy), recuento=self.recuento(hoy),
+                       degradado=self.degradado(hoy), apagado=self.apagado(hoy))
+
         problema = _consulta_incompleta(consulta)
         if problema is not None:
-            return RespuestaCompuesta([Respuesta("EL_PACK_NO_CONTESTA", problema)])
-
-        comunes = dict(cobertura=self.cobertura(hoy), recuento=self.recuento(hoy),
-                       degradado=self.degradado(hoy))
+            return RespuestaCompuesta([Respuesta("EL_PACK_NO_CONTESTA", problema)], **comunes)
+        ejes = leer_consulta(consulta)
 
         # El pack apagado no responde afirmativamente ni siquiera con una ficha
         # impecable dentro: un pack sin mantenedor que solo responde identidad
         # reproduce el fallo original —identidad leída como vigencia— en el
         # peor momento posible.
-        if self.apagado(hoy):
+        if comunes["apagado"]:
             return RespuestaCompuesta(
                 [Respuesta("NO_TENEMOS_INFORMACION_SUFICIENTE",
                            "el pack está apagado: nadie lo mantiene; la identidad, si la hay, "
                            "es un dato no citable y esto no dice que rija")],
-                apagado=True, **comunes)
-
-        # A06 — el nivel territorial se mira SIEMPRE, y no solo cuando el pack
-        # no tiene la ficha. El pack es nacional tenga o no tenga el registro
-        # que se le pide: que lo tenga no lo vuelve competente.
-        if consulta.get("territorial"):
-            return RespuestaCompuesta(
-                [Respuesta("FUERA_DE_COBERTURA", "consulta territorial; el pack es nacional")],
                 **comunes)
 
-        pedido = _texto(consulta.get("identificador"))
+        # A06 y B07 — los ejes de competencia se miran SIEMPRE, y no solo
+        # cuando el pack no tiene la ficha. El pack cubre la jurisdicción y los
+        # niveles que declara tenga o no tenga el registro que se le pide: que
+        # lo tenga no lo vuelve competente. La jurisdicción callada se lee como
+        # la propia, y ahí esta condición se aparta a sabiendas de `_materia`,
+        # que trata el silencio como indeterminable: la materia la aporta la
+        # carpeta del caso y varía consulta a consulta, mientras que preguntarle
+        # a un pack sin decir jurisdicción es preguntarle en la suya. El coste
+        # queda dicho: quien consulta el pack equivocado sin declarar
+        # jurisdicción recibe una respuesta, y por eso el token registra el eje
+        # tal como se pidió —callado— y no tal como se resolvió.
+        if ejes["jurisdiccion"] is not None and ejes["jurisdiccion"] != self.jurisdiccion:
+            return RespuestaCompuesta(
+                [Respuesta("FUERA_DE_COBERTURA",
+                           "la consulta declara otra jurisdicción que la del pack")], **comunes)
+        if ejes["nivel_territorial"] not in self.niveles_territoriales:
+            return RespuestaCompuesta(
+                [Respuesta("FUERA_DE_COBERTURA",
+                           "el nivel territorial de la consulta no está entre los que cubre "
+                           "el pack")], **comunes)
+
+        pedido = ejes["identificador"]
         coincidencias = [f for f in self.fichas if identificador_de(f) == pedido] if pedido else []
         if not coincidencias:
             return RespuestaCompuesta([self._sin_ficha(consulta, hoy)], **comunes)
 
         respuestas = [evaluar(f, consulta, hoy) for f in coincidencias]
-        composicion = self._composicion(coincidencias, respuestas)
+        composicion = self._composicion(coincidencias, ejes)
 
         # A01 y A02, LA VÍA PRINCIPAL. El token se emitía por respuesta
         # individual, antes de calcular la composición y sin mirarla: en el
@@ -1116,19 +1430,39 @@ class Pack(object):
 
         return RespuestaCompuesta(respuestas, codigo_de_composicion=composicion, **comunes)
 
-    def _composicion(self, fichas, respuestas):
-        """N4 — dos fichas del mismo par (identificador, alcance) que discrepan
-        en la vigencia es un problema de **vigencia**, y la prosa lo servía
-        bajo `CONFLICTO_DE_FUENTES`, que está definido como un problema de
-        identidad y cuya frase habla de dos fuentes oficiales. Es H8 al revés:
-        se arregló una dirección y se creó la simétrica. Aquí tiene código
-        propio, y el de identidad queda para lo que es."""
-        por_clave = {}
+    def _composicion(self, fichas, ejes):
+        """N4 — dos fichas que discrepan en la vigencia es un problema de
+        **vigencia**, y la prosa lo servía bajo `CONFLICTO_DE_FUENTES`, que
+        está definido como un problema de identidad y cuya frase habla de dos
+        fuentes oficiales. Es H8 al revés: se arregló una dirección y se creó
+        la simétrica. Aquí tiene código propio, y el de identidad queda para lo
+        que es.
+
+        B03 — LA LLAVE ERA MÁS ESTRECHA QUE LA PREGUNTA QUE CONTESTA. Se
+        agrupaba por `(identificador, alcance_comprobado)` comparado por
+        igualdad exacta, y la pregunta no es esa: es si dos fichas que **cubren
+        lo que se pide** discrepan. P2 empuja a estrechar, así que la forma
+        normal del pack son varias fichas por norma con alcances distintos y
+        solapados; dos que cubren el art. 00 —una comprobada solo para él, otra
+        para él y el 01— y que dicen lo contrario sobre si la norma rige tenían
+        llaves distintas, no había conflicto, las dos salían citables con su
+        token cada una, y el consumidor elegía entre «vigente dentro del
+        alcance comprobado» y «Hoy no rige» del mismo artículo. Eso es
+        exactamente la lectura que N5 descartó, reaparecida por debajo.
+
+        La llave es la petición. Solo entran las fichas cuyo alcance contiene
+        lo que se pide: una ficha que no llega hasta ahí no contesta a esta
+        consulta, y hacerla discrepar sería inventar un conflicto que nadie
+        podría ver en la respuesta.
+        """
+        peticion = ejes["peticion"]
+        por_identificador = {}
         for f in fichas:
-            alcance = leer_alcance(f.get("alcance_comprobado"))
-            clave = (identificador_de(f), alcance)
-            por_clave.setdefault(clave, set()).add(_texto(f.get("estado_vigencia")))
-        for estados in por_clave.values():
+            if not contenido_en(peticion, leer_alcance(f.get("alcance_comprobado"))):
+                continue
+            por_identificador.setdefault(identificador_de(f), set()).add(
+                _texto(f.get("estado_vigencia")))
+        for estados in por_identificador.values():
             if len(estados) > 1:
                 return "CONFLICTO_ENTRE_FICHAS"
         return None
@@ -1161,6 +1495,23 @@ class Pack(object):
         no corresponde a ninguna ficha». Se le añaden dos cosas: la huella del
         pack, y una **serie opaca registrada al servir**. Un token que no está
         en el registro no se sirvió nunca, por plausible que se lea.
+
+        B01 — Y LA CONSULTA ENTERA, que es el rediseño de esta ronda. La ronda
+        anterior le metió dentro dos ejes de los cinco, la fecha del caso y su
+        tipo (A03, A07), campo a campo y a mano. Los otros tres se quedaron
+        fuera, y no por descuido sino porque no había ninguna pieza que dijera
+        de qué se compone una consulta: `responder` sacaba las claves que
+        necesitaba con `_texto` en cada rama, y el token hacía lo mismo con las
+        suyas. Dos lecturas separadas se separan más con cada corrección.
+        Ahora hay una: `leer_consulta` enumera los ejes en `EJES_DE_CONSULTA`,
+        el registro guarda el resultado entero y la prueba de banco lo compara
+        entero. Un eje nuevo entra en el token por añadirlo a esa tupla.
+
+        Del digest y de por qué la consulta no viaja legible dentro del token:
+        el token es una cadena partida por « · », y la consulta trae texto que
+        escribe quien consulta. Meterla literal dejaría escribir campos falsos
+        dentro del token con solo ponerlos en la materia. El digest identifica
+        la consulta sin transportarla; lo que decide es siempre el registro.
         """
         f = respuesta.ficha
         tipo = tipo_de(f)
@@ -1170,18 +1521,27 @@ class Pack(object):
         alcance = leer_alcance(f.get("alcance_comprobado")) if tipo == "norma" else None
         proposicion = _texto(f.get("proposicion_atribuida")) if tipo == "providencia" else None
         parte_alcance = _serializar_alcance(alcance) if alcance else (proposicion or "")
-        caso = (_fecha(consulta.get("fecha_del_caso")), _texto(consulta.get("tipo_de_fecha")))
+        ejes = leer_consulta(consulta)
         serie = secrets.token_hex(8)
         token = " · ".join([respuesta.codigo,
                             identificador_de(f) + " + " + parte_alcance,
                             str(_fecha(f.get("verificado_el"))),
                             hoy.isoformat(),
-                            # A03 y A07 — para qué caso se pidió. Sin esto dos
-                            # consultas con fechas de caso distintas producían
-                            # el mismo token salvo la serie, y el tipo de
-                            # fecha se validaba contra el vocabulario de `05`
-                            # sin que ningún camino volviera a leerlo.
-                            "caso:%s#%s" % (caso[0].isoformat(), caso[1]),
+                            # A03 y A07 — para qué caso se pidió, legible.
+                            # Sin esto dos consultas con fechas de caso
+                            # distintas producían el mismo token salvo la
+                            # serie, y el tipo de fecha se validaba contra el
+                            # vocabulario de `05` sin que ningún camino
+                            # volviera a leerlo. Se queda a la vista porque es
+                            # el eje que quien lee la cita necesita comprobar
+                            # sin preguntarle al pack.
+                            "caso:%s#%s" % (ejes["fecha_del_caso"].isoformat(),
+                                            ejes["tipo_de_fecha"]),
+                            # B01 — y los cinco ejes juntos, en una huella. Dos
+                            # consultas que solo se distingan en la materia o
+                            # en el nivel territorial ya no producen el mismo
+                            # token.
+                            "consulta:" + _huella_de_consulta(ejes),
                             self._huella(),
                             "serie:" + serie])
         # La entrada del registro es una FOTO, y no guarda la ficha: guarda lo
@@ -1193,7 +1553,7 @@ class Pack(object):
         # también se calcula aquí, una vez, y es la de la firma que se sirvió.
         self.registro[serie] = {"token": token, "codigo": respuesta.codigo,
                                 "tipo": tipo, "alcance": alcance,
-                                "proposicion": proposicion, "caso": caso,
+                                "proposicion": proposicion, "consulta": ejes,
                                 "huella": self._huella(),
                                 "revisar_antes_de": revisar_antes_de(f),
                                 "servido_el": hoy}
@@ -1202,11 +1562,32 @@ class Pack(object):
     def verificar_token(self, token, lo_citado, hoy, caso):
         """La prueba de banco, hecha mecánica. `(pasa, motivo)`.
 
-        Ocho condiciones de fallo. Las cinco de la ronda anterior —cita sin
+        Diez condiciones de fallo. Las cinco de la primera ronda —cita sin
         token; token que no resuelve contra ninguna respuesta servida, o sea
         el inventado; código que no es de los cuatro citables; ficha caducada
-        hoy; alcance del token que no contiene lo citado— y tres que la ronda
-        adversaria obligó a añadir:
+        hoy; alcance del token que no contiene lo citado—, tres que la segunda
+        ronda obligó a añadir y dos de esta:
+
+          - **el pack vivo** (B02). Ni `apagado` ni `degradado` se consultaban
+            aquí en ninguna línea, y el apagado no necesita que nadie toque el
+            pack: bascula solo con el calendario, o sea sin mover la huella que
+            A04 sí comprueba. Dos meses después, el mismo pack contestaba
+            `NO_TENEMOS_INFORMACION_SUFICIENTE` a todo el mundo y seguía
+            respaldando la cita que había salido de él. Era el argumento de
+            A01 —«si el no vive en la respuesta y el sí en el token, el no no
+            existe»— un piso más arriba. El pack que no responde tampoco
+            respalda.
+
+            Convive con A05 sin contradecirlo, y la línea entre los dos hay
+            que decirla: de la FICHA se lee la foto del día en que se sirvió,
+            para que ensancharla después no ensanche el token; del PACK se lee
+            el estado de hoy, porque la pregunta que contesta la prueba de
+            banco es si esta cita se sostiene ahora.
+          - **la consulta entera** (B01). El registro guardaba dos ejes de los
+            cinco, así que un token pedido en la materia buena respaldaba una
+            cita que declaraba la materia ajena —la misma que `responder`
+            acababa de negar con `FUERA_DEL_ALCANCE_COMPROBADO`—. Se comparan
+            todos los de `EJES_DE_CONSULTA`, y el motivo dice cuál falló.
 
           - **la huella del pack** (A04). `version` + `checksum` se escribían
             dentro del token «porque sin ellos no hay a qué resolver un token»
@@ -1229,6 +1610,10 @@ class Pack(object):
         es justo lo que el propio documento declara imposible. Exigir la
         estructura es lo que devuelve esta condición al terreno mecánico.
         """
+        dia = _reloj(hoy)
+        if dia is None:
+            return (False, "el día en que se comprueba la cita no es una fecha legible")
+        hoy = dia
         t = _texto(token)
         if t is None:
             return (False, "cita sin token")
@@ -1240,16 +1625,23 @@ class Pack(object):
             return (False, "el token no corresponde a ninguna respuesta servida")
         if entrada["codigo"] not in CODIGOS_CITABLES:
             return (False, "el código del token no es uno de los cuatro citables")
+        # La huella va antes que el estado del pack, y el orden importa: si el
+        # pack ya no es el mismo, decir que está apagado sería contestar por
+        # otro. Primero se comprueba de qué pack habla el token.
         if entrada["huella"] != self._huella():
             return (False, "el token se emitió contra otra versión del pack")
+        if self.apagado(hoy):
+            return (False, "el pack está apagado: hoy no responde, y lo que no responde "
+                           "tampoco respalda")
         limite = entrada["revisar_antes_de"]
         if limite is None or hoy > limite:
             return (False, "el token apunta a una ficha caducada")
         if not isinstance(caso, dict):
             return (False, "la prueba de banco necesita el caso para el que se cita")
-        declarado = (_fecha(caso.get("fecha_del_caso")), _texto(caso.get("tipo_de_fecha")))
-        if declarado != entrada["caso"]:
-            return (False, "el token se emitió para otra fecha de caso o para otro tipo de fecha")
+        declarada = leer_consulta(caso)
+        for eje in EJES_DE_CONSULTA:
+            if declarada[eje] != entrada["consulta"][eje]:
+                return (False, "el token se emitió para otra consulta: no coincide `%s`" % eje)
         if entrada["tipo"] == "providencia":
             if _texto(lo_citado) != entrada["proposicion"]:
                 return (False, "lo citado no es la proposición para la que se comprobó")
@@ -1262,3 +1654,23 @@ def _serializar_alcance(alcance):
     completa, articulos, incisos = alcance
     return "{norma_completa: %s, articulos: [%s], incisos: [%s]}" % (
         "si" if completa else "no", ", ".join(sorted(articulos)), ", ".join(sorted(incisos)))
+
+
+def _huella_de_consulta(ejes):
+    """La huella de una consulta leída. Dos consultas distintas en cualquiera
+    de sus ejes dan huellas distintas, y por eso dan tokens distintos (B01).
+
+    Se recorre `EJES_DE_CONSULTA` y no las claves del diccionario: el orden
+    fijo es lo que hace que la huella sea la misma cada vez, y recorrer la
+    tupla es lo que hace que añadir un eje allí baste para que entre aquí.
+    """
+    partes = []
+    for eje in EJES_DE_CONSULTA:
+        valor = ejes[eje]
+        if eje == "peticion":
+            valor = _serializar_alcance(valor) if valor is not None else None
+        elif isinstance(valor, date):
+            valor = valor.isoformat()
+        partes.append("%s=%s" % (eje, "" if valor is None else valor))
+    crudo = "; ".join(partes)
+    return hashlib.sha256(crudo.encode("utf-8")).hexdigest()[:16]

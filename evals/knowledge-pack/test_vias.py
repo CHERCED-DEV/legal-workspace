@@ -36,20 +36,22 @@ import inspect
 import os
 import sys
 import unittest
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 # El directorio tiene un guion en el nombre y no es un paquete importable.
 # Esto permite lanzar la suite desde la raíz del repositorio
 # (`python -m unittest discover -s evals/knowledge-pack`) igual que desde aquí.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from contrato import (Pack, TIPOS_DE_FECHA, cadencia_de, caducada,   # noqa: E402
-                      evaluar, mas_meses, revisar_antes_de)
+from contrato import (EJES_DE_CONSULTA, Pack, TIPOS_DE_FECHA,        # noqa: E402
+                      cadencia_de, caducada, evaluar, mas_meses,
+                      revisar_antes_de, _referencia_publicada)
 from fichas import (HOY, FIRMANTE, consulta_norma, consulta_providencia,     # noqa: E402
                     ficha_norma, ficha_providencia, meses, sin)
 
-# Los dos alcances que se repiten en la tercera sección.
+# Los alcances que se repiten en la tercera y la cuarta sección.
 ART_00 = {"norma_completa": "no", "articulos": ["00"], "incisos": []}
+ART_00_Y_01 = {"norma_completa": "no", "articulos": ["00", "01"], "incisos": []}
 LEY_ENTERA = {"norma_completa": "si", "articulos": [], "incisos": []}
 
 

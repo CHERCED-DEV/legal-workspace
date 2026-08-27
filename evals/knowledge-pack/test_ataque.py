@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-El adversario, **segunda ronda**. Diez vías, y las diez pasan.
+El adversario, **tercera ronda**. Diez vías, y las diez pasan.
 
 La convención es al revés que en todas partes: **si el test pasa, la vía está
 abierta**. Cada uno intenta colar una cita falsa —o tumbar el pack, o hacerle
@@ -18,37 +18,53 @@ EL CICLO, que es lo único que hay que saber para usar esto:
   3. Cada ataque cerrado se reescribe afirmando la conducta correcta y se
      **muda a `test_vias.py`** con su prefijo. Este archivo vuelve a quedar
      vacío y aquel sube: 19 tras las dos críticas en prosa, 37 tras la primera
-     ronda adversaria, 47 cuando estas diez se cierren.
+     ronda adversaria, 46 con las nueve de la segunda que se cerraron, 56
+     cuando se cierren estas diez.
 
-POR DÓNDE ENTRÓ ESTA RONDA, porque el patrón vale más que la lista y la
-primera ronda ya había tapado sus cuatro puertas —el token al portador, el
-orden de las comprobaciones, los campos que nadie compara y el borde del
-calendario—:
+POR DÓNDE ENTRÓ ESTA RONDA. Las dos anteriores ya taparon sus puertas —el
+token al portador, el apagado, los tipos de entrada, lo que el token no
+guardaba, la composición—, así que había que entrar por otro sitio. Los cuatro
+que hubo:
 
-  - **La prueba de banco quedó por detrás de la respuesta.** A01-A07 pusieron
-    el token bajo la composición y le metieron dentro la fecha del caso, pero
-    `verificar_token` sigue sin mirar dos cosas que `responder` sí mira: la
-    materia y el nivel territorial de la consulta (B01), y si el pack sigue
-    encendido el día en que se cita (B02). El «no» vive en `responder` y el
-    «sí» en el token, y el token es lo único que llega a la publicación.
-  - **Las guardas nuevas comparten supuesto.** `cadencia_de` gobierna la
-    caducidad Y la ventana de `leer_fuente` (A12) Y el censo, así que la
-    corrección de A18 —«la cadencia cuelga de la obligación, no de la
-    casilla»— se quedó a medias y borrar una casilla voluntaria vuelve a
-    ensanchar lo que se acepta (B04). `_composicion` y `_citable_en_si`
-    heredan el mismo defecto por otro lado: las dos deciden con una llave más
-    estrecha que la pregunta que contestan (B03, B05).
-  - **Lo que la respuesta publica no es lo que la respuesta comprueba.**
-    `cobertura` declara una jurisdicción y un nivel territorial que ningún
-    camino compara (B07), la nota obligatoria que A15 dejó como única señal de
-    una cesación anunciada no llega a la frase servida (B08), y una consulta
-    incompleta devuelve el recuento vacío y `apagado=False` de un pack apagado
-    (B09).
-  - **Las dos listas blancas que quedaron sin cerrar del todo.** La
-    referencia publicada acepta la máquina de quien escribe la ficha (B06), y
-    `hoy` es la única fecha del contrato que no pasa por `_fecha` (B10).
+  - **El contrato promete ser total sobre las fichas y no lo es.** El
+    encabezado dice que «ninguna función de este archivo levanta una excepción
+    por un dato malo», y `evaluar`, `tipo_de` e `identificador_de` defienden
+    los tres el caso de una ficha que no es un dict —o sea que el contrato
+    sabe que puede llegar—. El censo que corre en CADA consulta no lo defiende
+    en ninguna línea: un `None` en la lista, o la lista olvidada, y el pack
+    deja de contestar a todo, incluidas las fichas sanas. Es el daño exacto de
+    A11 y de B10 por la puerta que ninguna de las dos cerró (C01).
+  - **Las guardas de la ronda anterior se ensancharon a medias.** B03 ensanchó
+    la LLAVE de `_composicion` —«la llave es la petición»— y dejó el
+    DISCRIMINANTE donde estaba, en la cadena cruda de `estado_vigencia`: dos
+    fichas discrepan sobre la vigencia del caso que se pregunta sin que esa
+    cadena cambie (C03), y la regla entera es inalcanzable en la rama B, cuya
+    llave la consulta no trae y cuyo discriminante la ficha no tiene (C04).
+    B05 ensanchó el censo a dos campos más pidiéndoles que fueran LEGIBLES, y
+    un alcance legible y vacío, o una vigencia que empieza después del techo,
+    son tan inservibles como uno ilegible: tres de esas encienden un pack que
+    sin ellas estaba apagado, que es la consecuencia que B05 dice cerrar (C05).
+  - **La prueba de banco sigue un piso por detrás.** No compara la única cosa
+    que toda cita nombra —de qué norma es el artículo que se cita—, y el token
+    lleva ese identificador escrito y nunca lo lee, que es A04 otra vez (C06).
+    Y la huella que sí lee cubre la versión y las fichas, pero no los dos ejes
+    de competencia que B07 acaba de hacer comparables: estrechar la cobertura
+    del pack deja vivos todos los tokens de lo que ya no cubre, mientras
+    `responder` contesta `FUERA_DE_COBERTURA` a la misma consulta (C07).
+  - **Las frases vuelven a afirmar más de lo comprobado.** `A15` era eso y
+    `B08` también. Ahora es `CONFLICTO_ENTRE_FICHAS`, que dice «es un problema
+    de vigencia, no de identidad» cuando lo que hay es un problema de
+    identidad, y «discrepan en la vigencia comprobada» de una ficha que no
+    tiene ninguna vigencia comprobada (C08); es el conjunto mixto, que se
+    sirve bajo un código —`MULTIPLE`— que no está en ningún vocabulario, no
+    tiene frase y vale igual para un conjunto entero citable que para uno con
+    un precedente superado dentro (C10); y es la ventana de la fuente, cuyo
+    techo es `hoy` y no la firma, de modo que una ficha sale `CITABLE`
+    declarando que consultó la fuente oficial once meses DESPUÉS del día en
+    que se firmó (C02). Falta el eje territorial, donde las dos formas de
+    escribirlo se contradicen y una gana en silencio (C09).
 
-    cd evals/knowledge-pack && python -m unittest test_ataque -v
+    cd evals/knowledge-pack && python -B -m unittest test_ataque -v
 
 Con las mismas fichas de ejemplo de `fichas.py`: aquí tampoco hay derecho.
 """
@@ -56,493 +72,539 @@ Con las mismas fichas de ejemplo de `fichas.py`: aquí tampoco hay derecho.
 import os
 import sys
 import unittest
-from datetime import date, datetime
 
 # El directorio tiene un guion en el nombre y no es un paquete importable.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from contrato import (Pack, cadencia_de, caducada, evaluar,      # noqa: E402
-                      mas_meses, _referencia_publicada)
-from fichas import (HOY, FIRMANTE, consulta_norma, ficha_norma,  # noqa: E402
-                    meses)
+from contrato import (CODIGOS_CITABLES, FRASES, Pack,          # noqa: E402
+                      evaluar, leer_nivel_territorial)
+from fichas import (HOY, FIRMANTE, consulta_norma,             # noqa: E402
+                    consulta_providencia, ficha_norma,
+                    ficha_providencia, meses, sin)
 
 ART_00 = {"norma_completa": "no", "articulos": ["00"], "incisos": []}
 ART_00_Y_01 = {"norma_completa": "no", "articulos": ["00", "01"], "incisos": []}
+SIN_ARTICULOS = {"norma_completa": "no", "articulos": [], "incisos": []}
 PUBLICADA = "https://ejemplo.invalido/diario-oficial"
+
+
+def fuente(clase, consultada, referencia=PUBLICADA):
+    return {"clase": clase, "referencia": referencia, "consultada": consultada}
 
 
 class Ataque(unittest.TestCase):
     """Base común. `pack()` arma un pack con versión, que es lo que el token
     exhibe en su huella."""
 
-    def pack(self, *fichas):
-        return Pack(list(fichas), curator=FIRMANTE, version="0.1.0")
+    def pack(self, *fichas, **kw):
+        kw.setdefault("curator", FIRMANTE)
+        kw.setdefault("version", "0.1.0")
+        return Pack(list(fichas), **kw)
 
-    def token_de(self, pack, consulta, hoy=HOY):
+    def token_de(self, pack, consulta, hoy=HOY, indice=0):
         r = pack.responder(consulta, hoy)
         self.assertTrue(r.citable, "el control positivo del ataque no es citable: %s" % r.codigos)
-        return r.respuestas[0].token
+        return r.respuestas[indice].token
 
 
-# ── I. La prueba de banco se quedó por detrás de la respuesta ──
+# ── I. Lo que el contrato da por hecho de quien lo llama ──
 
-class ElTokenNoSabeLoQueLaRespuestaSabia(Ataque):
+class ElPackSuponeQueLeDanFichas(Ataque):
 
-    def test_B01_el_token_no_registra_ni_la_materia_ni_el_nivel_territorial(self):
-        """A03 y A07 metieron dentro del token la fecha del caso y su tipo
-        —«quien cita tiene que decir para qué cita»— y dejaron fuera los otros
-        dos ejes de la misma consulta. A06 había establecido justo antes que
-        `materia` y `territorial` se miran SIEMPRE, y no solo cuando el pack
-        no tiene la ficha.
+    def test_C01_una_ficha_que_no_es_ficha_deja_al_pack_sin_contestar_a_nada(self):
+        """El encabezado de `contrato.py` no lo deja en duda: «Ninguna función
+        de este archivo levanta una excepción por un dato malo: un dato malo
+        es un ‹no›. Esa es la diferencia entre un contrato y un formulario.»
 
-        El resultado es que las dos comprobaciones de A06 se evaporan en la
-        última puerta, que es la única que llega a la publicación: `responder`
-        dice `FUERA_DEL_ALCANCE_COMPROBADO` a la consulta en materia ajena y
-        `FUERA_DE_COBERTURA` a la territorial, y `verificar_token` acepta un
-        token pedido en la materia buena para respaldar una cita que declara
-        exactamente esas dos consultas negadas. `caso` llega entero a la
-        función y de él solo se leen dos claves de cinco.
+        Y el contrato SABE que una ficha puede no ser un dict: lo defienden
+        tres funciones distintas —`evaluar` («eso no es una ficha»), `tipo_de`
+        e `identificador_de`, las tres con su `isinstance` escrito—. Lo que no
+        lo defiende es el censo: `caducada`, `_firma_valida`, `_citable_en_si`,
+        `revisar_antes_de` y `cadencia_de` llaman a `ficha.get` sin mirar qué
+        tienen delante, y `recuento`, `cobertura` y `apagado` los recorren
+        TODOS en cada consulta, porque B09 puso el estado del pack a calcularse
+        antes que ninguna otra cosa.
 
-        DEBERÍA FALLAR: el token tendría que registrar la materia y el nivel
-        territorial con que se pidió, y `verificar_token` compararlos, igual
-        que ya compara la fecha del caso.
+        El resultado es literalmente el daño que A11 documentó —«una casilla
+        con 9999-01-01 dejaba el pack entero sin responder a nada, ni siquiera
+        a las consultas sobre las demás fichas»— y que B10 volvió a cerrar por
+        el lado del reloj. Aquí no hace falta ni una fecha imposible: basta un
+        `None` en la lista, o llamar `Pack(ficha)` en vez de `Pack([ficha])`,
+        que es el error de tecleo más barato que hay y que el propio
+        constructor invita a cometer al hacer `list(fichas)` sin preguntar.
+
+        Lo que el pack devuelve no es un «no»: es un `AttributeError` que sube
+        hasta quien consume, y quien consume es un modelo.
         """
-        p = self.pack(ficha_norma())
-        buena = consulta_norma()
-        token = self.token_de(p, buena)
+        sana = ficha_norma()
 
-        ajena = consulta_norma(materia="derecho-espacial-lunar")
-        territorial = consulta_norma(territorial=True)
+        # a) un hueco en la lista y el pack enmudece para la ficha sana.
+        con_hueco = self.pack(None, sana)
+        with self.assertRaises(AttributeError):
+            con_hueco.responder(consulta_norma(), HOY)
+        # …y para todo lo demás: el estado del pack tampoco se puede calcular.
+        with self.assertRaises(AttributeError):
+            con_hueco.recuento(HOY)
+        with self.assertRaises(AttributeError):
+            con_hueco.apagado(HOY)
+        with self.assertRaises(AttributeError):
+            con_hueco.cobertura(HOY)
 
-        # Lo que el pack contesta a esas dos consultas.
-        self.assertEqual("FUERA_DEL_ALCANCE_COMPROBADO", p.responder(ajena, HOY).codigo)
-        self.assertEqual("FUERA_DE_COBERTURA", p.responder(territorial, HOY).codigo)
+        # b) cualquier cosa que no sea un dict sirve igual.
+        for basura in ("una ficha en prosa", 7, ["casi", "una", "ficha"]):
+            with self.assertRaises(AttributeError):
+                self.pack(basura, sana).responder(consulta_norma(), HOY)
 
-        # Y lo que la prueba de banco dice de una cita hecha PARA esas
-        # consultas, con el token pedido para otra.
-        self.assertEqual((True, "el token resuelve contra una respuesta servida"),
-                         p.verificar_token(token, ART_00, HOY, ajena))
-        self.assertEqual((True, "el token resuelve contra una respuesta servida"),
-                         p.verificar_token(token, ART_00, HOY, territorial))
-        # Ni siquiera hace falta declarar materia: el caso puede no traerla.
-        self.assertTrue(p.verificar_token(token, ART_00, HOY,
-                                          {"fecha_del_caso": meses(-2),
-                                           "tipo_de_fecha": "procedural_start_date"})[0])
+        # c) olvidar los corchetes: `list({...})` son las CLAVES de la ficha.
+        with self.assertRaises(AttributeError):
+            Pack(sana, curator=FIRMANTE, version="0.1.0").responder(consulta_norma(), HOY)
 
-        # Control: la mitad que A03 y A07 SÍ cerraron sigue cerrada, y por eso
-        # esta vía es la otra mitad de la misma condición.
-        self.assertFalse(p.verificar_token(token, ART_00, HOY,
-                                           consulta_norma(fecha_del_caso=meses(-3)))[0])
-        self.assertFalse(p.verificar_token(token, ART_00, HOY,
-                                           consulta_norma(tipo_de_fecha="event_date"))[0])
+        # El control: `evaluar` sí sabe contestar a lo mismo, con su código y
+        # su frase. La defensa existe; no llega a donde se necesita.
+        self.assertEqual("NO_TENEMOS_INFORMACION_SUFICIENTE",
+                         evaluar(None, consulta_norma(), HOY).codigo)
 
-    def test_B02_el_token_sobrevive_al_apagado_del_pack(self):
-        """A13 y A14 hicieron que `degradado` gobierne: «un aviso pegado a un
-        sí es un aviso que nadie lee», así que el pack degradado se apaga y
-        deja de responder afirmativamente «ni siquiera con una ficha impecable
-        dentro». `verificar_token` no consulta `apagado` ni `degradado` en
-        ninguna línea.
 
-        Y el apagado no necesita que nadie toque el pack: `degradado` es
-        `caducados·3 > citables` y bascula **solo con el calendario**, sin
-        cambiar una ficha, o sea sin mover la huella que A04 sí comprueba. La
-        misma ficha impecable, el mismo token, el mismo pack: dos meses
-        después el pack contesta `NO_TENEMOS_INFORMACION_SUFICIENTE` a
-        cualquiera que pregunte, y la prueba de banco sigue validando la cita
-        que salió de él.
+# ── II. La ventana de la fuente tiene techo, y no es el de la firma ──
 
-        DEBERÍA FALLAR: un token de un pack apagado no puede pasar la prueba
-        de banco. El pack que no responde tampoco respalda.
+class LaFuenteSeConsultoDespuesDeFirmar(Ataque):
+
+    def test_C02_la_fuente_se_puede_consultar_meses_despues_de_firmar_la_ficha(self):
+        """A12 puso ventana a `consultada` porque «la cadencia medía la edad
+        de la firma y nada medía la edad de lo que se firmó», y sacó los dos
+        bordes de lo que el pack ya decía: el suelo, la firma menos la
+        cadencia; el techo, **`hoy`**, con el argumento de que «nadie consulta
+        el futuro».
+
+        El techo está en el sitio equivocado, y el propio contrato tiene el
+        argumento escrito dos veces. N2/A.8: «el techo es el día de la
+        comprobación, que es hasta donde llega lo que la verificadora firmó».
+        A15: la cesación se compara «contra la firma y no contra `hoy` a
+        propósito», porque si no «la misma ficha caducaría o no según cuándo se
+        la mire». Aquí pasan las dos cosas a la vez: la mitad de la ventana cae
+        DESPUÉS de la firma, y esa mitad se ensancha sola cada día que pasa.
+
+        Lo que sale de ahí es una ficha que declara, en su propia casilla, que
+        la comprobación que la firma respalda ocurrió once meses después de
+        firmarse. Nadie firmó eso. Y sale `CITABLE`.
         """
-        despues = mas_meses(HOY, 2)
-        impecable = ficha_norma(identificador_canonico="LEY-0000-0001", verificado_el=meses(0))
-        # Tres fichas sanas hoy que caducan dentro de un mes: la firma es de
-        # hace once y la cadencia larga son doce.
-        vencederas = [ficha_norma(identificador_canonico="LEY-0000-000%d" % i,
-                                  verificado_el=meses(-11),
-                                  estado_vigencia="VIGENTE_AL " + meses(-11))
-                      for i in (2, 3, 4)]
-        p = self.pack(impecable, *vencederas)
-        consulta = consulta_norma(identificador="LEY-0000-0001")
+        # a) un mes de más: la ficha perfecta con la fuente consultada hoy.
+        un_mes = ficha_norma(fuente_vigencia=fuente("PRIMARY_OFFICIAL", meses(0)))
+        self.assertEqual(meses(-1), un_mes["verificado_el"])
+        self.assertEqual("CITABLE", evaluar(un_mes, consulta_norma(), HOY).codigo)
 
-        self.assertFalse(p.apagado(HOY))
-        token = self.token_de(p, consulta)
+        # b) once meses de más, que es toda la mitad delantera de la cadencia.
+        tarde = ficha_norma(
+            verificado_el=meses(-11),
+            estado_vigencia="VIGENTE_AL " + meses(-11),
+            fuente_identidad=fuente("PRIMARY_OFFICIAL", meses(0),
+                                    "https://ejemplo.invalido/publicacion-oficial"),
+            fuente_vigencia=fuente("PRIMARY_OFFICIAL", meses(0)))
+        r = evaluar(tarde, consulta_norma(fecha_del_caso=meses(-12)), HOY)
+        self.assertEqual("CITABLE", r.codigo)
+        self.assertEqual("cumple las diez condiciones", r.motivo)
 
-        # Dos meses después, sin tocar una sola casilla del pack.
-        self.assertTrue(all(caducada(f, despues) for f in vencederas))
-        self.assertTrue(p.degradado(despues))
-        self.assertTrue(p.apagado(despues))
-        self.assertFalse(caducada(impecable, despues), "la ficha del token sigue viva")
-
-        r = p.responder(consulta, despues)
-        self.assertEqual("NO_TENEMOS_INFORMACION_SUFICIENTE", r.codigo)
-        self.assertTrue(r.apagado)
-        self.assertIsNone(r.respuestas[0].token, "apagado no entrega tokens nuevos")
-
-        # Y el que entregó cuando estaba encendido sigue valiendo.
-        self.assertEqual((True, "el token resuelve contra una respuesta servida"),
-                         p.verificar_token(token, ART_00, despues, consulta))
+        # El control positivo de la guarda que sí existe: por el otro lado la
+        # ventana corta donde A12 dijo, así que no es que la ventana no mida.
+        pronto = ficha_norma(fuente_vigencia=fuente("PRIMARY_OFFICIAL", meses(-14)))
+        self.assertEqual("VIGENCIA_NO_COMPROBADA", evaluar(pronto, consulta_norma(), HOY).codigo)
 
 
-# ── II. Dos llaves más estrechas que la pregunta que contestan ──
+# ── III. La composición: se ensanchó la llave y no el discriminante ──
 
-class LaLlaveEquivocada(Ataque):
+class LaLlaveSeEnsanchoYElDiscriminanteNo(Ataque):
 
-    def test_B03_la_composicion_solo_ve_el_conflicto_si_el_alcance_es_identico(self):
-        """N4 dio código propio al conflicto de vigencia entre fichas y A02
-        colgó el token de esa composición. La llave es
-        `(identificador, alcance_comprobado)` comparada por **igualdad exacta
-        de tuplas**, y la pregunta que hay que contestar no es esa: es si dos
-        fichas que **cubren lo que se pide** discrepan.
+    def test_C03_dos_fichas_discrepan_sobre_el_caso_sin_discrepar_en_la_cadena(self):
+        """B03 dijo que la llave de `_composicion` era «más estrecha que la
+        pregunta que contesta» y la ensanchó: ya no se agrupa por
+        `(identificador, alcance_comprobado)` idénticos sino por las fichas que
+        **cubren lo que se pide**. Perfecto, y a mitad de camino: el
+        DISCRIMINANTE sigue siendo `_texto(f.get("estado_vigencia"))`, una
+        cadena, comparada por igualdad.
 
-        P2 empuja a estrechar, así que la forma normal del pack es varias
-        fichas por norma con alcances distintos y solapados. Dos que cubren el
-        art. 00 —una comprobada solo para él, otra para él y el 01— y que
-        discrepan en si la norma sigue rigiendo tienen llaves distintas, no
-        hay conflicto, las dos son citables, el conjunto es citable y salen
-        **dos tokens**. Las dos frases servidas juntas dicen «vigente dentro
-        del alcance y de la ventana comprobadas» y «Hoy no rige» del mismo
-        identificador y del mismo artículo, y el consumidor elige: que es
-        exactamente la lectura que N5 descartó.
+        La pregunta que la regla contesta —lo dice su propia frase— es si dos
+        fichas «discrepan en la vigencia comprobada». Y dos fichas pueden
+        discrepar sobre si la norma regía **el día del caso que se pregunta**
+        sin que esa cadena cambie ni un carácter, porque la vigencia del caso
+        no la decide solo `estado_vigencia`: la deciden también `vigencia_desde`
+        (A.6) y `verificado_el` (el techo de A.8).
 
-        DEBERÍA FALLAR: la llave tiene que ser la petición, no el alcance
-        declarado. Dos fichas cuyos alcances contienen ambas lo que se pide y
-        cuyos estados de vigencia difieren son `CONFLICTO_ENTRE_FICHAS`.
+        Aquí las dos fichas dicen `VIGENTE_AL` el mismo día. Una tiene la norma
+        rigiendo desde hace cinco años y la otra desde hace tres meses. Para un
+        caso de hace treinta meses, una contesta que sí y la otra que la
+        comprobación firmada no lo cubre. No hay conflicto para el contrato, y
+        lo que se sirve son las dos frases juntas: la afirmativa primero.
+
+        Es exactamente el fallo que A16 describió —«se servían las dos frases
+        individuales, que no dicen que haya conflicto; una de ellas dice
+        CITABLE»— reaparecido por debajo de su corrección.
         """
-        estrecha = ficha_norma(alcance_comprobado=ART_00)
-        ancha = ficha_norma(alcance_comprobado=ART_00_Y_01,
-                            estado_vigencia="SIN_VIGENCIA_DESDE " + meses(-1),
-                            vigencia_desde=meses(-120))
-        r = self.pack(estrecha, ancha).responder(consulta_norma(), HOY)
+        larga = ficha_norma(vigencia_desde=meses(-60))
+        corta = ficha_norma(vigencia_desde=meses(-3))
+        self.assertEqual(larga["estado_vigencia"], corta["estado_vigencia"])
 
-        self.assertEqual(["CITABLE", "CITABLE_SIN_VIGENCIA_HOY"], r.codigos)
-        self.assertIsNone(r.codigo_de_composicion, "no se detecta el conflicto")
-        self.assertTrue(r.citable, "el conjunto sale citable")
-        self.assertTrue(all(x.token for x in r.respuestas), "y con un token cada una")
+        pack = self.pack(larga, corta)
+        r = pack.responder(consulta_norma(fecha_del_caso=meses(-30)), HOY)
 
-        # Las dos afirmaciones contradictorias, servidas juntas.
-        self.assertIn("vigente dentro del alcance", r.frase)
-        self.assertIn("Hoy no rige", r.frase)
+        self.assertEqual(["CITABLE", "FUERA_DE_LA_VIGENCIA_COMPROBADA"], r.codigos)
+        self.assertNotEqual("CONFLICTO_ENTRE_FICHAS", r.codigo)
+        self.assertIn("vigente dentro del alcance y de la ventana comprobadas", r.frase)
+        self.assertIn("no la cubre", r.frase)
+        self.assertNotIn("discrepan", r.frase)
 
-        # Control: con el alcance escrito igual sí se detecta. La diferencia
-        # entre las dos llamadas es una lista de artículos, no el conflicto.
-        misma_llave = self.pack(estrecha, ficha_norma(
-            alcance_comprobado=ART_00,
-            estado_vigencia="SIN_VIGENCIA_DESDE " + meses(-1),
-            vigencia_desde=meses(-120))).responder(consulta_norma(), HOY)
-        self.assertEqual("CONFLICTO_ENTRE_FICHAS", misma_llave.codigo)
+        # El control: la regla FUNCIONA, solo que mira el campo equivocado.
+        # Cambiada la cadena —y nada más—, el conflicto sí aparece.
+        otra = ficha_norma(vigencia_desde=meses(-60),
+                           estado_vigencia="VIGENTE_CON_REFORMA_AL " + meses(-1),
+                           nota_de_vigencia="consta reforma dentro del alcance")
+        self.assertEqual("CONFLICTO_ENTRE_FICHAS",
+                         self.pack(larga, otra).responder(consulta_norma(), HOY).codigo)
 
-    def test_B05_el_censo_cuenta_como_citables_fichas_que_nunca_se_sirven(self):
-        """`_citable_en_si` dice de sí misma por qué excluye la ficha sin
-        materias legibles: «no hay ninguna consulta que pueda casar con ella,
-        de modo que contarla sería contar una ficha que nunca se va a servir»,
-        y A18 lo asentó como principio —«una ficha que nunca se sirve no
-        declara cobertura de nada»—. El razonamiento se aplicó a `materia` y
-        no a los otros dos campos que tienen exactamente la misma propiedad:
-        `alcance_comprobado` ilegible hace que `contenido_en` sea siempre
-        False, y `vigencia_desde` ilegible hace que A.6 corte siempre. Ninguno
-        de los dos depende de la consulta, y ninguno de los dos se mira.
+    def test_C04_la_regla_de_composicion_es_inalcanzable_en_la_rama_B(self):
+        """La regla de composición no puede dispararse NUNCA para una
+        providencia, y por dos motivos independientes, cada uno suficiente:
 
-        La consecuencia no es de precisión, es de seguridad, porque el censo
-        es el que gobierna: `citables_hoy` es el denominador de `degradado`, y
-        `degradado` es el interruptor. **Tres fichas que no se pueden servir
-        jamás encienden un pack que sin ellas estaría apagado**, y de paso
-        declaran cubierta un área en la que el pack no puede contestar nada.
+          - su llave es la petición (`ejes["peticion"]`), y una consulta de
+            providencia no trae `peticion` —`consulta_providencia` no la tiene
+            y no puede tenerla: el alcance es de las normas—, así que
+            `contenido_en(None, …)` es False y ninguna ficha entra al grupo;
+          - su discriminante es `estado_vigencia`, campo que una providencia no
+            tiene, de modo que aunque entraran todas darían el mismo `None`.
 
-        DEBERÍA FALLAR: `_citable_en_si` tiene que exigir también que
-        `leer_alcance(alcance_comprobado)` y `_fecha(vigencia_desde)` se
-        puedan leer, por el mismo motivo por el que ya exige las materias.
+        La segunda parte ya estaba antes de B03; la primera la puso B03. El
+        resultado es que dos fichas de la MISMA providencia y la MISMA
+        proposición, una confirmada y otra superada, se sirven como dos frases
+        seguidas —«sostiene la proposición atribuida» y «está marcada como
+        superada o limitada»— sin ningún código que diga que el pack no elige.
+
+        N4 abrió `CONFLICTO_ENTRE_FICHAS` para no servir un fallo bajo un
+        código que habla de otra cosa. La rama B se quedó sin ninguno, y es la
+        rama donde el conflicto es el estado normal: `estado_uso` tiene dos
+        valores citables y dos superados escritos en el mismo vocabulario.
         """
-        caducada_ = ficha_norma(identificador_canonico="LEY-0000-0009",
-                                verificado_el=meses(-14))
-        # Un pack con esa sola ficha está degradado y apagado.
-        self.assertTrue(self.pack(caducada_).apagado(HOY))
+        confirmada = ficha_providencia()
+        superada = ficha_providencia(estado_uso="SUPERSEDED_OR_LIMITED")
+        r = self.pack(confirmada, superada).responder(consulta_providencia(), HOY)
 
-        inservibles = [ficha_norma(identificador_canonico="LEY-0000-000%d" % i,
-                                   alcance_comprobado="toda la ley, segun consta")
-                       for i in (1, 2, 3)]
-        p = self.pack(caducada_, *inservibles)
+        self.assertEqual(["CITABLE_PRECEDENTE", "PRECEDENTE_SUPERADO_O_LIMITADO"], r.codigos)
+        self.assertNotEqual("CONFLICTO_ENTRE_FICHAS", r.codigo)
+        self.assertIn("sostiene la proposición atribuida", r.frase)
+        self.assertIn("superada o limitada", r.frase)
 
-        self.assertEqual(3, p.recuento(HOY)["citables_hoy"])
-        self.assertFalse(p.degradado(HOY), "las tres inservibles sostienen el denominador")
-        self.assertFalse(p.apagado(HOY), "y encienden un pack que estaba apagado")
-        self.assertEqual(["area-de-ejemplo"], p.cobertura(HOY)["materias_declaradas"])
+        # Y con `CONFLICTING`, que es el valor que el vocabulario tiene puesto
+        # justo para esto, tampoco.
+        enconflicto = ficha_providencia(estado_uso="CONFLICTING")
+        self.assertNotEqual(
+            "CONFLICTO_ENTRE_FICHAS",
+            self.pack(confirmada, enconflicto).responder(consulta_providencia(), HOY).codigo)
 
-        # Ninguna de las tres se puede servir, hoy ni nunca.
-        for f in inservibles:
-            r = p.responder(consulta_norma(identificador=f["identificador_canonico"]), HOY)
-            self.assertEqual("FUERA_DEL_ALCANCE_COMPROBADO", r.codigo)
-            self.assertFalse(r.citable)
+        # El control: la misma contradicción entre normas sí tiene código.
+        self.assertEqual(
+            "CONFLICTO_ENTRE_FICHAS",
+            self.pack(ficha_norma(),
+                      ficha_norma(estado_vigencia="SIN_VIGENCIA_DESDE " + meses(-24))
+                      ).responder(consulta_norma(), HOY).codigo)
 
-        # Y el pack promete lo que no puede cumplir a quien pregunta por otra.
-        ausente = p.responder(consulta_norma(identificador="LEY-0000-7777"), HOY)
-        self.assertEqual("NO_ESTA_EN_EL_PACK", ausente.codigo)
-        self.assertIn("El pack cubre esta área", ausente.frase)
+    def test_C10_el_conjunto_mixto_se_sirve_bajo_un_codigo_que_no_existe(self):
+        """Lo que hace posibles C03 y C04 es que **no hay código para el
+        conjunto**. `RespuestaCompuesta.codigo` devuelve la cadena `MULTIPLE`
+        en cuanto hay más de una ficha, y `MULTIPLE`:
 
-        # `vigencia_desde` ilegible cuenta igual, y es el mismo agujero.
-        escalonadas = [ficha_norma(identificador_canonico="LEY-0000-010%d" % i,
-                                   vigencia_desde="ESCALONADA") for i in (1, 2, 3)]
-        p2 = self.pack(caducada_, *escalonadas)
-        self.assertEqual(3, p2.recuento(HOY)["citables_hoy"])
-        self.assertFalse(p2.apagado(HOY))
+          - no está en las veintiuna claves de `FRASES`, así que no tiene
+            frase que servir —el silencio que `FRASES` dice existir para
+            impedir, con el añadido de que aquí no está en la lista de nadie—;
+          - no está en `CODIGOS_CITABLES`, así que quien consume leyendo el
+            código y quien consume leyendo `.citable` reciben cosas opuestas
+            del mismo objeto. Es el patrón de A09 —el mismo valor leído de dos
+            maneras— en la puerta de salida;
+          - y vale exactamente igual para un conjunto ENTERO citable, con sus
+            tokens emitidos, que para uno con un precedente superado dentro.
+            El código no distingue el sí del no, o sea que no informa de nada.
 
-        # Control: la exclusión que sí está escrita funciona. La diferencia
-        # entre este bloque y los dos de arriba es qué campo se rompió.
-        self.assertEqual(0, self.pack(ficha_norma(materia="area-de-ejemplo"))
-                         .recuento(HOY)["citables_hoy"])
-
-
-# ── III. La cadencia gobierna tres cosas y solo se corrigió una ──
-
-class LasGuardasQueCompartenLaCadencia(Ataque):
-
-    def test_B04_borrar_una_nota_voluntaria_ensancha_lo_que_se_acepta(self):
-        """A18 corrigió `cadencia_de` para que «se pregunte por la obligación,
-        que es un hecho del estado, y no por la casilla, que es un hecho de
-        quien la llenó», porque «la ficha peor llenada era la que más vivía».
-        El código quedó preguntando por las dos: `obliga_nota(ficha) or
-        _texto(ficha.get("nota_de_vigencia"))`. Con la obligación bastaba; el
-        `or` deja la casilla mandando en el caso simétrico, la nota
-        **voluntaria** en un estado que no la obliga.
-
-        Y no es solo la caducidad: A12 colgó de la misma cadencia el suelo de
-        la ventana de consulta de las fuentes. Así que una ficha con una
-        observación escrita a mano tiene ventana de tres meses y sin ella de
-        doce, y **borrar la observación convierte un no en un sí**. La ficha
-        que dice menos es la que se acepta.
-
-        DEBERÍA FALLAR: quitar información de una ficha no puede ensanchar lo
-        que el contrato acepta de ella. La cadencia tiene que colgar solo de
-        `obliga_nota`, como su propio docstring dice que hace.
+        La regla de N5 —«el conjunto es citable solo si lo son todas»— está
+        bien y no se discute: lo que falta es su código y su frase, que es lo
+        que A16 le dio a `CONFLICTO_ENTRE_FICHAS` con este mismo argumento.
         """
-        vieja = {"clase": "PRIMARY_OFFICIAL", "referencia": PUBLICADA,
-                 "consultada": meses(-10)}
-        con_nota = ficha_norma(fuente_vigencia=dict(vieja),
-                               nota_de_vigencia="observacion voluntaria: sin nada pendiente")
-        sin_nota = ficha_norma(fuente_vigencia=dict(vieja))
+        citable = self.pack(ficha_norma(), ficha_norma()).responder(consulta_norma(), HOY)
+        mixta = self.pack(ficha_providencia(),
+                          ficha_providencia(estado_uso="SUPERSEDED_OR_LIMITED")
+                          ).responder(consulta_providencia(), HOY)
 
-        self.assertEqual(3, cadencia_de(con_nota))
-        self.assertEqual(12, cadencia_de(sin_nota))
-        self.assertFalse(caducada(con_nota, HOY), "no es que caduque: es la ventana")
+        self.assertEqual("MULTIPLE", citable.codigo)
+        self.assertEqual("MULTIPLE", mixta.codigo)
+        self.assertTrue(citable.citable)
+        self.assertFalse(mixta.citable)
+        self.assertNotIn("MULTIPLE", FRASES)
+        self.assertNotIn("MULTIPLE", CODIGOS_CITABLES)
+        # Dos tokens servidos bajo un código que el propio contrato no
+        # reconoce como citable.
+        self.assertEqual(2, len([r for r in citable.respuestas if r.token]))
+
+
+# ── IV. El censo cuenta lo que ninguna consulta puede servir ──
+
+class ElCensoCuentaInventario(Ataque):
+
+    def test_C05_una_ficha_legible_e_inservible_enciende_un_pack_apagado(self):
+        """B05 escribió la condición general y la dejó a medio aplicar: «es
+        contable lo que alguna consulta podría llegar a hacer citable. Lo demás
+        es inventario». Lo que comprueba, sin embargo, es que
+        `alcance_comprobado` y `vigencia_desde` sean LEGIBLES, y legible no es
+        servible:
+
+          - un alcance legible y **vacío** —`articulos: []`, `incisos: []`,
+            `norma_completa: no`— hace que `contenido_en` sea False para toda
+            petición, porque una petición que no pide nada tampoco está
+            contenida en nada. Ninguna consulta la puede servir;
+          - una `vigencia_desde` legible y **posterior al techo de A.8** deja a
+            A.6 y a A.8 pidiendo dos cosas incompatibles: el caso tiene que ser
+            a la vez posterior a una fecha y anterior a otra más temprana.
+
+        Y la consecuencia es la que B05 nombra, la de seguridad y no la de
+        precisión: `citables_hoy` es el denominador de `degradado`, `degradado`
+        es el interruptor, y **tres fichas que no se pueden servir jamás
+        encienden un pack que sin ellas estaba apagado**. Palabra por palabra
+        el daño que B05 dice haber cerrado, por dos campos que sí se leen.
+        """
+        podrida = ficha_norma(verificado_el=meses(-20),
+                              estado_vigencia="VIGENTE_AL " + meses(-20))
+        vacia = ficha_norma(alcance_comprobado=SIN_ARTICULOS)
+        futura = ficha_norma(vigencia_desde=meses(+10))
+
+        # Ninguna de las dos puede salir citable para ninguna consulta.
+        self.assertEqual("FUERA_DEL_ALCANCE_COMPROBADO",
+                         evaluar(vacia, consulta_norma(), HOY).codigo)
+        self.assertEqual("FUERA_DEL_ALCANCE_COMPROBADO",
+                         evaluar(vacia, consulta_norma(peticion=ART_00_Y_01), HOY).codigo)
+        self.assertEqual("FUERA_DE_LA_VIGENCIA_COMPROBADA",
+                         evaluar(futura, consulta_norma(), HOY).codigo)
+        self.assertEqual("FUERA_DE_LA_VIGENCIA_COMPROBADA",
+                         evaluar(futura, consulta_norma(fecha_del_caso=meses(+10)), HOY).codigo)
+
+        # Sola, la podrida apaga el pack.
+        solo_podrida = self.pack(podrida)
+        self.assertTrue(solo_podrida.degradado(HOY))
+        self.assertTrue(solo_podrida.apagado(HOY))
+
+        # Con tres inservibles al lado, el mismo pack se declara sano.
+        esperado = {id(vacia): "FUERA_DEL_ALCANCE_COMPROBADO",
+                    id(futura): "FUERA_DE_LA_VIGENCIA_COMPROBADA"}
+        for inservible in (vacia, futura):
+            reanimado = self.pack(podrida, inservible, inservible, inservible)
+            self.assertEqual(3, reanimado.recuento(HOY)["citables_hoy"])
+            self.assertFalse(reanimado.degradado(HOY))
+            self.assertFalse(reanimado.apagado(HOY))
+            # …y declara cubierta un área en la que no puede contestar nada.
+            self.assertIn("area-de-ejemplo", reanimado.cobertura(HOY)["materias_declaradas"])
+            self.assertEqual(["PACK_CADUCADO"] + [esperado[id(inservible)]] * 3,
+                             reanimado.responder(consulta_norma(), HOY).codigos)
+
+
+# ── V. La prueba de banco, todavía un piso por detrás ──
+
+class LaPruebaDeBancoNoVeLaCita(Ataque):
+
+    def test_C06_la_prueba_de_banco_no_ve_de_que_norma_es_lo_que_se_cita(self):
+        """`verificar_token` comprueba diez cosas y ninguna es la que toda
+        cita nombra primero: **de qué norma** es el artículo que se publica.
+        `lo_citado` llega como un alcance —`{norma_completa, articulos,
+        incisos}`, tres claves exactas, y `leer_alcance` rechaza cualquier
+        otra—, así que no hay ningún sitio donde decirlo. El `caso` sí fija el
+        identificador, pero el caso es la CONSULTA, no la entrega: nada obliga
+        a que se cite la norma que se preguntó.
+
+        Y el identificador está escrito dentro del token, a la vista, en la
+        parte «identificador + alcance». Se escribe y no se compara con nada,
+        que es literalmente A04 —«version + checksum se escribían dentro del
+        token y después no se comparaban con nada»— aplicado al otro campo.
+
+        El escenario es el de siempre y no hace falta malicia: el pack tiene
+        dos normas, contesta que sí a una y que no a la otra, y la entrega
+        confunde cuál. La prueba de banco, que existe para cazar exactamente
+        eso, dice que pasa.
+        """
+        citable = ficha_norma()
+        negada = ficha_norma(identificador_canonico="LEY-1111-1111",
+                             estado_vigencia="VIGENCIA_NO_COMPROBADA")
+        pack = self.pack(citable, negada)
 
         self.assertEqual("VIGENCIA_NO_COMPROBADA",
-                         evaluar(con_nota, consulta_norma(), HOY).codigo)
-        self.assertEqual("CITABLE",
-                         evaluar(sin_nota, consulta_norma(), HOY).codigo)
+                         pack.responder(consulta_norma(identificador="LEY-1111-1111"), HOY).codigo)
+        token = self.token_de(pack, consulta_norma())
+        self.assertIn("LEY-0000-0000", token)
 
-        # Lo mismo por la puerta de la identidad, que comparte ventana.
-        con_nota_id = ficha_norma(fuente_identidad=dict(vieja),
-                                  nota_de_vigencia="observacion voluntaria")
-        self.assertEqual("IDENTIDAD_POR_VERIFICAR",
-                         evaluar(con_nota_id, consulta_norma(), HOY).codigo)
-        self.assertEqual("CITABLE",
-                         evaluar(ficha_norma(fuente_identidad=dict(vieja)),
-                                 consulta_norma(), HOY).codigo)
+        # La entrega publica «LEY-1111-1111, art. 00». El banco la respalda.
+        self.assertEqual((True, "el token resuelve contra una respuesta servida"),
+                         pack.verificar_token(token, ART_00, HOY, consulta_norma()))
 
+        # Y no hay forma de decirle cuál se cita: el intento se rechaza por el
+        # alcance, no por la identidad, así que el motivo también engaña.
+        con_identidad = dict(ART_00, identificador="LEY-1111-1111")
+        self.assertEqual((False, "el alcance del token no contiene lo que se cita"),
+                         pack.verificar_token(token, con_identidad, HOY, consulta_norma()))
 
-# ── IV. La otra grieta de la lista blanca de A17 ──
+        # En la rama B es peor, porque B.6 dice que «la unidad no es la
+        # providencia, es el par providencia + proposición»: se comprueba la
+        # proposición, literal, y la providencia a la que se le atribuye no.
+        buena = ficha_providencia()
+        mala = ficha_providencia(identificador="J-YY-9999-9999",
+                                 estado_uso="SUPERSEDED_OR_LIMITED")
+        pack_b = self.pack(buena, mala)
+        token_b = self.token_de(pack_b, consulta_providencia())
+        self.assertTrue(pack_b.verificar_token(
+            token_b, "proposicion de ejemplo numero 00", HOY, consulta_providencia())[0])
 
-class LaListaBlancaTieneSuPropiaGrieta(Ataque):
+    def test_C07_la_huella_no_cubre_la_competencia_que_el_pack_publica(self):
+        """B02 puso el estado del pack dentro de la prueba de banco con una
+        frase que no admite excepciones: «El pack que no responde tampoco
+        respalda». Y B07 hizo comparables los dos ejes que el manifiesto
+        publicaba sin comparar, la jurisdicción y el nivel territorial,
+        poniéndolos en el pack «porque la competencia es una declaración de
+        quien cura».
 
-    def test_B06_una_referencia_a_la_maquina_de_uno_pasa_por_publicada(self):
-        """A17 cambió la lista negra de seis subcadenas por una lista blanca
-        que responde a la pregunta «¿la referencia señala algo publicado
-        **fuera de este proyecto**?» con un esquema y un dominio con punto. El
-        `https://localhost/publicacion` de su propia suite lo rechaza por
-        accidente —`localhost` no lleva punto—, no porque la función sepa lo
-        que es. Basta el bucle local escrito con números, el nombre largo de
-        la misma máquina, o cualquier dirección privada, y el archivo del
-        corpus servido por un `python -m http.server` es una fuente
-        «publicada».
+        Las dos correcciones no se tocan, y en el hueco cabe esto: la huella
+        que el token exhibe es `version + checksum(fichas)`, y los dos ejes de
+        competencia no son fichas. Un curador que estrecha lo que su pack
+        cubre —que es la forma normal de dejar de cubrir algo, y la que no
+        obliga a tocar ni un registro— deja vivos todos los tokens ya emitidos
+        para lo que acaba de soltar. El mismo pack, el mismo día, contesta
+        `FUERA_DE_COBERTURA` a la consulta y `pasa` a la cita que salió de
+        ella.
 
-        Eso reabre N1 entero: el mecanismo era «mover una afirmación de un
-        archivo del corpus a una ficha no la comprueba», y la lista blanca
-        vuelve a dejar que el archivo del corpus sea la fuente con solo
-        servirlo por http desde el mismo portátil donde se escribe la ficha.
-
-        DEBERÍA FALLAR: un dominio que resuelve a la propia máquina o a una
-        red privada no es una publicación. La lista blanca tiene que exigir un
-        nombre de dominio —no un literal IP, no un bucle local—.
+        A04 comprueba la huella «porque sin ella un token no se puede resolver
+        contra una versión del pack». La huella resuelve contra las fichas y no
+        contra el pack.
         """
-        caseras = ("http://127.0.0.1:8000/docs/knowledge-pack/01-fichas-normativas.md",
-                   "https://localhost.localdomain/docs/catalogo-normativo",
-                   "http://192.168.0.10/corpus/normative-sources.txt",
-                   "http://0.0.0.0/corpus/temporal-law-matrix")
-        for referencia in caseras:
-            self.assertTrue(_referencia_publicada(referencia), referencia)
-            fuente = {"clase": "PRIMARY_OFFICIAL", "referencia": referencia,
-                      "consultada": meses(-1)}
-            self.assertEqual("CITABLE",
-                             evaluar(ficha_norma(fuente_identidad=dict(fuente),
-                                                 fuente_vigencia=dict(fuente)),
-                                     consulta_norma(), HOY).codigo,
-                             "referencia=%r pasa por publicada" % (referencia,))
+        pack = self.pack(ficha_norma(), niveles_territoriales=("nacional", "municipal"))
+        consulta = consulta_norma(nivel_territorial="municipal")
+        token = self.token_de(pack, consulta)
 
-        # Control: lo que A17 sí rechaza lo rechaza por no llevar punto, no
-        # por ser la máquina de uno. Las dos referencias siguientes apuntan al
-        # mismo sitio y el contrato las trata al revés.
-        self.assertFalse(_referencia_publicada("https://localhost/publicacion"))
-        self.assertTrue(_referencia_publicada("https://localhost.localdomain/publicacion"))
+        pack.niveles_territoriales = ("nacional",)
+        self.assertEqual("FUERA_DE_COBERTURA", pack.responder(consulta, HOY).codigo)
+        self.assertEqual((True, "el token resuelve contra una respuesta servida"),
+                         pack.verificar_token(token, ART_00, HOY, consulta))
+
+        # Lo mismo por el otro eje.
+        otro = self.pack(ficha_norma())
+        consulta_j = consulta_norma(jurisdiccion="colombia")
+        token_j = self.token_de(otro, consulta_j)
+        otro.jurisdiccion = "otra-jurisdiccion-de-ejemplo"
+        self.assertEqual("FUERA_DE_COBERTURA", otro.responder(consulta_j, HOY).codigo)
+        self.assertTrue(otro.verificar_token(token_j, ART_00, HOY, consulta_j)[0])
+
+        # El control: tocar una ficha sí mueve la huella, así que el mecanismo
+        # existe y lo que falta es qué mete dentro.
+        tercero = self.pack(ficha_norma())
+        token_t = self.token_de(tercero, consulta_norma())
+        tercero.fichas[0]["alcance_comprobado"] = ART_00_Y_01
+        self.assertEqual((False, "el token se emitió contra otra versión del pack"),
+                         tercero.verificar_token(token_t, ART_00, HOY, consulta_norma()))
 
 
-# ── V. Lo que la respuesta publica y lo que la respuesta comprueba ──
+# ── VI. La frase que afirma más de lo que se comprobó ──
 
-class LoPublicadoYLoComprobado(Ataque):
+class LaFraseDelConflicto(Ataque):
 
-    def test_B07_la_cobertura_declara_dos_ejes_que_ningun_camino_compara(self):
-        """A06 cerró `materia` y `territorial` con el argumento de que «el
-        campo se añadió y no se comparaba con nada». `cobertura` devuelve, en
-        cada respuesta, tres ejes: `jurisdiccion`, `nivel_territorial` y
-        `materias_declaradas`. Se compara el tercero. `jurisdiccion` está
-        escrito a mano —`"colombia"`, la misma cadena tenga el pack las fichas
-        que tenga— y ningún camino lee `consulta.get("jurisdiccion")`.
+    def test_C08_el_conflicto_entre_fichas_afirma_lo_que_no_miro(self):
+        """A15 es el precedente exacto: «es la única frase del contrato que
+        afirma algo sobre el mundo y se servía sin comprobar la afirmación».
+        La frase de `CONFLICTO_ENTRE_FICHAS` afirma dos cosas sobre el pack, y
+        `_composicion` no comprueba ninguna de las dos.
 
-        Y el nivel territorial se publica con un nombre y se lee con otro:
-        `cobertura` dice `nivel_territorial` y `responder` pregunta por
-        `territorial`. Quien consume el manifiesto y escribe en la consulta el
-        nombre que el manifiesto le enseñó no está declarando nada: su campo
-        se ignora en silencio y el pack contesta como si la consulta fuera
-        nacional. La frase de `FUERA_DE_COBERTURA` enumera tres ejes —«esta
-        área, este nivel territorial o esta fecha»— y el contrato solo sabe
-        decir que no por uno.
+          - «**Es un problema de vigencia, no de identidad**». `_composicion`
+            no lee `estado_identidad` en ninguna línea. Una ficha cuya
+            identidad nadie ha comprobado tiene, por eso mismo, una cadena de
+            vigencia distinta de la de su hermana sana, así que dispara el
+            conflicto y la respuesta niega que el problema sea de identidad
+            **cuando ese es exactamente el problema**. Y como A16 hizo que la
+            frase de composición SUSTITUYA a las individuales, la única que lo
+            decía —«Nadie ha comprobado que sea la norma que dice ser. Esto no
+            es un problema de vigencia: es anterior»— desaparece.
+          - «**discrepan en la vigencia comprobada**». Una ficha sin
+            `estado_vigencia` no tiene ninguna vigencia comprobada con la que
+            discrepar: su respuesta propia es «El pack tiene X y no tiene
+            comprobada su vigencia. Eso no es lo mismo que decir que no rige,
+            ni que sí», que es una frase escrita para no afirmar de más. Se
+            reemplaza por una que afirma que hay dos comprobaciones y chocan.
 
-        DEBERÍA FALLAR: o los ejes que se publican se comparan, o no se
-        publican. Y el nombre tiene que ser uno solo.
+        De paso se lleva la nota. B08 cerró que la nota obligatoria llegara a
+        la frase servida —«la casilla que `obliga_nota` cobra no se servía en
+        ninguna parte»— y por este camino vuelve a no llegar: la cesación
+        anunciada de la ficha sana no se transcribe en ningún sitio.
         """
-        p = self.pack(ficha_norma())
-        self.assertEqual("colombia", p.cobertura(HOY)["jurisdiccion"])
-        self.assertEqual(["nacional"], p.cobertura(HOY)["nivel_territorial"])
+        sana = ficha_norma()
+        sin_identidad = ficha_norma(estado_identidad="IDENTIDAD_POR_VERIFICAR",
+                                    estado_vigencia="VIGENCIA_NO_COMPROBADA")
+        r = self.pack(sana, sin_identidad).responder(consulta_norma(), HOY)
 
-        for ajena in ({"jurisdiccion": "peru"},
-                      {"jurisdiccion": "otra-jurisdiccion-cualquiera"},
-                      {"nivel_territorial": "municipal"},
-                      {"nivel_territorial": ["municipal"], "jurisdiccion": "peru"}):
-            r = p.responder(consulta_norma(**ajena), HOY)
-            self.assertEqual("CITABLE", r.codigo, ajena)
-            self.assertTrue(r.citable, "%r no cambia nada" % (ajena,))
+        self.assertEqual(["CITABLE", "IDENTIDAD_POR_VERIFICAR"], r.codigos)
+        self.assertEqual("CONFLICTO_ENTRE_FICHAS", r.codigo)
+        self.assertIn("Es un problema de vigencia, no de identidad", r.frase)
+        self.assertNotIn("Nadie ha comprobado", r.frase)
 
-        # Control: el nombre que el manifiesto NO publica sí se lee.
-        self.assertEqual("FUERA_DE_COBERTURA",
-                         p.responder(consulta_norma(territorial=True), HOY).codigo)
+        # Una ficha que no dice nada de la vigencia «discrepa» con la que sí.
+        muda = sin(ficha_norma(), "estado_vigencia")
+        r2 = self.pack(sana, muda).responder(consulta_norma(), HOY)
+        self.assertEqual(["CITABLE", "VIGENCIA_NO_COMPROBADA"], r2.codigos)
+        self.assertEqual("CONFLICTO_ENTRE_FICHAS", r2.codigo)
+        self.assertIn("discrepan en la vigencia comprobada", r2.frase)
+        self.assertNotIn("no tiene comprobada su vigencia", r2.frase)
 
-    def test_B08_la_nota_obligatoria_de_la_cesacion_anunciada_no_llega_a_la_frase(self):
-        """A15 eligió no decir «Hoy no rige» de una norma cuya cesación aún no
-        ocurrió, y dejó dicho dónde queda entonces esa información: «la
-        cesación anunciada viaja en la nota que `obliga_nota` ya hizo
-        obligatoria». La nota se exige —sin ella, `FICHA_INCOMPLETA`— y
-        después no viaja a ninguna parte que se lea. `Respuesta.nota` se
-        asigna en el constructor y **no lo consulta ninguna línea del
-        archivo**: ni `frase`, ni `RespuestaCompuesta.frase`, ni el token.
+        # Y la nota obligatoria de la cesación anunciada tampoco llega.
+        anunciada = ficha_norma(
+            estado_vigencia="SIN_VIGENCIA_DESDE " + meses(+60),
+            nota_de_vigencia="la norma deja de regir el " + meses(+60))
+        r3 = self.pack(anunciada, muda).responder(consulta_norma(), HOY)
+        self.assertEqual("CONFLICTO_ENTRE_FICHAS", r3.codigo)
+        self.assertNotIn("transcrita", r3.frase)
 
-        Resultado: la ficha que declara que la norma deja de regir dentro de
-        cinco años y la que no declara nada producen el **mismo código y la
-        misma frase, carácter por carácter**. La casilla obligatoria se cobra
-        y no se sirve, y quien consume no tiene por dónde enterarse: es el
-        mismo silencio que `FRASES` dice existir para impedir —«el silencio se
-        lee como no hay regla»—.
 
-        DEBERÍA FALLAR: la frase de una respuesta con nota tiene que
-        transcribirla, que es lo que el docstring de `Respuesta` promete
-        —«`nota` viaja transcrita literal, sin interpretar, en toda respuesta
-        que hable de una ficha con nota»—.
+# ── VII. Las dos formas del mismo eje, y una gana en silencio ──
+
+class DosManerasDeEscribirUnEje(Ataque):
+
+    def test_C09_las_dos_formas_del_eje_territorial_se_contradicen_y_una_gana(self):
+        """B07 juntó los dos nombres del eje territorial en un solo lector con
+        el argumento correcto: «dos maneras de escribir el mismo eje son
+        tolerables mientras haya un solo lector que las resuelva; dos lectores
+        no lo son». Lo que el lector único no resuelve es qué pasa cuando las
+        dos maneras **dicen cosas distintas**.
+
+        `territorial: True` significa, por A06 y por el comentario de
+        `NIVEL_SIN_NOMBRAR`, «hay algo territorial y no sé qué», y cae fuera.
+        `nivel_territorial: "nacional"` significa que no lo hay. Una consulta
+        que trae las dos —la del consumidor que aprendió el booleano de A06 y
+        el nombre del manifiesto, que es el consumidor que B07 describe— se
+        resuelve en silencio a favor del nombre, y el caso territorial recibe
+        una respuesta nacional con su token.
+
+        La regla que faltaba está escrita tres líneas más arriba, en la misma
+        función y para el mismo eje: una lista de dos niveles no es un nivel y
+        cae en `NIVEL_SIN_NOMBRAR`. Dos escrituras que se contradicen son el
+        mismo caso —«hay algo territorial y no sé qué»— y aquí una gana. Es la
+        lista blanca haciendo la vista gorda con una contradicción, que es lo
+        que `leer_estado_vigencia` prohíbe expresamente: «la lista blanca se
+        rompe entera si aquí se hace la vista gorda con una errata».
         """
-        nota = "la norma deja de regir el " + meses(60) + "; al firmar no se habia consumado"
-        anunciada = ficha_norma(estado_vigencia="SIN_VIGENCIA_DESDE " + meses(60),
-                                vigencia_desde=meses(-120), nota_de_vigencia=nota)
-        corriente = ficha_norma()
+        pack = self.pack(ficha_norma())
 
-        r_anunciada = evaluar(anunciada, consulta_norma(), HOY)
-        r_corriente = evaluar(corriente, consulta_norma(), HOY)
+        solo_booleano = consulta_norma(territorial=True)
+        self.assertEqual("", leer_nivel_territorial(solo_booleano))
+        self.assertEqual("FUERA_DE_COBERTURA", pack.responder(solo_booleano, HOY).codigo)
 
-        self.assertEqual("CITABLE", r_anunciada.codigo)
-        self.assertEqual(nota, r_anunciada.nota, "la nota está en el objeto…")
-        self.assertEqual(r_corriente.frase, r_anunciada.frase, "…y no en lo que se sirve")
-        self.assertNotIn(nota, r_anunciada.frase)
+        # La rama cerrada, que es el control: dos niveles a la vez no son uno.
+        dos_niveles = consulta_norma(nivel_territorial=["nacional", "municipal"])
+        self.assertEqual("", leer_nivel_territorial(dos_niveles))
+        self.assertEqual("FUERA_DE_COBERTURA", pack.responder(dos_niveles, HOY).codigo)
 
-        # Tampoco por el pack, ni por el token, que es lo que se publica.
-        r = self.pack(anunciada).responder(consulta_norma(), HOY)
-        self.assertNotIn(nota, r.frase)
-        self.assertNotIn(nota, r.respuestas[0].token)
-
-        # Y lo mismo con la reforma, que es el otro estado que obliga a nota.
-        reformada = ficha_norma(estado_vigencia="VIGENTE_CON_REFORMA_AL " + meses(-1),
-                                nota_de_vigencia=nota)
-        self.assertNotIn(nota, evaluar(reformada, consulta_norma(), HOY).frase)
-
-    def test_B09_la_consulta_incompleta_miente_sobre_la_salud_del_pack(self):
-        """`recuento` dice de sí mismo que «viaja en CADA respuesta, no solo
-        en el manifiesto: un pack donde 22 de 26 registros están sin vigencia
-        comprobada tiene que verse así desde fuera». El corte de R3 va antes
-        que el cálculo de `comunes` y devuelve una `RespuestaCompuesta` con
-        los valores por defecto: `recuento={}`, `cobertura={}`,
-        `degradado=False`, `apagado=False`.
-
-        Los dos últimos no son huecos: son **afirmaciones falsas**. Un pack
-        apagado, preguntado con una consulta a la que le falta la fecha del
-        caso, contesta `apagado=False` y `degradado=False`. Quien consume y
-        mira esos banderines —que es para lo que A13 los puso a gobernar— lee
-        que el pack está sano. Y la consulta incompleta es el caso normal, no
-        el raro: es la primera que hace cualquiera.
-
-        DEBERÍA FALLAR: `comunes` tiene que calcularse antes del corte de R3 y
-        viajar también en `EL_PACK_NO_CONTESTA`. Un banderín de salud vale por
-        lo que dice cuando dice que sí.
-        """
-        podridas = [ficha_norma(identificador_canonico="LEY-0000-%04d" % i,
-                                verificado_el=meses(-30)) for i in range(9)]
-        p = self.pack(*podridas)
-        self.assertTrue(p.apagado(HOY))
-        self.assertTrue(p.degradado(HOY))
-
-        r = p.responder({"tipo_de_fecha": "event_date"}, HOY)
-        self.assertEqual("EL_PACK_NO_CONTESTA", r.codigo)
-        self.assertFalse(r.apagado, "un pack apagado se declara encendido")
-        self.assertFalse(r.degradado, "y sano")
-        self.assertEqual({}, r.recuento, "y el recuento que viaja en CADA respuesta, vacío")
-        self.assertEqual({}, r.cobertura)
-
-
-# ── VI. La única fecha que no pasa por la puerta ──
-
-class LaFechaQueNadieLee(Ataque):
-
-    def test_B10_hoy_es_la_unica_fecha_del_contrato_que_no_se_valida(self):
-        """A11 dejó escrita la regla: «lo que se valida en la frontera no
-        vuelve a doler dentro», y nombró los cuatro lectores totales que la
-        cumplen —`_fecha`, `leer_materias`, `tipo_de`, la ventana de
-        `leer_fuente`—. `hoy` no pasa por ninguno. Entra crudo en `evaluar`,
-        `caducada`, `responder`, `verificar_token` y `apagado`, y se compara
-        con fechas de ficha que sí pasaron por `_fecha`.
-
-        Un `datetime` en vez de un `date` —que es lo que devuelve
-        `datetime.now()`, y es el error de tecleo más barato que hay— levanta
-        `TypeError` y tumba el pack entero: no contesta a nada, ni siquiera a
-        las consultas sobre las fichas sanas, que es el daño exacto de A11. La
-        asimetría deja el fallo a la vista: el mismo `datetime` **dentro** de
-        una ficha se lee sin problema, porque ahí sí hay un lector total.
-
-        DEBERÍA FALLAR: `hoy` tiene que pasar por `_fecha` en la frontera de
-        cada función pública, y una fecha ilegible tiene que ser un «no», no
-        una excepción.
-        """
-        ahora = datetime(1000, 6, 15, 9, 30)
-        p = self.pack(ficha_norma())
-
-        for llamada in (lambda: evaluar(ficha_norma(), consulta_norma(), ahora),
-                        lambda: p.responder(consulta_norma(), ahora),
-                        lambda: p.apagado(ahora),
-                        lambda: caducada(ficha_norma(), ahora)):
-            self.assertRaises(TypeError, llamada)
-
-        # El mismo valor dentro de la ficha se lee sin levantar: la frontera
-        # existe para las casillas y no para el reloj.
-        self.assertEqual("CITABLE",
-                         evaluar(ficha_norma(verificado_el=ahora), consulta_norma(), HOY).codigo)
-
-        # Y otras formas de reloj ilegible tumban igual, en vez de decir que no.
-        for reloj in ("1000-06-15", None):
-            self.assertRaises(TypeError, evaluar, ficha_norma(), consulta_norma(), reloj)
+        # La rama abierta: las dos escrituras juntas, contradiciéndose.
+        ambas = consulta_norma(territorial=True, nivel_territorial="nacional")
+        self.assertEqual("nacional", leer_nivel_territorial(ambas))
+        r = pack.responder(ambas, HOY)
+        self.assertEqual("CITABLE", r.codigo)
+        self.assertTrue(r.citable)
+        self.assertIsNotNone(r.respuestas[0].token)
 
 
 if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    unittest.main()
