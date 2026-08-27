@@ -1,1 +1,5 @@
 .claude/scheduled_tasks.lock
+
+# Bytecode de Python: se regenera solo y ensucia cada diff del banco de medición
+__pycache__/
+*.pyc
