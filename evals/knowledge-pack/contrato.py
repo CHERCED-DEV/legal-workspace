@@ -38,6 +38,29 @@ QUÉ SE APARTA DE LA PROSA, y por qué (todo viene de las dos críticas):
     servir un fallo bajo un código que habla de otra cosa, que es el error
     que las dos críticas señalan en las dos direcciones (H8 y N4).
 
+TERCERA RONDA (A01-A18). Una suite adversaria atacó este archivo por donde las
+dos críticas no miraron y encontró dieciocho vías más. Todas están cerradas y
+todas tienen su test de regresión en `test_vias.py`. Lo que enseñaron, en tres
+frases, porque el patrón vale más que la lista:
+
+  - **El token era una credencial al portador.** Se emitía antes de saber si
+    el pack decía que sí (A01, A02), no registraba para qué caso se pidió
+    (A03, A07), y la prueba de banco no leía ni la huella del pack que el
+    token exhibe (A04) ni el alcance con el que se emitió (A05). Ahora el
+    token se emite solo cuando el conjunto es citable y se resuelve contra la
+    foto de la ficha del día en que se sirvió.
+  - **Lo que se valida en la frontera no vuelve a doler dentro.** Una fecha
+    del año 9999 tumbaba el pack entero por desbordamiento del calendario
+    (A11), una `materia` en cadena se recorría letra a letra (A10), un `tipo`
+    con un espacio partía la ficha en dos lecturas (A09) y una fuente podía
+    declararse consultada dentro de ocho mil años (A12). Cuatro lectores
+    totales —`_fecha`, `leer_materias`, `tipo_de`, la ventana de `leer_fuente`—
+    cierran los cuatro en la puerta.
+  - **Una lista negra siempre se rodea.** `_apunta_al_corpus` decidía por seis
+    subcadenas y bastaba quitar la extensión del archivo (A17). Ahora la
+    referencia se acepta por lo que es —una publicación con esquema y
+    dominio—, no se rechaza por lo que parece.
+
 Ni una norma, ni una fecha de vigencia, ni un estado jurídico reales: aquí ni
 en `fichas.py`.
 """
@@ -118,6 +141,27 @@ TIPOS_DE_FECHA = frozenset({
 # porque son los únicos con los que este instrumento puede probarse.
 RELLENOS = frozenset({"AAAA-MM-DD", "TIPO-NUMERO-AÑO", "null", "None", "-", "—"})
 
+# Las dos ramas de la tabla de decisión, y no hay una tercera. `tipo` se
+# declara y se lee por lista blanca en TODAS partes: leerlo con `_texto` en un
+# sitio y con `==` en otro partía la ficha en dos —providencia para la tabla,
+# norma para el recuento y para la prueba de banco— y esa era A09.
+TIPOS_DE_FICHA = frozenset({"norma", "providencia"})
+
+# El calendario en el que este contrato sabe hacer cuentas. No es un juicio
+# sobre qué fechas son plausibles: es que la ÚNICA operación que el contrato
+# hace con una fecha —sumarle la cadencia, o los 18 meses del apagado— se sale
+# del calendario de `date` a partir del año 9999 y levanta. Una fecha con la
+# que no se puede hacer esa cuenta no es una fecha comparable, y lo que no se
+# puede comparar cae fuera; el margen cubre la cadencia más larga por los dos
+# lados. Era A11: una casilla con `9999-01-01` dejaba el pack entero sin
+# responder a nada, ni siquiera a las consultas sobre las demás fichas.
+ANIO_MINIMO = 10
+ANIO_MAXIMO = 9990
+
+# Esquemas con los que una referencia puede señalar algo publicado. Lista
+# blanca, y sustituye a la lista negra de seis subcadenas de A17.
+ESQUEMAS_PUBLICADOS = ("https://", "http://")
+
 CODIGOS_CITABLES = frozenset({
     "CITABLE", "CITABLE_CON_REFORMA", "CITABLE_SIN_VIGENCIA_HOY", "CITABLE_PRECEDENTE",
 })
@@ -167,23 +211,67 @@ def _texto(valor):
 
 
 def _fecha(valor):
-    """`AAAA-MM-DD` estricto → date. Cualquier otra cosa → None.
+    """`AAAA-MM-DD` estricto y dentro del calendario útil → date. Cualquier
+    otra cosa → None.
 
     Estricto significa estricto: `2 de enero`, `AAAA-MM-DD`, `1000-13-01` y
     una cadena vacía valen lo mismo, que es nada. Una fecha que no se puede
     leer no puede compararse, y lo que no se puede comparar cae fuera.
+
+    Y `9999-01-01` tampoco se puede comparar, aunque el módulo `datetime` la
+    lea: sumarle la cadencia sale del calendario y **levanta**. El encabezado
+    promete que ninguna función de este archivo levanta por un dato malo, y
+    esa promesa se cumple aquí, en la frontera, o no se cumple en ninguna
+    parte —A11 entraba por ahí y tumbaba `cobertura`, `recuento`, `degradado`,
+    `apagado` y la consulta sobre las fichas sanas del mismo pack—.
     """
     if isinstance(valor, datetime):
-        return valor.date()
-    if isinstance(valor, date):
-        return valor
-    v = _texto(valor)
-    if v is None:
+        f = valor.date()
+    elif isinstance(valor, date):
+        f = valor
+    else:
+        v = _texto(valor)
+        if v is None:
+            return None
+        try:
+            f = datetime.strptime(v, "%Y-%m-%d").date()
+        except ValueError:
+            return None
+    return f if ANIO_MINIMO <= f.year <= ANIO_MAXIMO else None
+
+
+def tipo_de(ficha):
+    """`norma`, `providencia` o None. El único lector de `tipo` que hay.
+
+    A09: `evaluar` lo normalizaba con `_texto` y `cadencia_de`,
+    `_citable_en_si`, `recuento` y `verificar_token` lo comparaban con `==`
+    crudo. Un espacio alrededor bastaba para que la misma ficha fuera una cosa
+    para la tabla de decisión y otra para la prueba de banco. Los espacios se
+    recortan en TODOS los campos por igual: ese recorte uniforme es lo que
+    hace que «   » valga como vacío, y aquí vale lo mismo que en el resto.
+    """
+    if not isinstance(ficha, dict):
         return None
-    try:
-        return datetime.strptime(v, "%Y-%m-%d").date()
-    except ValueError:
-        return None
+    t = _texto(ficha.get("tipo"))
+    return t if t in TIPOS_DE_FICHA else None
+
+
+def leer_materias(valor):
+    """El conjunto de materias declaradas, o el conjunto vacío.
+
+    A10: `cobertura` iteraba el campo sin mirar qué era, y una `materia`
+    escrita en singular —`"civil"` en vez de `["civil"]`, el error de tecleo
+    más barato de la ficha— hacía que el pack declarara cubiertas las
+    **letras** del área. Una cadena es iterable; que lo sea no la convierte en
+    una lista. Se exige la lista, y una casilla mala invalida la lista entera:
+    media lista leída es una lista que nadie comprobó.
+    """
+    if not isinstance(valor, (list, tuple)):
+        return frozenset()
+    limpias = [_texto(m) for m in valor]
+    if not limpias or any(m is None for m in limpias):
+        return frozenset()
+    return frozenset(limpias)
 
 
 def mas_meses(f, meses):
@@ -275,29 +363,60 @@ def contenido_en(peticion, alcance):
     return p_articulos <= a_articulos and p_incisos <= a_incisos
 
 
-def _apunta_al_corpus(referencia):
-    """¿La referencia es un archivo de este proyecto?
+def _referencia_publicada(referencia):
+    """¿La referencia señala algo publicado fuera de este proyecto?
 
     `01` §5 regla 3 y `04` §7: mover una afirmación de un archivo del corpus a
-    una ficha no la comprueba. Es el mecanismo exacto de N1 — el renombrado
+    una ficha no la comprueba. Es el mecanismo exacto de N1 —el renombrado
     deja escrita la cadena `IDENTIDAD_VERIFICADA` en el catálogo, al lado de
-    cada norma, en un campo marcado copiable — y también el de la cuarentena
-    de P0.b. La comprobación es deliberadamente burda: rechazar de más cuesta
-    rehacer una ficha; aceptar de más cuesta una cita fabricada.
+    cada norma, en un campo marcado copiable— y también el de la cuarentena
+    de P0.b.
+
+    ESTA FUNCIÓN ERA LA ÚNICA LISTA NEGRA DEL CONTRATO, y A17 la rodeó con lo
+    primero que se le ocurrió: quitar la extensión del archivo, escribirlo con
+    la barra de Windows, ponerle `.markdown`, o no nombrar archivo ninguno
+    —«ver la ficha anterior», «consultado internamente»—. Una lista negra deja
+    fuera lo que no se pensó, y lo que no se pensó es infinito.
+
+    Ahora se enumera lo que se ACEPTA: un esquema, un dominio con punto y sin
+    espacios dentro. Con eso, «no es del corpus» deja de ser una conjetura
+    sobre la forma del nombre y pasa a ser una propiedad comprobable de la
+    referencia. El coste queda dicho, porque es real: una referencia legítima
+    que no sea una URL —el ejemplar en papel de un diario oficial— se rechaza
+    y obliga a rehacer la ficha con el enlace de la publicación. Rechazar de
+    más cuesta trabajo; aceptar de más cuesta una cita fabricada.
     """
-    r = referencia.lower()
-    return (".md" in r or "source-catalog" in r or "knowledge-pack" in r
-            or "skills-support" in r or "legal-workspace" in r
-            or r.startswith("docs/") or r.startswith("./") or r.startswith("../"))
+    r = referencia.strip()
+    if any(c.isspace() for c in r) or "\\" in r or ".." in r:
+        return False
+    minusculas = r.lower()
+    for esquema in ESQUEMAS_PUBLICADOS:
+        if minusculas.startswith(esquema):
+            resto = r[len(esquema):]
+            break
+    else:
+        return False
+    dominio = resto.split("/")[0].split("?")[0].split("#")[0]
+    return ("." in dominio and not dominio.startswith(".")
+            and not dominio.endswith("."))
 
 
-def leer_fuente(valor, clases_admitidas):
+def leer_fuente(valor, clases_admitidas, ventana):
     """`{clase, referencia, consultada}` → la clase, o None si la fuente no
     sirve para lo que se le pide.
 
     Tipada y aparte, nunca la clase escrita dentro de la cadena de la URL:
     una cadena que contiene las letras `PRIMARY_OFFICIAL` no es una fuente
     primaria, y esa confusión era media vía V3.
+
+    `ventana` es `(desde, hasta)` y es A12. `consultada` no tenía ni techo ni
+    suelo: una ficha firmada ayer podía declarar que consultó la fuente
+    oficial en el año 9999, o hace un siglo, y salía citable. La cadencia
+    medía la edad de la firma y nada medía la edad de lo que se firmó. Los dos
+    bordes salen de lo que el pack ya dice, sin constantes nuevas: nadie
+    consulta el futuro (`hasta` = hoy), y una consulta anterior a la ventana
+    de revisión de la propia ficha es, por la política del propio pack, una
+    consulta vencida (`desde` = firma − cadencia).
     """
     if not isinstance(valor, dict) or set(valor) != {"clase", "referencia", "consultada"}:
         return None
@@ -305,9 +424,13 @@ def leer_fuente(valor, clases_admitidas):
     referencia = _texto(valor["referencia"])
     if clase not in CLASES_DE_FUENTE or clase not in clases_admitidas:
         return None
-    if referencia is None or _apunta_al_corpus(referencia):
+    if referencia is None or not _referencia_publicada(referencia):
         return None
-    if _fecha(valor["consultada"]) is None:
+    consultada = _fecha(valor["consultada"])
+    if consultada is None:
+        return None
+    desde, hasta = ventana
+    if desde is None or hasta is None or not (desde <= consultada <= hasta):
         return None
     return clase
 
@@ -317,6 +440,27 @@ def leer_fuente(valor, clases_admitidas):
 CADENCIA_MESES = 12                  # `02` §6, fila 1. Política operativa, no derecho.
 CADENCIA_CORTA_MESES = 3             # `02` §6, fila 3.
 CADENCIA_PROVIDENCIA_MESES = 12      # N3: la tabla de cadencias no tenía fila para ellas.
+
+
+def obliga_nota(ficha):
+    """¿El estado de esta ficha hace obligatoria la `nota_de_vigencia`?
+
+    Dos casos, y el segundo es A15. El primero es la constante
+    `ESTADOS_QUE_OBLIGAN_NOTA` de `01` §2. El segundo es
+    `SIN_VIGENCIA_DESDE` con fecha **posterior a la firma**: eso no es una
+    norma que dejó de regir, es una cesación anunciada que el día de la
+    comprobación todavía no había ocurrido, que es literalmente la fila 3 de
+    la tabla de cadencias («la nota registra un cambio con fecha futura»).
+    Se compara contra la firma y no contra `hoy` a propósito: la cadencia no
+    puede depender del día en que se lea, o la misma ficha caducaría o no
+    según cuándo se la mire.
+    """
+    estado, fecha_estado = leer_estado_vigencia(ficha.get("estado_vigencia"))
+    if estado in ESTADOS_QUE_OBLIGAN_NOTA:
+        return True
+    firmado = _fecha(ficha.get("verificado_el"))
+    return (estado == SIN_VIGENCIA_DESDE and firmado is not None
+            and fecha_estado > firmado)
 
 
 def cadencia_de(ficha):
@@ -339,10 +483,18 @@ def cadencia_de(ficha):
 
     N3 — las providencias no tenían ninguna fila, porque la tabla entera está
     escrita sobre `estado_vigencia`, campo que una providencia no tiene.
+
+    A18 — la cadencia colgaba de que la nota ESTUVIERA, no de que el estado la
+    obligara, y entonces dejarla vacía la alargaba de tres meses a doce: la
+    ficha peor llenada era la que más vivía. Se pregunta por la obligación,
+    que es un hecho del estado, y no por la casilla, que es un hecho de quien
+    la llenó.
     """
-    if ficha.get("tipo") == "providencia":
+    if tipo_de(ficha) == "providencia":
         return CADENCIA_PROVIDENCIA_MESES
-    return CADENCIA_CORTA_MESES if _texto(ficha.get("nota_de_vigencia")) else CADENCIA_MESES
+    if obliga_nota(ficha) or _texto(ficha.get("nota_de_vigencia")):
+        return CADENCIA_CORTA_MESES
+    return CADENCIA_MESES
 
 
 def revisar_antes_de(ficha):
@@ -368,7 +520,16 @@ def revisar_antes_de(ficha):
 
 def caducada(ficha, hoy):
     """True si esta ficha ya no se sirve. La degradación es el resultado por
-    defecto de no hacer nada: nadie tiene que leer un aviso."""
+    defecto de no hacer nada: nadie tiene que leer un aviso.
+
+    Incluye la firma, y no solo su aritmética: una firma futura da una fecha
+    de revisión futura y por tanto una ficha «viva» para todo el que pregunte
+    por la caducidad —`recuento`, `cobertura`, la prueba de banco— mientras
+    `_evaluar_norma` la rechaza. Que dos partes del pack cuenten distinto la
+    misma ficha es el patrón de A09 y de A11; aquí hay un solo predicado.
+    """
+    if _firma_valida(ficha, hoy) is None:
+        return True
     limite = revisar_antes_de(ficha)
     return limite is None or hoy > limite
 
@@ -438,18 +599,61 @@ def _firma_valida(ficha, hoy):
     return (quien, cuando)
 
 
+def ventana_de_consulta(ficha, hoy):
+    """`(desde, hasta)`: cuándo pudo consultarse una fuente para que valga
+    como la fuente de ESTA ficha. Ver `leer_fuente`. `(None, None)` si la
+    firma no se puede leer, y con eso ninguna fuente pasa."""
+    firmado = _fecha(ficha.get("verificado_el"))
+    if firmado is None:
+        return (None, None)
+    return (mas_meses(firmado, -cadencia_de(ficha)), hoy)
+
+
 def _identidad(ficha, hoy, clases_admitidas):
     """A.2 / B.2. Devuelve None si la identidad pasa, o la Respuesta que la
     frena. Un fallo de identidad nunca se sirve bajo un código de vigencia.
+
+    `hoy` llegaba a esta función y no se usaba en ninguna línea —era la huella
+    de la comprobación que se quiso hacer y no se hizo—. Ahora acota por
+    arriba la fecha de consulta de la fuente: A12.
     """
     estado = _texto(ficha.get("estado_identidad"))
     if estado == CONFLICTO_DE_FUENTES:
         return Respuesta(CONFLICTO_DE_FUENTES, "dos fuentes oficiales discrepan; el pack no elige", ficha)
     if estado != IDENTIDAD_VERIFICADA:
         return Respuesta(IDENTIDAD_POR_VERIFICAR, "estado_identidad no es IDENTIDAD_VERIFICADA", ficha)
-    if leer_fuente(ficha.get("fuente_identidad"), clases_admitidas) is None:
+    if leer_fuente(ficha.get("fuente_identidad"), clases_admitidas,
+                   ventana_de_consulta(ficha, hoy)) is None:
         return Respuesta(IDENTIDAD_POR_VERIFICAR,
-                         "fuente_identidad vacía, de clase inadmisible o apuntando al corpus", ficha)
+                         "fuente_identidad vacía, de clase inadmisible, sin referencia publicada "
+                         "o consultada fuera de la ventana de la ficha", ficha)
+    return None
+
+
+def _materia(ficha, consulta, nota=None):
+    """A06. La materia por la que se pregunta tiene que estar entre las que la
+    ficha declara. Devuelve None si pasa, o la Respuesta que la frena.
+
+    `materia` y `territorial` decidían la respuesta en la rama C —«no tengo
+    esa ficha»— y desaparecían en cuanto había coincidencia. El pack se
+    contradecía en la misma sesión: para un identificador que no tenía decía
+    «no cubro esta área, aquí no hay información de ninguna clase»; para uno
+    que sí tenía, en esa misma área, decía `CITABLE`. El encabezado declaraba
+    cerrada esta vía al añadir `materia[]` a las providencias: el campo se
+    añadió y no se comparaba con nada.
+
+    Los dos códigos son distintos a propósito. Que la consulta no diga en qué
+    materia pregunta deja las dos lecturas abiertas; que la diga y la ficha no
+    la declare es una respuesta cerrada, y es la misma que la de un alcance
+    que no llega: lo comprobado no cubre lo que se pide.
+    """
+    pedida = _texto(consulta.get("materia"))
+    if pedida is None:
+        return Respuesta("NO_TENEMOS_INFORMACION_SUFICIENTE",
+                         "la consulta no dice en qué materia pregunta", ficha, nota)
+    if pedida not in leer_materias(ficha.get("materia")):
+        return Respuesta("FUERA_DEL_ALCANCE_COMPROBADO",
+                         "la ficha no declara la materia por la que se pregunta", ficha, nota)
     return None
 
 
@@ -472,6 +676,12 @@ def _evaluar_norma(ficha, consulta, hoy):
     if frenada is not None:
         return frenada
 
+    # A.2.bis — la materia (A06). Va con el alcance porque es lo mismo que el
+    # alcance: hasta dónde llega lo comprobado.
+    frenada = _materia(ficha, consulta, nota)
+    if frenada is not None:
+        return frenada
+
     # A.3 — contención de alcance en las DOS direcciones (V1). El operando
     # izquierdo llega tipado desde la consulta y nunca lo produce el modelo:
     # una `peticion` en prosa no es comparable, y no comparable cae fuera.
@@ -481,21 +691,29 @@ def _evaluar_norma(ficha, consulta, hoy):
 
     # A.4 — estado de vigencia, leído como lista blanca.
     estado, fecha_estado = leer_estado_vigencia(ficha.get("estado_vigencia"))
+
+    # Casilla obligatoria vacía. Va ANTES del corte de la vigencia parcial, y
+    # ese orden es A18: `VIGENCIA_PARCIAL_AL` retornaba cuatro líneas antes,
+    # así que la mitad de `ESTADOS_QUE_OBLIGAN_NOTA` era inalcanzable y su
+    # única consecuencia visible era la cadencia. Sin la nota,
+    # `CITABLE_CON_REFORMA` sale afirmando una reforma de la que no dice nada,
+    # y una ficha parcial sin nota no dice en qué parte rige.
+    if obliga_nota(ficha) and nota is None:
+        return Respuesta("FICHA_INCOMPLETA", "el estado obliga a nota_de_vigencia y está vacía", ficha)
+
     if estado == VIGENCIA_PARCIAL_AL:
         return Respuesta("VIGENCIA_PARCIAL", "rige en parte; nunca se sirve como citable", ficha, nota)
     if estado not in ESTADOS_QUE_PUEDEN_SER_CITABLES:
         return Respuesta(VIGENCIA_NO_COMPROBADA,
                          "estado_vigencia vacío o no reconocido", ficha, nota)
 
-    # Casilla obligatoria vacía. La nota lo es en dos estados, y sin ella
-    # `CITABLE_CON_REFORMA` sale afirmando una reforma de la que no dice nada.
-    if estado in ESTADOS_QUE_OBLIGAN_NOTA and nota is None:
-        return Respuesta("FICHA_INCOMPLETA", "el estado obliga a nota_de_vigencia y está vacía", ficha)
-
-    # A.5 — la fuente de la vigencia, tipada y de clase primaria.
-    if leer_fuente(ficha.get("fuente_vigencia"), CLASES_DE_VIGENCIA) is None:
+    # A.5 — la fuente de la vigencia, tipada, de clase primaria y consultada
+    # dentro de la ventana de la propia ficha (A12).
+    if leer_fuente(ficha.get("fuente_vigencia"), CLASES_DE_VIGENCIA,
+                   ventana_de_consulta(ficha, hoy)) is None:
         return Respuesta(VIGENCIA_NO_COMPROBADA,
-                         "fuente_vigencia vacía, de clase distinta de PRIMARY_OFFICIAL o apuntando al corpus",
+                         "fuente_vigencia vacía, de clase distinta de PRIMARY_OFFICIAL, sin "
+                         "referencia publicada o consultada fuera de la ventana de la ficha",
                          ficha, nota)
 
     # A.5.bis — V2, el hallazgo principal. Sin constancia de que la reforma se
@@ -527,10 +745,22 @@ def _evaluar_norma(ficha, consulta, hoy):
         return Respuesta("FUERA_DE_LA_VIGENCIA_COMPROBADA",
                          "el caso es posterior al día hasta el que llega la comprobación firmada", ficha, nota)
 
-    codigo = {VIGENTE_AL: "CITABLE",
-              VIGENTE_CON_REFORMA_AL: "CITABLE_CON_REFORMA",
-              SIN_VIGENCIA_DESDE: "CITABLE_SIN_VIGENCIA_HOY"}[estado]
-    return Respuesta(codigo, "cumple las nueve condiciones", ficha, nota)
+    # A.9 — qué código. A15: `CITABLE_SIN_VIGENCIA_HOY` es la única frase del
+    # contrato que afirma algo sobre el mundo —«Hoy no rige»— y se servía sin
+    # comprobar la afirmación. `SIN_VIGENCIA_DESDE` con fecha futura es la
+    # forma normal de una derogatoria de vigencia diferida: la norma sí rige
+    # hoy, y la ficha lo dice. Se elige comprobar la afirmación antes de
+    # hacerla, no callarla: si la cesación no ha ocurrido, lo comprobado es
+    # que la norma regía en la ventana, que es exactamente lo que dice
+    # `CITABLE`, y la cesación anunciada viaja en la nota que `obliga_nota` ya
+    # hizo obligatoria. `hoy` y no la firma, porque la frase habla del día en
+    # que se sirve.
+    if estado == SIN_VIGENCIA_DESDE:
+        codigo = "CITABLE_SIN_VIGENCIA_HOY" if fecha_estado <= hoy else "CITABLE"
+    else:
+        codigo = {VIGENTE_AL: "CITABLE",
+                  VIGENTE_CON_REFORMA_AL: "CITABLE_CON_REFORMA"}[estado]
+    return Respuesta(codigo, "cumple las diez condiciones", ficha, nota)
 
 
 def _evaluar_providencia(ficha, consulta, hoy):
@@ -546,6 +776,13 @@ def _evaluar_providencia(ficha, consulta, hoy):
         return Respuesta("PACK_CADUCADO", "hoy es posterior a revisar_antes_de", ficha)
 
     frenada = _identidad(ficha, hoy, CLASES_DE_IDENTIDAD_PROVIDENCIA)
+    if frenada is not None:
+        return frenada
+
+    # B.2.bis — la materia (A06). Es el motivo por el que `materia[]` se le
+    # añadió a la providencia: sin comparar, el pack sirve un precedente en un
+    # área que él mismo declara excluida.
+    frenada = _materia(ficha, consulta)
     if frenada is not None:
         return frenada
 
@@ -568,7 +805,26 @@ def _evaluar_providencia(ficha, consulta, hoy):
     if adversa is None or "JURISPRUDENCE_GAP" in adversa:
         return Respuesta("SIN_BUSQUEDA_ADVERSA", "búsqueda adversa vacía o cerrada en JURISPRUDENCE_GAP", ficha)
 
-    # B.5 — la proposición, literal. Sin normalizar de ninguna forma: la
+    # B.5 — el techo temporal (A08). N2 cerró la ventana por arriba en la rama
+    # A —«el techo es el día de la comprobación, hasta donde llega lo que la
+    # verificadora firmó»— y B no leía `fecha_del_caso` en ninguna línea: un
+    # precedente firmado hace un mes amparaba un caso fechado cincuenta años
+    # después. La jurisprudencia cambia por el mismo eje por el que cambia la
+    # vigencia, y la búsqueda adversa dice «no apareció autoridad en contra»
+    # hasta el día en que se hizo y ni un día más.
+    #
+    # NO hay suelo, y la ausencia es deliberada: un precedente gobierna hechos
+    # anteriores a él con toda normalidad, y ponerle un suelo exigiría saber
+    # cuándo se dictó la providencia, que es un campo que `01` §4 no tiene.
+    # Inventarlo sería el pack produciendo derecho.
+    fecha_caso = _fecha(consulta.get("fecha_del_caso"))
+    _, firmado = _firma_valida(ficha, hoy)
+    if fecha_caso > firmado:
+        return Respuesta("FUERA_DE_LA_VIGENCIA_COMPROBADA",
+                         "el caso es posterior al día hasta el que llega la comprobación firmada",
+                         ficha)
+
+    # B.6 — la proposición, literal. Sin normalizar de ninguna forma: la
     # unidad no es la providencia, es el par providencia + proposición, y
     # cualquier tolerancia aquí la elige el intérprete generoso.
     pedida = _texto(consulta.get("proposicion"))
@@ -576,7 +832,7 @@ def _evaluar_providencia(ficha, consulta, hoy):
         return Respuesta("FUERA_DEL_ALCANCE_COMPROBADO",
                          "se comprobó para la proposición atribuida, no para la que se pide", ficha)
 
-    return Respuesta("CITABLE_PRECEDENTE", "cumple las seis condiciones", ficha)
+    return Respuesta("CITABLE_PRECEDENTE", "cumple las ocho condiciones", ficha)
 
 
 def evaluar(ficha, consulta, hoy):
@@ -592,7 +848,7 @@ def evaluar(ficha, consulta, hoy):
         return Respuesta("EL_PACK_NO_CONTESTA", problema, ficha if isinstance(ficha, dict) else None)
     if not isinstance(ficha, dict):
         return Respuesta("NO_TENEMOS_INFORMACION_SUFICIENTE", "eso no es una ficha")
-    tipo = _texto(ficha.get("tipo"))
+    tipo = tipo_de(ficha)
     if tipo == "norma":
         return _evaluar_norma(ficha, consulta, hoy)
     if tipo == "providencia":
@@ -647,6 +903,21 @@ class RespuestaCompuesta(object):
             return self.respuestas[0].codigo
         return "MULTIPLE"
 
+    @property
+    def frase(self):
+        """A16. «La frase importa tanto como el código: el silencio se lee
+        como no hay regla, y esa lectura es el fallo que el pack existe para
+        impedir.» El código de composición era una cadena suelta: la frase de
+        `CONFLICTO_ENTRE_FICHAS` estaba escrita en `FRASES` y ningún camino la
+        servía. Se servían las dos frases individuales, que no dicen que haya
+        conflicto —una de ellas dice `CITABLE`—.
+        """
+        if self.codigo_de_composicion is not None:
+            identificadores = [r.identificador for r in self.respuestas if r.identificador]
+            return FRASES.get(self.codigo_de_composicion, "").format(
+                id=identificadores[0] if identificadores else "la ficha")
+        return "\n".join(r.frase for r in self.respuestas)
+
     def __repr__(self):
         return "RespuestaCompuesta(%s, citable=%s)" % (self.codigos, self.citable)
 
@@ -674,6 +945,12 @@ class Pack(object):
         crudo = json.dumps(self.fichas, sort_keys=True, default=str, ensure_ascii=False)
         return hashlib.sha256(crudo.encode("utf-8")).hexdigest()[:16]
 
+    def _huella(self):
+        """Versión + checksum, la cadena que el token exhibe y que A04 demostró
+        que nadie volvía a leer. Una sola función para escribirla y para
+        comprobarla: si se escriben en dos sitios, se separan."""
+        return "pack:%s@%s" % (self.version, self.checksum())
+
     def apagado(self, hoy):
         """N7 — el interruptor de los 18 meses.
 
@@ -685,27 +962,62 @@ class Pack(object):
         esto?— y que una ficha sola no mueve. El mínimo sería aún más seguro,
         pero apaga el pack entero por un registro viejo que quizá ya no
         importa; queda dicho el trade-off.
+
+        A13 y A14 — y la mediana sola no bastaba, porque contesta una pregunta
+        parecida y no la que hay que hacer. «¿Cuándo se firmó?» no es «¿esto
+        todavía sirve?»: bajando las veinticinco fichas podridas de veinte
+        meses a diecisiete, la mediana queda por debajo del umbral, el
+        interruptor no salta y el pack responde `CITABLE` con veinticinco de
+        sus veintiséis registros caducados. Y las fichas cuya firma no se
+        puede leer desaparecían del censo en vez de contar como las más
+        viejas: cien fichas mudas y una recién hecha daban un pack encendido.
+
+        Las dos las cierra la misma línea: **`degradado` gobierna**. Era un
+        booleano que viajaba al lado de una respuesta citable y que ningún
+        camino consultaba; ahora apaga. El coste, y es real: un pack con
+        muchas fichas viejas que nadie consulta deja de contestar también
+        sobre las pocas que sí se mantienen. Se elige ese lado porque la
+        alternativa es un aviso que viaja pegado a un `CITABLE`, y un aviso
+        pegado a un sí es un aviso que nadie lee.
         """
         firmas = [f for f in (_fecha(x.get("verificado_el")) for x in self.fichas) if f]
         if not firmas:
             return True
         mediana = date.fromordinal(int(statistics.median([f.toordinal() for f in firmas])))
-        return hoy > mas_meses(mediana, MESES_DE_APAGADO)
+        if hoy > mas_meses(mediana, MESES_DE_APAGADO):
+            return True
+        return self.degradado(hoy)
 
     def _citable_en_si(self, ficha, hoy):
         """Si la ficha pasa las condiciones que no dependen de la consulta.
-        Es lo único contable sin una consulta delante, y así se dice."""
-        if _firma_valida(ficha, hoy) is None or caducada(ficha, hoy):
+        Es lo único contable sin una consulta delante, y así se dice.
+
+        Una ficha sin materias legibles no es contable como citable: no hay
+        ninguna consulta que pueda casar con ella (`_materia`), de modo que
+        contarla sería contar una ficha que nunca se va a servir.
+        """
+        firma = _firma_valida(ficha, hoy)
+        if firma is None or caducada(ficha, hoy):
             return False
-        if ficha.get("tipo") == "providencia":
-            return _evaluar_providencia(ficha, {"proposicion": ficha.get("proposicion_atribuida"),
-                                                "fecha_del_caso": hoy.isoformat(),
-                                                "tipo_de_fecha": "case_relevant_date"},
-                                        hoy).citable
+        materias = leer_materias(ficha.get("materia"))
+        if not materias:
+            return False
+        if tipo_de(ficha) == "providencia":
+            # La fecha del caso es la de la firma y no `hoy`: es el techo de
+            # B.5, o sea el último día para el que esta ficha puede contestar
+            # que sí. Preguntar por `hoy` la haría incontable desde el día
+            # siguiente a la firma.
+            return _evaluar_providencia(
+                ficha, {"proposicion": ficha.get("proposicion_atribuida"),
+                        "fecha_del_caso": firma[1].isoformat(),
+                        "tipo_de_fecha": "case_relevant_date",
+                        "materia": sorted(materias)[0]}, hoy).citable
         estado, _ = leer_estado_vigencia(ficha.get("estado_vigencia"))
         return (estado in ESTADOS_QUE_PUEDEN_SER_CITABLES
+                and not (obliga_nota(ficha) and _texto(ficha.get("nota_de_vigencia")) is None)
                 and _identidad(ficha, hoy, CLASES_DE_IDENTIDAD_NORMA) is None
-                and leer_fuente(ficha.get("fuente_vigencia"), CLASES_DE_VIGENCIA) is not None
+                and leer_fuente(ficha.get("fuente_vigencia"), CLASES_DE_VIGENCIA,
+                                ventana_de_consulta(ficha, hoy)) is not None
                 and _texto(ficha.get("reforma_buscada")) == "si")
 
     def recuento(self, hoy):
@@ -715,7 +1027,7 @@ class Pack(object):
         caducados = sum(1 for f in self.fichas if caducada(f, hoy))
         citables = sum(1 for f in self.fichas if self._citable_en_si(f, hoy))
         sin_comprobar = sum(1 for f in self.fichas
-                            if f.get("tipo") == "norma" and not self._citable_en_si(f, hoy))
+                            if tipo_de(f) == "norma" and not self._citable_en_si(f, hoy))
         return {"registros": len(self.fichas), "citables_hoy": citables,
                 "vigencia_no_comprobada": sin_comprobar, "caducados_hoy": caducados}
 
@@ -729,14 +1041,24 @@ class Pack(object):
         """Se calcula, no se declara. Una lista escrita una vez por versión
         sigue diciendo «yo cubro esta área» cuando dentro no queda una sola
         ficha viva: la más tranquilizadora de las respuestas negativas servida
-        por un pack vacío."""
+        por un pack vacío.
+
+        «Viva» quiere decir `_citable_en_si`, y no solo firmada y sin caducar.
+        Un área cuyas fichas están todas sin vigencia comprobada, o todas en
+        vigencia parcial —que nunca se sirve como citable, A18—, es un área en
+        la que el pack no puede contestar nada: decir que la cubre es la misma
+        promesa vacía por otro camino. Se paga un precio y queda dicho: para
+        un identificador ausente en un área así, la respuesta baja de
+        `NO_ESTA_EN_EL_PACK` a `FUERA_DE_COBERTURA`. Ninguna de las dos es
+        citable, así que el precio es de precisión, no de seguridad.
+
+        Y las materias se leen con `leer_materias`: una cadena no es una lista
+        de materias (A10).
+        """
         declaradas = set()
         for f in self.fichas:
-            if caducada(f, hoy) or _firma_valida(f, hoy) is None:
-                continue
-            for m in (f.get("materia") or []):
-                if _texto(m):
-                    declaradas.add(_texto(m))
+            if self._citable_en_si(f, hoy):
+                declaradas |= leer_materias(f.get("materia"))
         return {"jurisdiccion": "colombia", "nivel_territorial": ["nacional"],
                 "materias_declaradas": sorted(declaradas)}
 
@@ -761,19 +1083,38 @@ class Pack(object):
                            "es un dato no citable y esto no dice que rija")],
                 apagado=True, **comunes)
 
+        # A06 — el nivel territorial se mira SIEMPRE, y no solo cuando el pack
+        # no tiene la ficha. El pack es nacional tenga o no tenga el registro
+        # que se le pide: que lo tenga no lo vuelve competente.
+        if consulta.get("territorial"):
+            return RespuestaCompuesta(
+                [Respuesta("FUERA_DE_COBERTURA", "consulta territorial; el pack es nacional")],
+                **comunes)
+
         pedido = _texto(consulta.get("identificador"))
         coincidencias = [f for f in self.fichas if identificador_de(f) == pedido] if pedido else []
         if not coincidencias:
             return RespuestaCompuesta([self._sin_ficha(consulta, hoy)], **comunes)
 
         respuestas = [evaluar(f, consulta, hoy) for f in coincidencias]
-        for r in respuestas:
-            if r.citable:
+        composicion = self._composicion(coincidencias, respuestas)
+
+        # A01 y A02, LA VÍA PRINCIPAL. El token se emitía por respuesta
+        # individual, antes de calcular la composición y sin mirarla: en el
+        # escenario de N4 el pack contestaba `CONFLICTO_ENTRE_FICHAS` y ponía
+        # en la mano de quien consume un token que la prueba de banco aceptaba.
+        # El token es lo único que sobrevive hasta la publicación: si el «no»
+        # vive en la respuesta y el «sí» en el token, el «no» no existe. Y en
+        # una respuesta múltiple deshacía la regla de N5 sin discutirla —el
+        # consumidor se quedaba con la mejor coincidencia, que es justo la
+        # lectura descartada—. Se emite si el conjunto es citable, o no se
+        # emite: es la misma condición que `RespuestaCompuesta.citable`, y por
+        # eso se escribe una vez y se comprueba aquí.
+        if composicion is None and all(r.citable for r in respuestas):
+            for r in respuestas:
                 r.token = self._emitir_token(r, hoy, consulta)
 
-        return RespuestaCompuesta(respuestas,
-                                  codigo_de_composicion=self._composicion(coincidencias, respuestas),
-                                  **comunes)
+        return RespuestaCompuesta(respuestas, codigo_de_composicion=composicion, **comunes)
 
     def _composicion(self, fichas, respuestas):
         """N4 — dos fichas del mismo par (identificador, alcance) que discrepan
@@ -795,9 +1136,12 @@ class Pack(object):
     def _sin_ficha(self, consulta, hoy):
         """La rama C. La materia la aporta quien consulta: inferirla de un
         identificador que el pack no tiene sería el modelo produciendo derecho
-        por la puerta de la consulta."""
-        if consulta.get("territorial"):
-            return Respuesta("FUERA_DE_COBERTURA", "consulta territorial; el pack es nacional")
+        por la puerta de la consulta.
+
+        Ya no comprueba `territorial`: eso lo hace `responder` para todas las
+        ramas. Dejarlo aquí además sería dejar escrita una condición que no se
+        alcanza nunca, que es de dónde salía A18.
+        """
         materia = _texto(consulta.get("materia"))
         if materia is None:
             return Respuesta("NO_TENEMOS_INFORMACION_SUFICIENTE",
@@ -819,27 +1163,66 @@ class Pack(object):
         en el registro no se sirvió nunca, por plausible que se lea.
         """
         f = respuesta.ficha
-        alcance = leer_alcance(f.get("alcance_comprobado"))
-        parte_alcance = (_serializar_alcance(alcance) if alcance
-                         else _texto(f.get("proposicion_atribuida")) or "")
+        tipo = tipo_de(f)
+        # El alcance solo lo tiene una norma: leerlo en una providencia era
+        # media vía A09 —un `alcance_comprobado` de más en una ficha de
+        # jurisprudencia hacía que su token amparara un articulado—.
+        alcance = leer_alcance(f.get("alcance_comprobado")) if tipo == "norma" else None
+        proposicion = _texto(f.get("proposicion_atribuida")) if tipo == "providencia" else None
+        parte_alcance = _serializar_alcance(alcance) if alcance else (proposicion or "")
+        caso = (_fecha(consulta.get("fecha_del_caso")), _texto(consulta.get("tipo_de_fecha")))
         serie = secrets.token_hex(8)
         token = " · ".join([respuesta.codigo,
                             identificador_de(f) + " + " + parte_alcance,
                             str(_fecha(f.get("verificado_el"))),
                             hoy.isoformat(),
-                            "pack:%s@%s" % (self.version, self.checksum()),
+                            # A03 y A07 — para qué caso se pidió. Sin esto dos
+                            # consultas con fechas de caso distintas producían
+                            # el mismo token salvo la serie, y el tipo de
+                            # fecha se validaba contra el vocabulario de `05`
+                            # sin que ningún camino volviera a leerlo.
+                            "caso:%s#%s" % (caso[0].isoformat(), caso[1]),
+                            self._huella(),
                             "serie:" + serie])
+        # La entrada del registro es una FOTO, y no guarda la ficha: guarda lo
+        # que se comprobó de ella el día en que se sirvió. La ficha es un dict
+        # vivo, y A05 ensanchaba un token ya emitido ensanchando después el
+        # `alcance_comprobado` de la ficha a la que el registro apuntaba —el
+        # token seguía exhibiendo el alcance estrecho y amparaba el ancho—.
+        # Sin puntero no hay nada que ensanchar por detrás: la caducidad
+        # también se calcula aquí, una vez, y es la de la firma que se sirvió.
         self.registro[serie] = {"token": token, "codigo": respuesta.codigo,
-                                "ficha": f, "servido_el": hoy}
+                                "tipo": tipo, "alcance": alcance,
+                                "proposicion": proposicion, "caso": caso,
+                                "huella": self._huella(),
+                                "revisar_antes_de": revisar_antes_de(f),
+                                "servido_el": hoy}
         return token
 
-    def verificar_token(self, token, lo_citado, hoy):
+    def verificar_token(self, token, lo_citado, hoy, caso):
         """La prueba de banco, hecha mecánica. `(pasa, motivo)`.
 
-        Cinco condiciones de fallo, y la quinta es la que faltaba: cita sin
-        token; token que no resuelve contra ninguna respuesta servida —el
-        inventado—; código que no es de los cuatro citables; ficha caducada
-        hoy; y alcance del token que no contiene lo citado.
+        Ocho condiciones de fallo. Las cinco de la ronda anterior —cita sin
+        token; token que no resuelve contra ninguna respuesta servida, o sea
+        el inventado; código que no es de los cuatro citables; ficha caducada
+        hoy; alcance del token que no contiene lo citado— y tres que la ronda
+        adversaria obligó a añadir:
+
+          - **la huella del pack** (A04). `version` + `checksum` se escribían
+            dentro del token «porque sin ellos no hay a qué resolver un token»
+            y después no se comparaban con nada: el registro sobrevivía a que
+            la ficha saliera del pack y a que la ficha se retractara entera
+            —identidad, vigencia y reforma—, y el token seguía pasando.
+          - **el caso** (A03, A07). El token no registraba para qué caso se
+            emitió y esta función no tenía dónde recibirlo, así que un token
+            obtenido para un caso de dentro de la ventana amparaba
+            literalmente una cita en un caso de fuera. `caso` es obligatorio y
+            es la consulta: quien cita tiene que decir para qué cita.
+          - **la foto, no el puntero** (A05). El alcance, la proposición y la
+            caducidad se leían de la ficha **viva**, no de lo que el token
+            registró: ensanchar la ficha después ensanchaba un token ya
+            emitido, que seguía exhibiendo el alcance estrecho. El registro ya
+            no guarda la ficha, así que no hay nada que ensanchar por detrás.
 
         `lo_citado` llega **estructurado**, igual que la petición. La prosa
         pedía comprobar «lo que la entrega cita», que exige parsear prosa, que
@@ -857,13 +1240,20 @@ class Pack(object):
             return (False, "el token no corresponde a ninguna respuesta servida")
         if entrada["codigo"] not in CODIGOS_CITABLES:
             return (False, "el código del token no es uno de los cuatro citables")
-        if caducada(entrada["ficha"], hoy):
+        if entrada["huella"] != self._huella():
+            return (False, "el token se emitió contra otra versión del pack")
+        limite = entrada["revisar_antes_de"]
+        if limite is None or hoy > limite:
             return (False, "el token apunta a una ficha caducada")
-        ficha = entrada["ficha"]
-        if ficha.get("tipo") == "providencia":
-            if _texto(lo_citado) != _texto(ficha.get("proposicion_atribuida")):
+        if not isinstance(caso, dict):
+            return (False, "la prueba de banco necesita el caso para el que se cita")
+        declarado = (_fecha(caso.get("fecha_del_caso")), _texto(caso.get("tipo_de_fecha")))
+        if declarado != entrada["caso"]:
+            return (False, "el token se emitió para otra fecha de caso o para otro tipo de fecha")
+        if entrada["tipo"] == "providencia":
+            if _texto(lo_citado) != entrada["proposicion"]:
                 return (False, "lo citado no es la proposición para la que se comprobó")
-        elif not contenido_en(leer_alcance(lo_citado), leer_alcance(ficha.get("alcance_comprobado"))):
+        elif not contenido_en(leer_alcance(lo_citado), entrada["alcance"]):
             return (False, "el alcance del token no contiene lo que se cita")
         return (True, "el token resuelve contra una respuesta servida")
 
