@@ -304,7 +304,7 @@ Y una advertencia concreta, porque es el error más peligroso que él puede come
 - Aparecen las palabras *probado*, *acreditado*, *demostrado*, *claramente*, *evidentemente*, *sin duda*. Él tiene prohibido usarlas. Si están, hay algo que revisar.
 - Una fecha es **más precisa que su fuente**: la clienta dijo "a mediados de marzo" y en la tabla aparece "el 15 de marzo".
 - Hay una fecha calculada, un plazo convertido en día, o la palabra *urgente*.
-- Aparece una norma, una sentencia, o un "conforme a la ley aplicable".
+- Aparece una norma o una sentencia **en voz de él**. Si va entrecomillada y con su página —*«el escrito invoca el artículo 24 (p. 4)»*— está bien: le está diciendo qué invoca el documento, no qué dice la ley, y él añade que eso no afirma que esa norma exista ni siga vigente. Lo que no debe aparecer nunca es él afirmando derecho por su cuenta: *«el artículo 24 establece…»*, *«conforme a la ley aplicable»*, *«la jurisprudencia es reiterada»*.
 - Dos eventos aparecen unidos por *tras*, *en respuesta a*, *como consecuencia de* — eso afirma que uno causó el otro, y una tabla ordenada no sabe eso.
 
 **El vocabulario fijo que él usa** (le sirve para leer rápido): en los hechos, una prueba **apoya**, **contradice** o **sitúa** — y "sitúa" significa que *no* apoya. En la cronología, cada fecha lleva uno de cinco grados: **documentada** (un documento la trae), **referida** (alguien la dijo), **aproximada** (la fuente misma no precisa), **deducida** (él la sacó cruzando dos cosas, y le dice cuáles y qué supone) o **en conflicto** (hay dos y no eligió).

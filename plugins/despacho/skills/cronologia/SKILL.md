@@ -1,7 +1,7 @@
 ---
 name: cronologia
 description: Método para armar la línea de tiempo de un caso a partir del material recibido —contratos, correos, comprobantes, actas, entrevistas—, con la fuente exacta de cada fecha, su grado de certeza (documentada, referida, aproximada, deducida o en conflicto), los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. Úsalo cuando pidan una cronología, ordenar los hechos en el tiempo, reconstruir qué pasó cuándo, o revisar si las fechas del caso se contradicen. No lo uses para redactar escritos, contar plazos, valorar prueba, decidir qué fecha es la buena, ni establecer que una cosa causó otra.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # cronologia — la línea de tiempo, con la calidad de cada fecha
@@ -13,6 +13,8 @@ version: 0.1.1
 **No lo uses para:** redactar el escrito; contar plazos, términos ni vencimientos de ninguna clase; decidir cuál fecha es la buena cuando hay dos; afirmar que un hecho causó otro; valorar qué prueba pesa más; ni trabajar sobre material que no se te ha entregado.
 
 **Este método no contiene derecho.** Aquí no hay normas, plazos, cómputos ni categorías de ninguna jurisdicción, y tu salida tampoco debe tenerlos. Si para situar un evento crees que necesitas saber desde cuándo se cuenta algo, **no lo necesitas**: estás calculando, y calcular no es de este método. Este skill ordena el tiempo del caso; **qué significa ese tiempo lo decide ella.**
+
+**Que tú no afirmes derecho no significa borrar el que traiga el documento.** Si el material invoca una norma o una providencia y eso es parte de lo que dice, **se transcribe entre comillas, con su página y en voz del documento —nunca en la tuya—**: *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece…»*. Transcribirla **no afirma que esa norma exista, siga rigiendo ni diga lo que el documento le atribuye**; eso lo comprueba ella. Es la misma regla que aplicas a cualquier afirmación del material.
 
 **Y la frontera no es un tema, es una operación.** No basta con no contar plazos: nunca sumas ni restas días sobre una fecha para producir otra, aunque el resultado no sea un plazo. Lo único que se deduce es lo que una fuente enuncia como relativo (ayer, el día anterior) y ahí solo se traduce la palabra de la fuente; no se opera con números. Cuántos días hay entre dos fechas, qué día cayó tal cosa, cuánto duró un silencio: nada de eso lo escribes tú. Las dos fechas sí; la distancia entre ellas, no.
 

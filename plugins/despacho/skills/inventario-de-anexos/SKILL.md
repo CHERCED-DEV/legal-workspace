@@ -1,7 +1,7 @@
 ---
 name: inventario-de-anexos
 description: Método para recorrer los documentos de un caso y producir un inventario de anexos numerado —qué es cada documento, quién lo produjo, de qué fecha es y a qué afirmación sirve—, más un bloque separado con lo que falta. Úsalo cuando pidan armar la lista de anexos, ordenar los documentos que se acompañan a un escrito, o establecer qué documentos faltan, se mencionan y no están, o están pero no se pueden usar. No lo uses para valorar prueba, decidir qué se aporta, redactar el escrito ni responder preguntas de derecho.
-version: 0.2.1
+version: 0.2.2
 ---
 
 # inventario-de-anexos — qué se acompaña, a qué sirve y qué falta
@@ -15,6 +15,8 @@ version: 0.2.1
 **No lo uses para:** decir si una prueba es suficiente; valorar qué pesa más; decidir qué se aporta y qué no; redactar el escrito; ni ordenar, renombrar o mover los archivos de nadie.
 
 **Este método no contiene derecho.** No hay aquí requisitos, clasificaciones de documentos, plazos ni exigencias de ninguna clase, y tu salida tampoco debe contenerlos. Si para describir un documento crees necesitar una categoría jurídica, no la necesitas: describe lo que el documento muestra y quién lo hizo.
+
+**Que tú no afirmes derecho no significa borrar el que traiga el documento.** Si el material invoca una norma o una providencia y eso es parte de lo que dice, **se transcribe entre comillas, con su página y en voz del documento —nunca en la tuya—**: *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece…»*. Transcribirla **no afirma que esa norma exista, siga rigiendo ni diga lo que el documento le atribuye**; eso lo comprueba ella. Es la misma regla que aplicas a cualquier afirmación del material.
 
 **Dónde se escribe.** El inventario sale a `2-Borradores/`, en **un documento de Word**, con nombre `Inventario de anexos — «caso» — «fecha» — pasada «n».docx`. La tabla se promete lista para pegar en un escrito, y eso solo se cumple si sale como **tabla de verdad, con sus columnas y sus filas**: una tabla dibujada con barras y guiones, pegada en un escrito, es una hilera de signos que hay que rehacer a mano. **Si no puedes producir un archivo de Word**, escribes el mismo contenido en texto en esa carpeta y **lo dices**; nunca das por hecho un archivo que no dejaste.
 

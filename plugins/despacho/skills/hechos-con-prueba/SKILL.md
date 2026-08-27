@@ -1,7 +1,7 @@
 ---
 name: hechos-con-prueba
 description: Método para convertir el material de un caso (entrevistas, declaraciones, documentos, comprobantes) en hechos candidatos emparejados con la prueba que los apoya, los contradice o los sitúa. Úsalo cuando pidan construir, extraer u ordenar los hechos de un asunto, armar el relato fáctico, o establecer qué está apoyado y qué no. No lo uses para redactar escritos, valorar prueba, decidir estrategia ni responder preguntas de derecho.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # hechos-con-prueba — construir hechos con su prueba
@@ -13,6 +13,8 @@ version: 0.1.1
 **No lo uses para:** redactar el escrito; calificar jurídicamente nada; valorar qué prueba pesa más; decidir qué hechos entran en la demanda; verificar fuentes jurídicas; ni trabajar sobre material que no se te ha entregado.
 
 **Este método no contiene derecho.** No hay aquí normas, plazos, categorías probatorias ni requisitos de ninguna jurisdicción, y tu salida tampoco debe contenerlos. Si para formular un hecho crees necesitar una norma, no la necesitas: estás calificando en vez de describir.
+
+**Que tú no afirmes derecho no significa borrar el que traiga el documento.** Si el material invoca una norma o una providencia y eso es parte de lo que dice, **se transcribe entre comillas, con su página y en voz del documento —nunca en la tuya—**: *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece…»*. Transcribirla **no afirma que esa norma exista, siga rigiendo ni diga lo que el documento le atribuye**; eso lo comprueba ella. Es la misma regla que aplicas a cualquier afirmación del material.
 
 ---
 

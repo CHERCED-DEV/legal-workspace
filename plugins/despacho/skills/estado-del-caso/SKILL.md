@@ -1,7 +1,7 @@
 ---
 name: estado-del-caso
 description: Método para reconstruir el estado de un caso leyendo su carpeta: qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta, y qué falta, quedó a medias o no tiene respuesta. Úsalo cuando pidan retomar un caso, ponerse al día, saber en qué va un asunto, inventariar la carpeta o preparar una revisión antes de trabajar. No lo uses para valorar la solidez del caso, pronosticar resultados, decidir estrategia, calcular plazos ni redactar escritos.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # estado-del-caso — reconstruir dónde está un caso a partir de su carpeta
@@ -17,6 +17,8 @@ version: 0.1.1
 **No lo uses para:** valorar si el caso es fuerte o débil; pronosticar; recomendar qué hacer; calcular plazos; redactar ni completar borradores; construir los hechos con su prueba (eso es `hechos-con-prueba`).
 
 **Este método no contiene derecho.** Aquí no hay normas, plazos, requisitos ni categorías de ninguna jurisdicción, y tu salida tampoco debe contenerlos. Si para decir en qué va el caso crees necesitar una norma, no la necesitas: estás opinando sobre el caso en vez de describir su carpeta.
+
+**Que tú no afirmes derecho no significa borrar el que traiga el documento.** Si el material invoca una norma o una providencia y eso es parte de lo que dice, **se transcribe entre comillas, con su página y en voz del documento —nunca en la tuya—**: *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece…»*. Transcribirla **no afirma que esa norma exista, siga rigiendo ni diga lo que el documento le atribuye**; eso lo comprueba ella. Es la misma regla que aplicas a cualquier afirmación del material.
 
 ---
 

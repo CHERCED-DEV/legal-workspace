@@ -1,7 +1,7 @@
 ---
 name: inventario-de-bienes
 description: Método para recorrer el material de un caso e inventariar los bienes y las deudas que aparecen en él —qué documento lo respalda y en qué página, a nombre de quién figura según ese documento, qué fecha trae, qué valor aparece escrito y quién produjo ese documento—, más lo que falta y las contradicciones entre documentos. Úsalo cuando pidan armar el inventario de bienes de una separación, un divorcio, una sucesión o cualquier asunto donde haya que saber qué bienes aparecen y con qué papel detrás. No lo uses para decidir qué bienes entran y cuáles no, calcular valores, sumar, restar deudas, sacar porcentajes, proponer un reparto ni decir a quién le corresponde qué.
-version: 0.2.0
+version: 0.2.1
 ---
 
 # inventario-de-bienes — qué bienes aparecen, con qué papel y qué falta
@@ -13,6 +13,8 @@ version: 0.2.0
 **El material se recorre dos veces, no cinco.** Un recorrido de captura, que anota de una vez todo lo que hará falta después, y un recorrido de comprobación al final, en bloque. Todo lo demás —agrupar, contrastar filas, detectar lo que falta— se hace **sobre lo capturado** (§4). (Aquí «recorrido» es del material. «Pasada» es otra cosa: la versión del inventario que se entrega, más abajo.)
 
 **Este método no contiene derecho.** No hay aquí regímenes, clasificaciones de bienes por su origen, plazos ni exigencias de ninguna clase, y tu salida tampoco debe contenerlos. **Qué bienes entran y cuáles no** —si un bien es propio o común, qué hace una herencia o una donación, qué régimen rige— **es derecho, y lo pone ella.** Si para describir un bien crees necesitar una categoría jurídica, no la necesitas: describe lo que el documento dice y quién lo escribió.
+
+**Que tú no afirmes derecho no significa borrar el que traiga el documento.** Si el material invoca una norma o una providencia y eso es parte de lo que dice, **se transcribe entre comillas, con su página y en voz del documento —nunca en la tuya—**: *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece…»*. Transcribirla **no afirma que esa norma exista, siga rigiendo ni diga lo que el documento le atribuye**; eso lo comprueba ella. Es la misma regla que aplicas a cualquier afirmación del material.
 
 **Cómo se accede al material, y por qué se dice.** Los archivos se abren y se leen por dentro. **Un escaneado sin texto extraíble se abre por rangos de páginas y se lee como imagen** —no se salta, no se resume por el nombre del archivo, no se estima nada—. Esto se declara en la entrega: si cada pasada elige por su cuenta cómo accedió al material, **dos pasadas del mismo caso dejan de ser comparables** y nadie puede saber si la diferencia está en los documentos o en la lectura.
 

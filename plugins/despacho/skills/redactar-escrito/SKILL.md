@@ -1,7 +1,7 @@
 ---
 name: redactar-escrito
 description: Método para producir un borrador en Word a partir del material ya revisado de un caso: redacta la parte fáctica y monta la estructura, deja marcado y visible cada hueco que el material no permite llenar, y entrega aparte de dónde sale cada frase. Úsalo cuando pidan redactar, armar o preparar un escrito, una solicitud, un memorial o una respuesta con el material del caso. No lo uses para redactar fundamentos de derecho, citar normas o jurisprudencia, calificar jurídicamente los hechos, decidir qué clase de escrito presentar, ni construir los hechos (eso es hechos-con-prueba).
-version: 0.1.1
+version: 0.1.2
 ---
 
 # redactar-escrito — armar un borrador con lo que el caso sostiene
@@ -51,6 +51,10 @@ Una frase del borrador puede afirmar algo solo si sale de una de estas tres, y d
 Es la restricción más importante del documento y la que más cuesta respetar, porque un escrito jurídico **pide** derecho en cada párrafo.
 
 > **Este comando redacta los hechos y monta la estructura. El derecho lo pone ella. No hay término medio.**
+
+**Y aquí la regla es más dura que en los demás comandos, a propósito.** Los que leen documentos ajenos sí transcriben el derecho que esos documentos invocan, entrecomillado y en voz del documento: están contando qué dice un papel. **Este no cuenta nada: produce el papel**, y lo firma ella. Una norma transcrita dentro de un borrador deja de leerse como cita del adversario y pasa a leerse como argumento propio en cuanto alguien la lee deprisa — y quien la lee deprisa es quien la va a presentar.
+
+Por eso, en el borrador, **ninguna norma entra por ninguna vía**: ni la que invoca el escrito contrario, ni la que ella misma te dictó. Si ella te dice *«esto lo cubre el artículo 24»*, **eso no se escribe en el borrador**: va al apartado marcado `[[LE TOCA A USTED]]` con su frase entre comillas y la fecha en que lo dijo, para que lo escriba ella con la redacción que decida.
 
 Dile esto en la entrega, con estas palabras o parecidas, para que sepa exactamente qué recibe:
 

@@ -1,7 +1,7 @@
 ---
 name: revisar-documento
 description: Método para revisar un documento que llegó al caso —un escrito de la contraparte, una comunicación de una autoridad, un contrato, un requerimiento, una respuesta— y devolver en una sola pasada qué es, qué afirma, qué pide, qué decide, qué referencias temporales contiene textualmente y qué parece exigir una actuación. Úsalo cuando pidan revisar, leer, entender o resumir un documento recibido. No lo uses para redactar la respuesta, calcular plazos, decir si algo está vencido, calificar el documento ni responder preguntas de derecho.
-version: 0.1.1
+version: 0.1.2
 ---
 
 # revisar-documento — qué es, qué dice, qué le piden y qué exige actuación
@@ -12,7 +12,13 @@ version: 0.1.1
 
 **No lo uses para:** redactar la respuesta; calcular un plazo, convertirlo o decir si está vencido; calificar jurídicamente el documento; decidir si lo que afirma es cierto; comparar **el contenido** del documento con el resto del expediente; ni revisar un documento que no se te haya entregado. Lo prohibido es cruzar el fondo del documento con otras piezas del caso; **el listado de `1-Documentos recibidos/` sí se mira**, y hay que mirarlo antes de decir que un anexo anunciado no llegó (Fase 1).
 
-**Este método no contiene derecho.** No hay aquí normas, plazos, clases de escritos ni requisitos de ninguna jurisdicción, y tu salida tampoco debe contenerlos. Si para decir qué es el documento crees necesitar una categoría jurídica, no la necesitas: **transcribe cómo se llama a sí mismo**.
+**Este método no contiene derecho.** No hay aquí normas, plazos, clases de escritos ni requisitos de ninguna jurisdicción, y **tú no afirmas ninguno**. Si para decir qué es el documento crees necesitar una categoría jurídica, no la necesitas: **transcribe cómo se llama a sí mismo**.
+
+**Pero el documento sí trae derecho, y ese se transcribe.** Un escrito de la contraparte invoca normas en cada apartado; entregar la revisión sin ellas es devolver el documento mutilado justo donde más pesa, y de un modo que ella no puede notar. Se recogen **igual que cualquier otra afirmación del documento: entre comillas, con su página, en voz del documento y nunca en la tuya** — *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece que…»*.
+
+> **La cláusula, y va escrita en la salida:** transcribir una norma que el documento invoca **no afirma que esa norma exista, que siga rigiendo, ni que diga lo que el documento le atribuye**. Eso lo comprueba ella.
+
+Es la misma regla que ya gobierna todo lo demás: cuando el escrito afirma un hecho, lo transcribes sin darlo por cierto. Con el derecho no cambia nada — solo cambiaría si empezaras a hablar tú.
 
 **Dónde entra y dónde sale.** El documento se lee desde `1-Documentos recibidos/`, que es **solo lectura**: es el material tal como llegó, y alterarlo destruye lo único que no se puede reconstruir. Si ella pide el resultado como archivo, se escribe en `2-Borradores/`. Nunca se escribe en `1-Documentos recibidos/` y nunca se toca `0-Estado del caso (no editar).txt`.
 
