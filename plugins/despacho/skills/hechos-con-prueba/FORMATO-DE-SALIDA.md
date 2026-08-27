@@ -62,7 +62,7 @@ Después de la parte 6, y **solo si lo hubo**, va el bloque de aviso por texto d
 **De la cita:**
 
 - **Literal y entre comillas**, cortada donde deja de decir lo que se afirma.
-- **Con coordenada exacta**: página para documentos, minuto y segundo para grabaciones, cláusula o apartado si el documento los numera. "En el contrato" no es una coordenada.
+- **Con coordenada exacta**: página para documentos, cláusula o apartado si el documento los numera, y **minuto y segundo tomados de la transcripción** cuando la pieza es una grabación. Cuando en este método se cita un minuto, es porque ese minuto **está escrito** en una transcripción que sí puedes leer; nunca porque hayas escuchado nada. "En el contrato" no es una coordenada.
 - **Nunca una cita reconstruida de memoria.** Si no se puede copiar el texto, no hay cita: hay una referencia sin cita, y así se escribe.
 
 **De la relación entre la prueba y el hecho** — tres preguntas, en este orden, y la primera que dé "sí" fija la relación:
@@ -82,11 +82,13 @@ No hay una cuarta relación, y estas tres palabras —**apoya**, **contradice**,
 
 De ahí salen dos caminos honestos, y uno prohibido:
 
-- **Camino A (por defecto).** El hecho se redacta sobre el mundo ("la máquina se entregó el 2 de abril") y, si lo único que hay es el relato de la persona interesada, el hecho va **solo alegado**, con nota que dice quién lo afirma y en qué minuto de la entrevista.
+- **Camino A (por defecto).** El hecho se redacta sobre el mundo ("la máquina se entregó el 2 de abril") y, si lo único que hay es el relato de la persona interesada, el hecho va **solo alegado**, con nota que dice quién lo afirma y en qué minuto de la transcripción de la entrevista.
 - **Camino B.** El hecho se redacta sobre la declaración ("en la entrevista del 3 de mayo, la señora Ríos afirmó que la máquina se entregó el 2 de abril"), y entonces la entrevista sí lo apoya: el enunciado es sobre lo dicho. Se usa cuando lo que importa es que **se dijo** —un aviso que se dio, una promesa que se hizo—.
 - **Prohibido:** redactarlo sobre el mundo y contarlo como apoyado porque la entrevista lo menciona. Eso es exactamente el error más grave del dominio.
 
 **La entrevista es la fuente de las afirmaciones, no la prueba de ellas.** Esto no degrada la entrevista: es de donde sale casi todo. Solo fija qué establece.
+
+**Y de la entrevista lo que hay es su transcripción, que es material del caso como cualquier otro:** llega por `1-Documentos recibidos/`, este formato **no la produce**, y **quién la produjo se escribe en la línea «Quién produjo ese material»** —una persona, o **un programa de transcripción y cuál**; un programa de transcripción es un productor de material igual que un tercero—. **Si la transcripción no distingue las voces, ninguna ficha reparte frases entre personas:** se escribe que la transcripción no lo distingue, y el enunciado se redacta sobre lo que el texto dice, no sobre quién lo dijo. Y como **una transcripción se equivoca**, un dato decisivo que solo salga de ahí va a QUÉ COMPROBAR PRIMERO **con la indicación de comprobarlo contra el audio**. (Un texto de la entrevista salido de una pasada anterior del propio sistema no es material: es trabajo del sistema, y solo cuenta con el ` - REVISADO` que ella pone.)
 
 **Regla de presentación que acompaña a la anterior:** la línea de estado **nunca dice "apoyado" a secas**. Siempre desglosa **quién produjo cada material**: no es lo mismo "1 a favor: documento firmado por ambas partes" que "1 a favor: lo dice la propia interesada". Un número sin ese desglose se lee como "probado", y no lo es.
 
@@ -139,7 +141,8 @@ Pasada del «fecha». Preparado para su revisión.
 1. DE DÓNDE SALE ESTO
 
 Material que se leyó:
-  · «documento o grabación» — «qué es» — «fecha» — «páginas o duración»
+  · «documento o transcripción» — «qué es» — «fecha» — «páginas o duración»
+    — si es transcripción: «quién la transcribió» y si distingue quién habla
   · …
 Material que se recibió y NO se pudo leer, o se leyó a medias:
   · «cuál y por qué» (si no hay ninguno, escribir: ninguno)
@@ -175,12 +178,12 @@ H-01 · «enunciado completo del hecho, una sola proposición»
   Sustituye a: «H-0X» (solo si esta ficha reemplaza a una anterior)
 
   Pruebas:
-   1) Apoya — «documento», «página/minuto exacto»
+   1) Apoya — «documento», «página, o minuto escrito en la transcripción»
       Cita: «texto literal entre comillas»
       Qué establece exactamente: «una línea; ni una palabra más de lo
       que la cita dice»
       Quién produjo ese material: «una parte / ambas partes / un tercero
-      / la propia interesada»
+      / la propia interesada / un programa de transcripción, y cuál»
    2) Contradice — …
    3) Sitúa — …
       (si no hay ninguna prueba, escribir: SOLO ALEGADO — «quién lo
@@ -248,7 +251,9 @@ Pasada del 25 de agosto de 2026. Preparado para su revisión.
 1. DE DÓNDE SALE ESTO
 
 Material que se leyó:
-  · Entrevista grabada con la señora Ríos — 3 de mayo de 2024 — 47 min
+  · Transcripción de la entrevista con la señora Ríos — 3 de mayo de 2024
+    — 47 min de grabación — la transcribió la asistente del despacho, y el
+    texto sí dice quién habla en cada frase. La grabación no se oyó.
   · Contrato de compraventa firmado — 2 de febrero de 2024 — 6 páginas
   · Comprobante de transferencia bancaria — 1 página
   · Correo de Distribuidora Andes — 10 de abril de 2024 — 1 página
@@ -259,7 +264,7 @@ Material que se recibió y NO se pudo leer, o se leyó a medias:
     El importe y el concepto sí se leen.
 Material que se menciona en la entrevista y no está entre lo recibido:
   · Un correo en el que Andes aceptaría cubrir la instalación
-    (lo menciona la señora Ríos, minuto 00:31:04)
+    (lo menciona la señora Ríos, transcripción, minuto 00:31:04)
 Cómo se hizo: método hechos-con-prueba, versión 0. Cuánto material quedó fuera
 por decisión propia: nada; los descartes están en el apartado 4.
 
@@ -289,7 +294,7 @@ señora Ríos hacia una cuenta a nombre de Distribuidora Andes.
 
   Estado: apoyado — 2 a favor: un comprobante del banco y un correo
   escrito por la otra parte. Ninguno es la propia interesada.
-  De dónde salió el enunciado: entrevista, 00:08:12.
+  De dónde salió el enunciado: transcripción de la entrevista, 00:08:12.
 
   Pruebas:
    1) Apoya — Comprobante de transferencia bancaria, página 1
@@ -315,7 +320,7 @@ H-02 · La máquina empacadora se entregó el 2 de abril de 2024.
   Estado: contradicho — 1 en contra: acta firmada por ambas partes.
   Nada a favor: la fecha del 2 de abril solo aparece en el relato de la
   interesada.
-  De dónde salió el enunciado: entrevista, 00:12:31 («llegó el 2 de
+  De dónde salió el enunciado: transcripción de la entrevista, 00:12:31 («llegó el 2 de
   abril, me acuerdo porque era martes»).
 
   Pruebas:
@@ -348,10 +353,10 @@ H-03 · Distribuidora Andes aceptó por escrito cubrir el costo de la
 instalación.
 
   Estado: sin apoyo.
-  De dónde salió el enunciado: entrevista, 00:31:04.
+  De dónde salió el enunciado: transcripción de la entrevista, 00:31:04.
 
   Pruebas:
-   SOLO ALEGADO — Lo afirma la señora Ríos en la entrevista (00:31:04):
+   SOLO ALEGADO — Lo afirma la señora Ríos en la transcripción (00:31:04):
    «ellos me lo pusieron en un correo, que la instalación iba por su
    cuenta». Ese correo no está entre el material recibido, y ningún
    documento entregado dice eso. La entrevista establece que ella lo
@@ -367,7 +372,7 @@ H-04 · La señora Ríos pagó $800.000 por concepto de instalación.
 
   Estado: apoyado — 1 a favor: recibo emitido por la otra parte. No
   cubre la fecha.
-  De dónde salió el enunciado: entrevista, 00:33:40.
+  De dónde salió el enunciado: transcripción de la entrevista, 00:33:40.
   Va con: H-05.
 
   Pruebas:
@@ -389,11 +394,11 @@ H-04 · La señora Ríos pagó $800.000 por concepto de instalación.
 H-05 · Ese pago de $800.000 se hizo el 3 de marzo de 2024.
 
   Estado: sin apoyo.
-  De dónde salió el enunciado: entrevista, 00:33:40.
+  De dónde salió el enunciado: transcripción de la entrevista, 00:33:40.
   Va con: H-04.
 
   Pruebas:
-   SOLO ALEGADO — La fecha la afirma la señora Ríos en la entrevista
+   SOLO ALEGADO — La fecha la afirma la señora Ríos en la transcripción
    (00:33:40). El único documento que habla de ese pago —el recibo de
    H-04— tiene la fecha ilegible.
 
@@ -406,12 +411,12 @@ H-05 · Ese pago de $800.000 se hizo el 3 de marzo de 2024.
 
 4. LO QUE NO SE CONVIRTIÓ EN HECHO
 
-| Lo que se dijo o se leyó                                      | Por qué no es un hecho                                                      |
-|---------------------------------------------------------------|------------------------------------------------------------------------------|
-| «Me sentí engañada desde el principio» (entrevista, 00:04:50)  | Relato de cómo vivió lo ocurrido. No es comprobable como suceso.              |
-| «Esa gente se portó fatal» (entrevista, 00:29:15)              | Valoración. Si detrás hay conductas concretas, cada una sería un hecho aparte.|
-| «Incumplieron el contrato» (entrevista, 00:30:02)              | Calificación, no hecho. Este método no califica.                              |
-| La máquina es de color azul (contrato, página 2)               | Aparece en el material, pero no se ve a qué asunto del caso sirve.            |
+| Lo que se dijo o se leyó                                         | Por qué no es un hecho                                                         |
+|------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| «Me sentí engañada desde el principio» (transcripción, 00:04:50) | Relato de cómo vivió lo ocurrido. No es comprobable como suceso.               |
+| «Esa gente se portó fatal» (transcripción, 00:29:15)             | Valoración. Si detrás hay conductas concretas, cada una sería un hecho aparte. |
+| «Incumplieron el contrato» (transcripción, 00:30:02)             | Calificación, no hecho. Este método no califica.                               |
+| La máquina es de color azul (contrato, página 2)                 | Aparece en el material, pero no se ve a qué asunto del caso sirve.             |
 
 Si alguno de estos le importa, dígalo: puede reformularse como hecho.
 
@@ -437,8 +442,9 @@ Si alguno de estos le importa, dígalo: puede reformularse como hecho.
   2. Recibo de Andes, página 1 — «Recibimos de Amparo Ríos la suma de
      $800.000 por concepto de instalación». Sostiene solo a H-04, y es
      el mismo papel cuya fecha no se lee.
-  3. Entrevista, 00:31:04 — sale de la propia interesada y es todo lo
-     que hay detrás de H-03.
+  3. Transcripción de la entrevista, 00:31:04 — sale de la propia
+     interesada y es todo lo que hay detrás de H-03. Conviene además
+     oírlo en la grabación: la transcripción la hizo otra persona.
 
   Están en esta lista los anclajes que sostienen solos un hecho, los que
   salen de material producido por la propia interesada, y los que van a
@@ -453,4 +459,5 @@ Si alguno de estos le importa, dígalo: puede reformularse como hecho.
 - **Correo del 10 de abril** — la misma prueba sirve a **dos** hechos (apoya H-01 y sitúa H-02): la relación es de muchos a muchos y no se fuerza a uno a uno.
 - **H-03** — un hecho **sin apoyo**, y el hueco convertido en información útil (qué documento haría falta).
 - **H-04 + H-05** — la prueba que cubre menos que el enunciado, **desdoblada** en lo que el recibo cubre y lo que no, en vez de redondearla. Por eso ninguna ficha dice "parcialmente apoyado": ese estado no existe.
+- **La entrevista** — ningún minuto sale de haber oído nada: salen del texto transcrito, que es material del caso y llega con **quién lo produjo** escrito en la parte 1. Solo porque ese texto dice quién habla en cada frase se puede escribir "lo afirma la señora Ríos"; si no lo dijera, no se repartiría ninguna frase entre personas y así se diría.
 - **La parte 6** — tres comprobaciones elegidas con criterio, y dicho con todas las letras que el resto sigue habiendo que mirarlo. Sin esa parte, el documento entrega una lista de comprobaciones sin decir por dónde se empieza.

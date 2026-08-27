@@ -1,7 +1,7 @@
 ---
 name: cronologia
 description: Método para armar la línea de tiempo de un caso a partir del material recibido —contratos, correos, comprobantes, actas, entrevistas—, con la fuente exacta de cada fecha, su grado de certeza (documentada, referida, aproximada, deducida o en conflicto), los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. Úsalo cuando pidan una cronología, ordenar los hechos en el tiempo, reconstruir qué pasó cuándo, o revisar si las fechas del caso se contradicen. No lo uses para redactar escritos, contar plazos, valorar prueba, decidir qué fecha es la buena, ni establecer que una cosa causó otra.
-version: 0.1.3
+version: 0.1.4
 ---
 
 # cronologia — la línea de tiempo, con la calidad de cada fecha
@@ -44,8 +44,8 @@ Nada de lo que produces queda establecido por el hecho de que lo hayas puesto en
 | Grado | Qué significa exactamente | Cómo se escribe |
 |---|---|---|
 | **Documentada** | Un documento del material consigna esa fecha | `documentada — acta de entrega, p. 1` |
-| **Referida** | Alguien afirma que fue ese día; no consta en documento | `referida por la señora Ríos — entrevista, 00:12:31` |
-| **Aproximada** | La propia fuente no precisa el día | `aproximada — «a mediados de marzo», entrevista, 00:09:40` |
+| **Referida** | Alguien afirma que fue ese día; no consta en documento | `referida por la señora Ríos — transcripción de la entrevista, 00:12:31` |
+| **Aproximada** | La propia fuente no precisa el día | `aproximada — «a mediados de marzo», transcripción de la entrevista, 00:09:40` |
 | **Deducida** | Nadie la afirma; se sigue de otras fechas del material | `deducida — ver operación en la ficha del evento` |
 | **En conflicto** | Dos fuentes dan fechas distintas del mismo evento | `en conflicto — 2 de abril / 9 de abril, ver C-1` |
 
@@ -110,6 +110,8 @@ Lee **todo el material completo** sin apuntar todavía ningún evento. Además d
 - **Sin adjetivos.** "Se envió el correo de reclamo", no "se envió el enérgico reclamo".
 
 **Un escaneado se lee; una grabación no se oye.** **Un documento que llegó escaneado como imagen no queda fuera:** se abre por rangos de páginas, se lee como imagen, y de él salen eventos y coordenadas —la página— igual que de cualquier otro documento. Lo que sí queda fuera es **una grabación de audio, que no puedes oír**, y el tramo que, ya abierto como imagen, sigue sin dejarse leer —borroso, cortado, torcido hasta lo indescifrable—: y entonces queda fuera **ese tramo**, no la pieza entera. De lo que no puedes leer ni oír **no sale ningún evento y no sale ninguna coordenada**: va a la lista de lo que no se pudo leer u oír (Fase 1), con qué pieza es y por qué quedó fuera. Lo que **jamás** se hace es **estimar la coordenada**: una página o un minuto puestos a ojo se escriben igual que los reales, se leen igual de bien y remiten a un punto que nadie comprobó — es la única forma de cita fantasma que ni siquiera se puede descubrir volviendo a la pieza, porque esa pieza no se deja leer ni oír. Tampoco se deduce el contenido por el nombre del archivo ni por lo que otra pieza diga de él. Y cuando en este método se cita un minuto, es porque ese minuto **está escrito** en una transcripción que sí puedes leer; nunca porque hayas escuchado nada. Si esa pieza parece importante, dilo así: qué es, que no pudiste leerla u oírla, y que sin ella la cronología queda incompleta en ese punto. Qué hacer con ella —transcribirla, conseguir otra copia, leerla ella misma— **lo decide ella**.
+
+**Y la transcripción, cuando la hay, es material del caso como cualquier otro.** Entra por `1-Documentos recibidos/` igual que un contrato, y **este método no la fabrica**: si no hay transcripción, se dice y el audio no se usa. En el «Se leyó» de la parte 1 se declara **quién la produjo** —una persona, o **un programa de transcripción y cuál**—, porque un programa de transcripción es **un productor de material igual que un tercero**. **Si la transcripción no distingue las voces, no se atribuye ninguna frase a nadie**: se escribe que la transcripción no lo distingue, y deducir quién habla por el contenido es inferencia, no lectura. Y **una transcripción se equivoca**: una fecha decisiva que solo salga de ahí se marca **para comprobarla contra el audio**, igual que una cita se comprueba contra su página. **Distingue los dos casos:** la transcripción que ella entrega es material; un texto de la entrevista salido de una pasada anterior del propio sistema **no lo es** —es trabajo del sistema (§2): pista, nunca origen, salvo el ` - REVISADO` que ella pone—.
 
 **Trampas de lectura de fechas.** Se cometen solas, y todas producen fechas falsas de aspecto impecable:
 
@@ -219,7 +221,7 @@ Quedó fuera por decisión propia: «nada / esto y por qué»
 | Ev   | Fecha          | Qué pasó        | De dónde sale         | Grado       |
 |------|----------------|-----------------|-----------------------|-------------|
 | E-01 | «14/03/2024»   | «una sola cosa» | «documento, p. X» + «cita corta» | documentada |
-| E-02 | «"a mediados de marzo"» | «…»    | «entrevista, 00:09:40» | aproximada · posición aproximada |
+| E-02 | «"a mediados de marzo"» | «…»    | «transcripción de la entrevista, 00:09:40» | aproximada · posición aproximada |
 | E-03 | «02/04 / 09/04» | «…»            | «ver C-1»             | en conflicto |
 
 3. EVENTOS SIN FECHA
@@ -274,7 +276,7 @@ Respóndelas **sobre tu propia salida**. Si alguna respuesta es la mala, corrige
 1. **Lectura.** ¿Leí todo el material antes de escribir la primera fila, y puedo decir qué quedó sin leer y por qué?
 2. ¿Barrí todas las fechas, incluidas las que no encajan en ninguna narración?
 3. **Cada fecha.** ¿Cada fecha tiene documento y coordenada exacta, y no un "según el expediente"? ¿Cité como origen de algún dato una salida del propio sistema, en vez del documento original?
-4. ¿Estimé alguna coordenada —una página, un minuto— en vez de leerla? ¿Saqué algún evento de un documento que no pude leer o de una grabación que no pude oír, en vez de decir que no pude? ¿Di por ilegible algún documento sin haberlo abierto antes como imagen?
+4. ¿Estimé alguna coordenada —una página, un minuto— en vez de leerla? **¿Cité algún minuto que no estuviera escrito en una transcripción? ¿Atribuí alguna frase a una persona sin que la transcripción distinguiera las voces?** ¿Saqué algún evento de un documento que no pude leer o de una grabación que no pude oír, en vez de decir que no pude? ¿Di por ilegible algún documento sin haberlo abierto antes como imagen?
 5. ¿Cada fecha tiene uno de los cinco grados, escrito con esas palabras?
 6. ¿Hay alguna fecha **más precisa que su fuente**? ¿Convertí un "a mediados de" en un día, o un intervalo en un punto?
 7. ¿Alguna fecha deducida viaja sin su operación y sin su supuesto?

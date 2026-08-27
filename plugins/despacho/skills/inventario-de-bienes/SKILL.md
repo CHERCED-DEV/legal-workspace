@@ -1,7 +1,7 @@
 ---
 name: inventario-de-bienes
 description: Método para recorrer el material de un caso e inventariar los bienes y las deudas que aparecen en él —qué documento lo respalda y en qué página, a nombre de quién figura según ese documento, qué fecha trae, qué valor aparece escrito y quién produjo ese documento—, más lo que falta y las contradicciones entre documentos. Úsalo cuando pidan armar el inventario de bienes de una separación, un divorcio, una sucesión o cualquier asunto donde haya que saber qué bienes aparecen y con qué papel detrás. No lo uses para decidir qué bienes entran y cuáles no, calcular valores, sumar, restar deudas, sacar porcentajes, proponer un reparto ni decir a quién le corresponde qué.
-version: 0.2.2
+version: 0.2.3
 ---
 
 # inventario-de-bienes — qué bienes aparecen, con qué papel y qué falta
@@ -101,6 +101,8 @@ Este es **el único recorrido completo del material hasta la comprobación final
 **Las citas se capturan al leer, con su página. No se reconstruyen de memoria más tarde.** Una cita escrita de memoria es una cita inventada aunque suene bien.
 
 **Lo que no se pudo abrir o leer se declara.** Archivo dañado, formato que no puedes abrir, audio, página en blanco. Nunca en silencio, y **lo que no se leyó no se resume**.
+
+**Una grabación no se oye; su transcripción sí es material, y se recorre como cualquier documento.** Llega por `1-Documentos recibidos/` y **este método no la produce**: sin transcripción, la grabación se declara y no se usa. En **«quién lo produjo»**, la columna que la tabla ya tiene, va quién la hizo —una persona, o **un programa de transcripción y cuál**, porque un programa de transcripción es un productor de material igual que un tercero—. Cuando en este método se cita un minuto, es porque ese minuto **está escrito** en una transcripción que sí puedes leer; nunca porque hayas escuchado nada. **Si la transcripción no distingue las voces, no se atribuye ninguna frase a nadie**: se escribe que no lo distingue —y a nombre de quién figura un bien no sale nunca del relato, sino del documento (punto 3)—. Y como **una transcripción se equivoca**, un valor o un identificador que solo salga de ahí se marca **para comprobarlo contra el audio**, igual que una cita se comprueba contra su página. La que ella entrega es material; un texto salido de una pasada anterior del propio sistema no lo es —es trabajo del sistema (§2)—.
 
 > **Mal:** "B-04 — El apartamento, a nombre de ella, $250 millones." → **Bien:** "B-04 — «Apartamento 301, edificio X» (p. 2) — matrícula «050-123456» (p. 2) — figura como «propietario: A. P.» (p. 2) — «avalúo catastral: $198.430.000», con fecha 2024 (p. 3) — certificado con membrete de la oficina Y (p. 1)."
 
@@ -270,7 +272,7 @@ Responde sobre tu propia salida. Si alguna respuesta es "no" donde debería ser 
 1. **¿Hay en mi salida algún importe, plazo, porcentaje o fecha que yo haya calculado, en vez de transcribirlo de un documento?** No debe haber ninguno: ni un total, ni una resta, ni un porcentaje, ni un valor actualizado. El único número propio permitido es el conteo de la parte 6.
 2. ¿Cada valor lleva la palabra que el documento usa, la fecha que ese valor trae y su página?
 3. ¿Hice **un solo** recorrido de captura y anoté en él los nueve puntos de la Fase 1, en vez de ir volviendo al documento?
-4. ¿Abrí por rangos de páginas y leí como imagen los escaneados sin texto, y declaré en la parte 1 cómo leí cada cosa?
+4. ¿Abrí por rangos de páginas y leí como imagen los escaneados sin texto, y declaré en la parte 1 cómo leí cada cosa? **¿Cité algún minuto que no estuviera escrito en una transcripción? ¿Atribuí alguna frase a una persona sin que la transcripción distinguiera las voces?**
 5. ¿**Todas** las filas dicen quién produjo el documento, incluidas las que produjo la propia interesada?
 6. ¿Puse en la misma fila una lista de una parte y un certificado, en vez de dejarlos en filas distintas bajo la misma etiqueta?
 7. ¿El nombre de quien figura salió del apellido, del relato o del nombre del archivo, en vez de lo que el documento muestra? ¿Va con la palabra que el documento usa —propietario, arrendatario, afiliado— y no con una mía?

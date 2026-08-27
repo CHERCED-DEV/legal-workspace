@@ -50,7 +50,7 @@ Si su carpeta hoy no se parece a esto, no pasa nada: trabaja con lo que hay y le
 
 Esto no es un detalle de la pantalla. Es secreto profesional, y por eso va antes de los ejemplos y no en una nota al final.
 
-**Lo que usted abre en esta ventana no se queda en su computador.** El trabajo no ocurre en su máquina: el material se envía a los servidores de la empresa que hace el programa, y allí se procesa. Vale para todo lo que él llegue a leer — el archivo que usted le señale, los documentos de la carpeta del caso, la grabación de la entrevista, y también lo que usted misma le escriba en la conversación.
+**Lo que usted abre en esta ventana no se queda en su computador.** El trabajo no ocurre en su máquina: el material se envía a los servidores de la empresa que hace el programa, y allí se procesa. Vale para todo lo que él llegue a leer — el archivo que usted le señale, los documentos de la carpeta del caso, el texto escrito de la entrevista, y también lo que usted misma le escriba en la conversación.
 
 **Guardar un archivo en su disco no es lo mismo que trabajarlo en su disco.** Que el documento viva en su computador, en su carpeta, sin que usted lo haya subido a ningún sitio, no cambia nada: en el momento en que lo abre aquí, sale de ahí. Es la confusión más fácil de cometer, porque en la pantalla se ve exactamente igual que si el trabajo estuviera ocurriendo en su máquina.
 
@@ -131,6 +131,10 @@ CONTEO: 3 afirmaciones · 2 peticiones · 0 decisiones ·
 
 > Ya tengo la entrevista con la señora Ríos y los papeles en la carpeta. Sácame los hechos con su prueba.
 
+**Antes de seguir, una cosa que conviene saber: él no oye grabaciones.** El archivo de audio de la entrevista no lo puede escuchar. Lo que lee es **el texto escrito de esa entrevista** —lo haya escrito usted, su asistente, o uno de esos programas que pasan el audio a texto—, y ese texto lo deja usted en `1-Documentos recibidos` como un documento más del caso. Si no hay texto, la entrevista no entra en el trabajo, y él se lo dice en vez de inventarse lo que se dijo. Cuando le cite un minuto —*"00:08:12"*—, es porque ese minuto está escrito ahí; no porque haya oído nada.
+
+**Dos consecuencias que va a ver en lo que recibe.** La primera: **queda escrito quién hizo ese texto**, igual que queda escrito quién produjo cada documento —y si lo hizo un programa, dice cuál, porque un programa que pasa audio a texto es una fuente más y se equivoca como cualquiera—. La segunda: si el texto viene todo seguido, **sin decir quién habla en cada frase**, él no reparte las frases entre usted y su clienta: escribe que el texto no lo distingue, y ahí se detiene. Y si un dato importante sale solo de ese texto, se lo señala entre las primeras cosas que hay que comprobar, para que usted lo oiga en la grabación.
+
 **Usted recibe** primero una hoja para decidir de un vistazo, y después una ficha por cada hecho:
 
 ```text
@@ -168,7 +172,7 @@ señora Ríos hacia una cuenta a nombre de Distribuidora Andes.
 
   Estado: apoyado — 2 a favor: un comprobante del banco y un correo
   escrito por la otra parte. Ninguno es la propia interesada.
-  De dónde salió el enunciado: entrevista, 00:08:12.
+  De dónde salió el enunciado: texto de la entrevista, 00:08:12.
 
   Pruebas:
    1) Apoya — Comprobante de transferencia bancaria, página 1
@@ -186,7 +190,8 @@ señora Ríos hacia una cuenta a nombre de Distribuidora Andes.
 
 5. LO QUE SE BUSCÓ Y NO SE ENCONTRÓ
   · Un correo en el que Andes aceptaría cubrir la instalación — lo
-    menciona la señora Ríos (00:31:04) — no está entre lo recibido.
+    menciona la señora Ríos (texto de la entrevista, 00:31:04) — no está
+    entre lo recibido.
   Que no aparezca aquí NO significa que no exista: significa que no está
   en el material que se revisó, o que no se supo encontrarlo.
 ```
@@ -297,7 +302,7 @@ Una ausencia en la carpeta puede querer decir cuatro cosas a la vez: que no ocur
 
 **La regla de oro: si algo no aparece con su fuente, no lo dé por bueno.**
 
-Todo dato que él afirme tiene que venir con **de dónde sale**: el documento y la página, la cláusula, o el minuto exacto de la grabación. *"Según el expediente"* no es una fuente. *"Acta de entrega, p. 1"* sí. Una frase sin fuente no es un dato: es una frase.
+Todo dato que él afirme tiene que venir con **de dónde sale**: el documento y la página, la cláusula, o el minuto exacto tal como está escrito en el texto de la entrevista. *"Según el expediente"* no es una fuente. *"Acta de entrega, p. 1"* sí. Una frase sin fuente no es un dato: es una frase.
 
 Y una advertencia concreta, porque es el error más peligroso que él puede cometer: **la cita puede tener una página real y un contenido inexistente**. Está bien redactada, la referencia parece correcta, y atraviesa cualquier revisión rápida. Por eso la comprobación no es abrir el documento entero: es abrir esa página y leer esa línea. Le cuesta segundos, precisamente porque él le dio la coordenada. Hágalo siempre con lo que va a firmar, y al azar con el resto.
 

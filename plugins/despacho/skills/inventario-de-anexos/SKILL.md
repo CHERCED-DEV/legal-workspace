@@ -1,7 +1,7 @@
 ---
 name: inventario-de-anexos
 description: Método para recorrer los documentos de un caso y producir un inventario de anexos numerado —qué es cada documento, quién lo produjo, de qué fecha es y a qué afirmación sirve—, más un bloque separado con lo que falta. Úsalo cuando pidan armar la lista de anexos, ordenar los documentos que se acompañan a un escrito, o establecer qué documentos faltan, se mencionan y no están, o están pero no se pueden usar. No lo uses para valorar prueba, decidir qué se aporta, redactar el escrito ni responder preguntas de derecho.
-version: 0.2.3
+version: 0.2.4
 ---
 
 # inventario-de-anexos — qué se acompaña, a qué sirve y qué falta
@@ -97,6 +97,7 @@ Este es **el único recorrido completo del material hasta la comprobación final
 - **Duplicados.** El mismo documento con dos nombres se reconoce comparando la fecha, el emisor y el contenido **ya capturados**, no el nombre. Se anexa una vez y se anota dónde más está.
 - **Si el nombre del archivo y el documento no coinciden**, manda el documento, y se anota el desacuerdo: es una señal de que alguien lo archivó de memoria.
 - **Lo que no se pudo abrir o leer se declara.** Archivo dañado, formato que no puedes abrir, audio, página de verdad en blanco, página que sigue sin dejarse leer después de abrirla como imagen. Nunca en silencio, y **lo que no se leyó no se resume**: no se describe por el nombre del archivo ni por lo que parece ser.
+- **Una grabación no se oye; su transcripción sí es material, y se anexa como cualquier documento.** Llega por `1-Documentos recibidos/` y **este método no la produce**: si no hay transcripción, se declara la grabación y ahí termina. Se anota como pieza, y en **«quién lo produjo»** (punto 2) va quién la hizo —una persona, o **un programa de transcripción y cuál**, porque un programa de transcripción es un productor de material igual que un tercero—. Cuando en este método se cita un minuto, es porque ese minuto **está escrito** en una transcripción que sí puedes leer; nunca porque hayas escuchado nada. **Si la transcripción no distingue las voces, no se atribuye ninguna frase a nadie**: se escribe que no lo distingue. Y como **una transcripción se equivoca**, un dato decisivo que solo salga de ahí se marca **para comprobarlo contra el audio**, igual que una cita se comprueba contra su página. La transcripción que ella entrega es material; un texto salido de una pasada anterior del propio sistema no lo es —es trabajo del sistema (§2)—.
 
 > **Mal:** "Anexo 3 — Prueba del pago." → **Bien:** "Anexo 3 — Comprobante de transferencia — producido por el banco X (membrete, p. 1) — 14/03/2024 (impresa, p. 1) — 1 página — `transferencias.pdf`, página 2."
 
@@ -309,7 +310,7 @@ Responde sobre tu propia salida. Si alguna respuesta es "no" donde debería ser 
 **Sobre la captura y cada fila**
 1. ¿Hice **un solo** recorrido de captura y anoté en él los ocho puntos de la Fase 1, en vez de ir volviendo al documento a buscar lo que me faltaba?
 2. ¿Cada dato tiene su **cita literal y su página**, tomadas al leer y no reconstruidas de memoria después?
-3. ¿Declaré lo que no pude abrir o leer —sin resumirlo—, separé los archivos con varios documentos y uní los documentos partidos? ¿Di por ilegible algún documento sin haberlo abierto antes como imagen?
+3. ¿Declaré lo que no pude abrir o leer —sin resumirlo—, separé los archivos con varios documentos y uní los documentos partidos? ¿Di por ilegible algún documento sin haberlo abierto antes como imagen? **¿Cité algún minuto que no estuviera escrito en una transcripción? ¿Atribuí alguna frase a una persona sin que la transcripción distinguiera las voces?**
 4. ¿**Todas** las filas dicen quién produjo el documento, incluidas las que produjo la propia interesada?
 5. ¿Ese dato salió de lo que el documento muestra, y no del nombre del archivo ni de lo que alguien contó?
 6. ¿Reuní todas las citas, fechas, emisores y coordenadas en una sola lista, ordenada por archivo y página, y las comprobé contra el material en **un solo recorrido**? ¿Quedó algún dato sin comprobar y sin declararlo?

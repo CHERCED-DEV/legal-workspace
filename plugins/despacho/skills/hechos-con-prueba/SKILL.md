@@ -1,7 +1,7 @@
 ---
 name: hechos-con-prueba
 description: Método para convertir el material de un caso (entrevistas, declaraciones, documentos, comprobantes) en hechos candidatos emparejados con la prueba que los apoya, los contradice o los sitúa. Úsalo cuando pidan construir, extraer u ordenar los hechos de un asunto, armar el relato fáctico, o establecer qué está apoyado y qué no. No lo uses para redactar escritos, valorar prueba, decidir estrategia ni responder preguntas de derecho.
-version: 0.1.3
+version: 0.1.5
 ---
 
 # hechos-con-prueba — construir hechos con su prueba
@@ -68,7 +68,9 @@ De ahí salen dos reglas de redacción:
 
 **Cómo se accede al material, y por qué se dice.** Las piezas se abren y se leen por dentro. **Un escaneado sin texto extraíble se abre por rangos de páginas y se lee como imagen** —no se salta, no se resume por el nombre del archivo, no se estima ningún anclaje—: **una página escaneada no es una página ilegible por serlo**; lo es la que, ya abierta como imagen, sigue sin dejarse leer. El inventario dice de cada pieza cómo se leyó: si cada pasada elige por su cuenta cómo accedió al material, **dos pasadas del mismo caso dejan de ser comparables**.
 
-**Producto de la fase:** el inventario, y **la declaración de lo que no pudiste leer**: audio inaudible entre tales minutos, página que sigue sin dejarse leer después de abrirla como imagen, documento que se menciona y no está, tramo que no alcanzaste a revisar. Si el material excede lo que puedes leer, **dilo y di hasta dónde llegaste**; no propongas sobre una lectura parcial fingiendo que fue completa.
+**Un escaneado se lee; una grabación no se oye.** Cuando en este método se cita un minuto, es porque ese minuto **está escrito** en una transcripción que sí puedes leer; nunca porque hayas escuchado nada. **La transcripción es material del caso como cualquier otro**: entra por `1-Documentos recibidos/` y **este método no la produce** —si no hay transcripción, se dice y el audio no se usa—. En la línea **«Quién produjo ese material»**, que ya existe en cada prueba, se declara quién la hizo: una persona, o **un programa de transcripción y cuál**, porque un programa de transcripción es **un productor de material igual que un tercero**. **Si la transcripción no distingue las voces, no se atribuye ninguna frase a nadie**: se escribe que la transcripción no lo distingue, y deducir quién habla por el contenido es inferencia —además de desarmar lo único que impide que un hecho *sin apoyo* se lea como apoyado—. Y **una transcripción se equivoca**: un dato decisivo que solo salga de ahí entra en QUÉ COMPROBAR PRIMERO, **para comprobarlo contra el audio**, igual que una cita se comprueba contra su página. **Distingue los dos casos:** la transcripción que ella entrega es material; un texto de la entrevista salido de una pasada anterior del propio sistema **no lo es** —es trabajo del sistema (§2): pista, nunca origen, salvo el ` - REVISADO` que ella pone—.
+
+**Producto de la fase:** el inventario, y **la declaración de lo que no pudiste leer**: la grabación que llegó sin transcripción, el tramo que la transcripción marca como inaudible, página que sigue sin dejarse leer después de abrirla como imagen, documento que se menciona y no está, tramo que no alcanzaste a revisar. Si el material excede lo que puedes leer, **dilo y di hasta dónde llegaste**; no propongas sobre una lectura parcial fingiendo que fue completa.
 
 ---
 
@@ -78,7 +80,7 @@ De ahí salen dos reglas de redacción:
 
 **Reglas de la fase:**
 - **Fidelidad literal.** Se registra en los términos de la fuente, sin mejorar la redacción. Si la fuente es imprecisa ("me pagaron como a mediados de mes"), se conserva la imprecisión.
-- **Anclaje al original.** Los minutos se cuentan sobre la grabación completa, no sobre un recorte ni sobre tu resumen; las páginas y cláusulas, sobre el documento tal como se recibió.
+- **Anclaje al original.** Los minutos se leen en la transcripción de la grabación completa, no en un recorte ni en tu resumen; las páginas y cláusulas, sobre el documento tal como se recibió.
 - **Sin anclaje no pasa.** "Creo que en algún momento dijo que…" no es una afirmación utilizable. Vuelve y localízala, o descártala.
 - **No filtres por relevancia todavía.** Lo que parezca menor puede sostener un hecho más adelante. Lo que no es afirmación fáctica (una emoción, una opinión) se aparta a una lista separada; no se borra y no viaja a la Fase 3.
 - **Quién lo dice importa y no se pierde.** Que un documento lo consigne tampoco lo hace cierto: un contrato dice lo que las partes escribieron.
@@ -87,7 +89,7 @@ De ahí salen dos reglas de redacción:
 >
 > | Afirmación, en términos de la fuente | Quién lo dice | Dónde |
 > |---|---|---|
-> | "Firmamos en la oficina de ellos" | la clienta | entrevista, 00:07:12 |
+> | "Firmamos en la oficina de ellos" | la clienta | transcripción de la entrevista, 00:07:12 |
 > | "El plazo de entrega es de treinta días" | el contrato | cláusula cuarta, p. 3 |
 > | "Yo estaba ahí cuando le entregaron el sobre" | el testigo | declaración, p. 2 |
 > | "Abono a cuenta — $X" | comprobante 2 | anverso, línea 3 |
@@ -135,7 +137,7 @@ Para cada hecho candidato, recorre el material y busca fragmentos que lo **apoye
 
 Tres tratamientos, en orden de preferencia:
 
-1. **Descomponer el hecho** (preferido). Dos hechos: *"Se realizó un pago de $X a nombre de Y"* (apoyado por el comprobante) y *"El pago se realizó el 5 de marzo"* (afirmado por la clienta en la entrevista, 00:12:31; el comprobante no muestra fecha). Cada proposición viaja con lo que realmente la sostiene, y las dos fichas quedan emparejadas por la línea "Va con:", para que ella pueda aceptar una y rechazar la otra.
+1. **Descomponer el hecho** (preferido). Dos hechos: *"Se realizó un pago de $X a nombre de Y"* (apoyado por el comprobante) y *"El pago se realizó el 5 de marzo"* (afirmado por la clienta en la transcripción de la entrevista, 00:12:31; el comprobante no muestra fecha). Cada proposición viaja con lo que realmente la sostiene, y las dos fichas quedan emparejadas por la línea "Va con:", para que ella pueda aceptar una y rechazar la otra.
 2. **Si descomponer rompe el sentido**, conserva el hecho y escribe el **alcance de la cita**: qué parte cubre el fragmento y qué parte no. Esa línea se llama siempre igual, en la ficha y aquí.
 3. **Prohibido:** escribir "el comprobante acredita el pago del 5 de marzo" (redondear hacia arriba) o degradar el emparejamiento a "sitúa" para no comprometerte (redondear hacia abajo). Ambas cosas destruyen el matiz que la profesional necesita.
 
@@ -166,7 +168,7 @@ Un hecho sin apoyo **se entrega**, marcado. No lo escondas, no lo elimines y no 
 **Qué es un vacío.** Un vacío **no es una afirmación sobre el mundo: es una afirmación sobre el material**. Es la pregunta que el caso necesita responder y el material no responde.
 
 Tres formas típicas:
-- **La pieza mencionada que no está.** "Le mandé un correo" (entrevista, 00:22:40) y en el material no hay ningún correo.
+- **La pieza mencionada que no está.** "Le mandé un correo" (transcripción de la entrevista, 00:22:40) y en el material no hay ningún correo.
 - **El eslabón que nadie afirma.** Nadie dice quién recibió la mercancía.
 - **El dato que la fuente no precisa.** "A mediados de mes" y ninguna pieza fija el día.
 
@@ -191,7 +193,7 @@ Antes de entregar, haz cuatro cosas:
 3. **Cuenta y entrega el conteo:** cuántos hechos propuestos, cuántos apoyados, cuántos sin apoyo, cuántos contradichos, cuántos vacíos, cuántos descartes. El conteo es un instrumento de honestidad: obliga a mirar la proporción real de lo que produjiste.
 4. **Elige qué debe comprobar ella primero.** Una pasada normal deja decenas de comprobaciones posibles y ninguna indicación de por dónde empezar; en la práctica, una lista sin orden se parece mucho a ninguna comprobación. Escoge **entre tres y cinco anclajes, no más**, y escribe al lado de cada uno por qué está en la lista. El criterio, en este orden:
    - los que **sostienen solos** un hecho: si ese anclaje no dice lo que dices que dice, el hecho se queda sin nada detrás;
-   - los que salen de **material producido por la propia interesada**, porque son los que con más facilidad se leen como prueba sin serlo;
+   - los que salen de **material producido por la propia interesada**, porque son los que con más facilidad se leen como prueba sin serlo, y los que salen **solo de una transcripción**, que se comprueban contra el audio;
    - los que **van a entrar en un escrito**, es decir, los de los hechos que sostienen lo que se va a pedir o a discutir.
 
    Si un anclaje cumple dos criterios, va primero. Y dilo con todas las letras: **el orden es una propuesta y comprobar el resto sigue haciendo falta.** Esta lista no es un permiso para no mirar lo demás.
@@ -309,7 +311,7 @@ Esto vale igual dentro de una pasada y entre pasadas: en una segunda pasada sobr
 | La fuente es imprecisa | Se conserva la imprecisión de la fuente, textual | Precisarla |
 | Lo dedujiste tú | "Inferencia, no afirmada por ninguna fuente: …" (fuera de la lista de hechos) | Presentarlo como afirmación de alguien |
 | Buscaste y no encontraste | "No se encontró en el material revisado ([qué revisaste])" | "No existe", "no hay", "nunca ocurrió" |
-| No lo leíste o no era legible | "No revisado: [qué]" / "Inaudible entre [x] y [y]" | Omitirlo en silencio |
+| No lo leíste o no era legible | "No revisado: [qué]" / "La transcripción marca inaudible entre [x] e [y]" / "La grabación llegó sin transcripción" | Omitirlo en silencio |
 
 **Tres prohibiciones:**
 
@@ -341,13 +343,13 @@ Este bloque solo aparece si hay algo que reportar. Ante la duda de si un texto r
 Responde estas preguntas **sobre tu propia salida**. Si alguna respuesta es "no" (o "sí" donde no corresponde), corrige antes de entregar; si no puedes corregir, dilo en la entrega.
 
 **Sobre la lectura**
-1. ¿Leí todo el material antes de escribir el primer hecho, y puedo decir qué quedó sin leer y por qué? ¿Di por ilegible alguna pieza sin haberla abierto antes como imagen?
+1. ¿Leí todo el material antes de escribir el primer hecho, y puedo decir qué quedó sin leer y por qué? ¿Di por ilegible alguna pieza sin haberla abierto antes como imagen? **¿Cité algún minuto que no estuviera escrito en una transcripción?**
 
 **Sobre cada hecho**
 2. ¿Cada hecho contiene una sola proposición?
 3. ¿Está escrito en los términos de la fuente, sin adjetivos valorativos?
 4. ¿Hay algún hecho cuya precisión —fecha, monto, nombre, cantidad— sea **mayor** que la de su fuente?
-5. ¿De cada hecho puedo señalar de qué afirmaciones salió, quién las hizo y dónde?
+5. ¿De cada hecho puedo señalar de qué afirmaciones salió, quién las hizo y dónde? **¿Atribuí alguna frase a una persona sin que la transcripción distinguiera las voces?**
 6. ¿Fusioné dos hechos que difieren en quién, qué, cuándo, cuánto o dónde? ¿Fundí dos nombres parecidos?
 
 **Sobre los emparejamientos**

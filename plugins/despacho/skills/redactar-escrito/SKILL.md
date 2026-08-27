@@ -1,7 +1,7 @@
 ---
 name: redactar-escrito
 description: Método para producir un borrador en Word a partir del material ya revisado de un caso: redacta la parte fáctica y monta la estructura, deja marcado y visible cada hueco que el material no permite llenar, y entrega aparte de dónde sale cada frase. Úsalo cuando pidan redactar, armar o preparar un escrito, una solicitud, un memorial o una respuesta con el material del caso. No lo uses para redactar fundamentos de derecho, citar normas o jurisprudencia, calificar jurídicamente los hechos, decidir qué clase de escrito presentar, ni construir los hechos (eso es hechos-con-prueba).
-version: 0.1.3
+version: 0.1.4
 ---
 
 # redactar-escrito — armar un borrador con lo que el caso sostiene
@@ -22,7 +22,7 @@ Una frase del borrador puede afirmar algo solo si sale de una de estas tres, y d
 
 | Fuente | Qué es | Cómo se registra |
 |---|---|---|
-| **Un documento del caso** | Está en la carpeta y lo abriste | Nombre del documento y página, cláusula o minuto exacto |
+| **Un documento del caso** | Está en la carpeta y lo abriste. Una grabación no se abre: lo que se abre es su transcripción, que es un documento del caso como cualquier otro | Nombre del documento y página, cláusula o minuto. Cuando en este método se cita un minuto, es porque ese minuto **está escrito** en una transcripción que sí puedes leer; nunca porque hayas escuchado nada |
 | **Algo que ella marcó revisado** | Está en una salida del sistema cuyo nombre termina en ` - REVISADO` —hoja de hechos, cronología, inventario— y, en la hoja de hechos, ella lo marcó `SI` —o `A MEDIAS`, y entonces vale su corrección, no la ficha original— (Fase 1) | La etiqueta del dato (`H-04`, `E-07`, «anexo 3») y la fecha del archivo revisado |
 | **Lo que ella dijo** | Te lo dictó en la conversación | "Lo dijo usted el «fecha»", textual |
 
