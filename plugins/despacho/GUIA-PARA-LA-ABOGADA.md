@@ -253,6 +253,8 @@ Cuatro cosas. No son limitaciones que algún día se arreglen: están puestas a 
 
 **No le dice el derecho.** Ni normas, ni jurisprudencia, ni si algo procede, ni si hubo incumplimiento, ni qué clase de escrito conviene presentar. En el borrador, el apartado de derecho llega titulado y vacío, marcado `[[LE TOCA A USTED]]`.
 
+Y **tampoco si usted se lo pregunta directamente**. Si escribe *«¿qué dice la ley sobre alimentos?»* o *«¿esto ya caducó?»*, la respuesta va a ser que no lo responde y por qué — no una norma «de memoria», ni un criterio «en general». No es que a usted le falte saberlo: es que **este programa no tiene cómo comprobar si la norma que recordaría sigue vigente**, y una norma mal recordada se lee igual de bien que una correcta. Lo que sí hará es ofrecerle lo que puede sacar del material de su caso, que casi siempre es lo que había detrás de la pregunta.
+
 **No calcula términos.** Le transcribe entre comillas todos los plazos y todas las fechas que el documento menciona, con la página, y ahí se detiene. Nunca dice "vence el", "le quedan cinco días", "ya venció" ni "esto es urgente". Si usted le pregunta directamente cuándo vence, no lo estima: le contesta que no calcula plazos y le reúne todas las referencias temporales del documento para que usted calcule con el material a la vista.
 
 **No decide por usted.** No decide qué hechos entran, qué anexos se aportan, cuál de dos fechas contradictorias es la buena, si el caso es fuerte o débil, ni qué conviene hacer. Cuando encuentra dos versiones incompatibles, le entrega las dos y le dice que el material no permite establecer cuál corresponde.
