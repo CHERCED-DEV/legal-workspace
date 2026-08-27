@@ -1,7 +1,7 @@
 ---
 name: cronologia
 description: Método para armar la línea de tiempo de un caso a partir del material recibido —contratos, correos, comprobantes, actas, entrevistas—, con la fuente exacta de cada fecha, su grado de certeza (documentada, referida, aproximada, deducida o en conflicto), los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. Úsalo cuando pidan una cronología, ordenar los hechos en el tiempo, reconstruir qué pasó cuándo, o revisar si las fechas del caso se contradicen. No lo uses para redactar escritos, contar plazos, valorar prueba, decidir qué fecha es la buena, ni establecer que una cosa causó otra.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # cronologia — la línea de tiempo, con la calidad de cada fecha
@@ -93,7 +93,7 @@ Ninguna fuente la afirma; sale de cruzar dos cosas del material. **Es legítima 
 
 ### Fase 1 — Inventariar y leer todo antes de escribir una sola fila
 
-Lee **todo el material completo** sin apuntar todavía ningún evento. Además de la razón general —el primer relato fija la versión—, en cronología hay una peor: **el primer documento que lees instala un esqueleto temporal mental, y todas las fechas posteriores se acomodan a él sin que lo notes.** En el inventario anota, de cada pieza: qué es, **de cuándo es la pieza misma** (muchas anclas salen de ahí) y su extensión. **Producto de la fase**, además del inventario: **lo que no pudiste leer** — sello ilegible sobre la fecha, minutos inaudibles, página cortada, documento mencionado que no está, tramo sin revisar. Si el material excede lo que puedes leer, **di hasta dónde llegaste**; no ordenes una cronología parcial fingiendo que es completa.
+Lee **todo el material completo** sin apuntar todavía ningún evento. Además de la razón general —el primer relato fija la versión—, en cronología hay una peor: **el primer documento que lees instala un esqueleto temporal mental, y todas las fechas posteriores se acomodan a él sin que lo notes.** En el inventario anota, de cada pieza: qué es, **de cuándo es la pieza misma** (muchas anclas salen de ahí), su extensión y **cómo se leyó** —por su texto, o abierta por rangos de páginas y leída como imagen, que es como se lee un escaneado sin texto extraíble: no se salta, no se resume por el nombre del archivo, no se estima nada—. Decir cómo se leyó no es un adorno: si cada pasada elige por su cuenta cómo accedió al material, **dos pasadas del mismo caso dejan de ser comparables**. **Producto de la fase**, además del inventario: **lo que no pudiste leer** — sello ilegible sobre la fecha, minutos inaudibles, página cortada, documento mencionado que no está, tramo sin revisar. Si el material excede lo que puedes leer, **di hasta dónde llegaste**; no ordenes una cronología parcial fingiendo que es completa.
 
 ### Fase 2 — Extraer todo evento fechado, con su fuente exacta
 
@@ -103,7 +103,7 @@ Lee **todo el material completo** sin apuntar todavía ningún evento. Además d
 - **Coordenada exacta siempre** —página, cláusula, minuto— más **una cita textual corta** del punto de donde sale la fecha. Sin coordenada el evento no entra: vuelve y localízalo.
 - **Sin adjetivos.** "Se envió el correo de reclamo", no "se envió el enérgico reclamo".
 
-**Si no puedes leerlo o no puedes oírlo, lo dices y no lo usas.** Hay dos piezas con las que esto pasa de verdad: **un documento que llegó escaneado como imagen**, cuyo texto no puedes leer, y **una grabación de audio**, que no puedes oír. De una pieza así **no sale ningún evento y no sale ninguna coordenada**: va a la lista de lo que no se pudo leer (Fase 1), con qué pieza es y por qué quedó fuera. Lo que **jamás** se hace es **estimar la coordenada**: una página o un minuto puestos a ojo se escriben igual que los reales, se leen igual de bien y remiten a un punto que nadie comprobó — es la única forma de cita fantasma que ni siquiera se puede descubrir reabriendo el archivo, porque el archivo no se puede abrir. Tampoco se deduce el contenido por el nombre del archivo ni por lo que otra pieza diga de él. Y cuando en este método se cita un minuto, es porque ese minuto **está escrito** en una transcripción que sí puedes leer; nunca porque hayas escuchado nada. Si esa pieza parece importante, dilo así: qué es, que no pudiste leerla u oírla, y que sin ella la cronología queda incompleta en ese punto. Qué hacer con ella —transcribirla, conseguir otra copia, leerla ella misma— **lo decide ella**.
+**Un escaneado se lee; una grabación no se oye.** **Un documento que llegó escaneado como imagen no queda fuera:** se abre por rangos de páginas, se lee como imagen, y de él salen eventos y coordenadas —la página— igual que de cualquier otro documento. Lo que sí queda fuera es **una grabación de audio, que no puedes oír**, y el tramo que, ya abierto como imagen, sigue sin dejarse leer —borroso, cortado, torcido hasta lo indescifrable—: y entonces queda fuera **ese tramo**, no la pieza entera. De lo que no puedes leer ni oír **no sale ningún evento y no sale ninguna coordenada**: va a la lista de lo que no se pudo leer u oír (Fase 1), con qué pieza es y por qué quedó fuera. Lo que **jamás** se hace es **estimar la coordenada**: una página o un minuto puestos a ojo se escriben igual que los reales, se leen igual de bien y remiten a un punto que nadie comprobó — es la única forma de cita fantasma que ni siquiera se puede descubrir volviendo a la pieza, porque esa pieza no se deja leer ni oír. Tampoco se deduce el contenido por el nombre del archivo ni por lo que otra pieza diga de él. Y cuando en este método se cita un minuto, es porque ese minuto **está escrito** en una transcripción que sí puedes leer; nunca porque hayas escuchado nada. Si esa pieza parece importante, dilo así: qué es, que no pudiste leerla u oírla, y que sin ella la cronología queda incompleta en ese punto. Qué hacer con ella —transcribirla, conseguir otra copia, leerla ella misma— **lo decide ella**.
 
 **Trampas de lectura de fechas.** Se cometen solas, y todas producen fechas falsas de aspecto impecable:
 
@@ -204,6 +204,7 @@ Pasada del «fecha». Preparada para su revisión.
 
 1. DE DÓNDE SALE ESTO
 Se leyó: · «pieza» — «qué es» — «fecha de la pieza» — «páginas o duración»
+           — «por su texto / abierta por rangos y leída como imagen»
 Se recibió y NO se pudo leer, o se leyó a medias: «cuál y por qué / ninguno»
 Se menciona y no está entre lo recibido: «cuál y quién lo menciona»
 Quedó fuera por decisión propia: «nada / esto y por qué»
@@ -267,7 +268,7 @@ Respóndelas **sobre tu propia salida**. Si alguna respuesta es la mala, corrige
 1. **Lectura.** ¿Leí todo el material antes de escribir la primera fila, y puedo decir qué quedó sin leer y por qué?
 2. ¿Barrí todas las fechas, incluidas las que no encajan en ninguna narración?
 3. **Cada fecha.** ¿Cada fecha tiene documento y coordenada exacta, y no un "según el expediente"?
-4. ¿Estimé alguna coordenada —una página, un minuto— en vez de leerla? ¿Saqué algún evento de un documento que no pude leer o de una grabación que no pude oír, en vez de decir que no pude?
+4. ¿Estimé alguna coordenada —una página, un minuto— en vez de leerla? ¿Saqué algún evento de un documento que no pude leer o de una grabación que no pude oír, en vez de decir que no pude? ¿Di por ilegible algún documento sin haberlo abierto antes como imagen?
 5. ¿Cada fecha tiene uno de los cinco grados, escrito con esas palabras?
 6. ¿Hay alguna fecha **más precisa que su fuente**? ¿Convertí un "a mediados de" en un día, o un intervalo en un punto?
 7. ¿Alguna fecha deducida viaja sin su operación y sin su supuesto?

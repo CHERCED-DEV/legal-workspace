@@ -1,7 +1,7 @@
 ---
 name: estado-del-caso
 description: Método para reconstruir el estado de un caso leyendo su carpeta: qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta, y qué falta, quedó a medias o no tiene respuesta. Úsalo cuando pidan retomar un caso, ponerse al día, saber en qué va un asunto, inventariar la carpeta o preparar una revisión antes de trabajar. No lo uses para valorar la solidez del caso, pronosticar resultados, decidir estrategia, calcular plazos ni redactar escritos.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # estado-del-caso — reconstruir dónde está un caso a partir de su carpeta
@@ -83,7 +83,8 @@ Recorres las tres carpetas y anotas, por cada archivo: **el nombre tal como est�
 - Si (a) no existe: "sin fecha en el documento", y se ofrece (b) o (c) **etiquetada como lo que es** ("el nombre del archivo dice 12 de marzo").
 - Si (a) y (b) se contradicen, **se entregan las dos y no se elige**.
 - **Las fechas se copian, no se operan:** nunca sumas ni restas días sobre una fecha para producir otra, aunque el resultado no sea un plazo. Ninguna fecha que escribas puede ser una fecha que calculaste; toda fecha que aparezca en tu salida tiene que estar escrita tal cual en algún documento o en el nombre de un archivo. Decir cuántos días pasaron entre dos fechas también es operar sobre ellas: se entregan las dos fechas y ella saca la cuenta.
-- **Lo que no se pudo abrir se lista igual**, con el motivo (escaneado sin texto legible, archivo dañado, formato que no abre). Un archivo ilegible que no se menciona es peor que uno que no existe: ella creerá que lo revisaste.
+- **Los archivos se abren y se leen por dentro.** Un **escaneado sin texto extraíble no es un archivo que no se pueda abrir: se abre por rangos de páginas y se lee como imagen** —no se salta, no se describe por el nombre del archivo—, y la salida dice de cuáles se hizo así: si cada revisión elige por su cuenta cómo accedió al material, dos revisiones de la misma carpeta dejan de ser comparables.
+- **Lo que de verdad no se pudo abrir o leer se lista igual**, con el motivo (archivo dañado, formato que no abre, páginas que siguen sin dejarse leer después de abrirlas como imagen). Un archivo que no se pudo leer y no se menciona es peor que uno que no existe: ella creerá que lo revisaste.
 
 > **Ejemplo.** `escrito final DEF (2).docx` en `2-Borradores/`. El nombre no dice nada útil; adentro, el encabezado dice de qué se trata y no lleva fecha; el computador dice que se guardó el 2 de agosto. Se escribe: *"escrito final DEF (2).docx — «qué dice el encabezado» — sin fecha en el documento; guardado el 2 de agosto, que no es necesariamente la fecha en que se escribió."*
 
@@ -236,6 +237,7 @@ Revisión del «fecha», hecha leyendo «n» archivos.
      · «archivo» — «qué es» — «fecha» — «terminado / a medias»
    Notas de trabajo: «cuáles y dónde estaban»
    Sin fecha, no ubicables en el tiempo: «cuáles»
+   Abiertos por rangos y leídos como imagen: «cuáles, o: ninguno»
    No se pudo leer: «cuál y por qué»
    Guardado donde llama la atención: «archivo y por qué» (no se movió)
 
@@ -304,7 +306,7 @@ Este bloque solo aparece si hay algo que reportar. Ante la duda de si un texto r
 
 Responde sobre tu propia salida. Si alguna respuesta falla, corrige; si no puedes corregir, dilo en la entrega.
 
-1. ¿Abrí todos los archivos que listé, y dije cuáles no pude leer y por qué?
+1. ¿Abrí todos los archivos que listé —los escaneados sin texto, por rangos de páginas y como imagen—, y dije cuáles no pude leer y por qué? ¿Di por ilegible alguno sin haberlo abierto antes como imagen?
 2. ¿Alguna fecha que escribí es la de guardado del computador presentada como fecha del documento? ¿Puse en la línea de tiempo alguna pieza sin fecha propia?
 3. ¿Escribí "no se hizo", "no existe", "falta" o "quedó sin respuesta", cuando lo único que sé es que no está en la carpeta? ¿Cada ausencia está formulada sobre la carpeta y no sobre el mundo?
 4. ¿Declaré presentado algo cuya única base es que está en `3-Para presentar/`?

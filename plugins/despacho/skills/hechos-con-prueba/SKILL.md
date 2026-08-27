@@ -1,7 +1,7 @@
 ---
 name: hechos-con-prueba
 description: Método para convertir el material de un caso (entrevistas, declaraciones, documentos, comprobantes) en hechos candidatos emparejados con la prueba que los apoya, los contradice o los sitúa. Úsalo cuando pidan construir, extraer u ordenar los hechos de un asunto, armar el relato fáctico, o establecer qué está apoyado y qué no. No lo uses para redactar escritos, valorar prueba, decidir estrategia ni responder preguntas de derecho.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # hechos-con-prueba — construir hechos con su prueba
@@ -62,7 +62,9 @@ De ahí salen dos reglas de redacción:
 
 > **Ejemplo.** Entrevista de 50 minutos, un contrato de 12 páginas, tres comprobantes. En el minuto 8 la clienta dice que pagó "el 12". Si escribes ahí el hecho, en el minuto 34 ella misma se corrige —"no, fue antes, cuando volví del viaje"— y el comprobante muestra una tercera fecha. Quien leyó todo produce un hecho; quien fue escribiendo produce tres, o uno equivocado.
 
-**Producto de la fase:** el inventario, y **la declaración de lo que no pudiste leer**: audio inaudible entre tales minutos, página ilegible, documento que se menciona y no está, tramo que no alcanzaste a revisar. Si el material excede lo que puedes leer, **dilo y di hasta dónde llegaste**; no propongas sobre una lectura parcial fingiendo que fue completa.
+**Cómo se accede al material, y por qué se dice.** Las piezas se abren y se leen por dentro. **Un escaneado sin texto extraíble se abre por rangos de páginas y se lee como imagen** —no se salta, no se resume por el nombre del archivo, no se estima ningún anclaje—: **una página escaneada no es una página ilegible por serlo**; lo es la que, ya abierta como imagen, sigue sin dejarse leer. El inventario dice de cada pieza cómo se leyó: si cada pasada elige por su cuenta cómo accedió al material, **dos pasadas del mismo caso dejan de ser comparables**.
+
+**Producto de la fase:** el inventario, y **la declaración de lo que no pudiste leer**: audio inaudible entre tales minutos, página que sigue sin dejarse leer después de abrirla como imagen, documento que se menciona y no está, tramo que no alcanzaste a revisar. Si el material excede lo que puedes leer, **dilo y di hasta dónde llegaste**; no propongas sobre una lectura parcial fingiendo que fue completa.
 
 ---
 
@@ -151,9 +153,8 @@ Tres tratamientos, en orden de preferencia:
 | **Sin apoyo** | Nada en el material lo apoya ni lo contradice; su única base es que alguien lo dijo | "Afirmado por [quién] en [dónde]. Sin apoyo en el material revisado." |
 | **No verificable con este material** | El material no permite pronunciarse en ningún sentido. No es lo mismo que *sin apoyo*: allí hay al menos alguien que lo afirma; aquí ni eso | "El material revisado no contiene nada que permita establecerlo." |
 
-Dos reglas gobiernan esa lista:
+Dos reglas gobiernan esa lista. La primera ya está en la Fase 4 —**situar no es apoyar**: un hecho cuyas únicas pruebas **sitúan** está **sin apoyo**, y así se escribe; presentar contexto como apoyo es una forma elegante de mentir—. La segunda:
 
-- **Situar no es apoyar.** Un hecho cuyas únicas pruebas **sitúan** está **sin apoyo**, y así se escribe. Presentar contexto como apoyo es una forma elegante de mentir.
 - **"Parcialmente apoyado" no es un estado, y no se escribe nunca.** Cuando la prueba cubre menos que el enunciado, no se rebaja el estado: se **estrecha el enunciado** hasta exactamente lo que la prueba cubre —ese queda apoyado— y **el resto sale como ficha aparte**, con el estado que le corresponda (Fase 4). Un enunciado que la prueba cubre a medias son, casi siempre, dos enunciados pegados.
 
 Un hecho sin apoyo **se entrega**, marcado. No lo escondas, no lo elimines y no lo maquilles con un emparejamiento forzado: saber qué se sostiene solo en el dicho de la parte es una de las cosas más valiosas que produce este método.
@@ -214,8 +215,8 @@ CONTRADICCIONES
 APARTADOS (no propuestos como hechos)
   [opiniones, valoraciones, contexto, detalles descartados — recuperables]
 
-NO REVISADO / NO LEGIBLE
-  [qué quedó fuera y por qué]
+CÓMO SE LEYÓ · NO REVISADO / NO LEGIBLE
+  [qué se abrió por rangos y se leyó como imagen · qué quedó fuera y por qué]
 
 CONTEO
   N hechos · N apoyados · N sin apoyo · N contradichos · N vacíos
@@ -336,7 +337,7 @@ Este bloque solo aparece si hay algo que reportar. Ante la duda de si un texto r
 Responde estas preguntas **sobre tu propia salida**. Si alguna respuesta es "no" (o "sí" donde no corresponde), corrige antes de entregar; si no puedes corregir, dilo en la entrega.
 
 **Sobre la lectura**
-1. ¿Leí todo el material antes de escribir el primer hecho, y puedo decir qué quedó sin leer y por qué?
+1. ¿Leí todo el material antes de escribir el primer hecho, y puedo decir qué quedó sin leer y por qué? ¿Di por ilegible alguna pieza sin haberla abierto antes como imagen?
 
 **Sobre cada hecho**
 2. ¿Cada hecho contiene una sola proposición?

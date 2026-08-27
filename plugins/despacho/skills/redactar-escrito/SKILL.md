@@ -1,7 +1,7 @@
 ---
 name: redactar-escrito
 description: Método para producir un borrador en Word a partir del material ya revisado de un caso: redacta la parte fáctica y monta la estructura, deja marcado y visible cada hueco que el material no permite llenar, y entrega aparte de dónde sale cada frase. Úsalo cuando pidan redactar, armar o preparar un escrito, una solicitud, un memorial o una respuesta con el material del caso. No lo uses para redactar fundamentos de derecho, citar normas o jurisprudencia, calificar jurídicamente los hechos, decidir qué clase de escrito presentar, ni construir los hechos (eso es hechos-con-prueba).
-version: 0.1.0
+version: 0.1.1
 ---
 
 # redactar-escrito — armar un borrador con lo que el caso sostiene
@@ -97,13 +97,13 @@ La trampa fina: **la forma de un escrito también es derecho**. Qué apartados l
 
 ### Fase 1 — Comprobar que hay de dónde partir
 
-Este comando **no construye hechos**: trabaja sobre hechos que ella ya aprobó. Antes de escribir nada, mira la carpeta y responde: ¿hay hechos aprobados? ¿hay cronología e inventario de anexos? ¿cuáles de los documentos citados están de verdad en `1-Documentos recibidos/`?
+Este comando **no construye hechos**: trabaja sobre hechos que ella ya aprobó. Antes de escribir nada, mira la carpeta y responde: ¿hay hechos aprobados? ¿hay cronología e inventario de anexos? ¿cuáles de los documentos citados están de verdad en `1-Documentos recibidos/`? **Los documentos se abren y se leen por dentro; un escaneado sin texto extraíble se abre por rangos de páginas y se lee como imagen** —no se salta, no se resume por el nombre del archivo, no se estima ninguna página—, y el archivo de correspondencias (§6) dice cuáles se leyeron así: si cada pasada elige por su cuenta cómo accedió al material, **dos pasadas del mismo caso dejan de ser comparables**.
 
 **Qué cuenta como hechos aprobados, y nada más cuenta.** El comando de hechos escribe su salida en `2-Borradores/Hechos - <caso> - <AAAA-MM-DD>.md`. **Ella** abre ese archivo y escribe al lado de cada ficha `SÍ`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda añadiendo ` - REVISADO` al final del nombre: `Hechos - <caso> - <AAAA-MM-DD> - REVISADO.md`. **Solo el archivo cuyo nombre termina en ` - REVISADO.md` cuenta como hechos aprobados.** Un archivo sin esa marca es una propuesta que nadie ha mirado.
 
 **Comprobación dura, antes de la primera frase.** Si no encuentras ningún archivo de hechos cuyo nombre termine en ` - REVISADO.md`: **no hay hechos aprobados**. Lo dices con esas palabras y preguntas, en vez de usar el archivo sin marcar. Y nunca —por ningún motivo, ni aunque el archivo sin marcar esté completo y bien hecho, ni aunque coincida con lo que dicen los documentos— redactas sobre el archivo sin la marca como si fueran hechos aprobados. La marca no certifica que las fichas estén bien: certifica que ella las miró, y eso es justo lo que este comando no puede suplir.
 
-**Si no hay hechos aprobados, dilo y detente:** *"No hay hechos aprobados: en la carpeta hay siete documentos y ningún archivo de hechos terminado en ` - REVISADO`. Puedo redactar sobre los documentos, pero entonces cada frase sale de mi lectura y no de su decisión. Antes de esto va `/hechos-con-prueba`, y después su revisión de ese archivo. ¿Sigo igual, o prefiere eso?"* — y esperas. Si hay un archivo de hechos **sin** la marca, lo nombras y dices que nadie lo ha revisado; no lo cuentas como aprobado ni lo usas de atajo. Si ella dice que sigas, sigues, y **el borrador lo dice en su encabezado**. **Producto:** la lista de lo que vas a usar, y la de lo que **no pudiste abrir o leer** (archivo ilegible, página en blanco, documento citado que no está); la segunda viaja hasta el cierre.
+**Si no hay hechos aprobados, dilo y detente:** *"No hay hechos aprobados: en la carpeta hay siete documentos y ningún archivo de hechos terminado en ` - REVISADO`. Puedo redactar sobre los documentos, pero entonces cada frase sale de mi lectura y no de su decisión. Antes de esto va `/hechos-con-prueba`, y después su revisión de ese archivo. ¿Sigo igual, o prefiere eso?"* — y esperas. Si hay un archivo de hechos **sin** la marca, lo nombras y dices que nadie lo ha revisado; no lo cuentas como aprobado ni lo usas de atajo. Si ella dice que sigas, sigues, y **el borrador lo dice en su encabezado**. **Producto:** la lista de lo que vas a usar, y la de lo que **no pudiste abrir o leer** (archivo que no abre, página que sigue sin dejarse leer después de abrirla como imagen, documento citado que no está); la segunda viaja hasta el cierre.
 
 ### Fase 2 — Preguntar qué escrito y para quién, sin proponer una clase
 
@@ -191,7 +191,7 @@ No es estilo. En el primero **la frase se lee completa y afirma una fecha**; si 
 | III, párrafo 4     | «El acta de entrega está fechada...»   | Hecho H-02 de la pasada del 25/08 · Acta de entrega, p. 1 |
 ```
 
-**La fila que más importa es "SOLO LO DIJO USTED".** Marca las frases que se sostienen únicamente en el relato, sin documento detrás: las que hay que mirar dos veces antes de presentar, y que en el borrador terminado **son invisibles**, porque se leen igual que las demás. Si el párrafo se apoya en varias fuentes, van todas; si la fuente cubre solo parte de la frase, la fila lo dice: *"el recibo cubre el monto, no la fecha"*.
+**La fila que más importa es "SOLO LO DIJO USTED".** Marca las frases que se sostienen únicamente en el relato, sin documento detrás: las que hay que mirar dos veces antes de presentar, y que en el borrador terminado **son invisibles**, porque se leen igual que las demás. Si el párrafo se apoya en varias fuentes, van todas; si la fuente cubre solo parte de la frase, la fila lo dice: *"el recibo cubre el monto, no la fecha"*. Y si el documento se leyó **abierto por rangos y como imagen** —un escaneado sin texto extraíble—, la fila también lo dice: la cita vale igual, pero la pasada siguiente tiene que poder saber cómo se leyó.
 
 ## 7. Dónde cae el archivo, y qué es lo que cae
 
@@ -241,8 +241,8 @@ LO QUE ESTE BORRADOR NO TIENE
    la relevancia la juzga usted)
    · Hecho H-05 — no entró porque «motivo». Dígame si debe entrar.
 5. LO QUE NO SE PUDO HACER
-   · «documento ilegible, archivo que no abrió, apartado que pidió y no
-     puedo escribir, pregunta que sigue sin respuesta»
+   · «página que no se deja leer ni abierta como imagen, archivo que no
+     abrió, apartado que pidió y no puedo escribir, pregunta sin respuesta»
 
 CONTEO: «n» párrafos de hechos · «n» huecos · «n» frases sin documento
 ─────────────────────────────────────────────────────────────────────
@@ -271,7 +271,7 @@ Respóndelas **sobre el borrador que acabas de escribir**. Si alguna respuesta e
 
 1. ¿De **cada** frase fáctica puedo señalar su fuente exacta, ahora mismo, sin volver a buscarla? ¿Los hechos que usé salieron de un archivo terminado en ` - REVISADO.md`, o estoy redactando sin hechos aprobados y lo dije?
 2. ¿Hay alguna frase con **más precisión que su fuente** — una fecha, una cifra, un medio, un nombre, un cargo? ¿Alguna fecha o alguna cifra que salga de una cuenta mía y no de un documento?
-3. ¿Completé alguna frase con algo verosímil en lugar de abrir un hueco? ¿Mencioné algún documento que no está en la carpeta?
+3. ¿Completé alguna frase con algo verosímil en lugar de abrir un hueco? ¿Mencioné algún documento que no está en la carpeta? ¿Di por ilegible algún documento sin haberlo abierto antes como imagen?
 4. ¿Escribí "no existe" o "no hay" donde lo único que sé es que **no lo encontré en el material**?
 5. ¿Hay alguna norma, plazo, sentencia o remisión a "la ley aplicable"? ¿Alguna **calificación disfrazada** —"incumplió", "injustificadamente", "pese a estar obligado"— o alguna palabra de conclusión probatoria?
 6. ¿La estructura salió de ella, de un modelo suyo o del documento que se contesta — o la saqué de mi memoria? ¿Hay algún título de mi esqueleto que no lo dijo ella ni está en el modelo que me dio? ¿Elegí yo la clase de escrito?
