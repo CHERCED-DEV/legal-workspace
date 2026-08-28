@@ -116,7 +116,24 @@ esas mismas frases. Leyó el final del párrafo y perdió el resto.
 **c) No se arregló subiendo resolución ni con preprocesado.** Se probaron `det_limit_side_len`
 960 y 1600, y tres preprocesados (autocontraste, normalización local de fondo, y normalización
 + máscara de enfoque). Las cuatro variantes devolvieron las mismas 3 líneas en la página del auto.
-La causa no es resolución ni contraste global; es el detector con foto de papel curvado y con brillo.
+~~La causa no es resolución ni contraste global; es el detector con foto de papel curvado y con brillo.~~
+
+> **CORRECCIÓN — 2026-08-28.** Esa última frase es **falsa**, y la corrijo aquí en vez de borrarla.
+> Una investigación posterior leyó el `config.yaml` y los modelos instalados en esta máquina:
+>
+> - **`Global.max_side_len: 2000` reduce la imagen antes de todo.** Las fotos de 4000 px perdían la
+>   mitad de su resolución, siempre y en silencio. **La causa sí era resolución.**
+> - **`det_limit_side_len` es un piso, no un techo**, porque `limit_type` viene en `min`. Subirlo de
+>   736 a 960 y a 1600 no hacía absolutamente nada: **estuve moviendo una palanca desconectada.**
+> - **`text_score: 0.5` descarta toda línea reconocida por debajo de esa confianza**, sin avisar ni
+>   contarla. Tercer filtro silencioso.
+> - Y los diacríticos no estaban rotos: **el diccionario del modelo no contiene `ñ`, `Ñ`, `¿` ni `¡`.**
+>   Ningún preprocesado podía producirlos. Los tres que probé estaban condenados por construcción.
+>
+> **Lección de método, que vale más que el hallazgo:** cuando un experimento da resultado nulo en
+> cuatro variantes, la primera hipótesis debe ser **que la palanca no está conectada**, no que la
+> causa está en otra parte. Detalle completo y plan de corrección en
+> `docs/PLAN-DE-COSTE-Y-PRODUCTIZACION.md` §7-bis.
 
 **d) El control de cobertura que intenté no sirve todavía.** Medir «qué fracción de la tinta quedó
 dentro de una caja de OCR» marcó 21 de 23 páginas como sub-extraídas, porque cuenta como tinta los
