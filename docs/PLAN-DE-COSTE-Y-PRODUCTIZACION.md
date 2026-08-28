@@ -162,7 +162,71 @@ El entusiasmo es merecido — en dos días se procesó un expediente real y sali
 
 **5. La economía unitaria.** Este caso costó ~4,8 millones de tokens. **Nadie ha dicho todavía cuánto puede costar un caso**, y sin esa cifra ninguna decisión de arquitectura tiene criterio. Es la pregunta que más falta hace y la más fácil de responder: ¿cuánto pagaría un abogado por el paquete de trece documentos que se produjo hoy?
 
-### 5.3 · La prueba que resolvería más dudas por menos dinero
+### 5.3 · Restricción dura del dueño: todo gratuito. Y la corrección que necesita
+
+**Instrucción recibida el 2026-08-28:** *«todo lo que vayamos a instalar tiene que ser free o open source, nada puede ser pago… la idea es que esto no me cueste nada a mí, solamente la suscripción de la persona»*.
+
+**Aceptada.** Pero formulada así deja pasar exactamente el problema que ya apareció tres veces en la investigación de este mismo documento:
+
+> **«Gratuito» y «se puede usar en un negocio» no son lo mismo.** Hay herramientas que no cuestan un peso y **prohíben** justo lo que se quiere hacer con ellas.
+
+**La restricción correcta no es «que sea gratis». Es: licencia que permita uso comercial.** Un producto que se cobra por suscripción **es uso comercial**, aunque la herramienta de debajo se haya descargado gratis.
+
+#### Los tres casos ya encontrados, que son gratuitos y NO sirven
+
+| Herramienta | Coste | Por qué no sirve |
+|---|---|---|
+| Modelos de diarización **Reverb** (vienen dentro de Faster-Whisper-XXL) | Gratis | Restringidos a **uso personal sin ánimo de lucro** |
+| **CrisperWhisper** — la herramienta construida específicamente contra la alucinación | Código libre | **Pesos con licencia no comercial** |
+| **Surya** — el mejor OCR para español de los que se midieron (90,7 %) | Código Apache-2.0 | **El modelo va bajo licencia restringida**: gratis para investigación, uso personal y empresas pequeñas |
+
+Las tres son gratuitas. **Las tres quedan fuera** si esto se cobra.
+
+#### Auditoría de lo que ya usamos — 2026-08-28
+
+Verificado contra los metadatos de cada paquete y contra el repositorio de origen del modelo, no de memoria:
+
+| Pieza | Licencia | ¿Uso comercial? |
+|---|---|---|
+| `rapidocr-onnxruntime` 1.4.4 | Apache-2.0 | Sí |
+| `onnxruntime` 1.29.0 | MIT | Sí |
+| Modelo `ppocrv5-mobile-rec.onnx` | **Apache-2.0** — verificado en el espejo **y en el repositorio original de PaddlePaddle** | Sí |
+| `pillow` · `pypdf` · `numpy` | MIT-CMU · BSD · BSD | Sí |
+| `python-docx` · `docx` (npm) | MIT | Sí |
+| Tesseract (pendiente de instalar) | Apache-2.0 | Sí |
+| `faster-whisper` y los modelos Whisper | MIT | Sí |
+| `pyannote` community-1 | CC-BY-4.0 | Sí, **con atribución obligatoria** |
+
+**Todo lo que hay hoy en el proyecto está limpio.** Y queda una regla nueva:
+
+> **Ninguna dependencia entra sin que su licencia esté verificada en su repositorio de origen y anotada.** No basta con que sea gratis, y no basta con la etiqueta del espejo desde donde se descargó.
+
+#### La regla de reemplazo, y dónde sí funciona
+
+**Instrucción del dueño, el mismo día:** *«si no es así prefiero que construyamos cosas en Python para usarlas por debajo con esas skills»*.
+
+**Adoptada como regla:** cuando una dependencia no permita uso comercial, **se construye en Python en vez de aceptar la licencia restringida.** Nunca se acepta una licencia restringida «por ahora».
+
+Pero hay que separar dos cosas, porque la regla funciona en una y no en la otra:
+
+| | ¿Se puede construir nosotros? |
+|---|---|
+| **Fontanería** — orquestación, instrumentación de cobertura, cotejo de identificadores, deduplicación, armado del PDF, generación de Word, control de fidelidad, comparación entre pasadas, extracción de fechas y cifras | **Sí, y ya se está haciendo.** `md2docx` y `preparar-material` son exactamente eso. Son cientos de líneas, no miles |
+| **Modelos entrenados** — un motor de OCR, un reconocedor de voz, un modelo de diarización | **No.** Entrenar uno es un programa de investigación con datos etiquetados y cómputo, no un script. Aquí la respuesta no es construirlo: es **elegir uno con licencia permisiva** |
+
+**Y la buena noticia es que para cada modelo que necesitamos existe uno permisivo:** PaddleOCR es Apache-2.0, los modelos Whisper son MIT, pyannote community-1 es CC-BY-4.0. **La restricción no nos cuesta nada hoy.**
+
+**Dónde sí muerde, y es concreto:** el envoltorio de transcripción que la investigación recomendaba trae **modelos de diarización con licencia no comercial** entre sus opciones. Hay que **configurar el modelo explícitamente**, no aceptar el que venga por defecto. Un defecto cómodo es la forma habitual en que una licencia restringida entra en un producto sin que nadie lo decida.
+
+#### La parte de «que no me cueste nada a mí»
+
+Esa mitad merece una precisión, porque no depende de las licencias:
+
+- **Las herramientas locales sí son coste cero recurrente.** OCR, conversión a Word, tubería de ingesta, y —si se adopta— la transcripción de audio: se instalan una vez y no cobran por uso.
+- **El modelo de lenguaje no.** Es coste por uso, y es el grueso: este pase consumió del orden de 4,8 millones de tokens. **Ese coste existe siempre y lo paga alguien** — la suscripción de ella, si es ella quien ejecuta; la suya, si el servicio corre de su lado.
+- Por eso **la pregunta de cuánto puede costar un caso no es contable, es de diseño.** Con la respuesta se decide cuánto se puede abanicar, qué modelo enruta cada tarea y cuánto trabajo baja a script. Sin ella, todo lo del §2 son preferencias.
+
+### 5.4 · La prueba que resolvería más dudas por menos dinero
 
 **Un segundo caso, de otra materia y de otra persona.** Todo lo que sabemos sale de un expediente policivo, con una usuaria que además es autoridad. No sabemos si el método aguanta un caso de familia, uno laboral, o un litigante de parte. Un segundo caso diría, por muy poco, si esto es un producto o si es un traje a la medida de un expediente.
 
@@ -254,7 +318,7 @@ Los timestamps de las herramientas locales son **desplazamientos en segundos sob
 
 **Velocidad esperable:** con GPU de consumo, una audiencia de 60 minutos se transcribe en unos 5 minutos. Sin GPU hay que bajar de modelo o aceptar esperas largas; **la cifra de `large` en CPU no está verificada y no hay que suponerla.**
 
-**Dos trampas de licencia, y son reales:**
+**Dos trampas de licencia, y con la restricción del §5.3 dejan de ser trampas: quedan fuera:**
 
 - Los modelos de diarización **Reverb** que trae esa herramienta están restringidos a **uso personal sin ánimo de lucro**. Trabajo jurídico profesional no lo es. Usar `pyannote`, no Reverb.
 - **CrisperWhisper**, que es la herramienta construida específicamente contra la alucinación, tiene **pesos con licencia no comercial**.
@@ -352,7 +416,7 @@ De ahí que Tesseract entre como **segunda opinión permanente**, no como sustit
 3. **Segunda opinión** (un día): Tesseract con español, e **informe de divergencia por página**. Ese informe *es* la métrica de cobertura.
 4. **Corrección de perspectiva**, solo si tras los pasos 1-3 quedan páginas malas. Hay un modelo de 30 MB que corre en menos de un segundo por página en CPU. **Medirlo contra el paso 2, no adoptarlo por fe.**
 
-**Trampa de licencia:** una de las alternativas más prometedoras para español tiene el **código libre pero el modelo bajo una licencia restringida** — gratuita para investigación, uso personal y empresas pequeñas. Para trabajo jurídico remunerado hay que revisarla antes.
+**Trampa de licencia:** una de las alternativas más prometedoras para español tiene el **código libre pero el modelo bajo una licencia restringida** — gratuita para investigación, uso personal y empresas pequeñas. **Con la restricción del §5.3, queda descartada.**
 
 **Lo que no haría:** volver a tocar el preprocesado de contraste. Ya se demostró tres veces que no es ahí.
 
