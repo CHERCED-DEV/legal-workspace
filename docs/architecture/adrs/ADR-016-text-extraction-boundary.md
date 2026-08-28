@@ -146,7 +146,7 @@ Descartada: enviar el expediente a un tercero es un cambio de frontera de confia
 
 ## Preguntas pendientes
 
-1. **¿Qué reconocedor para español?** Depende de la prueba 2.
+1. **¿Qué reconocedor para español?** **Parcialmente respondida el 2026-08-28.** Se adoptó un PP-OCRv5 cuyo vocabulario tiene `ñ` minúscula y las tildes: 124 caracteres acentuados donde antes había ~0, y **12 de 12 identificadores sin regresión**. Sigue faltando `Ñ` mayúscula, `Ú`, `¿` y `¡`; el modelo latino que los tiene no fue alcanzable desde esta máquina. Ver `tools/preparar-material/modelos/PROCEDENCIA.md`.
 2. **¿El OCR corre siempre, o solo cuando el material no tiene capa de texto?** Con PDF nativo el cotejo pierde sentido: el texto ya es el del documento.
 3. **¿Dónde vive el texto extraído** — zona 2 o zona 3 de ADR-012? Hoy se dejó en `2-Borradores/`, que es zona 2, y probablemente esté mal: es un derivado de material incorporado.
 4. **¿El cotejo de identificadores es un comando, un paso de ingesta, o parte de `inventario-de-anexos`?**

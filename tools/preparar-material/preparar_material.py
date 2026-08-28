@@ -75,6 +75,16 @@ OCR_CTOR = dict(max_side_len=4000, det_limit_type="max", det_limit_side_len=2560
 OCR_CALL = dict(box_thresh=0.3, unclip_ratio=2.0, text_score=0.0)
 UMBRAL_DEVUELTA = 0.5  # el filtro que la libreria aplica por defecto
 
+# Reconocedor con vocabulario que incluye la 'n' con virgulilla minuscula y las
+# tildes. El modelo por defecto de la libreria NO las tiene en su vocabulario de
+# salida -no es fallo de imagen, el simbolo no existe para el modelo-, asi que
+# 'senora' nunca puede salir bien. Si estos archivos no estan, el script sigue
+# funcionando con el modelo por defecto Y LO DECLARA en el registro.
+# Procedencia y medicion: modelos/PROCEDENCIA.md
+MODELOS = Path(__file__).resolve().parent / "modelos"
+REC_ONNX = MODELOS / "ppocrv5-mobile-rec.onnx"
+REC_DICT = MODELOS / "ppocrv5_dict.txt"
+
 
 # ---------------------------------------------------------------- utilidades
 
@@ -232,12 +242,21 @@ def main():
     print(f"  {len(piezas)} piezas · {len(imagenes)} imagenes · {len(duplicados)} duplicados exactos")
 
     # --- OCR instrumentado ---------------------------------------------------
-    ocr, cobertura = None, []
+    ocr, cobertura, reconocedor = None, [], "no se ejecuto OCR"
     if not a.sin_ocr and imagenes:
         try:
             from rapidocr_onnxruntime import RapidOCR
             import numpy as np
-            ocr = RapidOCR(**OCR_CTOR)
+            ctor = dict(OCR_CTOR)
+            if REC_ONNX.exists() and REC_DICT.exists():
+                ctor.update(rec_model_path=str(REC_ONNX), rec_keys_path=str(REC_DICT))
+                reconocedor = "PP-OCRv5 (vocabulario con tildes y n con virgulilla minuscula)"
+            else:
+                reconocedor = ("POR DEFECTO de la libreria — su vocabulario NO tiene n con "
+                               "virgulilla ni signos de apertura: los diacriticos SALDRAN MAL")
+                print(f"  AVISO: {reconocedor}")
+                print(f"  Reponer con: ver {MODELOS / 'PROCEDENCIA.md'}")
+            ocr = RapidOCR(**ctor)
         except ImportError:
             print("  AVISO: rapidocr-onnxruntime no esta instalado. Se omite el OCR.")
     if ocr:
@@ -305,7 +324,7 @@ def main():
         except Exception as e:
             print(f"  AVISO: no se pudo construir el PDF: {e}")
 
-    escribir_registro(borradores, caso, piezas, cobertura, duplicados)
+    escribir_registro(borradores, caso, piezas, cobertura, duplicados, reconocedor)
     json.dump(piezas, open(borradores / f"ingesta-{date.today()}.json", "w", encoding="utf-8"),
               ensure_ascii=False, indent=1)
     shutil.rmtree(temporal, ignore_errors=True)
@@ -323,7 +342,7 @@ def main():
     print(f"\nListo. Registro en: {borradores}")
 
 
-def escribir_registro(borradores: Path, caso: Path, piezas, cobertura, duplicados):
+def escribir_registro(borradores: Path, caso: Path, piezas, cobertura, duplicados, reconocedor="—"):
     L = [f"# REGISTRO DE INGESTA — {caso.name}", "",
          f"Generado el {date.today()} por `preparar_material.py`. "
          "**Propuesta para su revisión. Nada de esto está comprobado por ningún sistema.**", "",
@@ -344,6 +363,7 @@ def escribir_registro(borradores: Path, caso: Path, piezas, cobertura, duplicado
     if cobertura:
         atip = atipicas(cobertura)
         L += ["", "## 2. Cómo se leyó, y cuánto se leyó", "",
+              f"**Reconocedor usado:** {reconocedor}", "",
               "Tres números por página. **La diferencia entre lo detectado y lo devuelto es texto "
               "que el motor vio y decidió tirar.**", "",
               "| Página | Giro | Detectadas | Devueltas | Tiradas | Caracteres |", "|---|---|---|---|---|---|"]

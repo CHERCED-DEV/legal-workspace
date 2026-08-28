@@ -80,7 +80,8 @@ Por eso el registro que emite este script repite, en su propia salida, la regla 
 - **No toca los originales.** Los copia y no los modifica. Rotaciones y recortes van sobre copias, fuera de `1-Documentos recibidos/`.
 - **No interpreta el contenido.** No dice qué es cada documento ni qué afirma. Eso es trabajo del método, no de un script.
 - **No decide nada.** Emite números y los deja a la vista.
-- **No arregla los diacríticos.** El modelo por defecto **no tiene `ñ`, `Ñ`, `¿` ni `¡` en su vocabulario**: `señora` sale `senora` y ningún ajuste de imagen puede cambiarlo. Hace falta un modelo latino, y su descarga está pendiente (ver el plan, §7-bis).
+- **Arregla los diacríticos solo a medias.** Usa un reconocedor cuyo vocabulario **sí tiene `ñ` minúscula y las tildes** —`señora` sale bien—, pero **no tiene `Ñ` mayúscula, ni `Ú`, ni `¿`, ni `¡`**. En providencias colombianas los encabezados van en mayúsculas, así que **ahí la eñe sigue saliendo mal**. Ver `modelos/PROCEDENCIA.md`.
+- **Si el modelo no está en `modelos/`, el script no falla: usa el de la librería y lo declara en el registro**, con las palabras «los diacríticos SALDRÁN MAL». Fallo declarado, nunca silencioso.
 
 ## Limitaciones conocidas
 

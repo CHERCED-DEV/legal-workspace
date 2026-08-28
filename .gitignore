@@ -3,3 +3,7 @@
 # Bytecode de Python: se regenera solo y ensucia cada diff del banco de medición
 __pycache__/
 *.pyc
+
+# Modelos de OCR: binarios de terceros, 16 MB. Ver tools/preparar-material/modelos/PROCEDENCIA.md
+tools/preparar-material/modelos/*.onnx
+tools/preparar-material/modelos/*.txt

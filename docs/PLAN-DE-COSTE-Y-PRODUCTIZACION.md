@@ -305,7 +305,15 @@ Se leyó el diccionario **embebido dentro del propio archivo del modelo** — 6.
 
 **`señora` → `senora` no era un fallo de imagen: el modelo físicamente no tiene el símbolo en su vocabulario de salida.** Ninguna mejora de resolución, contraste o enfoque podía producirlo nunca. Mis tres preprocesados estaban condenados por construcción.
 
-**Y tiene arreglo verificado:** existe un diccionario latino de 502 caracteres con **ñ, Ñ, ¿ y ¡** completos, con su modelo correspondiente. Ojo con el diccionario latino anterior: **le falta la `Ñ` mayúscula**, y los encabezados de las providencias van en mayúsculas.
+**Arreglado a medias el mismo 2026-08-28.** El modelo latino de 502 caracteres —el único con los cuatro símbolos— solo se distribuye en ModelScope, **que no fue alcanzable desde esta máquina**. Pero en HuggingFace hay un PP-OCRv5 en ONNX cuyo diccionario de 18.383 caracteres **sí tiene `ñ` minúscula y las tildes**. Medido sobre las mismas 23 páginas:
+
+| | v4 (por defecto) | v5 (adoptado) |
+|---|---|---|
+| Caracteres acentuados en la salida | ~0 | **124** |
+| Identificadores críticos | 12 de 12 | **12 de 12 — sin regresión** |
+| Regiones detectadas | 711 | 711 — la detección no cambia |
+
+`senora` pasó a `señora`. **Lo que sigue roto: `Ñ` mayúscula, `Ú`, `¿` y `¡`** — y los encabezados de las providencias van en mayúsculas. Para eso hace falta el modelo latino, que queda pendiente de un espejo alcanzable.
 
 Además: el paquete que instalamos está **congelado desde enero de 2025**. El vivo es otro, de julio de 2026, **cuya configuración por defecto ya usa un modelo cuyo diccionario tiene la eñe**. Es posible que solo cambiar de paquete resuelva los diacríticos.
 
