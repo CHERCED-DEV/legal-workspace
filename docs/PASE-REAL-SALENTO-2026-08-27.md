@@ -7,7 +7,7 @@ contradictor interno. Ver `memory/contexto-b-inspeccion-salento.md`.
 > ## CORRECCIÓN — 2026-08-28. Este documento se llamaba «Primer pase» y no lo era.
 >
 > **Hubo un pase real anterior:** el caso **el caso de familia**, el 2026-08-26 — 56 páginas, cuatro
-> de los seis comandos, con sus salidas en `Despacho/Familia/el caso de familia…/2-Borradores/`,
+> de los seis comandos, con sus salidas en la carpeta de ese caso, en `2-Borradores/`,
 > **incluidos dos `.docx`**. Está documentado en `docs/PLAN-DE-MEJORA.md`, que además trae sus
 > mediciones: 180 turnos, ~207 KB de salida, **50,8 M de contexto releído y ~3 M facturables**.
 >
@@ -30,6 +30,20 @@ contradictor interno. Ver `memory/contexto-b-inspeccion-salento.md`.
 >
 > Lo que sigue es lo que se midió en el pase de Salento, y sigue siendo válido — pero léase como
 > **el segundo** pase, y contra el primero, no en el vacío.
+
+> ## NOTA SOBRE LOS IDENTIFICADORES — 2026-08-31
+>
+> Antes de publicar este repositorio se **retiraron de toda la historia** los identificadores de
+> personas reales que yo había dejado en documentos versionados: cédulas, matrículas inmobiliarias,
+> números de radicado, tarjetas profesionales y apellidos de las partes. Aparecen ahora como
+> `[cedula 1]`, `[matricula A]`, `[radicado del expediente]` y similares.
+>
+> **Por qué:** el repositorio iba a un remoto, y con una cédula y un radicado se llega al expediente
+> completo de un proceso activo. Escribir esas cifras aquí fue innecesario —el hallazgo era «12 de 12
+> coinciden», y para eso no hacía falta transcribir ninguna— y es un error mío.
+>
+> Los hallazgos no pierden nada: «dos matrículas distintas» dice exactamente lo mismo que los dos
+> números. **El material del caso nunca estuvo en este repositorio** y sigue sin estarlo.
 
 ---
 

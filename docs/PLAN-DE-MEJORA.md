@@ -1,6 +1,6 @@
 # Plan de mejora del arnés Despacho
 
-**Fecha:** 2026-08-26 · **Base:** primera ejecución real sobre el caso el caso de familia (56 páginas, 4 de 6 comandos), nueve evaluaciones por comando y transversales, y una refutación que verificó contra los archivos.
+**Fecha:** 2026-08-26 · **Base:** primera ejecución real sobre el caso de familia (56 páginas, 4 de 6 comandos), nueve evaluaciones por comando y transversales, y una refutación que verificó contra los archivos.
 
 **Regla de este documento:** manda el refutador. Lo que tumbó no entra. Lo dudoso entra marcado como dudoso, con lo que hay que comprobar antes de tocarlo. Las cifras llevan etiqueta: **HECHO MEDIDO** (verificado contra archivo o log), **SUPUESTO** (estimación razonada, no medición), **POR VERIFICAR**, **RIESGO**, **DECISIÓN PENDIENTE**.
 
@@ -251,7 +251,7 @@ Tres huecos. Los tres son la razón de que el día de hoy empiece fuera del prod
 
 ### 4.1 El comando que crea la oficina y el caso
 
-**HECHO VERIFICADO:** ninguna de las seis skills nombra `Despacho/`, `Oficina/` ni `Casos/`; **ninguna crea carpetas**. El diseño dice que «el Core crea el esqueleto de cada caso nuevo» y el Core no existe. Hoy funciona porque el dueño montó a mano la carpeta de [caso de familia].
+**HECHO VERIFICADO:** ninguna de las seis skills nombra `Despacho/`, `Oficina/` ni `Casos/`; **ninguna crea carpetas**. El diseño dice que «el Core crea el esqueleto de cada caso nuevo» y el Core no existe. Hoy funciona porque el dueño montó a mano la carpeta de el caso de familia.
 
 Peor, hay una pescadilla: la guía presenta `0-Estado del caso (no editar).txt` como una de las cuatro cosas que debe haber, pero ese archivo solo aparece **después** de correr `/estado-del-caso`. Una carpeta recién hecha nunca tiene la forma que la guía dibuja.
 
@@ -318,7 +318,7 @@ El informe declara **0 derecho sustantivo propio** tras una verificación exhaus
 
 1. Correr el fixture del banco **antes**.
 2. Aplicar **un** cambio — y como máximo **una** de las cinco de composición.
-3. Correr el fixture **después**, más el caso [caso de familia] completo.
+3. Correr el fixture **después**, más el caso de familia completo.
 4. Registrar las trece filas de 5.2. Si cualquiera de las cuatro primeras se mueve, **el cambio se revierte**, no se discute.
 5. Guardar versión de skill, fixture, prompt y salida. El baseline se conserva limpio.
 
@@ -370,7 +370,7 @@ Ingesta con OCR, verificación dirigida, marca por rango, recorte de autoevaluac
 
 ### Preguntas que hay que hacerle a ella, y que ningún evaluador puede contestar
 
-1. **¿A quién representa en el caso el caso de familia?** Todo el trabajo del día está esperando un dato de una línea. Si representa a la madre, los hechos que habría que redactar **no están en esta carpeta**.
+1. **¿A quién representa en el caso de familia?** Todo el trabajo del día está esperando un dato de una línea. Si representa a la madre, los hechos que habría que redactar **no están en esta carpeta**.
 2. **¿Tiene las extensiones de archivo visibles en su Explorador?** Decide si M-2 es teórico o va a fallar el primer día. Se comprueba mirando su pantalla, en diez segundos.
 3. **¿`.md` abre con doble clic en su máquina?** El archivo más caro del sistema —las 76 fichas— es `.md`. Si le sale «¿con qué desea abrir este archivo?», el paso más caro empieza con un obstáculo.
 4. **¿Cuánto está dispuesta a esperar por un comando antes de darlo por colgado?** Fija si la acotación es un extra o el modo normal.
