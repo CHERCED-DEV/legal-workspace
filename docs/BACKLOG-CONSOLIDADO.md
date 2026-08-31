@@ -2,6 +2,10 @@
 
 **Fecha:** 2026-08-28. **Estado:** primera consolidación. **Cobertura: parcial — ver §0.3.**
 
+> **CORRECCIÓN — 2026-08-31.** Al ir a escribir la spec del ítem **4 de §2** —«la hoja de hechos: dos comandos consumen un archivo que nadie escribe»— se leyó el código y **el defecto ya estaba cerrado y verificado en ejecución real** desde antes de esta consolidación. Estaba mal contado aquí: entró como abierto porque se consolidó leyendo documentos de diagnóstico, no los `SKILL.md`. Las tres filas afectadas quedan tachadas en su sitio, no borradas.
+>
+> **Y esa es la lección, no la errata:** un backlog que se consolida leyendo diagnósticos y no el código **produce trabajo inventado**. La regla 4 de `docs/specs/README.md` sale de aquí — antes de escribir una spec de defecto, se comprueba que el defecto siga vivo. **El resto de este índice tiene el mismo origen y no ha sido reverificado contra el código.**
+
 ---
 
 ## §0 · Qué es esto, y por qué existe
@@ -65,7 +69,7 @@ Deduplicados, ordenados por **cuánto desbloquean**, no por esfuerzo.
 | **1** | **Publicar el plugin.** Sin remoto no hay URL de marketplace, y sin eso ninguna corrección llega a sus manos | G1 · `EP-ENTRADA-0` | Literalmente todo lo demás | Abierto tras tres fases. `git remote -v` sigue vacío |
 | **2** | **Decidir y decirle dónde se procesa su material.** Toca secreto profesional, no interfaz | G30 · `EP-P10` | Imprimir la guía · entregar sin mentirle · licenciar a terceros | Abierto |
 | **3** | **Instalarlo una vez en una máquina que no sea la del dueño** | G34 · `PLAN §5.2-1` | La guía · cualquier medición de uso · la venta | Cero ejecuciones instaladas |
-| **4** | **La hoja de hechos: dónde se escribe y su mecanismo de aprobación.** Dos comandos consumen un archivo que nadie escribe | G17 · `H-05` | `redactar-escrito` · `inventario-de-anexos` | Abierto |
+| ~~4~~ | ~~**La hoja de hechos: dónde se escribe y su mecanismo de aprobación.**~~ **CERRADO — corregido el 2026-08-31.** La cadena está completa: `hechos-con-prueba` §4 escribe la ruta, `redactar-escrito` §3 e `inventario-de-anexos` §5 la consumen y se detienen sin la marca, y `discovery/primera-ejecucion-real.md` §4 lo verificó en ejecución real | G17 · `H-05` | ya no bloquea nada | **Cerrado.** Estaba mal contado aquí |
 | **5** | **Instrumentar antes de cortar nada** | G23 · `PM-M-1` | Nueve ítems y las ~20 propuestas de recorte | Abierto |
 | **6** | **Una prueba capaz de fallar.** Existen 678 líneas de banco y seis fixtures que ninguna evaluación mencionó | G22 · `PM-5.1-BANCO` | La regla de composición · M-9 · M-11 · M-12 | Abierto |
 | **7** | **Variante de contexto B.** La única usuaria real es autoridad y los `SKILL.md` le hablan de «su clienta» | G7 · `P-02` | Que ella ejecute sin traducir a mano cada salida | Abierto |
@@ -150,7 +154,7 @@ Cada grupo es **un solo trabajo** visto desde varios documentos. La columna «me
 | G14 | Aritmética de fechas | `H-02`, `H-03`, `EP-5.4` | `EP-5.4` — la formulación **por operación** |
 | G15 | Plantilla de apartados en `redactar-escrito` | `H-01`, `EP-5.5` | `H-01` |
 | G16 | Bloque anti-inyección | `H-04`, `EP-5.2` | **Ya hecho** |
-| G17 | La hoja de hechos y su aprobación | `H-05`, `EP-5.7`, `EP-1.1`, `EP-B03` | `H-05` el defecto · `EP-5.7` el arreglo |
+| G17 | La hoja de hechos y su aprobación | `H-05`, `EP-5.7`, `EP-1.1`, `EP-B03` | `H-05` el defecto · `EP-5.7` el arreglo. **`H-05` cerrado y verificado; lo vivo del grupo es `PM-M-2`, la marca frente a la extensión oculta de Windows** |
 | G18 | La salida envejece | `EP-1.3-d`, `EP-C08`, `PLAN §4-7`, `PM-4.4` | `EP-1.3-d` |
 | G19 | Escritura destructiva | `H-11`, `EP-5.6`, `PM-M-8` | `H-11` el defecto · `PM-M-8` el arreglo fino |
 | G20 | Afirmar sin haber mirado la carpeta | `H-06`, `EP-5.6(iii)` | `H-06` |
@@ -212,7 +216,7 @@ Y de la corrección del §0.2 sale una segunda: **ningún documento nuevo de pla
 | **1.3** | **Correr el banco de evaluación que ya existe** — 678 líneas, seis fixtures, con truth set | G22 | Hoy **no hay ninguna prueba capaz de fallar**. Sin esto ningún cambio es reversible con criterio |
 | **1.4** | **Blindar la marca ` - REVISADO`** contra la extensión oculta de Windows | G25 | La victoria más barata que existe, y castiga a la usuaria justo después del trabajo más caro |
 | **1.5** | **`0-Estado del caso`: reemplazo dirigido**, no reescritura completa | G19 | Media hora que convierte una pérdida irreversible en recuperable |
-| **1.6** | **La hoja de hechos: dónde se escribe + mecanismo de aprobación** | G17 | El eslabón central está partido: dos comandos consumen un archivo que nadie escribe |
+| ~~1.6~~ | ~~La hoja de hechos: dónde se escribe + mecanismo de aprobación~~ | G17 | **Retirado el 2026-08-31: el eslabón no estaba partido.** Se descubrió al ir a escribir su spec. Lo que queda del grupo es `PM-M-2` (fila 1.x de la marca) |
 | **1.7** | **Variante de contexto B** de los `SKILL.md` | G7 | La única usuaria real es autoridad y el producto le habla de «su clienta» |
 | **1.8** | **Reindexar la Fase 4 y la 6.1 por pieza** | G24 | 76 barridas y 239 aperturas donde caben 14 y 14. **Es el ahorro que no gasta garantía** |
 

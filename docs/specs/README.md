@@ -33,25 +33,102 @@ Cada `SPEC-NN` tiene **siete apartados, siempre los siete**. Si uno queda vacío
 | **6. Qué toca** | Los archivos concretos. Si toca un `SKILL.md`, dice cuál sección |
 | **7. Qué queda fuera y por qué** | Lo que se decidió posponer, con su razón. Evita que vuelva a discutirse |
 
-### Tres reglas de esta capa
+### Cuatro reglas de esta capa
 
 1. **La spec manda sobre la implementación.** Si el código hace algo que la spec no dice, o no hace algo que dice, es la implementación la que está mal — no la spec la que se ajusta después.
 2. **Ninguna spec contradice un ADR.** Si hace falta contradecirlo, primero se enmienda el ADR. Precedencia: ADR `Accepted` > ADR `Proposed` > spec > implementación.
 3. **Antes de escribir una spec nueva, se lee el índice.** Es la regla que este repositorio aprendió por la mala: cuatro documentos llamaron «séptimo comando» a cuatro cosas distintas.
+4. **Antes de escribir una spec de defecto, se comprueba que el defecto siga vivo.** Regla añadida el 2026-08-31 al retirar SPEC-02: iba a especificar el arreglo de algo que llevaba dos meses arreglado y verificado en ejecución real. **Un backlog no leído contra el código produce trabajo inventado**, que es el mismo pecado que esta capa existe para impedir.
+
+---
+
+## Dos familias de spec, y el índice del 31/08 solo tenía una
+
+Esta es la corrección de fondo del índice original. Las ocho specs que listaba eran **todas de defecto**: cerraban un ítem del backlog, es decir, arreglaban algo que ya existe y está mal. Ninguna construía nada. Leído de corrido, el índice daba a entender que ocho specs cubrían el producto, y no cubren **ninguna** de las capacidades grandes.
+
+| Familia | Qué hace | Cómo se reconoce |
+|---|---|---|
+| **Spec de defecto** | Cierra un ítem del backlog. **Algo existe y está mal** | Su apartado 1 cita un `H-NN`, `P-NN`, `PM-*` o un grupo `GNN` |
+| **Spec de capacidad** | Construye algo que **no existe todavía** | Su apartado 1 cita un hueco `V-NN` o un ADR sin implementación |
+
+---
+
+## Mapa de capacidades — qué está construido, qué está decidido, qué tiene spec
+
+Las tres columnas son distintas a propósito. **Decidido no es construido, y construido no es especificado.**
+
+| Capacidad | Estado real hoy | Decisión | Spec |
+|---|---|---|---|
+| **Instalar y actualizar el plugin** | Remoto publicado. **Cero instalaciones fuera de esta máquina** | ADR-012 | **SPEC-01** — parcial: O-5 a O-7 solo en su máquina |
+| **Los nueve métodos** | Desplegados y ejecutados en dos casos reales | los `SKILL.md` son la spec | SPEC-04 a SPEC-08 — de defecto |
+| **Hablarle a una autoridad, no a una parte** | **No existe.** Los `SKILL.md` dicen «su clienta» y la única usuaria real es la inspección | ninguna | **SPEC-03** — pendiente |
+| **Leer fotos sin capa de texto (OCR)** | `tools/preparar-material/` funciona. **Vive fuera del plugin** | ADR-016 | **ninguna** |
+| **Detectar la omisión silenciosa (dos motores)** | `segunda_opinion.py` escrito; Tesseract **sin instalar** | ADR-016 | **ninguna** |
+| **Entregable en Word** | `tools/md2docx/` produjo 139 tablas reales. **Script a mano, fuera del producto** | ADR-014 | **ninguna** |
+| **Transcribir audio de audiencia** | **No existe.** Solo está decidido el límite | ADR-017 | **ninguna** |
+| **Que una skill ejecute código (el Core)** | **No existe.** El plugin es texto puro | ADR-010 | **ninguna** |
+| **Copia de seguridad del trabajo de ella** | **No existe.** ADR escrito, cero implementación | ADR-013 | **ninguna** — hueco `V-5` |
+| **Medir horas-persona y coste por caso** | **No existe.** Todo se mide en tokens | ninguna | **ninguna** — huecos `V-2`, `V-3` |
+| **Reanudar un comando que se cayó** | **No existe** | ninguna | **ninguna** — hueco `V-4` |
+| **Riesgo de que la usuaria sea autoridad** | **Cero líneas en todo el repositorio** | ninguna | **ninguna** — hueco `V-7` |
+| **Datos de terceros que no consintieron** | Riesgo declarado, **sin dueño** | ninguna | **ninguna** — hueco `V-8` |
+| **Alcance y precio de la primera versión** | No decidido | ninguna | **no lo decide una spec** — hueco `V-10` |
+
+### Las tres cosas que este mapa deja a la vista
+
+1. **Tres capacidades ya construidas viven fuera del plugin.** OCR, segunda opinión y Word son Python; el plugin es texto puro y una skill no puede ejecutar código. Es la **pregunta 2 abierta de ADR-014**, dicha allí sin rodeos: *o el Core lo asume, o el entregable Word depende de que alguien corra un script a mano.* Mientras eso no se decida, ninguna spec de esas tres capacidades puede cerrarse — **y la dependencia es esa decisión, no el esfuerzo de escribirla.**
+
+2. **Los dos riesgos mayores no tienen ni decisión ni spec.** `V-7` —si una inspectora puede apoyar un acto administrativo en una salida de IA, si debe declararlo, qué le pasa al acto si la cita sale mal— y `V-8` —quién responde por los datos de terceros—. No son deuda técnica: son los dos frenos de licenciar esto a alguien. **Les falta un ADR antes que una spec**, por la regla 2.
+
+3. **Nada de esto se puede ordenar sin `V-10`.** Sin decidir qué es la primera versión, cualquier orden que yo proponga es una preferencia mía disfrazada de plan.
+
+---
 
 ## Estado de las especificaciones
 
-| # | Spec | Cierra | Estado |
-|---|---|---|---|
-| [SPEC-01](SPEC-01-instalacion-del-plugin.md) | Instalación del plugin desde el remoto | `EP-ENTRADA-0` · `H-10` | **En ejecución** |
-| [SPEC-02](SPEC-02-hoja-de-hechos-aprobada.md) | La hoja de hechos: dónde se escribe y cómo se aprueba | `H-05` · G17 | Escrita |
-| SPEC-03 | Variante de contexto B | `P-02` · G7 | Pendiente |
-| SPEC-04 | Bloque «dicho por usted, no documentado en la carpeta» | `P-05` · `P-06` · G6 | Pendiente |
-| SPEC-05 | Blindaje de la marca ` - REVISADO` | `PM-M-2` · G25 | Pendiente |
-| SPEC-06 | `0-Estado del caso`: reemplazo dirigido, no reescritura | `H-11` · G19 | Pendiente |
-| SPEC-07 | Los doce hallazgos de `inventario-de-bienes` | V-1 | Pendiente |
-| SPEC-08 | Índice de las salidas de una pasada | `P-07` · G37 | Pendiente |
+| # | Spec | Familia | Cierra | Estado |
+|---|---|---|---|---|
+| [SPEC-01](SPEC-01-instalacion-del-plugin.md) | Instalación del plugin desde el remoto | defecto | `EP-ENTRADA-0` · `H-10` | **Parcialmente ejecutada.** O-1 a O-4 pasan; O-5 a O-7 solo en su máquina |
+| ~~SPEC-02~~ | ~~La hoja de hechos: dónde se escribe y cómo se aprueba~~ | — | ~~`H-05` · G17~~ | **RETIRADA — el defecto ya estaba cerrado.** Ver abajo |
+| SPEC-03 | Variante de contexto B | defecto | `P-02` · G7 | Pendiente — no escrita |
+| SPEC-04 | Bloque «dicho por usted, no documentado en la carpeta» | defecto | `P-05` · `P-06` · G6 | Pendiente — no escrita |
+| SPEC-05 | Blindaje de la marca ` - REVISADO` | defecto | `PM-M-2` · G25 | Pendiente — no escrita |
+| SPEC-06 | `0-Estado del caso`: reemplazo dirigido, no reescritura | defecto | `H-11` · G19 | Pendiente — no escrita |
+| SPEC-07 | Los doce hallazgos de `inventario-de-bienes` | defecto | `V-1` | Pendiente — no escrita |
+| SPEC-08 | Índice de las salidas de una pasada | defecto | `P-07` · G37 | Pendiente — no escrita |
 
-**Orden:** SPEC-01 primero porque desbloquea todo lo demás —hasta que ella pueda instalar, ninguna corrección le llega—. Después SPEC-02, que es el eslabón partido del oleoducto. El resto por valor.
+> **Cuenta honesta: una escrita y ejecutada a medias, una retirada, seis que hoy son solo una fila de esta tabla.** «Pendiente» aquí significa que el archivo **no existe**. El índice del 31/08 marcaba SPEC-02 como «Escrita» y la enlazaba; el archivo nunca existió. Corregido.
 
-**No están todas las que faltan.** El backlog tiene ~90 ítems reales; estas ocho son las que se pueden construir **sin el Core** y cierran lo que más pesa. Las demás esperan a que se decida qué es la primera versión — que es el hueco V-10 y no lo decide una spec.
+### Por qué se retiró SPEC-02, y qué queda vivo de su grupo
+
+Iba a especificar el arreglo de `H-05` —*«dos comandos consumen una hoja de hechos que nadie escribe»*—. **Al ir a escribirla, se leyó el código y la cadena estaba completa:**
+
+| Eslabón | Dónde | Qué dice |
+|---|---|---|
+| **Productor** | `hechos-con-prueba/SKILL.md` §4 | Escribe en `2-Borradores/Hechos - <caso> - <AAAA-MM-DD>.md`, no sobrescribe, y explica cómo ella marca ` - REVISADO` — con la prohibición de que el modelo la ponga |
+| **Consumidor** | `redactar-escrito/SKILL.md` §3 | Mira esa ruta exacta y **se detiene** si no hay archivo con la marca |
+| **Consumidor** | `inventario-de-anexos/SKILL.md` §5 | Igual, con sus tres vías de emparejamiento en orden |
+| **Verificación** | `docs/discovery/primera-ejecucion-real.md` §4 | *«`redactar-escrito` se negó a redactar»* ante un caso sin hechos aprobados. **Se comprobó en ejecución real, no en revisión de escritorio** |
+
+**El identificador SPEC-02 no se reutiliza.** Misma disciplina que las etiquetas de hecho: si se retira, se retira con él. Reciclarlo haría que dos documentos llamen SPEC-02 a dos cosas — exactamente lo del «séptimo comando».
+
+**Lo que sí sigue vivo del grupo G17** es la marca ` - REVISADO` frente a la extensión oculta de Windows: ella guarda `... - REVISADO` y el archivo queda `... - REVISADO.md.md` o sin extensión, y entonces **el comando no la ve y se niega a trabajar con hechos que ella sí aprobó**. Eso es `PM-M-2` y **ya tenía su propio identificador: SPEC-05**. No hacía falta SPEC-02 para nada.
+
+---
+
+## Qué se hace ahora, y qué no lo decido yo
+
+**Puedo escribir y ejecutar ya**, sin depender de nadie: SPEC-05 (la marca ` - REVISADO`), SPEC-06 (`0-Estado del caso`), SPEC-04 (el bloque de lo dicho no documentado) y SPEC-08 (el índice de salidas). Las cuatro son texto dentro de los `SKILL.md`, no necesitan Core ni instalar nada.
+
+**SPEC-03 —contexto B— es la más valiosa y la más delicada:** cambia a quién le habla el producto en su único uso real. No es una corrección de redacción; toca qué puede y qué no puede proponerle un sistema a quien decide. Merece decidirse, no escribirse de una.
+
+**No depende de mí, y bloquea más que todo lo anterior:**
+
+| Qué falta | Quién | Qué desbloquea |
+|---|---|---|
+| Instalar el plugin una vez y decir cómo aparecen los comandos | Usted o ella | Cerrar SPEC-01 · imprimir la guía |
+| Decidir **dónde se procesa el material** de ella | Usted | Entregar sin mentirle · licenciar |
+| Decidir **qué es la primera versión** (`V-10`) | Usted | El orden de todo lo demás |
+| Un ADR para `V-7` —autoridad apoyándose en salidas de IA— | Usted, con criterio jurídico | La spec de contexto B, y la venta |
+
+**No están todas las que faltan.** El backlog tiene 112 identificadores; estas ocho tocan lo que más pesa **y solo del lado de los defectos**. Las capacidades del mapa de arriba necesitan primero las decisiones de esa tabla.
