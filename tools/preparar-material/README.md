@@ -95,3 +95,26 @@ Por eso el registro que emite este script repite, en su propia salida, la regla 
 - **ADR-016** — Ingesta de material sin capa de texto. Este script es su implementación: instrumenta la cobertura (§6), declara el modo de captura (§7) y repite el invariante 1 en su salida.
 - **ADR-014** — El PDF consolidado es un derivado y **su numeración no es coordenada de cita**.
 - **ADR-011** — Los originales se copian con su huella y no se modifican nunca.
+
+---
+
+## `medir_realce.py` — el instrumento, no la mejora
+
+Mide si aclarar la imagen antes del OCR aumenta lo que el reconocedor ve. **No modifica la tubería:** lee, mide y escribe un informe. Existe para que ninguna mejora de imagen entre en producción sin números.
+
+```bash
+CASO_RECIBIDOS="/ruta/al/caso/1-Documentos recibidos" python medir_realce.py informe.json
+```
+
+Seis variantes contra la pasada actual, con la instrumentación de tres niveles —cajas detectadas, líneas devueltas tras el filtro, caracteres—, más el solapamiento de cajas entre pasadas.
+
+**Lo que midió el 2026-08-31** sobre cinco páginas reales, en `docs/CAPACIDADES-PYTHON-VERIFICADAS.md` §4:
+
+| | |
+|---|---|
+| Ampliar la imagen al doble | **No sirve.** `det_limit_side_len=2560` la reduce otra vez. La palanca no está conectada |
+| Realce de nitidez (CLAHE + suavizado con bordes + máscara de enfoque) | **+11,8 % líneas devueltas, +43,7 % caracteres** — y pierde renglones en otras páginas |
+| Cajas detectadas | **Entre −1,9 % y +0,6 %.** El realce **no ayuda a detectar** |
+| Solapamiento de cajas entre base y realce | **93 %** |
+
+> **La conclusión que gobierna esta carpeta:** el realce mejora **el reconocimiento**, no **la detección**. **No reduce la omisión silenciosa** que ADR-016 declara, y no sustituye a la segunda opinión de `segunda_opinion.py`. Presentarlo como si lo hiciera sería vender lo contrario de lo que hace.
