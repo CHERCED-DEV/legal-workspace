@@ -1,12 +1,35 @@
-# Primer pase del arnés sobre un caso real — Salento, expediente [radicado del expediente]
+# Segundo pase del arnés sobre un caso real — Salento, expediente [radicado del expediente]
 
 **Fecha:** 2026-08-27/28. **Material:** 23 fotografías JPG (8 documentos, 23 páginas, 45,5 MB).
 **Contexto:** B — la usuaria es abogada de la Inspección de Policía de Salento y actúa como
 contradictor interno. Ver `memory/contexto-b-inspeccion-salento.md`.
 
-> **Esto es el resultado negativo y positivo que el proyecto llevaba tres fases pidiendo:**
-> `docs/ESTADO-DEL-PROYECTO.md` §0.10 decía que no existía «un solo dato sobre el trabajo real».
-> Ahora existe uno. Lo que sigue es lo que se midió, no lo que se esperaba.
+> ## CORRECCIÓN — 2026-08-28. Este documento se llamaba «Primer pase» y no lo era.
+>
+> **Hubo un pase real anterior:** el caso **el caso de familia**, el 2026-08-26 — 56 páginas, cuatro
+> de los seis comandos, con sus salidas en `Despacho/Familia/el caso de familia…/2-Borradores/`,
+> **incluidos dos `.docx`**. Está documentado en `docs/PLAN-DE-MEJORA.md`, que además trae sus
+> mediciones: 180 turnos, ~207 KB de salida, **50,8 M de contexto releído y ~3 M facturables**.
+>
+> **Las dos afirmaciones que este documento hacía en su encabezado eran falsas:**
+>
+> 1. **«Primer pase».** Era el segundo.
+> 2. **«El proyecto llevaba tres fases sin un solo dato del trabajo real».** Falso. Lo que dice
+>    `ESTADO-DEL-PROYECTO.md` §0.10 es algo distinto y más estrecho: que no hay datos sobre **la
+>    frecuencia con que la abogada usa cada capacidad**. Confundí una cosa con la otra.
+>
+> **Por qué ocurrió, que es lo que importa:** escribí este documento **sin haber leído
+> `docs/PLAN-DE-MEJORA.md`**, que existía desde el día anterior y contenía el diagnóstico, las
+> mediciones y once mejoras numeradas. Es exactamente la enfermedad que este mismo corpus ya tiene
+> documentada —dos ledgers con identificadores que colisionan, seis archivos para una capacidad— y
+> la cometí yo mientras la citaba.
+>
+> **La regla que sale de aquí:** *antes de añadir un documento de planeación a este repositorio, hay
+> que leer los que ya existen.* No es una cortesía: es la única forma de que el corpus no siga
+> creciendo en anchura en vez de en profundidad.
+>
+> Lo que sigue es lo que se midió en el pase de Salento, y sigue siendo válido — pero léase como
+> **el segundo** pase, y contra el primero, no en el vacío.
 
 ---
 

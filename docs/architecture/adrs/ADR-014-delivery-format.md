@@ -6,7 +6,13 @@ Proposed
 
 ## Contexto
 
-El informe de crítica registró como H-13 que las tablas de Markdown pegadas en Word son una hilera de tuberías, y que la promesa «lista para pegar» falla al primer intento. Era una predicción de diseño. El pase real del 2026-08-27/28 sobre el expediente [radicado del expediente] la convirtió en hecho observado, y añadió algo que la predicción no decía: **el problema no es el pegado, es la forma del entregable**.
+El informe de crítica registró como H-13 que las tablas de Markdown pegadas en Word son una hilera de tuberías, y que la promesa «lista para pegar» falla al primer intento.
+
+> **CORRECCIÓN — 2026-08-28.** La versión anterior de este párrafo decía que H-13 «era una predicción de diseño» que el pase de Salento «convirtió en hecho observado». **Es inexacto y hay que corregirlo:** el pase anterior sobre el caso el caso de familia (2026-08-26) **ya había producido dos `.docx`** —`Inventario de anexos … pasada 1` y `pasada 2`—, y `inventario-de-bienes/SKILL.md` **ya especificaba** salida en Word. Es decir: la necesidad estaba identificada y parcialmente atendida antes de este ADR.
+>
+> **Lo que el pase de Salento sí aportó, y es lo que este ADR decide:** que la salida en Word deje de ser un acierto de una pasada y pase a ser **forma nativa con reglas** —dos capas, tablas reales obligatorias, encabezado de propuesta, fallo declarado—, más un conversor reutilizable en vez de trabajo a mano cada vez.
+
+Con esa precisión hecha, el pase del 2026-08-27/28 sobre el expediente [radicado del expediente] añadió algo que la predicción no decía: **el problema no es el pegado, es la forma del entregable**.
 
 Tres datos del pase, verificables en `docs/PASE-REAL-SALENTO-2026-08-27.md`:
 
