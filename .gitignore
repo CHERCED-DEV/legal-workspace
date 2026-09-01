@@ -4,6 +4,6 @@
 __pycache__/
 *.pyc
 
-# Modelos de OCR: binarios de terceros, 16 MB. Ver tools/preparar-material/modelos/PROCEDENCIA.md
-tools/preparar-material/modelos/*.onnx
-tools/preparar-material/modelos/*.txt
+# Modelos de OCR: binarios de terceros, 16 MB. Ver plugins/despacho/scripts/modelos/PROCEDENCIA.md
+plugins/despacho/scripts/modelos/*.onnx
+plugins/despacho/scripts/modelos/*.txt

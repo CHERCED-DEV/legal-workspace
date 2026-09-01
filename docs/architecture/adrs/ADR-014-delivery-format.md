@@ -123,7 +123,7 @@ Descartada frontalmente: violaría la intocabilidad del material tal como llegó
 ## Preguntas pendientes
 
 1. **¿Plantilla propia de ella o formato nuestro?** Depende de que entregue un escrito suyo de modelo.
-2. **¿Quién genera el `.docx`: la skill o el Core?** Hoy es un script fuera del producto. Mientras el plugin sea texto puro la skill no puede ejecutar código: **o el Core lo asume, o el entregable Word depende de que alguien corra un script a mano.** Es la pregunta abierta más incómoda de este ADR.
+2. ~~**¿Quién genera el `.docx`: la skill o el Core?**~~ **CERRADA el 2026-09-01 por ADR-018.** La premisa era falsa: **un plugin sí puede llevar y ejecutar código** —`scripts/`, `bin/`, `${CLAUDE_PLUGIN_ROOT}` y `allowed-tools`—. «Texto puro» describía lo construido y se leyó como límite de lo posible. **La skill genera el `.docx` llamando a un script bundleado; ni el Core ni nadie a mano.** Cinco días abierta por una suposición que nadie comprobó.
 3. ¿El PDF consolidado se regenera cuando entra material nuevo, o se produce uno por tanda?
 4. ¿Se entrega también `.pdf` de las salidas, para imprimir sin riesgo de edición accidental?
 

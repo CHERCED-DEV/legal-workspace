@@ -11,9 +11,8 @@ import numpy as np
 import cv2
 from PIL import Image
 
-REPO = Path(__file__).resolve().parents[2]
 CASO = Path(os.environ.get("CASO_RECIBIDOS", "")).expanduser()
-MODELOS = REPO / "tools" / "preparar-material" / "modelos"
+MODELOS = Path(__file__).resolve().parent / "modelos"
 SALIDA = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("informe_realce.json")
 
 OCR_CTOR = dict(max_side_len=4000, det_limit_type="max", det_limit_side_len=2560)

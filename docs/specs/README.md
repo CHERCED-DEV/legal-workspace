@@ -62,11 +62,11 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | **Instalar y actualizar el plugin** | Remoto publicado y **con hoja de instalación**. **Cero instalaciones fuera de esta máquina** | ADR-012 | **SPEC-01** + **SPEC-11** — lo que falta ocurre en su máquina |
 | **Los nueve métodos** | Desplegados y ejecutados en dos casos reales | los `SKILL.md` son la spec | SPEC-04 a SPEC-08 — de defecto |
 | **Hablarle a una autoridad, no a una parte** | **No existe.** Los `SKILL.md` dicen «su clienta» y la única usuaria real es la inspección | ninguna | **SPEC-03** — pendiente |
-| **Leer fotos sin capa de texto (OCR)** | `tools/preparar-material/` funciona. **Vive fuera del plugin** | ADR-016 | **ninguna** |
-| **Detectar la omisión silenciosa (dos motores)** | `segunda_opinion.py` escrito; Tesseract **sin instalar** | ADR-016 | **ninguna** |
-| **Entregable en Word** | `tools/md2docx/` produjo 139 tablas reales. **Script a mano, fuera del producto** | ADR-014 | **ninguna** |
-| **Transcribir audio de audiencia** | **No existe.** Solo está decidido el límite | ADR-017 | **ninguna** |
-| **Que una skill ejecute código (el Core)** | **No existe.** El plugin es texto puro | ADR-010 | **ninguna** |
+| **Leer fotos sin capa de texto (OCR)** | **Dentro del plugin** desde el 2026-09-01, con su comando `/preparar-material` | ADR-016 · **ADR-018** | el `SKILL.md` es su spec |
+| **Detectar la omisión silenciosa (dos motores)** | **Dentro del plugin**; sigue faltando el segundo motor | ADR-016 · **ADR-018** | Fase 5 de `/preparar-material` |
+| **Entregable en Word** | **Dentro del plugin.** Falta que `/redactar-escrito` lo invoque | ADR-014 · **ADR-018** | **la siguiente** |
+| **Transcribir audio de audiencia** | Motor y modelos instalados; **falta el script**. Ya no hay nada que lo bloquee salvo audio real | ADR-017 · **ADR-018** | **ninguna todavía** |
+| **Que una skill ejecute código** | ~~No existe~~ **SÍ SE PUEDE, y ya se hace.** El Core nunca hizo falta | **ADR-018** | probado con `/preparar-material` |
 | **Copia de seguridad del trabajo de ella** | **No existe.** ADR escrito, cero implementación | ADR-013 | **ninguna** — hueco `V-5` |
 | **Medir horas-persona y coste por caso** | **No existe.** Todo se mide en tokens | ninguna | **ninguna** — huecos `V-2`, `V-3` |
 | **Reanudar un comando que se cayó** | **No existe** | ninguna | **ninguna** — hueco `V-4` |
@@ -76,7 +76,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 
 ### Las tres cosas que este mapa deja a la vista
 
-1. **Tres capacidades ya construidas viven fuera del plugin.** OCR, segunda opinión y Word son Python; el plugin es texto puro y una skill no puede ejecutar código. Es la **pregunta 2 abierta de ADR-014**, dicha allí sin rodeos: *o el Core lo asume, o el entregable Word depende de que alguien corra un script a mano.* Mientras eso no se decida, ninguna spec de esas tres capacidades puede cerrarse — **y la dependencia es esa decisión, no el esfuerzo de escribirla.**
+1. ~~Tres capacidades ya construidas viven fuera del plugin.~~ **RESUELTO el 2026-09-01 — y era una suposición falsa, no una limitación.** Un plugin sí puede llevar y ejecutar código. Las tres ya viven dentro, en `plugins/despacho/scripts/`. **«Texto puro» describía lo construido y se leyó como límite de lo posible**; ese error puso al Core —una pieza que no existe— como dependencia de tres capacidades que funcionaban. Ver ADR-018.
 
 2. **Los dos riesgos mayores no tienen ni decisión ni spec.** `V-7` —si una inspectora puede apoyar un acto administrativo en una salida de IA, si debe declararlo, qué le pasa al acto si la cita sale mal— y `V-8` —quién responde por los datos de terceros—. No son deuda técnica: son los dos frenos de licenciar esto a alguien. **Les falta un ADR antes que una spec**, por la regla 2.
 
