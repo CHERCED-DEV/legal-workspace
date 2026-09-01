@@ -1,7 +1,8 @@
 ---
 name: inventario-de-anexos
 description: Método para recorrer los documentos de un caso y producir un inventario de anexos numerado —qué es cada documento, quién lo produjo, de qué fecha es y a qué afirmación sirve—, más un bloque separado con lo que falta. Úsalo cuando pidan armar la lista de anexos, ordenar los documentos que se acompañan a un escrito, o establecer qué documentos faltan, se mencionan y no están, o están pero no se pueden usar. No lo uses para valorar prueba, decidir qué se aporta, redactar el escrito ni responder preguntas de derecho.
-version: 0.2.5
+version: 0.2.6
+allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
 # inventario-de-anexos — qué se acompaña, a qué sirve y qué falta
@@ -300,6 +301,23 @@ Preparado el «fecha». Propuesta para su revisión.
 ```
 
 ---
+
+
+### La entrega en Word la produce un programa, no la escribes tú
+
+**Escribe primero el `.md` en `2-Borradores/`, y después conviértelo:**
+
+```
+python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py "<el .md>" "<el .docx>" "«titulo»" "«subtitulo»"
+```
+
+Título y subtítulo son opcionales; sin ellos toma el primer `#` del archivo y la línea siguiente. **Y si fuerzas el subtítulo, el original no se pierde:** baja al cuerpo como bloque destacado — esa línea suele ser el descargo, y en la primera versión del conversor desaparecía sin dejar rastro.
+
+**Las dos capas son obligatorias y dicen lo mismo** (ADR-014): el `.md` es la capa de trabajo —la que permite comparar dos pasadas—, el `.docx` es la de entrega. **La de entrega no es un resumen; si omite algo, lo declara.**
+
+**Si el conversor no está o falla:** escribe el contenido en texto en esa misma carpeta y **dilo con todas las letras**. **Nunca des por hecho un archivo que no viste quedar.** El comando funciona sin el conversor, peor, y diciéndolo.
+
+**Comprobación, cuando importe:** `python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py "<el .docx>" "<el .md>"` mide cuánto texto sobrevivió. **≥99 % ok · 95-99 % revisar · <95 % pérdida.**
 
 ## 8. Lo que este método NO hace
 

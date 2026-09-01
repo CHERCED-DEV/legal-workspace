@@ -1,7 +1,8 @@
 ---
 name: cronologia
 description: Método para armar la línea de tiempo de un caso a partir del material recibido —contratos, correos, comprobantes, actas, entrevistas—, con la fuente exacta de cada fecha, su grado de certeza (documentada, referida, aproximada, deducida o en conflicto), los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. Úsalo cuando pidan una cronología, ordenar los hechos en el tiempo, reconstruir qué pasó cuándo, o revisar si las fechas del caso se contradicen. No lo uses para redactar escritos, contar plazos, valorar prueba, decidir qué fecha es la buena, ni establecer que una cosa causó otra.
-version: 0.1.5
+version: 0.1.6
+allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
 # cronologia — la línea de tiempo, con la calidad de cada fecha
@@ -262,6 +263,23 @@ Quedó fuera por decisión propia: «nada / esto y por qué»
 **Bloque para pegar (solo si ella lo pide).** Los mismos eventos en líneas numeradas y en el orden de la tabla, para llevarlos a un escrito. **Tres condiciones sin excepción:** cada línea conserva **de dónde sale**; ninguna fecha pierde su matiz (lo referido se escribe *"según refiere la señora Ríos"*, lo aproximado conserva la expresión literal, lo deducido dice que se deduce); y **los conflictos aparecen con sus dos versiones**. Un bloque para pegar que limpia las marcas es exactamente el daño que este método existe para evitar. No se omite ningún evento por conveniencia: si ella quiere quitar alguno, lo quita ella.
 
 **Segunda pasada sobre el mismo caso.** No se reescribe el archivo anterior: **se crea uno nuevo**, con su fecha —y si ya hay uno de hoy, añadiendo ` - 2` al nombre, nunca encima del anterior— y con dos líneas más al inicio — *qué material es nuevo respecto de la pasada del «fecha»* y *qué eventos de la pasada anterior podrían haber quedado afectados por ese material*, nombrando etiquetas. **El skill no decide que una fecha anterior quedó superada:** señala el impacto y devuelve la decisión.
+
+
+### La entrega en Word la produce un programa, no la escribes tú
+
+**Escribe primero el `.md` en `2-Borradores/`, y después conviértelo:**
+
+```
+python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py "<el .md>" "<el .docx>" "«titulo»" "«subtitulo»"
+```
+
+Título y subtítulo son opcionales; sin ellos toma el primer `#` del archivo y la línea siguiente. **Y si fuerzas el subtítulo, el original no se pierde:** baja al cuerpo como bloque destacado — esa línea suele ser el descargo, y en la primera versión del conversor desaparecía sin dejar rastro.
+
+**Las dos capas son obligatorias y dicen lo mismo** (ADR-014): el `.md` es la capa de trabajo —la que permite comparar dos pasadas—, el `.docx` es la de entrega. **La de entrega no es un resumen; si omite algo, lo declara.**
+
+**Si el conversor no está o falla:** escribe el contenido en texto en esa misma carpeta y **dilo con todas las letras**. **Nunca des por hecho un archivo que no viste quedar.** El comando funciona sin el conversor, peor, y diciéndolo.
+
+**Comprobación, cuando importe:** `python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py "<el .docx>" "<el .md>"` mide cuánto texto sobrevivió. **≥99 % ok · 95-99 % revisar · <95 % pérdida.**
 
 ## 7. Si el documento le habla a la máquina
 

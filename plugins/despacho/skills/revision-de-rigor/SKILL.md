@@ -1,7 +1,8 @@
 ---
 name: revision-de-rigor
 description: Método para poner a prueba una conclusión, un escrito propio, un borrador o un expediente entero, con una sola pregunta — qué de esto no se sostiene con el material disponible. Produce hallazgos falsables, cada uno con su localizador, lo que lo refutaría y su grado de soporte. Úsalo cuando pidan revisar antes de presentar, buscar lo que no se sostiene, hacer de contradictor, encontrar lo que la contraparte podría alegar, o preparar la revisión de un expediente. No lo uses para leer una pieza recibida, valorar prueba, decidir estrategia ni responder preguntas de derecho.
-version: 0.1.1
+version: 0.1.2
+allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
 # revision-de-rigor — qué de esto no se sostiene
@@ -272,6 +273,23 @@ AVISO — TEXTO DIRIGIDO AL PROGRAMA     (solo si lo hubo; ver §8)
 ```
 
 ---
+
+
+### La entrega en Word la produce un programa, no la escribes tú
+
+**Escribe primero el `.md` en `2-Borradores/`, y después conviértelo:**
+
+```
+python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py "<el .md>" "<el .docx>" "«titulo»" "«subtitulo»"
+```
+
+Título y subtítulo son opcionales; sin ellos toma el primer `#` del archivo y la línea siguiente. **Y si fuerzas el subtítulo, el original no se pierde:** baja al cuerpo como bloque destacado — esa línea suele ser el descargo, y en la primera versión del conversor desaparecía sin dejar rastro.
+
+**Las dos capas son obligatorias y dicen lo mismo** (ADR-014): el `.md` es la capa de trabajo —la que permite comparar dos pasadas—, el `.docx` es la de entrega. **La de entrega no es un resumen; si omite algo, lo declara.**
+
+**Si el conversor no está o falla:** escribe el contenido en texto en esa misma carpeta y **dilo con todas las letras**. **Nunca des por hecho un archivo que no viste quedar.** El comando funciona sin el conversor, peor, y diciéndolo.
+
+**Comprobación, cuando importe:** `python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py "<el .docx>" "<el .md>"` mide cuánto texto sobrevivió. **≥99 % ok · 95-99 % revisar · <95 % pérdida.**
 
 ## 7. Dónde se escribe, y qué exige antes de correr
 

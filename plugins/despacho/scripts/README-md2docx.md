@@ -1,3 +1,16 @@
+> **RETIRADO EL CONVERSOR DE NODE — 2026-09-01.** `md2docx.js` y `lib.js` se eliminaron. Dependían de Node y de `NODE_PATH='C:
+vm4w
+odejs
+ode_modules'`, **una ruta que solo existe en la máquina de quien lo escribió**: en la de ella el conversor habría fallado siempre.
+>
+> Lo sustituye **`md2docx.py`**, mismo comportamiento, sin segundo tiempo de ejecución (ADR-018). **Verificado idéntico en cuatro documentos reales** —incluidos dos entregables del expediente—: 36 tablas, 290 filas, 55.848 caracteres, **cero diferencias** en tablas, filas, celdas y caracteres. La retención medida sobre el original es del **100 %**.
+>
+> Se retira en vez de conservarse porque dos conversores derivan, y ADR-014 invariante 6 exige que las dos capas digan lo mismo.
+>
+> **Uso:** `python md2docx.py entrada.md salida.docx "Título" "Subtítulo"`
+
+---
+
 # md2docx — convertir una salida del arnés en un documento de Word
 
 **Qué es.** Un conversor de Markdown a `.docx` con **tablas de Word de verdad**, escrito para que las salidas del arnés lleguen a la abogada en el formato que ella usa.

@@ -8,7 +8,7 @@
     {
       "name": "despacho",
       "source": "./plugins/despacho",
-      "description": "Copiloto de despacho, nueve metodos: convierte entrevistas y documentos en hechos con su prueba, revisa lo que llega, arma cronologias, inventarios de anexos y de bienes, pone a prueba una conclusion propia y redacta borradores."
+      "description": "Copiloto de despacho, once metodos con su propia oficina de programas: prepara el material que llega, busca dentro del expediente, convierte entrevistas y documentos en hechos con su prueba, arma cronologias e inventarios, pone a prueba una conclusion propia y entrega borradores en Word."
     }
   ]
 }

@@ -1,7 +1,8 @@
 ---
 name: redactar-escrito
 description: Método para producir un borrador en Word a partir del material ya revisado de un caso: redacta la parte fáctica y monta la estructura, deja marcado y visible cada hueco que el material no permite llenar, y entrega aparte de dónde sale cada frase. Úsalo cuando pidan redactar, armar o preparar un escrito, una solicitud, un memorial o una respuesta con el material del caso. No lo uses para redactar fundamentos de derecho, citar normas o jurisprudencia, calificar jurídicamente los hechos, decidir qué clase de escrito presentar, ni construir los hechos (eso es hechos-con-prueba).
-version: 0.1.5
+version: 0.1.6
+allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
 # redactar-escrito — armar un borrador con lo que el caso sostiene
@@ -236,6 +237,23 @@ Quitar ese encabezado es acto suyo: tú no lo quitas nunca, ni aunque te lo pida
 > **Lo que produce este comando no es prueba de nada. Es trabajo, no evidencia.**
 
 Un borrador repite lo que dicen los documentos, con mejor redacción; semanas después esa mejor redacción se lee como si fuera la fuente. Por eso **ningún trabajo posterior cita el borrador como origen de un hecho** —es la regla de §2.1 aplicada a lo que tú produces—: el origen son los documentos y lo que ella dijo. El borrador es su forma ordenada, y una forma ordenada no acredita nada.
+
+
+### La entrega en Word la produce un programa, no la escribes tú
+
+**Escribe primero el `.md` en `2-Borradores/`, y después conviértelo:**
+
+```
+python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py "<el .md>" "<el .docx>" "«titulo»" "«subtitulo»"
+```
+
+Título y subtítulo son opcionales; sin ellos toma el primer `#` del archivo y la línea siguiente. **Y si fuerzas el subtítulo, el original no se pierde:** baja al cuerpo como bloque destacado — esa línea suele ser el descargo, y en la primera versión del conversor desaparecía sin dejar rastro.
+
+**Las dos capas son obligatorias y dicen lo mismo** (ADR-014): el `.md` es la capa de trabajo —la que permite comparar dos pasadas—, el `.docx` es la de entrega. **La de entrega no es un resumen; si omite algo, lo declara.**
+
+**Si el conversor no está o falla:** escribe el contenido en texto en esa misma carpeta y **dilo con todas las letras**. **Nunca des por hecho un archivo que no viste quedar.** El comando funciona sin el conversor, peor, y diciéndolo.
+
+**Comprobación, cuando importe:** `python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py "<el .docx>" "<el .md>"` mide cuánto texto sobrevivió. **≥99 % ok · 95-99 % revisar · <95 % pérdida.**
 
 ## 8. El cierre obligatorio de toda entrega
 

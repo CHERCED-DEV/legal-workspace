@@ -13,12 +13,12 @@ decisión tomada sin confirmación, que puede resultar falsa.
 
 ## 1. Qué es Despacho
 
-Un plugin de Claude que aporta **nueve métodos de trabajo jurídico**. No es un programa: es
+Un plugin de Claude que aporta **once métodos de trabajo jurídico**. No es un programa: es
 texto. Cada método le dice a Claude cómo hacer una tarea concreta del despacho con un
 procedimiento fijo, qué **no** puede hacer nunca dentro de esa tarea, y cómo tiene que
 entregar el resultado.
 
-La regla que comparten los nueve: **todo sale del material del caso, y de dónde sale se
+La regla que comparten los once: **todo sale del material del caso, y de dónde sale se
 dice**. Ninguno valora prueba, ninguno calcula plazos, ninguno pone derecho. Lo que el
 material no da, se marca como faltante en vez de rellenarse.
 
@@ -26,6 +26,8 @@ material no da, se marca como faltante en vez de rellenarse.
 
 | Comando | Qué hace de verdad |
 |---|---|
+| `/preparar-material` | **Llama a un programa**, no lo hace a mano: descomprime, ordena, copia los originales sin tocarlos, calcula huellas, detecta duplicados, extrae texto de fotografías con instrumentación de cobertura, arma el PDF consolidado y escribe el registro de ingesta. **Con cero fichas de lectura.** No lee el caso: lo monta. |
+| `/buscar-en-el-caso` | **Llama a un programa:** dice en qué archivo y en qué renglón aparece un nombre, una cifra o una fecha, sin abrir ni leer nada. Marca los renglones que son basura del OCR. **No cita y no concluye ausencia**: cero resultados no significa que no esté en el papel. |
 | `/hechos-con-prueba` | Recorre el material del caso y devuelve **hechos candidatos**, cada uno emparejado con el fragmento concreto que lo apoya, lo contradice o lo sitúa; los que no tienen nada detrás quedan marcados como tales. No valora prueba ni decide estrategia. |
 | `/revisar-documento` | Lee **un** documento que llegó (escrito de contraparte, requerimiento, contrato, respuesta) y devuelve en una pasada qué es, qué afirma, qué pide, qué decide, qué referencias de tiempo trae **textualmente** y qué parece exigir actuación. No calcula plazos ni dice si algo está vencido. |
 | `/estado-del-caso` | Lee la carpeta del caso y reconstruye **solo con lo que dicen los archivos** qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta y qué quedó a medias o sin respuesta. No pronostica ni valora solidez. |
@@ -54,7 +56,7 @@ documentación: se comprueban abriendo un archivo suyo.
   es falso y media promesa del método se cae: habría que decirle que la entrevista entra
   transcrita por ella, no en audio.
 - **Qué hace con un PDF escaneado sin capa de texto.** Es el formato en que llegan la mitad de
-  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los nueve parten de
+  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los once parten de
   leer el material y citar página. Hay que saber si lo lee, si lo lee mal en silencio, o si avisa
   de que no puede — y las tres respuestas llevan a instrucciones distintas para ella.
 
@@ -225,7 +227,7 @@ Un Core local instalado bajo ese supuesto sin comprobarlo simplemente no aparece
    inexistente, hay que mirarlo en su cuenta. Lo que se encuentre se le dice a ella tal cual,
    incluido que no se encontró nada; y si no lo hay, el diseño del Core tiene que asumirlo,
    no desearlo.
-2. Verificar qué ve la sesión de la carpeta del caso en cada modo. Los nueve métodos leen y
+2. Verificar qué ve la sesión de la carpeta del caso en cada modo. Los once métodos leen y
    escriben archivos de su carpeta; conviene saber con qué ruta trabaja realmente antes de
    apoyar nada encima.
 
@@ -281,7 +283,7 @@ tener nada que hacer allí.
 
 1. Crear la carpeta `plugins/despacho/skills/<nombre-del-comando>/`. El nombre de la carpeta
    es el nombre del comando: `skills/contar-terminos/` -> `/contar-terminos`.
-2. Dentro, un `SKILL.md` que empiece por el bloque de metadatos, igual que los nueve que ya
+2. Dentro, un `SKILL.md` que empiece por el bloque de metadatos, igual que los once que ya
    están:
    ```yaml
    ---
@@ -348,5 +350,5 @@ corrientes**, y así hay que presentarlo — a ella la primera.
 | Que **Update** traiga lo nuevo sin subir `version` (§5) | Al publicar el primer cambio. |
 | Que `/redactar-escrito` produzca `.docx` en su entorno (§1) | En el primer borrador real. |
 | Que pueda transcribir o citar minutos de una grabación (§1) | **Antes de sentarse a trabajar**, con un archivo real de ella. Bloquea el Ejemplo 2 de su guía y media promesa de `/hechos-con-prueba`. |
-| Qué hace con un PDF escaneado sin capa de texto (§1) | **Antes de sentarse a trabajar**, con un archivo real de ella. Si no lo lee, no funciona ninguno de los nueve. |
+| Qué hace con un PDF escaneado sin capa de texto (§1) | **Antes de sentarse a trabajar**, con un archivo real de ella. Si no lo lee, no funciona ninguno de los once. |
 | Nube o local, y si en Pro hay control para elegirlo (§6) | **Antes de que abra material de una clienta.** Es secreto profesional hoy, no arquitectura de mañana. |

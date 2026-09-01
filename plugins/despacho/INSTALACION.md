@@ -13,10 +13,12 @@ Esta hoja **es para quien instala**, no para quien usa. Termina exactamente dond
 | | |
 |---|---|
 | **Claude Code**, instalado y con sesión iniciada | Es la ventana donde se escribe |
-| **Conexión** | Solo para instalar y para trabajar. El plugin en sí son nueve archivos de texto |
+| **Conexión** | Solo para instalar y para trabajar. El plugin son once métodos de texto más una carpeta de programas |
 | **Nada más** | No hay servidor, ni base de datos, ni clave que pedir, ni nada que pagar aparte de la suscripción de ella |
 
-**No hace falta** Python, ni Git, ni saber programar. Las herramientas de `tools/` son otra cosa y **no forman parte de esta instalación**.
+**No hace falta** Git ni saber programar. **Python es opcional y hace la diferencia:** sin él los once comandos funcionan igual —el modelo hace a mano el trabajo mecánico, más lento y gastando mucha más lectura—; con él, la oficina de programas del plugin prepara el material, busca dentro del expediente y produce los Word. **Ningún comando exige Python para arrancar, y todos declaran cuándo no lo tuvieron.**
+
+Si va a instalarlo: `python.org`, versión 3.9 o posterior, marcando «Add to PATH». Las bibliotecas las pide cada programa cuando le hacen falta, diciendo cuál.
 
 ---
 
@@ -57,9 +59,9 @@ Cuatro cosas, y las cuatro están sin comprobar:
 | Qué | Por qué importa |
 |---|---|
 | **Con qué nombre aparecen los comandos** | Es el único paso que nadie ha visto nunca |
-| **Que aparezcan los nueve**, no seis | Hasta hoy la documentación decía seis. Si salen menos de nueve, algo no se instaló |
+| **Que aparezcan los once**, no seis | Hasta el 2026-09-01 la documentación decía seis. Si salen menos de once, algo no se instaló |
 | **Que no escriba en `1-Documentos recibidos/`** | Es la regla dura de todo el sistema. Se comprueba mirando la fecha de modificación de esa carpeta antes y después |
-| **Qué hace con un PDF escaneado sin texto** | Si no lo lee, no funciona ninguno de los nueve con material fotografiado. Conviene probarlo con un archivo real **antes** de sentarse a trabajar |
+| **Qué hace con un PDF escaneado sin texto** | Si no lo lee, no funciona ninguno de los once con material fotografiado. **Con Python, `/preparar-material` lo resuelve antes**: extrae el texto una vez y los demás trabajan sobre él. Conviene probarlo con un archivo real **antes** de sentarse a trabajar |
 
 ---
 
@@ -69,7 +71,7 @@ Cuatro cosas, y las cuatro están sin comprobar:
 |---|---|
 | No encuentra el catálogo | Que el nombre esté bien escrito, y que haya conexión. El repositorio es público |
 | Instala pero no aparecen comandos | Probar en una **sesión nueva**: está sin comprobar si aparecen en una sesión ya abierta |
-| Aparecen menos de nueve | Falta alguno de los `SKILL.md`. Se ve comparando con la lista del `README.md` |
+| Aparecen menos de once | Falta alguno de los `SKILL.md`. Se ve comparando con la lista del `README.md` |
 | Un comando arranca y no hace lo que dice | **Eso no es de instalación, es de método.** Mande la salida: se corrige el `SKILL.md` y se vuelve a instalar |
 
 **Y una regla que vale para todo lo anterior:** si el resultado no coincide con lo que dice esta hoja, **no lo dé por bueno «porque más o menos funciona»**. La primera instalación es la única oportunidad de ver el producto con ojos limpios, y lo que se anote aquí es lo que corrige la documentación para todos los demás.

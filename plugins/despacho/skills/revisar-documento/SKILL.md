@@ -1,7 +1,8 @@
 ---
 name: revisar-documento
 description: Método para revisar un documento que llegó al caso —un escrito de la contraparte, una comunicación de una autoridad, un contrato, un requerimiento, una respuesta— y devolver en una sola pasada qué es, qué afirma, qué pide, qué decide, qué referencias temporales contiene textualmente y qué parece exigir una actuación. Úsalo cuando pidan revisar, leer, entender o resumir un documento recibido. No lo uses para redactar la respuesta, calcular plazos, decir si algo está vencido, calificar el documento ni responder preguntas de derecho.
-version: 0.1.3
+version: 0.1.4
+allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
 # revisar-documento — qué es, qué dice, qué le piden y qué exige actuación
@@ -177,6 +178,23 @@ CONTEO: «N» afirmaciones · «N» peticiones · «N» decisiones ·
 ---
 
 **Palabras que no se escriben nunca**: *probado, acreditado, demostrado, quedó claro, claramente, evidentemente, sin duda, resulta claro*. Todas afirman que algo quedó establecido, y eso no lo decides tú: **alegado no es acreditado**. Se escribe lo que el material dice y de dónde sale; la conclusión la saca ella.
+
+
+### La entrega en Word la produce un programa, no la escribes tú
+
+**Escribe primero el `.md` en `2-Borradores/`, y después conviértelo:**
+
+```
+python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py "<el .md>" "<el .docx>" "«titulo»" "«subtitulo»"
+```
+
+Título y subtítulo son opcionales; sin ellos toma el primer `#` del archivo y la línea siguiente. **Y si fuerzas el subtítulo, el original no se pierde:** baja al cuerpo como bloque destacado — esa línea suele ser el descargo, y en la primera versión del conversor desaparecía sin dejar rastro.
+
+**Las dos capas son obligatorias y dicen lo mismo** (ADR-014): el `.md` es la capa de trabajo —la que permite comparar dos pasadas—, el `.docx` es la de entrega. **La de entrega no es un resumen; si omite algo, lo declara.**
+
+**Si el conversor no está o falla:** escribe el contenido en texto en esa misma carpeta y **dilo con todas las letras**. **Nunca des por hecho un archivo que no viste quedar.** El comando funciona sin el conversor, peor, y diciéndolo.
+
+**Comprobación, cuando importe:** `python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py "<el .docx>" "<el .md>"` mide cuánto texto sobrevivió. **≥99 % ok · 95-99 % revisar · <95 % pérdida.**
 
 ## 6. Lo que no se entiende y lo que no se lee
 
