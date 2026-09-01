@@ -59,7 +59,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 
 | Capacidad | Estado real hoy | Decisión | Spec |
 |---|---|---|---|
-| **Instalar y actualizar el plugin** | Remoto publicado. **Cero instalaciones fuera de esta máquina** | ADR-012 | **SPEC-01** — parcial: O-5 a O-7 solo en su máquina |
+| **Instalar y actualizar el plugin** | Remoto publicado y **con hoja de instalación**. **Cero instalaciones fuera de esta máquina** | ADR-012 | **SPEC-01** + **SPEC-11** — lo que falta ocurre en su máquina |
 | **Los nueve métodos** | Desplegados y ejecutados en dos casos reales | los `SKILL.md` son la spec | SPEC-04 a SPEC-08 — de defecto |
 | **Hablarle a una autoridad, no a una parte** | **No existe.** Los `SKILL.md` dicen «su clienta» y la única usuaria real es la inspección | ninguna | **SPEC-03** — pendiente |
 | **Leer fotos sin capa de texto (OCR)** | `tools/preparar-material/` funciona. **Vive fuera del plugin** | ADR-016 | **ninguna** |
@@ -98,6 +98,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | SPEC-08 | Índice de las salidas de una pasada | defecto | `P-07` · G37 | Pendiente — no escrita |
 | [SPEC-09](SPEC-09-preguntas-de-derecho.md) | `preguntas-de-derecho`: las dos puertas que le faltan | defecto | salvedad de `H-04` · `V-1` | **Ejecutada** — falta probar la inyección |
 | [SPEC-10](SPEC-10-limite-del-texto-extraido.md) | El límite del material extraído, dentro de los `SKILL.md` | defecto | `H-16` · `EP-1.1-COORDENADA` | **Ejecutada** — falta una pasada real |
+| [SPEC-11](SPEC-11-la-primera-instalacion.md) | La primera instalación: que empezar no dependa de preguntar | defecto | `H-08` · defecto abierto de SPEC-01 | **Ejecutada** — falta que alguien instale |
 
 > **Cuenta honesta: tres escritas y ejecutadas —una de ellas a medias—, una retirada, cinco que hoy son solo una fila de esta tabla.** «Pendiente» aquí significa que el archivo **no existe**. El índice del 31/08 marcaba SPEC-02 como «Escrita» y la enlazaba; el archivo nunca existió. Corregido.
 
@@ -110,8 +111,9 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | `H-05` | Abierto — «dos comandos consumen un archivo que nadie escribe» | **Ya cerrado y verificado en ejecución real** |
 | `H-04` | Cerrable — «el bloque anti-inyección está en los nueve» | **Estaba en ocho.** Faltaba en la única skill cuyo trabajo es negarse |
 | `H-16` | Parcial — «no consta la regla dentro de los `SKILL.md`» | **No constaba en ninguna de las nueve**, ni en la de revisión de rigor |
+| `H-10` | Abierto — «la guía publica `/cronologia` como fiable» | **La guía ya advertía de las dos formas.** El defecto real era que **no existía hoja de instalación** |
 
-> **Tres de tres.** Ningún ítem del backlog resultó estar como decía. **La regla 4 no es una precaución: es lo único que ha funcionado.** Y el corolario incómodo: **los ~112 identificadores restantes tienen el mismo origen y tampoco están verificados contra el código.**
+> **Cuatro de cuatro.** Ningún ítem del backlog resultó estar como decía. **La regla 4 no es una precaución: es lo único que ha funcionado.** Y el corolario incómodo: **los ~112 identificadores restantes tienen el mismo origen y tampoco están verificados contra el código.**
 
 ### Por qué se retiró SPEC-02, y qué queda vivo de su grupo
 

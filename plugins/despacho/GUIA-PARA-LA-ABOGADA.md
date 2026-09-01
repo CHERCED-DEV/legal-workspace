@@ -4,7 +4,7 @@ Esto es un asistente de despacho. Usted le escribe en español lo que necesita y
 
 No hay botones que aprender. Se le escribe como se le escribiría a un pasante muy rápido, muy literal y sin criterio propio: hace exactamente lo que se le pide, no adivina, y cuando no sabe algo lo dice en vez de rellenarlo.
 
-> Quien le instaló esto debe mostrarle **en qué ventana escribe** y **en qué carpeta de su computador quedaron sus casos**. Esta guía empieza cuando eso ya está hecho.
+> Quien le instaló esto debe mostrarle **en qué ventana escribe** y **en qué carpeta de su computador quedaron sus casos**. Esta guía empieza cuando eso ya está hecho. *(Quien vaya a instalarlo tiene su propia hoja: `INSTALACION.md`, al lado de esta.)*
 
 ---
 
@@ -20,9 +20,11 @@ En la columna de la izquierda está lo que usted quiere lograr. En la de la dere
 | Las fechas de este caso no me cuadran y quiero verlas todas juntas | *"Ármame la línea de tiempo del caso López, con la fuente de cada fecha."* |
 | Tengo que armar la lista de anexos y me aterra que se me pase uno | *"Ármame el inventario de anexos del caso López y dime qué falta."* |
 | Ya decidí qué voy a presentar y quiero el borrador armado | *"Redáctame el borrador de la demanda del caso López con los hechos que ya aprobé."* |
+| Tengo que ver qué bienes y qué deudas aparecen en el material, y a nombre de quién | *"Ármame el inventario de bienes del caso López: qué documento respalda cada uno y qué valor dice."* |
+| Escribí algo y quiero saber qué de eso no se sostiene con el material | *"Ponme a prueba este borrador del caso López: qué no se sostiene con lo que hay en la carpeta."* |
 | Necesito saber cuándo se me vence esto | **Esto no lo hace, y es a propósito** (sección 5). Lo que sí puede pedirle: *"Sácame todas las fechas y plazos que menciona el documento, tal como los dice, sin calcular nada."* |
 
-**Nombres cortos.** Cada una de esas seis tareas tiene además un nombre corto que empieza con una barra: `/revisar-documento`, `/estado-del-caso`, `/hechos-con-prueba`, `/cronologia`, `/inventario-de-anexos`, `/redactar-escrito`. Puede que en su pantalla no aparezcan exactamente así, sino con `despacho:` delante —`/despacho:cronologia`—; es el mismo comando. Para salir de dudas sin preguntarle a nadie: escriba la barra sola y espere un segundo; sale la lista de todos, con el nombre que tienen en su máquina, y usted elige de ahí. Escribir la frase en español funciona igual de bien; el nombre corto sirve cuando quiere ir directo y sin explicar. *(Si escribiéndolos en español alguna vez no arranca lo que esperaba, use el nombre corto: es la forma más directa de pedirlo.)*
+**Nombres cortos.** Cada una de esas tareas tiene además un nombre corto que empieza con una barra: `/revisar-documento`, `/estado-del-caso`, `/hechos-con-prueba`, `/cronologia`, `/inventario-de-anexos`, `/inventario-de-bienes`, `/revision-de-rigor`, `/redactar-escrito`. **Son ocho.** Hay un noveno que **no se teclea y se activa solo**: cuando usted pregunte algo de derecho —qué dice la ley, si algo caducó, cuánto es el término—, le va a contestar que no lo responde y por qué (sección 5). **Con una diferencia que conviene saber: si es usted quien le dice cuál es la norma o el plazo, sí lo usa** — y en la salida dirá que salió de usted. Puede que en su pantalla no aparezcan exactamente así, sino con `despacho:` delante —`/despacho:cronologia`—; es el mismo comando. Para salir de dudas sin preguntarle a nadie: escriba la barra sola y espere un segundo; sale la lista de todos, con el nombre que tienen en su máquina, y usted elige de ahí. Escribir la frase en español funciona igual de bien; el nombre corto sirve cuando quiere ir directo y sin explicar. *(Si escribiéndolos en español alguna vez no arranca lo que esperaba, use el nombre corto: es la forma más directa de pedirlo.)*
 
 **Un aviso que ahorra disgustos:** él solo trabaja sobre lo que está en la carpeta del caso y sobre lo que usted le cuente en la conversación. Lo que esté en su correo, en papel sobre el escritorio o en su cabeza, para él no existe.
 

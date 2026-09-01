@@ -13,12 +13,12 @@ decisión tomada sin confirmación, que puede resultar falsa.
 
 ## 1. Qué es Despacho
 
-Un plugin de Claude que aporta **seis métodos de trabajo jurídico**. No es un programa: es
+Un plugin de Claude que aporta **nueve métodos de trabajo jurídico**. No es un programa: es
 texto. Cada método le dice a Claude cómo hacer una tarea concreta del despacho con un
 procedimiento fijo, qué **no** puede hacer nunca dentro de esa tarea, y cómo tiene que
 entregar el resultado.
 
-La regla que comparten los seis: **todo sale del material del caso, y de dónde sale se
+La regla que comparten los nueve: **todo sale del material del caso, y de dónde sale se
 dice**. Ninguno valora prueba, ninguno calcula plazos, ninguno pone derecho. Lo que el
 material no da, se marca como faltante en vez de rellenarse.
 
@@ -32,6 +32,7 @@ material no da, se marca como faltante en vez de rellenarse.
 | `/cronologia` | Extrae **todo evento con fecha**, con el documento y la página de donde sale cada una y **el grado de certeza de esa fecha** (documentada, referida, aproximada, deducida, en conflicto); añade los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. No cuenta plazos ni decide cuál fecha es la buena. |
 | `/inventario-de-anexos` | Produce la **tabla de anexos numerada** lista para pegar en un escrito —qué es cada documento, quién lo produjo, de qué fecha es, a qué afirmación sirve— y, en bloque aparte, **lo que falta**, separado en sus tres clases. No decide qué se aporta. |
 | `/inventario-de-bienes` | Recorre el material e inventaría **bienes y deudas**: qué documento respalda cada uno, a nombre de quién figura según ese documento, qué fecha trae y qué valor **transcrito**; más lo que falta y las contradicciones entre documentos. Señala el bien que aparece en un papel de un tercero y **en ninguna lista de las partes**. No decide qué bienes entran, no calcula, no reparte. |
+| `/revision-de-rigor` | Pone a prueba **una conclusión, un escrito propio o un expediente entero** con una sola pregunta: qué de esto no se sostiene con el material. Cada hallazgo lleva su localizador, **lo que lo refutaría** y su grado de soporte; y cuando hay dos partes, declara qué buscó en cada una y qué encontró en cada una, incluso donde no encontró nada. No valora prueba ni declara parcialidad. |
 | `/redactar-escrito` | A partir de material **que ella ya revisó**, arma un borrador en Word con la parte fáctica redactada, la estructura montada y **cada hueco marcado a la vista**; entrega aparte un segundo archivo con de dónde sale cada frase. No redacta fundamentos de derecho, no cita normas ni jurisprudencia, no califica jurídicamente nada. |
 | `preguntas-de-derecho` | **No se teclea: se activa solo.** Intercepta la pregunta que no se responde leyendo la carpeta —*«¿qué dice la ley sobre…?»*, *«¿esto caducó?»*, *«¿qué dijo la Corte?»*— y en vez de contestarla explica por qué no puede y ofrece lo que sí sale del material. Sin él, esa pregunta **no activa ningún comando** y contesta el modelo suelto, sin método y sin la regla de cero derecho. |
 
@@ -53,7 +54,7 @@ documentación: se comprueban abriendo un archivo suyo.
   es falso y media promesa del método se cae: habría que decirle que la entrevista entra
   transcrita por ella, no en audio.
 - **Qué hace con un PDF escaneado sin capa de texto.** Es el formato en que llegan la mitad de
-  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los seis parten de
+  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los nueve parten de
   leer el material y citar página. Hay que saber si lo lee, si lo lee mal en silencio, o si avisa
   de que no puede — y las tres respuestas llevan a instrucciones distintas para ella.
 
@@ -224,7 +225,7 @@ Un Core local instalado bajo ese supuesto sin comprobarlo simplemente no aparece
    inexistente, hay que mirarlo en su cuenta. Lo que se encuentre se le dice a ella tal cual,
    incluido que no se encontró nada; y si no lo hay, el diseño del Core tiene que asumirlo,
    no desearlo.
-2. Verificar qué ve la sesión de la carpeta del caso en cada modo. Los seis métodos leen y
+2. Verificar qué ve la sesión de la carpeta del caso en cada modo. Los nueve métodos leen y
    escriben archivos de su carpeta; conviene saber con qué ruta trabaja realmente antes de
    apoyar nada encima.
 
@@ -280,7 +281,7 @@ tener nada que hacer allí.
 
 1. Crear la carpeta `plugins/despacho/skills/<nombre-del-comando>/`. El nombre de la carpeta
    es el nombre del comando: `skills/contar-terminos/` -> `/contar-terminos`.
-2. Dentro, un `SKILL.md` que empiece por el bloque de metadatos, igual que los seis que ya
+2. Dentro, un `SKILL.md` que empiece por el bloque de metadatos, igual que los nueve que ya
    están:
    ```yaml
    ---
@@ -347,5 +348,5 @@ corrientes**, y así hay que presentarlo — a ella la primera.
 | Que **Update** traiga lo nuevo sin subir `version` (§5) | Al publicar el primer cambio. |
 | Que `/redactar-escrito` produzca `.docx` en su entorno (§1) | En el primer borrador real. |
 | Que pueda transcribir o citar minutos de una grabación (§1) | **Antes de sentarse a trabajar**, con un archivo real de ella. Bloquea el Ejemplo 2 de su guía y media promesa de `/hechos-con-prueba`. |
-| Qué hace con un PDF escaneado sin capa de texto (§1) | **Antes de sentarse a trabajar**, con un archivo real de ella. Si no lo lee, no funciona ninguno de los seis. |
+| Qué hace con un PDF escaneado sin capa de texto (§1) | **Antes de sentarse a trabajar**, con un archivo real de ella. Si no lo lee, no funciona ninguno de los nueve. |
 | Nube o local, y si en Pro hay control para elegirlo (§6) | **Antes de que abra material de una clienta.** Es secreto profesional hoy, no arquitectura de mañana. |

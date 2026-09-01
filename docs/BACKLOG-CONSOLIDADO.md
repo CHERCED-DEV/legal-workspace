@@ -171,7 +171,7 @@ Cada grupo es **un solo trabajo** visto desde varios documentos. La columna «me
 | G31 | El Core no existe y la nube degrada en silencio | `EP-B01`, `EP-FALLO-NUBE` | `EP-FALLO-NUBE` — la degradación se ve idéntica al funcionamiento correcto |
 | G32 | Knowledge Pack | `PLAN §5.2-2`, `PLAN §8-9`, `EP-B05`, `EP-P08` | `PLAN §5.2-2` el mercado · `EP-B05` el diseño |
 | G33 | Segundo caso | `PLAN §5.4`, `PLAN §8-7`, `PM-ESCALA` | Son **dos ejes**: otra materia y otra persona · un expediente grande |
-| G34 | Nunca se ha instalado | `PLAN §5.2-1`, `H-10` | `PLAN §5.2-1` |
+| G34 | Nunca se ha instalado | `PLAN §5.2-1`, `H-10` | `PLAN §5.2-1`. **`H-10` mal contado: comprobado el 2026-09-01, la guía §1 YA advierte que puede aparecer `/despacho:cronologia` y enseña a mirar la lista. El defecto real era otro y lo cierra SPEC-11: no existía hoja de instalación** |
 | G35 | Cuánto cuesta un caso | `PLAN §5.2-5`, `PLAN §8-2` | `PLAN §5.2-5` |
 | G36 | El esqueleto de la carpeta | `PM-4.1`, `PM-DP-8`, `PM-M-10(c)` | `PM-4.1-CARPETAS` |
 | G37 | Índice de las salidas | `P-07`, `PASE §6-6` | `P-07` |

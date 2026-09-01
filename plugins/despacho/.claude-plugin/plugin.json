@@ -1,10 +1,17 @@
 {
   "name": "despacho",
   "displayName": "Despacho",
-  "version": "0.1.0",
-  "description": "Copiloto de despacho para trabajo juridico: hechos con su prueba, revision de documentos recibidos, cronologias, inventario de anexos y borradores.",
+  "version": "0.2.0",
+  "description": "Nueve metodos de trabajo juridico sobre el material de un caso: hechos con su prueba, revision de un documento recibido, estado de la carpeta, cronologia con el grado de certeza de cada fecha, inventario de anexos, inventario de bienes y deudas, revision de rigor de una conclusion propia, borrador de escrito, y la regla de que no se responde derecho de memoria. Todo sale del material, y de donde sale se dice.",
   "author": {
     "name": "camilo hernandez"
   },
-  "keywords": ["legal", "derecho", "despacho", "expediente", "hechos", "prueba"]
+  "keywords": [
+    "legal",
+    "derecho",
+    "despacho",
+    "expediente",
+    "hechos",
+    "prueba"
+  ]
 }
