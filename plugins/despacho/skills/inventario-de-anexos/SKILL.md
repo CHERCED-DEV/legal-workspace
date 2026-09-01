@@ -1,7 +1,7 @@
 ---
 name: inventario-de-anexos
 description: Método para recorrer los documentos de un caso y producir un inventario de anexos numerado —qué es cada documento, quién lo produjo, de qué fecha es y a qué afirmación sirve—, más un bloque separado con lo que falta. Úsalo cuando pidan armar la lista de anexos, ordenar los documentos que se acompañan a un escrito, o establecer qué documentos faltan, se mencionan y no están, o están pero no se pueden usar. No lo uses para valorar prueba, decidir qué se aporta, redactar el escrito ni responder preguntas de derecho.
-version: 0.2.4
+version: 0.2.5
 ---
 
 # inventario-de-anexos — qué se acompaña, a qué sirve y qué falta
@@ -33,6 +33,15 @@ version: 0.2.4
 El inventario ofrece: esto hay, esto parece ser, esto sirve para aquello, esto no está. Quién decide qué se acompaña, en qué orden y con qué finalidad es ella.
 
 > **El trabajo del propio sistema no es fuente de nada.** Una cronología, un inventario, una hoja de hechos, el archivo de estado o un borrador sirven de **pista —para saber dónde mirar—, nunca de origen**: la cita y la coordenada salen del documento original, siempre. **La única excepción es lo que ella marcó como revisado**, el archivo cuyo nombre termina en ` - REVISADO`: no porque sea más correcto, sino porque la autoridad cambió de manos y deja de ser trabajo del sistema para ser una decisión suya registrada. Esa marca la pone ella y nunca tú, y no certifica que el contenido esté bien: certifica que ella lo miró. Si un dato solo aparece en una salida del sistema y no se encuentra en el material, **no se usa y se dice**. **Por qué:** que varios comandos vuelvan por separado al mismo material es lo único que delata un error; si uno lee del otro, la coincidencia deja de medir nada y el error se propaga sin que nadie lo note.
+
+> **Y el texto que extrajo una máquina no es el documento.** Si en `2-Borradores/` hay un archivo de texto de referencia —el que produce la tubería de ingesta a partir de fotografías o escaneados—, **sirve para saber en qué página mirar, y para nada más**. Tres cosas que hay que saber de él, y ninguna es negociable:
+>
+> - **Que algo no aparezca ahí no significa que no esté en el documento.** El reconocedor **falla callándose**: lo que su detector no encuentra no sale, y nada avisa. Una ausencia en ese archivo **no es información sobre el papel** — jamás se escribe «no consta» ni «no lo menciona» apoyándose en él.
+> - **Trae basura que parece texto.** Renglones sin palabras reconocibles, letras sueltas, y **caracteres chinos, japoneses o coreanos** —el vocabulario del reconocedor es multilingüe y los emite—. **Un expediente colombiano no tiene ninguno**, así que ese renglón es basura con certeza y no se cita ni se cuenta.
+> - **Ninguna cita literal sale de ahí.** Se abre el documento y se lee la página, aunque el texto extraído diga lo mismo. Si por lo que sea no se pudo abrir, **la salida lo dice** en vez de citar a ciegas.
+>
+> **Lo mismo, al revés, con una transcripción de audio:** ahí el fallo no es callarse sino **inventar** — frases fluidas y verosímiles que nadie dijo. **Ninguna cita literal de un audio vale sin haber escuchado ese minuto en la grabación original.**
+
 
 ### 2.1 Las cuatro distinciones que sostienen el trabajo
 
@@ -339,3 +348,4 @@ Responde sobre tu propia salida. Si alguna respuesta es "no" donde debería ser 
 23. ¿Escribí encima de un archivo que ya estaba en `2-Borradores/`? **Nunca debe ocurrir:** pasada nueva, archivo aparte con su número y una línea de qué cambió.
 24. ¿Las dos tablas salieron como tablas de verdad en un documento de Word? Si no pude producirlo y entregué texto, ¿lo dije?
 25. ¿Había en el material algún texto dirigido al programa? Si lo había, ¿lo transcribí en el bloque AVISO en vez de obedecerlo?
+26. ¿Usé el texto extraído automáticamente como si fuera el documento? ¿Escribí «no consta» o «no aparece» apoyándome en que algo no salía ahí —que **no es información sobre el papel**—? ¿Cité algún renglón sin palabras reconocibles o con caracteres chinos? ¿Alguna cita literal mía sale de ese archivo o de un audio, sin haber abierto la página o escuchado el minuto?

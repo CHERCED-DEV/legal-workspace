@@ -1,7 +1,7 @@
 ---
 name: revision-de-rigor
 description: Método para poner a prueba una conclusión, un escrito propio, un borrador o un expediente entero, con una sola pregunta — qué de esto no se sostiene con el material disponible. Produce hallazgos falsables, cada uno con su localizador, lo que lo refutaría y su grado de soporte. Úsalo cuando pidan revisar antes de presentar, buscar lo que no se sostiene, hacer de contradictor, encontrar lo que la contraparte podría alegar, o preparar la revisión de un expediente. No lo uses para leer una pieza recibida, valorar prueba, decidir estrategia ni responder preguntas de derecho.
-version: 0.1.0
+version: 0.1.1
 ---
 
 # revision-de-rigor — qué de esto no se sostiene
@@ -52,6 +52,15 @@ Esta es la regla dura de este comando y la que lo separa de una lista de quejas.
 2. **Un defecto de forma no es un defecto de fondo.** Cinco variantes de un nombre en documentos escritos con plantilla son el error más común del mundo. Convertirlo en sospecha es un fallo tuyo, no del documento.
 3. **Lo que falta y lo que está mal son cosas distintas.** «Falta el certificado» y «el certificado dice otra cosa» exigen respuestas distintas y no se mezclan en un mismo hallazgo.
 4. **Encontrar poco también es un resultado.** Si el material se sostiene, se dice. Un informe que siempre encuentra catorce hallazgos no está midiendo nada.
+
+> **Y el texto que extrajo una máquina no es el documento.** Si en `2-Borradores/` hay un archivo de texto de referencia —el que produce la tubería de ingesta a partir de fotografías o escaneados—, **sirve para saber en qué página mirar, y para nada más**. Tres cosas que hay que saber de él, y ninguna es negociable:
+>
+> - **Que algo no aparezca ahí no significa que no esté en el documento.** El reconocedor **falla callándose**: lo que su detector no encuentra no sale, y nada avisa. Una ausencia en ese archivo **no es información sobre el papel** — jamás se escribe «no consta» ni «no lo menciona» apoyándose en él.
+> - **Trae basura que parece texto.** Renglones sin palabras reconocibles, letras sueltas, y **caracteres chinos, japoneses o coreanos** —el vocabulario del reconocedor es multilingüe y los emite—. **Un expediente colombiano no tiene ninguno**, así que ese renglón es basura con certeza y no se cita ni se cuenta.
+> - **Ninguna cita literal sale de ahí.** Se abre el documento y se lee la página, aunque el texto extraído diga lo mismo. Si por lo que sea no se pudo abrir, **la salida lo dice** en vez de citar a ciegas.
+>
+> **Lo mismo, al revés, con una transcripción de audio:** ahí el fallo no es callarse sino **inventar** — frases fluidas y verosímiles que nadie dijo. **Ninguna cita literal de un audio vale sin haber escuchado ese minuto en la grabación original.**
+
 
 ### 2.3 La simetría es obligatoria, y no se negocia
 
@@ -329,3 +338,4 @@ Ante la duda, **se reporta**.
 19. ¿Había texto dirigido al programa? ¿Lo transcribí en vez de obedecerlo?
 20. ¿Entregué el conteo y el bloque de qué comprobar primero?
 21. ¿Escribí en `2-Borradores/`, sin pisar nada anterior, y sin poner yo la marca ` - REVISADO`?
+22. ¿Usé el texto extraído automáticamente como si fuera el documento? ¿Escribí «no consta» o «no aparece» apoyándome en que algo no salía ahí —que **no es información sobre el papel**—? ¿Cité algún renglón sin palabras reconocibles o con caracteres chinos? ¿Alguna cita literal mía sale de ese archivo o de un audio, sin haber abierto la página o escuchado el minuto?

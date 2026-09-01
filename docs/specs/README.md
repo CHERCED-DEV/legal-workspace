@@ -96,8 +96,22 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | SPEC-06 | `0-Estado del caso`: reemplazo dirigido, no reescritura | defecto | `H-11` · G19 | Pendiente — no escrita |
 | SPEC-07 | Los doce hallazgos de `inventario-de-bienes` | defecto | `V-1` | Pendiente — no escrita |
 | SPEC-08 | Índice de las salidas de una pasada | defecto | `P-07` · G37 | Pendiente — no escrita |
+| [SPEC-09](SPEC-09-preguntas-de-derecho.md) | `preguntas-de-derecho`: las dos puertas que le faltan | defecto | salvedad de `H-04` · `V-1` | **Ejecutada** — falta probar la inyección |
+| [SPEC-10](SPEC-10-limite-del-texto-extraido.md) | El límite del material extraído, dentro de los `SKILL.md` | defecto | `H-16` · `EP-1.1-COORDENADA` | **Ejecutada** — falta una pasada real |
 
-> **Cuenta honesta: una escrita y ejecutada a medias, una retirada, seis que hoy son solo una fila de esta tabla.** «Pendiente» aquí significa que el archivo **no existe**. El índice del 31/08 marcaba SPEC-02 como «Escrita» y la enlazaba; el archivo nunca existió. Corregido.
+> **Cuenta honesta: tres escritas y ejecutadas —una de ellas a medias—, una retirada, cinco que hoy son solo una fila de esta tabla.** «Pendiente» aquí significa que el archivo **no existe**. El índice del 31/08 marcaba SPEC-02 como «Escrita» y la enlazaba; el archivo nunca existió. Corregido.
+
+### Lo que las dos primeras ejecuciones enseñaron sobre el backlog
+
+**SPEC-09 y SPEC-10 encontraron lo mismo que SPEC-02: el backlog estaba mal contado, en dirección contraria las dos veces.**
+
+| Ítem | Lo que decía el backlog | Lo que había al leer el código |
+|---|---|---|
+| `H-05` | Abierto — «dos comandos consumen un archivo que nadie escribe» | **Ya cerrado y verificado en ejecución real** |
+| `H-04` | Cerrable — «el bloque anti-inyección está en los nueve» | **Estaba en ocho.** Faltaba en la única skill cuyo trabajo es negarse |
+| `H-16` | Parcial — «no consta la regla dentro de los `SKILL.md`» | **No constaba en ninguna de las nueve**, ni en la de revisión de rigor |
+
+> **Tres de tres.** Ningún ítem del backlog resultó estar como decía. **La regla 4 no es una precaución: es lo único que ha funcionado.** Y el corolario incómodo: **los ~112 identificadores restantes tienen el mismo origen y tampoco están verificados contra el código.**
 
 ### Por qué se retiró SPEC-02, y qué queda vivo de su grupo
 

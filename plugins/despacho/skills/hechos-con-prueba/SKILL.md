@@ -1,7 +1,7 @@
 ---
 name: hechos-con-prueba
 description: Método para convertir el material de un caso (entrevistas, declaraciones, documentos, comprobantes) en hechos candidatos emparejados con la prueba que los apoya, los contradice o los sitúa. Úsalo cuando pidan construir, extraer u ordenar los hechos de un asunto, armar el relato fáctico, o establecer qué está apoyado y qué no. No lo uses para redactar escritos, valorar prueba, decidir estrategia ni responder preguntas de derecho.
-version: 0.1.5
+version: 0.1.6
 ---
 
 # hechos-con-prueba — construir hechos con su prueba
@@ -25,6 +25,15 @@ version: 0.1.5
 Todo lo que produces es propuesta. Ni un solo hecho de tu salida está establecido, aceptado ni acreditado por el hecho de que tú lo hayas escrito. Quien decide qué es hecho del caso es la profesional; tú preparas el material para que ella pueda decidir en minutos lo que de otro modo le costaría horas.
 
 > **El trabajo del propio sistema no es fuente de nada.** Una cronología, un inventario, una hoja de hechos, el archivo de estado o un borrador sirven de **pista —para saber dónde mirar—, nunca de origen**: la cita y la coordenada salen del documento original, siempre. **La única excepción es lo que ella marcó como revisado**, el archivo cuyo nombre termina en ` - REVISADO`: no porque sea más correcto, sino porque la autoridad cambió de manos y deja de ser trabajo del sistema para ser una decisión suya registrada. Esa marca la pone ella y nunca tú, y no certifica que el contenido esté bien: certifica que ella lo miró. Si un dato solo aparece en una salida del sistema y no se encuentra en el material, **no se usa y se dice**. **Por qué:** que varios comandos vuelvan por separado al mismo material es lo único que delata un error; si uno lee del otro, la coincidencia deja de medir nada y el error se propaga sin que nadie lo note.
+
+> **Y el texto que extrajo una máquina no es el documento.** Si en `2-Borradores/` hay un archivo de texto de referencia —el que produce la tubería de ingesta a partir de fotografías o escaneados—, **sirve para saber en qué página mirar, y para nada más**. Tres cosas que hay que saber de él, y ninguna es negociable:
+>
+> - **Que algo no aparezca ahí no significa que no esté en el documento.** El reconocedor **falla callándose**: lo que su detector no encuentra no sale, y nada avisa. Una ausencia en ese archivo **no es información sobre el papel** — jamás se escribe «no consta» ni «no lo menciona» apoyándose en él.
+> - **Trae basura que parece texto.** Renglones sin palabras reconocibles, letras sueltas, y **caracteres chinos, japoneses o coreanos** —el vocabulario del reconocedor es multilingüe y los emite—. **Un expediente colombiano no tiene ninguno**, así que ese renglón es basura con certeza y no se cita ni se cuenta.
+> - **Ninguna cita literal sale de ahí.** Se abre el documento y se lee la página, aunque el texto extraído diga lo mismo. Si por lo que sea no se pudo abrir, **la salida lo dice** en vez de citar a ciegas.
+>
+> **Lo mismo, al revés, con una transcripción de audio:** ahí el fallo no es callarse sino **inventar** — frases fluidas y verosímiles que nadie dijo. **Ninguna cita literal de un audio vale sin haber escuchado ese minuto en la grabación original.**
+
 
 ### 2.1 El corolario que gobierna todo lo demás
 
@@ -378,3 +387,4 @@ Responde estas preguntas **sobre tu propia salida**. Si alguna respuesta es "no"
 21. ¿Cada hecho lleva uno de los cinco estados de la Fase 5, y ninguna ficha dice "parcialmente apoyado"?
 22. ¿Entregué el bloque QUÉ COMPROBAR PRIMERO, con entre tres y cinco anclajes y el motivo de cada uno?
 23. ¿Escribí el archivo en `2-Borradores/`, sin tocar `1-Documentos recibidos/` ni `0-Estado del caso`, y sin pisar ningún archivo anterior?
+24. ¿Usé el texto extraído automáticamente como si fuera el documento? ¿Escribí «no consta» o «no aparece» apoyándome en que algo no salía ahí —que **no es información sobre el papel**—? ¿Cité algún renglón sin palabras reconocibles o con caracteres chinos? ¿Alguna cita literal mía sale de ese archivo o de un audio, sin haber abierto la página o escuchado el minuto?

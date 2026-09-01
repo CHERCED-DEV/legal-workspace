@@ -44,7 +44,7 @@ No son ítems de trabajo: son **avisos de que dos documentos dicen cosas incompa
 
 | # | Contradicción | Qué es verdad hoy |
 |---|---|---|
-| C-1 | `H-04` dice que el bloque anti-inyección vive «en 1 de 6 comandos» | **Está en los nueve `SKILL.md` y en la guía.** El ítem describe un producto anterior → **cerrable** |
+| C-1 | `H-04` dice que el bloque anti-inyección vive «en 1 de 6 comandos» | ~~Está en los nueve~~ **Comprobado el 2026-08-31: estaba en OCHO.** Faltaba en `preguntas-de-derecho` — la única skill cuyo trabajo entero es negarse. **Añadido por SPEC-09; ahora sí son nueve** |
 | C-2 | `H-09` da por pendiente renombrar `fact-builder` | **Ya se llama `hechos-con-prueba/`** y el README lo documenta → **cerrable** |
 | C-3 | **Cuántos comandos hay:** `PM-M-10` dice cinco, casi todo `ESTADO` dice seis, otros hablan del séptimo | **El repositorio tiene nueve.** Cuatro cifras sobre la misma cosa |
 | C-4 | **Qué es «el séptimo comando»** | Cuatro respuestas incompatibles. Ver §0.2 |
@@ -115,7 +115,7 @@ Esto es lo que apareció al mirar los cuatro juntos. **Ninguno de los 177 ítems
 
 **Cerrables además, verificado hoy contra el repositorio y contra lo que dice su propio ítem:**
 
-- **`H-04`** — el bloque anti-inyección está en los nueve `SKILL.md`, no en uno de seis. *Salvedad: conviene comprobar que sea el bloque completo y no una mención.*
+- **`H-04`** — ~~está en los nueve `SKILL.md`~~ **La salvedad tenía razón.** Al comprobarlo el 2026-08-31 estaban en ocho: `preguntas-de-derecho` no tenía ninguna sección. **SPEC-09 lo añadió y ahora son nueve** — cerrable de verdad, y no por lectura de diagnóstico.
 - **`H-09`** — la carpeta ya es `hechos-con-prueba/`.
 
 **Parciales, y por qué no se pueden cerrar:**
@@ -153,7 +153,7 @@ Cada grupo es **un solo trabajo** visto desde varios documentos. La columna «me
 | G13 | Renombrar `fact-builder` | `H-09`, `EP-5.3(c)` | **Ya hecho** |
 | G14 | Aritmética de fechas | `H-02`, `H-03`, `EP-5.4` | `EP-5.4` — la formulación **por operación** |
 | G15 | Plantilla de apartados en `redactar-escrito` | `H-01`, `EP-5.5` | `H-01` |
-| G16 | Bloque anti-inyección | `H-04`, `EP-5.2` | **Ya hecho** |
+| G16 | Bloque anti-inyección | `H-04`, `EP-5.2` | **Hecho el 2026-08-31 con SPEC-09**, no antes: hasta ese día faltaba en `preguntas-de-derecho` |
 | G17 | La hoja de hechos y su aprobación | `H-05`, `EP-5.7`, `EP-1.1`, `EP-B03` | `H-05` el defecto · `EP-5.7` el arreglo. **`H-05` cerrado y verificado; lo vivo del grupo es `PM-M-2`, la marca frente a la extensión oculta de Windows** |
 | G18 | La salida envejece | `EP-1.3-d`, `EP-C08`, `PLAN §4-7`, `PM-4.4` | `EP-1.3-d` |
 | G19 | Escritura destructiva | `H-11`, `EP-5.6`, `PM-M-8` | `H-11` el defecto · `PM-M-8` el arreglo fino |
