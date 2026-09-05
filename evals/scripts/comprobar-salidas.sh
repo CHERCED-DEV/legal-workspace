@@ -20,15 +20,17 @@ for caso in evals/casos/*/; do
   # Una carpeta puede declarar que lo suyo son fixtures y no salidas. Se
   # respeta y se dice: un aviso correcto sobre un archivo que no es una salida
   # es, si se deja encendido, la manera de que nadie vuelva a mirar ninguno.
+  saltar_borradores=no
   if [ -f "$borradores/NO-SON-SALIDAS.md" ]; then
-    printf '    saltada: la carpeta declara que sus .md son fixtures\n'
-    printf '    (ver %s/NO-SON-SALIDAS.md)\n' "$borradores"
-    continue
+    printf '    los .md de 2-Borradores son fixtures y se saltan\n'
+    printf '    (ver %s/NO-SON-SALIDAS.md) -- salidas-de-referencia SI se comprueba\n' "$borradores"
+    saltar_borradores=si
   fi
 
-  for f in "$borradores"/*.md; do
+  for f in "$borradores"/*.md "$caso"/salidas-de-referencia/*.txt; do
     [ -e "$f" ] || continue
     nombre=$(basename "$f")
+    case "$f:$saltar_borradores" in *2-Borradores*:si) continue ;; esac
     printf '\n--- %s\n' "$nombre"
 
     # 1. El conteo que la salida declara contra las fichas que tiene.

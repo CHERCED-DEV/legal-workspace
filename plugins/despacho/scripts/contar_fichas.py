@@ -37,18 +37,18 @@ SOPORTES = [u"sin soporte", u"soportado", u"limitado"]
 
 
 def contar(texto):
-    fichas = re.findall(r"(?m)^##\s+(H-\d+)\b", texto)
+    fichas = [f for f, _ in bloques(texto)]
     por_estado = dict((e, 0) for e in ESTADOS)
     sin_estado = []
     for ficha, cuerpo in bloques(texto):
-        m = re.search(r"(?m)^-\s+\*\*Estado:\*\*\s*(.+)$", cuerpo)
+        m = re.search(r"(?im)^\s*(?:-\s+)?\*{0,2}Estado:\*{0,2}\s*(.+)$", cuerpo)
         if not m:
             sin_estado.append(ficha)
             continue
-        dicho = m.group(1).strip()
+        dicho = plano(re.sub(r"[*_`]", "", m.group(1)).strip())
         # El mas largo primero: «Apoyado y contradicho» contiene «Apoyado».
         for e in ESTADOS:
-            if dicho.startswith(e):
+            if dicho.startswith(plano(e)):
                 por_estado[e] += 1
                 break
         else:
@@ -89,9 +89,11 @@ def partir_tablas(texto):
     def corte(marca, desde=0):
         m = re.search(marca, texto[desde:])
         return desde + m.start() if m else None
-    i = corte(r"(?im)^#+.*L[IÍ]NEA DE TIEMPO")
-    j = corte(r"(?im)^#+.*EVENTOS SIN FECHA")
-    k = corte(r"(?im)^#+.*CONFLICTOS DE FECHA")
+    # Sin `#+`: la plantilla del metodo escribe «2. LINEA DE TIEMPO» a secas,
+    # y exigir almohadilla hacia que las dos tablas se contaran como una.
+    i = corte(r"(?im)^#*\s*\d*\.?\s*L[IÍ]NEA DE TIEMPO")
+    j = corte(r"(?im)^#*\s*\d*\.?\s*EVENTOS SIN FECHA")
+    k = corte(r"(?im)^#*\s*\d*\.?\s*CONFLICTOS DE FECHA")
     if i is None:
         return texto, ""
     fin_linea = j if j is not None else (k if k is not None else len(texto))
@@ -108,34 +110,47 @@ def plano(t):
 
 def conteo_cronologia_escrito(texto):
     fuera = {}
-    m = re.search(u"\\*\\*(\\d+) eventos\\*\\*", texto)
+    m = re.search(u"(\\d+) eventos", texto)
     fuera["total"] = int(m.group(1)) if m else None
-    for g, patron in ((u"documentada", u"\\*\\*(\\d+) documentadas\\*\\*"),
-                      (u"referida", u"\\*\\*(\\d+) referidas\\*\\*"),
-                      (u"aproximada", u"\\*\\*(\\d+) aproximadas\\*\\*"),
-                      (u"deducida", u"\\*\\*(\\d+) deducidas\\*\\*"),
-                      (u"en conflicto", u"\\*\\*(\\d+) en conflicto\\*\\*")):
+    for g, patron in ((u"documentada", u"(\\d+) documentadas"),
+                      (u"referida", u"(\\d+) referidas"),
+                      (u"aproximada", u"(\\d+) aproximadas"),
+                      (u"deducida", u"(\\d+) deducidas"),
+                      (u"en conflicto", u"(\\d+) en conflicto")):
         m = re.search(patron, texto)
         fuera[g] = int(m.group(1)) if m else None
-    m = re.search(u"\\*\\*(\\d+) sin fecha\\*\\*", texto)
+    m = re.search(u"(\\d+) sin fecha", texto)
     fuera["sin fecha"] = int(m.group(1)) if m else None
     return fuera
 
 
 def bloques(texto):
-    partes = re.split(r"(?m)^##\s+(H-\d+)", texto)
+    """Las fichas H-NN, en las DOS formas en que aparecen.
+
+    La plantilla del metodo (§6 de `hechos-con-prueba`) es texto plano:
+
+        H-01 — enunciado
+          Estado: APOYADO
+
+    y esa es la que manda. La forma markdown `## H-01` con `- **Estado:**` es
+    la que uso una pasada concreta. **Este contador solo entendia la segunda**,
+    asi que sobre las salidas escritas con la plantilla real decia «0 fichas» y
+    marcaba «no declara su conteo». Una guarda ajustada a una sola muestra
+    protege esa muestra y nada mas.
+    """
+    partes = re.split(r"(?m)^(?:#+\s+)?(H-\d+)\b", texto)
     return list(zip(partes[1::2], partes[2::2]))
 
 
 def conteo_escrito(texto):
     """Los numeros que la propia salida declara, para poder contrastarlos."""
-    m = re.search(u"\\*\\*(\\d+) hechos propuestos\\*\\*", texto)
+    m = re.search(u"(\\d+) hechos(?: propuestos)?\\b", texto)
     fuera = {"total": int(m.group(1)) if m else None}
-    for clave, patron in ((u"Apoyado", u"\\*\\*(\\d+) apoyados\\*\\*"),
-                          (u"Sin apoyo", u"\\*\\*(\\d+) sin apoyo\\*\\*"),
-                          (u"Contradicho", u"\\*\\*(\\d+) contradichos\\*\\*"),
+    for clave, patron in ((u"Apoyado", u"(\\d+) apoyados(?! y)"),
+                          (u"Sin apoyo", u"(\\d+) sin apoyo"),
+                          (u"Contradicho", u"(\\d+) contradichos?(?! y)"),
                           (u"Apoyado y contradicho",
-                           u"\\*\\*(\\d+) apoyados y contradichos\\*\\*")):
+                           u"(\\d+) apoyados y contradichos")):
         m = re.search(patron, texto)
         fuera[clave] = int(m.group(1)) if m else None
     return fuera
@@ -179,12 +194,15 @@ def main_cronologia(ruta, texto):
 
 def contar_rigor(texto):
     """Los grados de soporte de las fichas F-NN de `revision-de-rigor`."""
-    fichas = re.findall(r"(?m)^#+\s+(F-\d+)\b", texto)
+    fichas = [f for f, _ in bloques_rigor(texto)]
     por = dict((s, 0) for s in SOPORTES)
     sin = []
-    partes = re.split(r"(?m)^#+\s+(F-\d+)\b", texto)
-    for ficha, cuerpo in zip(partes[1::2], partes[2::2]):
-        m = re.search(r"(?im)^-\s+\*\*Grado de soporte:\*\*\s*(.+)$", cuerpo)
+    for ficha, cuerpo in bloques_rigor(texto):
+        # No se ancla a principio de linea: la plantilla de texto plano lo
+        # escribe al final del encabezado del hallazgo -- «F-01 · ESTADO
+        # INFLADO — considerando 1 — Grado de soporte: sin soporte» -- y
+        # exigir principio de linea dejaba cinco de siete «sin grado legible».
+        m = re.search(r"(?im)(?:Grado de )?soporte:\s*\*{0,2}\s*(.+?)\s*$", cuerpo)
         if not m:
             sin.append(ficha)
             continue
@@ -198,13 +216,25 @@ def contar_rigor(texto):
     return fichas, por, sin
 
 
+def bloques_rigor(texto):
+    """Los hallazgos, en las dos etiquetas que el metodo usa para lo mismo.
+
+    §5 y §6 dicen `F-01`. El ejemplo de la Fase 3.7 dice `R-02`. Una regla con
+    dos redacciones, dentro del fichero que existe para cazar eso -- y la
+    salida de referencia del caso-02 siguio la segunda. Se acepta la que el
+    metodo prescribe y **tambien la otra**, porque hay salidas escritas asi.
+    """
+    partes = re.split(r"(?m)^(?:#+\s+)?([FR]-\d+)\b", texto)
+    return list(zip(partes[1::2], partes[2::2]))
+
+
 def conteo_rigor_escrito(texto):
     fuera = {}
-    m = re.search(u"\\*\\*(\\d+) hallazgos?\\*\\*", texto)
+    m = re.search(u"(\\d+) hallazgos?\\b", texto)
     fuera["total"] = int(m.group(1)) if m else None
-    for s, patron in ((u"soportado", u"\\*\\*(\\d+) soportados?\\*\\*"),
-                      (u"limitado", u"\\*\\*(\\d+) limitados?\\*\\*"),
-                      (u"sin soporte", u"\\*\\*(\\d+) sin soporte\\*\\*")):
+    for s, patron in ((u"soportado", u"(\\d+) soportados?\\b"),
+                      (u"limitado", u"(\\d+) limitados?\\b"),
+                      (u"sin soporte", u"(\\d+) sin soporte")):
         m = re.search(patron, texto)
         fuera[s] = int(m.group(1)) if m else None
     return fuera
@@ -250,22 +280,28 @@ def contar_documento(texto):
     de dar una cifra que parezca completa.
     """
     def seccion(n, siguiente):
-        m = re.search(r"(?im)^#+\s*%d\." % n, texto)
+        m = re.search(r"(?im)^#*\s*%d\." % n, texto)
         if not m:
             return ""
-        j = re.search(r"(?im)^#+\s*%d\." % siguiente, texto[m.end():])
+        j = re.search(r"(?im)^#*\s*%d\." % siguiente, texto[m.end():])
         return texto[m.end():m.end() + j.start()] if j else texto[m.end():]
 
     def filas(bloque):
-        return len([l for l in bloque.split("\n")
-                    if l.strip().startswith("|")
-                    and not re.match(r"^\|[\s:|-]+\|$", l.strip())
-                    and not re.search(r"(?i)cita literal|frase entera", l)])
+        """Cuenta filas de tabla Y vinetas «·», que es como lo escribe la
+        plantilla de texto plano del metodo. Contar solo tablas era ajustar
+        la guarda a la forma de una pasada concreta -- otra vez."""
+        tabla = [l for l in bloque.split("\n")
+                 if l.strip().startswith("|")
+                 and not re.match(r"^\|[\s:|-]+\|$", l.strip())
+                 and not re.search(r"(?i)cita literal|frase entera", l)]
+        vinetas = [l for l in bloque.split("\n") if l.strip().startswith(u"\u00b7")]
+        return len(tabla) + len(vinetas)
 
     return {
         u"afirmaciones": filas(seccion(2, 3)),
         u"referencias temporales": filas(seccion(5, 6)),
-        u"puntos no claros": len(re.findall(r"(?m)^\d+\.\s+\*\*", seccion(7, 8))),
+        u"puntos no claros": (len(re.findall(r"(?m)^\d+\.\s+\*\*", seccion(7, 8)))
+                              or filas(seccion(7, 8))),
     }
 
 
@@ -273,7 +309,7 @@ def conteo_documento_escrito(texto):
     fuera = {}
     for clave, patron in (
             (u"afirmaciones", u"(\\d+) afirmaciones"),
-            (u"referencias temporales", u"(\\d+) referencias temporales"),
+            (u"referencias temporales", u"(\\d+) referencias\\s+temporales"),
             (u"puntos no claros", u"(\\d+) puntos no claros")):
         m = re.search(patron, texto)
         fuera[clave] = int(m.group(1)) if m else None
@@ -311,9 +347,9 @@ def main(args):
         print("no existe: %s" % args[0])
         return 1
     texto = io.open(args[0], encoding="utf-8").read()
-    if re.search(r"(?m)^#+\s+F-\d+\b", texto):
+    if re.search(r"(?m)^(?:#+\s+)?[FR]-\d+\s+[—·-]", texto):
         return main_rigor(args[0], texto)
-    if re.search(r"(?im)^#+\s*1\.\s*QU[EÉ] ES", texto):
+    if re.search(r"(?im)^#*\s*1\.\s*QU[EÉ] ES", texto):
         return main_documento(args[0], texto)
     if re.search(r"(?m)^\|\s*E-\d+\s*\|", texto) and not re.search(r"(?m)^##\s+H-", texto):
         return main_cronologia(args[0], texto)

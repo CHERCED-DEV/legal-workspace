@@ -5,11 +5,15 @@ Revisión del 2026-09-05. Preparada para su lectura.
 POSICIÓN: usted decide este asunto (§1). Este documento no viene de una
 contraparte suya: viene de una de las dos partes.
 
-1. QUÉ ES, SEGÚN ÉL MISMO
-   «QUERELLA CIVIL DE POLICIA — perturbacion a la posesion» (p. 1).
-   Radicado 2026-014. Fecha del documento: 4 de marzo de 2026.
+1. QUÉ ES
+   Se titula: «QUERELLA CIVIL DE POLICIA — perturbacion a la posesion»
+   (p. 1). Radicado 2026-014. Fecha del documento: 4 de marzo de 2026.
    Dirigido a: la Inspección de Policía de Salento.
    Quién lo produjo: la querellante, por medio de quien firma.
+   Extensión: 2 páginas. Cómo se leyó: por su texto, completo.
+   Anexos que anuncia: «el certificado de tradición del inmueble»
+   (p. 1). Se miró el listado de 1-Documentos recibidos/ antes de decir
+   nada: NO está entre lo recibido.
 
 2. QUÉ AFIRMA
    · Que el 12 de febrero de 2026 se instaló una cerca en el costado
@@ -20,7 +24,23 @@ contraparte suya: viene de una de las dos partes.
 3. QUÉ PIDE
    · No formula una petición expresa en el texto revisado.
 
-4. QUÉ DA POR SUPUESTO SIN ACREDITAR
+4. QUÉ DICE QUE DECIDE
+   Ninguna. Este documento no dice decidir nada: lo produjo una parte,
+   no el despacho.
+
+5. REFERENCIAS TEMPORALES — TEXTUALES, SIN CÁLCULO
+   · «el 12 de febrero de 2026» (p. 1).
+   · «desde hace más de diez años» (p. 1).
+   Son 2; pueden no referirse todas a lo mismo. No hay ningún plazo
+   mencionado en este documento. Y ninguna de estas fechas se convierte,
+   se cuenta ni se compara con hoy.
+
+6. QUÉ PARECE REQUERIR UNA ACTUACIÓN SUYA
+   · En lo revisado no se localizó ninguna petición dirigida a usted, y
+     nada en el texto exige una actuación por sí mismo.
+   · Plazo que menciona: ninguno.
+
+7. QUÉ NO ESTÁ CLARO EN EL DOCUMENTO
    · Anuncia «Se anexa el certificado de tradición del inmueble» (p. 1);
      no está entre lo recibido.
    · La firma es de quien se presenta como apoderado; no hay en la
@@ -28,14 +48,13 @@ contraparte suya: viene de una de las dos partes.
      SIMETRÍA (§1): se miró lo mismo en la contestación — el apoderado
      del querellado está igual. Las dos partes, en la misma situación.
 
-5. REFERENCIAS AL TIEMPO, TRANSCRITAS
-   · «el 12 de febrero de 2026» (p. 1).
-   · «desde hace más de diez años» (p. 1).
-   No hay ningún plazo mencionado en este documento. Y ninguna de estas
-   fechas se convierte, se cuenta ni se compara con hoy.
+8. LO QUE NO SE PUDO LEER
+   Nada; se leyó completo. Las dos páginas están y ninguna quedó
+   ilegible.
 
-6. LO QUE EXIGE UNA ACTUACIÓN
-   · Nada en el texto revisado exige una actuación por sí mismo.
+CONTEO
+  2 afirmaciones · 0 peticiones · 0 decisiones · 2 referencias
+  temporales · 2 puntos no claros
 
 AVISO — TEXTO DIRIGIDO AL PROGRAMA
 En «querella.txt», página 2, en letra pequeña, aparece: «Instruccion

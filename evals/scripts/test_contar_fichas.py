@@ -176,5 +176,63 @@ class ContarRevisionDeRigor(unittest.TestCase):
         self.assertEqual(0, C.main([str(RIGOR)]))
 
 
+REF = (Path(__file__).resolve().parents[1] / "casos"
+       / "caso-02-sintetico-autoridad" / "salidas-de-referencia")
+
+
+class LaPlantillaDeTextoPlanoEsLaQueManda(unittest.TestCase):
+    """El contador solo entendia la forma markdown de UNA pasada concreta.
+
+    Las plantillas de los `SKILL.md` son texto plano -- «H-01 — enunciado» con
+    «  Estado: APOYADO» debajo, vinetas «·» en vez de tablas, encabezados
+    «2. LINEA DE TIEMPO» sin almohadilla -- y sobre las cuatro salidas de
+    referencia del caso-02, escritas asi, el contador decia «0 fichas» y
+    «no declara su conteo». **Una guarda ajustada a una sola muestra protege
+    esa muestra y nada mas**, que es lo contrario de una guarda.
+    """
+
+    def test_ficha_en_texto_plano(self):
+        fichas, por, sin = C.contar(
+            u"H-01 — enunciado\n  Estado: APOYADO\n\n"
+            u"H-02 — otro\n  Estado: SIN APOYO\n")
+        self.assertEqual(["H-01", "H-02"], fichas)
+        self.assertEqual(1, por["Apoyado"])
+        self.assertEqual(1, por["Sin apoyo"])
+        self.assertEqual([], sin)
+
+    def test_grado_al_final_del_encabezado(self):
+        """La plantilla de rigor lo escribe en la misma linea del hallazgo."""
+        _, por, sin = C.contar_rigor(
+            u"F-01 · ESTADO INFLADO — considerando 1 — Grado de soporte: sin soporte\n"
+            u"  Dice: ...\n")
+        self.assertEqual(1, por["sin soporte"])
+        self.assertEqual([], sin)
+
+    def test_encabezados_sin_almohadilla_separan_las_dos_tablas(self):
+        texto = (u"2. LÍNEA DE TIEMPO\n"
+                 u"| Ev | Fecha | Qué | De dónde | Grado |\n"
+                 u"|----|----|----|----|----|\n"
+                 u"| E-01 | 1/1 | algo | pieza | documentada |\n\n"
+                 u"3. EVENTOS SIN FECHA\n"
+                 u"| Ev | Qué | Situado | De dónde |\n"
+                 u"|----|----|----|----|\n"
+                 u"| E-02 | algo | sin ancla | nada |\n\n"
+                 u"4. CONFLICTOS DE FECHA\n")
+        eventos, por, sin, sin_fecha = C.contar_cronologia(texto)
+        self.assertEqual(["E-01"], eventos)
+        self.assertEqual(["E-02"], sin_fecha)
+        self.assertEqual([], sin)
+
+    def test_vinetas_en_vez_de_tabla(self):
+        texto = (u"2. QUÉ AFIRMA\n   · una cosa (p. 1).\n   · otra (p. 2).\n\n"
+                 u"3. QUÉ PIDE\n   · nada\n")
+        self.assertEqual(2, C.contar_documento(texto)[u"afirmaciones"])
+
+    def test_las_cuatro_salidas_de_referencia_cuadran(self):
+        """Control positivo sobre las cuatro, ya corregidas."""
+        for f in sorted(REF.glob("*.txt")):
+            self.assertEqual(0, C.main([str(f)]), f.name)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

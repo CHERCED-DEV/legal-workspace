@@ -160,7 +160,7 @@ Recorre el material buscando, en este orden:
    > **El salto lógico más frecuente tiene nombre propio y ya está descrito en otro sitio de este arnés: la secuencia leída como causa.** `cronologia` §5 lo desarrolla —*«La trampa del orden: secuencia no es causa»*— y **manda su redacción**; esto es la misma regla, aplicada a un texto ya escrito. Las palabras que la delatan son las que esa sección lista: *tras, a raíz de, como consecuencia, en respuesta a, por eso, entonces, finalmente*, y los verbos *respondió, reaccionó, se vio obligado a, ignoró*. Dos eventos ordenados no afirman que uno causara el otro; si una pieza sí lo afirma, **el vínculo es de esa pieza y viaja atribuido**, no del texto que se revisa.
 7. **Número o fecha que salió de una cuenta.** Una cifra que **no está escrita en ninguna pieza** y que solo se obtiene operando: *«han transcurrido más de seis meses»*, *«quedan tres días»*, *«el total asciende a»*, *«venció el»*, *«dos días después»*.
 
-   > **Y aquí lo que se señala es que la cuenta existe, no si está bien.** Decir «esa resta da mal» sería calcular para comprobar, y este método tampoco calcula. Se escribe **de qué dos datos salió y que ninguna pieza la trae escrita**, y se devuelve: *«"más de seis meses" no está en ningún documento; sale de restar el 12/02 —que además está en conflicto, ver R-02— y la fecha de hoy»*.
+   > **Y aquí lo que se señala es que la cuenta existe, no si está bien.** Decir «esa resta da mal» sería calcular para comprobar, y este método tampoco calcula. Se escribe **de qué dos datos salió y que ninguna pieza la trae escrita**, y se devuelve: *«"más de seis meses" no está en ningún documento; sale de restar el 12/02 —que además está en conflicto, ver F-02— y la fecha de hoy»*.
    >
    > **Por qué es una de las siete y no una nota al pie.** El arnés entero prohíbe calcular en todos los demás comandos, con el mismo argumento: **un número mal calculado se lee exactamente igual de bien que uno correcto**, no despierta ninguna sospecha, y basta una sola vez. **Este es el único método que se enfrenta a un texto donde la cuenta ya está hecha** — si no la nombra, la prohibición de los otros diez protege todo menos el documento que se firma.
 
@@ -182,7 +182,7 @@ Cada hallazgo lleva los trece. Si alguno no se puede llenar, **se dice que no se
 
 | Campo | Qué va |
 |---|---|
-| **Etiqueta** | `F-01`, `F-02`… Solo sirve para nombrarlo. No se reutiliza jamás |
+| **Etiqueta** | `F-01`, `F-02`… Solo sirve para nombrarlo. No se reutiliza jamás. **Es `F-`, no `R-` ni ninguna otra letra:** una salida real del banco usó `R-01` porque un ejemplo de este mismo archivo decía `R-02`, y dos etiquetas para lo mismo hacen que dos pasadas dejen de compararse |
 | **Modo** | Neutral. Siempre |
 | **Qué se examina** | La conclusión, la afirmación o la sección concreta |
 | **La duda** | Qué es lo que no se sostiene. Una sola cosa por ficha |
@@ -245,6 +245,8 @@ Los demás comandos solo tienen listas de prohibiciones. **Este necesita además
 | **soportado** | El localizador existe, dice lo que se le atribuye, y la duda se sigue de él |
 | **limitado** | La duda se sostiene **sobre lo revisado**, pero el material revisado no es todo el que existe. Es el grado correcto cuando la ficha dice «no consta» y no se vio el expediente completo |
 | **sin soporte** | Se te ocurrió, es razonable, y **ninguna pieza del material la sostiene**. Se entrega marcada así, nunca disfrazada de hallazgo |
+
+> **Las tres palabras son estas tres y se escriben así.** *«soporte: NINGUNO»*, *«PARCIAL»* o *«de forma»* **no son grados de este método**: son renombres, y §5 dice que no se renombra ninguno. Salieron en una salida real del banco y por eso se dice aquí, donde se escribe la ficha, y no solo en la tabla de arriba. **Un grado renombrado hace que dos pasadas dejen de compararse**, que es justo lo que el vocabulario cerrado existe para evitar.
 
 **El grado `sin soporte` no se esconde ni se elimina.** Callarlo es decidir por ella. Presentarlo como hallazgo es mentir. Se entrega, marcado, en su propio bloque.
 

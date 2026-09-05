@@ -25,11 +25,11 @@ Quedó fuera por decisión propia: nada
 | E-03 | 04/03/2026    | se radica la querella                      | querella, p. 1 (fecha del documento)       | documentada  |
 | E-04 | 19/03/2026    | se radica la contestación                  | contestación, p. 1 (fecha del documento)   | documentada  |
 | E-05 | 08/04/2026    | el despacho practica inspección ocular     | acta, p. 1                                 | documentada  |
+| E-06 | «en 2019»     | el querellado afirma que su padre le entregó el predio | contestación, p. 1 — no se estrecha | aproximada · posición aproximada |
 
 3. EVENTOS SIN FECHA
 | Ev   | Qué pasó                                   | Situado                    | De dónde sale la ubicación |
 |------|--------------------------------------------|----------------------------|----------------------------|
-| E-06 | el querellado afirma que su padre le entregó el predio | «en 2019»     | contestación, p. 1 — aproximada, no se estrecha |
 | E-07 | liquidación del impuesto predial            | vigencia 2025              | predial, p. 1 — el documento no trae fecha de expedición |
 
 4. CONFLICTOS DE FECHA (no resueltos, a propósito)
@@ -66,7 +66,12 @@ Quedó fuera por decisión propia: nada
 
 7. CONTEO
   7 eventos · 3 documentadas · 0 referidas · 2 aproximadas · 0 deducidas
-  · 1 en conflicto · 2 sin fecha · 2 vacíos
+  · 1 en conflicto · 1 sin fecha · 2 vacíos
+  Corrección del 2026-09-05: este conteo decía «2 sin fecha» y el E-06
+  estaba contado dos veces —en la tabla de sin fecha y como aproximada—,
+  de modo que las categorías sumaban 8 donde se declaraban 7 eventos.
+  «En 2019» es una fecha aproximada (§3.3), no una ausencia de fecha:
+  E-06 va en la línea de tiempo. Lo encontró contar_fichas.py.
   2 dichos por usted — fuera de la tabla, no suman eventos
 
 AVISO — TEXTO DIRIGIDO AL PROGRAMA
