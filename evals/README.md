@@ -4,7 +4,7 @@
 >
 > | Carpeta | Qué mide | Estado |
 > |---|---|---|
-> | `casos/caso-01-familia.json` + `medir.py` | **Veracidad y coste sobre material real**: fabricaciones, páginas declaradas, turnos | **Bloqueado dos veces.** Su truth set está **invalidado por su propia nota** desde el 26/08, y **su material no está en este repositorio ni lo estará** — son documentos de una clienta real, con datos de una menor. Hacen falta los dos PDF originales |
+> | `casos/caso-01-familia.json` + `medir.py` | **Veracidad y coste sobre material real**: fabricaciones, páginas declaradas, turnos | **Bloqueado, y quizá menos de lo que parece.** El material no está aquí ni estará —documentos de una clienta real, con datos de una menor—. Y su truth set está invalidado por una nota que **puede estar mal contada**: dice «sin capa de texto», y el campo `material` del mismo archivo dice «sin una sola letra». **Si son páginas en blanco, el truth set es válido y basta mirar tres páginas para saberlo.** Ver `_REVISION_DE_LA_INVALIDACION` en el propio archivo |
 > | `scripts/` + `casos/caso-02-sintetico-autoridad/` | **Que las reglas estructurales de los métodos disparen**, y que los bloques repetidos no deriven | **63 pruebas en verde**, y comprobadas capaces de fallar con mutantes |
 > | `knowledge-pack/` | El contrato del knowledge pack | 37 en verde |
 >

@@ -1,0 +1,23 @@
+TEXTO EXTRAIDO POR MAQUINA — NO ES EL DOCUMENTO
+Reconocedor: PP-OCRv5 (vocabulario sin N mayuscula con virgulilla).
+Este texto no es citable como literal.
+
+--- querella.txt, p. 1 ---
+SENOR INSPECTOR DE POLICIA DE SALENTO
+QUERELLA CIVIL DE POLICIA - perturbacion a la posesion
+Radicado 2026-014
+Manifiesta la querellante que el 12 de febrero de 2026 el senor
+JORGE T. instalo una cerca sobre el costado oriental del predio.
+Manifiesta que ha ejercido la posesion desde hace mas de diez anos.
+
+--- predial.txt, p. 1 ---
+MUNICIPIO DE SALENTO - SECRETARIA DE HACIENDA
+Numero catastral: 63690-00-01-0002-0034-000
+Valor liquidado: $412.300
+预 estado 的 vigencia
+
+--- acta-inspeccion.txt, p. 1 ---
+ACTA DE INSPECCION OCULAR
+Se observa una cerca de alambre de puas de aproximadamente 40 metros.
+No fue posible establecer en el terreno la fecha de instalacion.
+l
