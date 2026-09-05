@@ -1,7 +1,7 @@
 ---
 name: inventario-de-anexos
 description: "Método para recorrer los documentos de un caso y producir un inventario de anexos numerado —qué es cada documento, quién lo produjo, de qué fecha es y a qué afirmación sirve—, más un bloque separado con lo que falta. Úsalo cuando pidan armar la lista de anexos, ordenar los documentos que se acompañan a un escrito, o establecer qué documentos faltan, se mencionan y no están, o están pero no se pueden usar. No lo uses para valorar prueba, decidir qué se aporta, redactar el escrito ni responder preguntas de derecho."
-version: 0.3.4
+version: 0.3.5
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -49,6 +49,9 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
    > **Esta regla no es nueva y no es otra:** `revision-de-rigor` §2.3 la tiene desarrollada para su caso desde antes, y es **la misma**. Si alguna vez las dos redacciones dicen cosas distintas, manda la de `revision-de-rigor` y esta se corrige — **dos reglas para lo mismo es la avería que este arnés lleva documentada**.
 2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
 3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+4. **Y mientras esto no esté decidido, el sistema no produce el contenido que decide.** Si una autoridad puede apoyar una decisión en lo que produce un sistema como este, **si debe declararlo**, y qué le pasa al acto si una cita sale mal, **no está resuelto en ninguna parte de este proyecto** — es el hueco `V-7`, y le falta una decisión con criterio jurídico, no una línea de método. **Hasta que exista, el valor por defecto es el estrecho.**
+
+   > **Esta es la razón, y está escrita una sola vez.** Cada método dice qué significa en su caso —`/redactar-escrito` redacta los hechos y se detiene antes de la parte que decide; `/preguntas-de-derecho` no propone qué resolver— **y ninguno la reescribe**. Una razón con dos redacciones se parte, que es lo que le pasó a la simetría antes de que se le pusiera dueño.
 
 > **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
 

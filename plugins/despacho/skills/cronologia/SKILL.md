@@ -1,7 +1,7 @@
 ---
 name: cronologia
 description: "Método para armar la línea de tiempo de un caso a partir del material recibido —contratos, correos, comprobantes, actas, entrevistas—, con la fuente exacta de cada fecha, su grado de certeza (documentada, referida, aproximada, deducida o en conflicto), los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. Úsalo cuando pidan una cronología, ordenar los hechos en el tiempo, reconstruir qué pasó cuándo, o revisar si las fechas del caso se contradicen. No lo uses para redactar escritos, contar plazos, valorar prueba, decidir qué fecha es la buena, ni establecer que una cosa causó otra."
-version: 0.2.5
+version: 0.2.6
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -43,6 +43,9 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
    > **Esta regla no es nueva y no es otra:** `revision-de-rigor` §2.3 la tiene desarrollada para su caso desde antes, y es **la misma**. Si alguna vez las dos redacciones dicen cosas distintas, manda la de `revision-de-rigor` y esta se corrige — **dos reglas para lo mismo es la avería que este arnés lleva documentada**.
 2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
 3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+4. **Y mientras esto no esté decidido, el sistema no produce el contenido que decide.** Si una autoridad puede apoyar una decisión en lo que produce un sistema como este, **si debe declararlo**, y qué le pasa al acto si una cita sale mal, **no está resuelto en ninguna parte de este proyecto** — es el hueco `V-7`, y le falta una decisión con criterio jurídico, no una línea de método. **Hasta que exista, el valor por defecto es el estrecho.**
+
+   > **Esta es la razón, y está escrita una sola vez.** Cada método dice qué significa en su caso —`/redactar-escrito` redacta los hechos y se detiene antes de la parte que decide; `/preguntas-de-derecho` no propone qué resolver— **y ninguno la reescribe**. Una razón con dos redacciones se parte, que es lo que le pasó a la simetría antes de que se le pusiera dueño.
 
 > **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
 

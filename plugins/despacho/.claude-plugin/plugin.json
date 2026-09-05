@@ -1,7 +1,7 @@
 {
   "name": "despacho",
   "displayName": "Despacho",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "Once metodos de trabajo juridico sobre el material de un caso: preparar el material que llega (descomprimir, ordenar, extraer texto de fotografias sin gastar lectura), buscar donde aparece algo sin abrir los documentos, hechos con su prueba, revision de un documento recibido, estado de la carpeta, cronologia con el grado de certeza de cada fecha, inventario de anexos, inventario de bienes y deudas, revision de rigor de una conclusion propia, borrador de escrito en Word, y la regla de que no se responde derecho de memoria. Todo sale del material, y de donde sale se dice.",
   "author": {
     "name": "camilo hernandez"

@@ -117,6 +117,23 @@ class LaSimetriaTieneUnDueno(unittest.TestCase):
                   if "`revision-de-rigor` §2.3 la tiene desarrollada" not in texto(p)]
         self.assertEqual([], faltan)
 
+    def test_la_razon_de_v7_se_escribe_una_sola_vez(self):
+        """Defecto 7 otra vez, y esta vez me lo hice a mí mismo dos horas después.
+
+        La razón por la que el sistema no produce el contenido que decide vive
+        en el bloque de posición. Los dos métodos que la aplican APUNTAN a ella
+        y no la reescriben: si vuelven a explicarla por su cuenta, se parte.
+        """
+        motivo = "no está resuelto en ninguna parte de este proyecto"
+        # En el bloque de los once, sí. Fuera de él, en esos dos, no.
+        for skill in ("redactar-escrito", "preguntas-de-derecho"):
+            t = texto(SKILLS / skill / "SKILL.md")
+            bloque = entre(t, "### En qué posición está ella", "\n---\n")
+            fuera = t.replace(bloque, "")
+            self.assertNotIn(motivo, fuera,
+                             "%s reescribe la razón de V-7 en vez de apuntar a ella" % skill)
+            self.assertIn("punto 4 del bloque de posición", fuera, skill)
+
     def test_los_once_traen_las_tres_piezas_que_les_faltaban(self):
         for pieza in ("los defectos de lo que su propio despacho produjo",
                       "hay más superficie donde encontrar defectos",

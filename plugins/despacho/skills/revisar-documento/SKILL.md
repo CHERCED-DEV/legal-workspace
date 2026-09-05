@@ -1,7 +1,7 @@
 ---
 name: revisar-documento
 description: "Método para revisar un documento que llegó al caso —un escrito de una de las partes, una comunicación de una autoridad, un contrato, un requerimiento, una respuesta— y devolver en una sola pasada qué es, qué afirma, qué pide, qué decide, qué referencias temporales contiene textualmente y qué parece exigir una actuación. Úsalo cuando pidan revisar, leer, entender o resumir un documento recibido. No lo uses para redactar la respuesta, calcular plazos, decir si algo está vencido, calificar el documento ni responder preguntas de derecho."
-version: 0.2.4
+version: 0.2.5
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -49,6 +49,9 @@ Es la misma regla que ya gobierna todo lo demás: cuando el escrito afirma un he
    > **Esta regla no es nueva y no es otra:** `revision-de-rigor` §2.3 la tiene desarrollada para su caso desde antes, y es **la misma**. Si alguna vez las dos redacciones dicen cosas distintas, manda la de `revision-de-rigor` y esta se corrige — **dos reglas para lo mismo es la avería que este arnés lleva documentada**.
 2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
 3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+4. **Y mientras esto no esté decidido, el sistema no produce el contenido que decide.** Si una autoridad puede apoyar una decisión en lo que produce un sistema como este, **si debe declararlo**, y qué le pasa al acto si una cita sale mal, **no está resuelto en ninguna parte de este proyecto** — es el hueco `V-7`, y le falta una decisión con criterio jurídico, no una línea de método. **Hasta que exista, el valor por defecto es el estrecho.**
+
+   > **Esta es la razón, y está escrita una sola vez.** Cada método dice qué significa en su caso —`/redactar-escrito` redacta los hechos y se detiene antes de la parte que decide; `/preguntas-de-derecho` no propone qué resolver— **y ninguno la reescribe**. Una razón con dos redacciones se parte, que es lo que le pasó a la simetría antes de que se le pusiera dueño.
 
 > **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
 

@@ -1,7 +1,7 @@
 ---
 name: redactar-escrito
 description: "Método para producir un borrador en Word a partir del material ya revisado de un caso: redacta la parte fáctica y monta la estructura, deja marcado y visible cada hueco que el material no permite llenar, y entrega aparte de dónde sale cada frase. Úsalo cuando pidan redactar, armar o preparar un escrito, una solicitud, un memorial o una respuesta con el material del caso. No lo uses para redactar fundamentos de derecho, citar normas o jurisprudencia, calificar jurídicamente los hechos, decidir qué clase de escrito presentar, ni construir los hechos (eso es hechos-con-prueba)."
-version: 0.2.5
+version: 0.2.6
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -35,6 +35,9 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
    > **Esta regla no es nueva y no es otra:** `revision-de-rigor` §2.3 la tiene desarrollada para su caso desde antes, y es **la misma**. Si alguna vez las dos redacciones dicen cosas distintas, manda la de `revision-de-rigor` y esta se corrige — **dos reglas para lo mismo es la avería que este arnés lleva documentada**.
 2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
 3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+4. **Y mientras esto no esté decidido, el sistema no produce el contenido que decide.** Si una autoridad puede apoyar una decisión en lo que produce un sistema como este, **si debe declararlo**, y qué le pasa al acto si una cita sale mal, **no está resuelto en ninguna parte de este proyecto** — es el hueco `V-7`, y le falta una decisión con criterio jurídico, no una línea de método. **Hasta que exista, el valor por defecto es el estrecho.**
+
+   > **Esta es la razón, y está escrita una sola vez.** Cada método dice qué significa en su caso —`/redactar-escrito` redacta los hechos y se detiene antes de la parte que decide; `/preguntas-de-derecho` no propone qué resolver— **y ninguno la reescribe**. Una razón con dos redacciones se parte, que es lo que le pasó a la simetría antes de que se le pusiera dueño.
 
 > **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
 
@@ -48,7 +51,7 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 
 > **Y si ella está en posición de autoridad (§1), este comando redacta la parte fáctica y se detiene ahí.** No redacta la parte que decide —lo que se resuelve, lo que se ordena, lo que se niega—, y **lo dice con esas palabras** en vez de dejar el hueco sin explicar: *«redacté lo que consta; la parte que decide no la redacto yo»*.
 >
-> **Por qué, y es una limitación puesta a propósito, no un olvido.** Este es el comando más peligroso del despacho porque produce prosa que se lee como verdadera. Cuando quien firma **decide sobre otros**, esa propiedad deja de ser un riesgo para el escrito y pasa a serlo **para el acto y para quien lo recibe**. Si una autoridad puede apoyar una decisión en una salida de un sistema como este, si debe declararlo y qué le pasa al acto si una cita sale mal, **no está resuelto en ninguna parte de este proyecto** — es el hueco `V-7` y le falta una decisión con criterio jurídico, no una línea de método. **Hasta que exista, el valor por defecto es el estrecho.**
+> **Por qué, y es una limitación puesta a propósito, no un olvido.** Este es el comando más peligroso del despacho porque produce prosa que se lee como verdadera. Cuando quien firma **decide sobre otros**, esa propiedad deja de ser un riesgo para el escrito y pasa a serlo **para el acto y para quien lo recibe**. **La razón entera está en §1, punto 4 del bloque de posición, y no se repite aquí**: esto es su aplicación a este comando.
 
 ### 2.1 Las tres únicas fuentes admitidas
 

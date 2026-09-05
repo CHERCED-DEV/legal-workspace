@@ -8,7 +8,7 @@
 
 ## El resultado en una línea
 
-**Catorce defectos, los catorce míos.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+**Quince defectos, los quince míos — y el último es uno de los otros, repetido por mí después de haberlo escrito.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -26,6 +26,7 @@
 | 12 | — | **`buscar.py` devolvía el trabajo del sistema como si fuera el expediente** — y el peor caso llevaba la marca ` - REVISADO` |
 | 13 | — | **«Vereda» contaba como identificador**: dos predios vecinos se habrían fundido en una fila |
 | 14 | — | **Ninguna negativa estaba hecha para quien decide.** Contestarle a una autoridad qué resolver no es opinar: es tomarle el acto |
+| 15 | — | **El defecto 7 otra vez, cometido por mí dos horas después de escribirlo.** El cuidado no basta: hace falta la guarda |
 
 ---
 
@@ -261,6 +262,20 @@ La regla de identidad, corregida en su día por el hallazgo H2 de la crítica, d
 | Una regla de **fondo** —*«procede el amparo cuando hay perturbación»*— | si procede | **su decisión.** Y esa no se calcula |
 
 **Corregido:** §1 reconoce la forma autoritativa de la pregunta y da la razón entera de la negativa; §7 añade *«no propone qué resolver»* con el mismo valor conservador que `/redactar-escrito` y la misma remisión a `V-7`; §6 gana su límite —se devuelve **qué consta y qué no bajo esa regla**, y ahí se detiene—; y la autoevaluación, su octava pregunta.
+
+---
+
+## Defecto 15 — El defecto 7, cometido otra vez por mí, dos horas después de escribirlo
+
+Al cerrar el defecto 14 hice una comprobación de rutina: **¿en cuántos sitios está escrito el valor conservador de `V-7`?** En dos, con dos redacciones distintas — `redactar-escrito` §2 y `preguntas-de-derecho` §7, las dos explicando por su cuenta por qué el sistema no produce el contenido que decide.
+
+**Es el defecto 7 exacto**, cometido **después** de haberlo encontrado, escrito y comentado en este mismo documento.
+
+> **Y por eso vale más que los otros catorce.** Los defectos 1 a 14 son cosas que no vi. Este lo vi, lo nombré, escribí que *«una regla con dos redacciones se parte»*, y **volví a partir una dos horas más tarde**. La conclusión no es que haya que tener más cuidado: es que **el cuidado no basta y hace falta la guarda**.
+
+**Corregido con la forma que la lección exige, no con la que sale sola.** La razón —`V-7`, y el valor por defecto estrecho mientras no haya ADR— **se escribe una sola vez**, en el punto 4 del bloque de posición, que es byte a byte idéntico en los once y ya tiene test. Los dos métodos que la aplican **conservan su regla operativa** —uno no redacta la parte que decide, el otro no propone qué resolver— **y apuntan a la razón en vez de repetirla**.
+
+**Y la guarda, que es lo que faltaba:** `test_la_razon_de_v7_se_escribe_una_sola_vez` comprueba que ese motivo **no aparece fuera del bloque** en esos dos archivos, y que sí aparece la remisión. Comprobado con un mutante: devolverle a `redactar-escrito` su explicación propia hace caer la prueba.
 
 ---
 
