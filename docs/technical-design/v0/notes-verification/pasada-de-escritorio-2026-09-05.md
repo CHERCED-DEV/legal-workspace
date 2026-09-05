@@ -281,6 +281,10 @@ Al cerrar el defecto 14 hice una comprobación de rutina: **¿en cuántos sitios
 
 ## Dos barridos que no encontraron nada, y decirlo también es el resultado
 
+**(c) La integración entre los dos programas que escriben en su carpeta.** `preparar_material.py` monta el esqueleto del caso; `estado_del_caso.py` escribe el archivo de estado. **Si el primero creara ese archivo sin la línea `NOTAS SUYAS`, el segundo se negaría a escribirlo para siempre** —esa es su regla R-2— y el defecto sería invisible: una carpeta recién montada en la que un comando no funciona nunca.
+
+**No ocurre**, comprobado en el código y en las pruebas: `preparar_material.py` crea las tres carpetas y **no toca `0-Estado del caso`** —su skill lo dice y su autoevaluación lo pregunta—, así que `estado-del-caso` cae en su camino de «el archivo no existe → primera revisión → `--crear`», que lo crea **con la marca**. `test_con_crear_nace_con_el_bloque_de_ella` y la comprobación de que la segunda pasada ya funciona sin `--crear` cubren la cadena entera.
+
 **(a) Reglas que pudieran empujar a un método más allá del límite de derecho** —la clase del defecto 2—. Se buscó `requisito`, `acreditar`, `procedente`, `suficiente`, `idóneo`, `legitimación`, `válido`, `competente`, `nulidad`, `caducidad`, `prescripción` en los once. **Ninguna aparición autoriza cruzar el límite:** todas son prohibiciones —nombrar la figura para vetarla, que es el uso correcto—, declaraciones de «este método no contiene derecho», o el guardarraíl que se añadió al corregir el defecto 2.
 
 **(b) Qué métodos declaran el límite.** Siete lo dicen con esas palabras. Los cuatro que no, comprobados uno por uno **y ninguno es un hueco**:
