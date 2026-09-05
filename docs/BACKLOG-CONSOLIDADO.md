@@ -355,7 +355,33 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 >
 > **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no tres reglas.** Queda registrado como **`V-14`**, y escrito como **[AC-05](architecture/adrs/AMENDMENT-CANDIDATES.md)** — candidato de enmienda a ADR-016, **abierto y esperando decisión**, con sus tres opciones y su recomendación. **No se resuelve unilateralmente**, que es la regla de ese documento; y la opción recomendada **le cambia una carpeta a ella**, lo que ADR-012 q7 manda validar con la profesional.
 
-**Cierre honesto del §0.3:** los ADR ya están leídos y triados, y **`PENDIENTE-FORMA-DE-ENTREGA.md` también** (§8). Lo que **sigue sin cubrir** es `docs/REFINADO-Y-FUENTES.md`, `docs/backlog/architecture-post-v0.md`, `docs/technical-design/` y los veinte dossiers de `docs/skills-support/`.
+**Cierre honesto del §0.3:** leídos y triados los ADR (§7), `PENDIENTE-FORMA-DE-ENTREGA` (§8) y **`REFINADO-Y-FUENTES` (§9)**. **Sigue sin cubrir** `docs/backlog/architecture-post-v0.md`, `docs/technical-design/` —salvo su §13, materializado como `caso-03`— y los veinte dossiers de `docs/skills-support/`.
+
+---
+
+## §9 · `REFINADO-Y-FUENTES`, y las cuatro afirmaciones que traía
+
+**Leído el 2026-09-05.** Es un documento de decisión del 27 de agosto, filtrado por un refutador, con etiquetas de evidencia —`HECHO MEDIDO`, `VERIFICADO`, `SUPUESTO`, `RIESGO`—. **Es el mejor formulado de los cinco corpus sin indexar**, y sus cuatro afirmaciones de cabecera se comprobaron una por una.
+
+| Lo que decía | Comprobado el 2026-09-05 |
+|---|---|
+| **«El fallo más caro»**: *«seis de los siete comandos ordenan declarar ilegible un escaneado sin capa de texto y uno lo lee. En el caso real son 25 de 39 páginas y la pieza central del asunto»* | **CERRADO.** Los **siete** dicen hoy *«se abre por rangos de páginas y se lee como imagen»*, y **ninguno** ordena declararlo ilegible |
+| **DP-1**, la contradicción viva: `revisar-documento` prohibía transcribir derecho ajeno; el plan lo recomendaba; **y la guía le enseñaba a ella que ver una norma es señal de que algo va mal** | **CERRADO, y la guía también.** `revisar-documento` dice hoy *«el documento sí trae derecho, y ese se transcribe»*, cinco skills más llevan la cláusula, y la guía dice que una norma entrecomillada y con su página **está bien** |
+| **«El banco no puede fallar»**: *«`medir.py` termina siempre con código 0 y certifica "VERACIDAD ── intacta" sobre un run vacío»* | **Medio falso y medio corto — y ARREGLADO hoy.** Un run inexistente **sí** salía con código 1; **un run válido y vacío salía con 0 y certificaba «intacta»**, porque un run donde no pasó nada tiene cero fabricaciones por construcción. Y las 25 páginas sin declarar se imprimían debajo sin tocar el veredicto. Ahora son tres estados y el código de salida es el veredicto |
+| **El paso 9 de su orden**: *«caso-02 sintético desde `13-synthetic-benchmark.md`. **El truth set ya está escrito**»* | **HECHO hoy, y con vergüenza:** esa misma mañana yo había construido un caso sintético **de mi cabeza**, escribiendo que su límite era no traer lo que a nadie se le ocurriría. **Estaba en el repositorio.** Materializado como `caso-03` |
+
+### Lo vivo de este documento
+
+| # | Qué | Estado |
+|---|---|---|
+| **R-1** | **Canal 3: la pregunta directa de ella.** *«No se activa ninguna skill: contesta el modelo desnudo, sin método, sin marcas, sin regla 1»*. Lo llamaba *«la corrección de fuentes jurídicas con mejor relación de todo el refinado»* | **Cerrado por dos vías:** existe `/preguntas-de-derecho` (SPEC-09) y la guía lo dice con esas palabras. **Lo que no está comprobado es que la skill se active sola**, y eso solo lo enseña una pasada |
+| **R-2** | **`cita_juridica[]` obligatoriamente vacío como prueba del banco que falla** — paso 1 de su orden, mitad no hecha | **Vivo y barato.** Es una prueba determinista sobre una salida guardada, y ahora hay dos expedientes con salidas de referencia |
+| **R-3** | **8.2 — ¿existe una abogada que verifique vigencia, con nombre?** Y si existe, ¿se acepta que *«sin `vigencia_hasta` comprobada, la norma no se sirve como citable»*? | **Del dueño.** Su propia lectura: *«no construirlo este ciclo. Un pack sin mantenedor da confianza en datos viejos»* |
+| **R-4** | **8.4 — ¿la palabra de ella manda sobre un documento, o va al lado?** | **Del dueño, y urge más de lo que parece:** *«hoy el modelo elige solo, y lo más probable es que corrija en silencio»* |
+| **R-5** | **8.6 — el presupuesto de medición:** cuántas corridas por brazo (7 para detectar un 20 %; con 3 solo se detecta 30-39 %), quién transcribe, y si el banco se parte en `verificar.py` + `medir.py` | **Del dueño.** Y su nota vale por sí sola: **la transcripción no puede hacerla el modelo** —circularidad— **ni entrar al repositorio** —custodia— |
+| **R-6** | El **−34 %** con que se adoptó `inventario-de-anexos` v0.2.0 **no es distinguible del ruido** (n=1, efecto mínimo detectable 52-67 %) | **Vivo, y es una advertencia sobre cómo se citan las cifras de este proyecto** |
+
+> **Y la frase de este documento que más vale, porque describe la garantía real del producto:** *«la abstinencia se acaba el día que exista el Knowledge Pack»*. Hoy no hay mecanismo que impida citar una norma derogada — **lo impide que el producto no cita normas**. Es una abstinencia, no un control.
 
 ---
 
