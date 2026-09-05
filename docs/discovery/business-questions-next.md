@@ -10,6 +10,8 @@
 - **`¿BLOQUEA el Technical Design?`** significa una sola cosa: si sin la respuesta **no puede escribirse un contrato, un invariante o una decisión** del diseño técnico V0. No significa "es importante" ni "conviene saberlo pronto". Casi todo lo importante no bloquea.
 - **Ninguna de las ocho bloquea el Technical Design.** El resultado no se forzó: es consecuencia de que varias decisiones ya tomadas se tomaron **precisamente para que estas preguntas no bloquearan** (el actor triple en el schema desde el inicio, la frontera de incorporación invariante al origen, la ausencia de productor para `ProfessionalDetermination` en V0). Donde una pregunta sí condiciona algo, se dice **exactamente qué** condiciona: un nombre, un número, la operación con datos reales o el diseño de un contexto que aún no se levanta.
 - **La redacción sugerida es para una profesional del derecho, no para un ingeniero.** Nombra situaciones de su oficio, no entidades del sistema. Ninguna pregunta menciona `Fact`, `Source`, `provenance` ni ningún término del glosario: si la profesional tuviera que aprender nuestro vocabulario para responder, la respuesta ya estaría contaminada por él.
+- **NOTA DE 2026-09-05 — tres de las ocho tienen ya respuesta parcial, y no salió de preguntar.** Salió de ejecutar el producto sobre dos expedientes reales: las preguntas **2** (canales) y **3** (volumen) están contestadas en el orden de magnitud que ellas mismas piden, y la **7** a medias. Los datos llevaban semanas en `docs/PASE-REAL-SALENTO-2026-08-27.md` y `docs/PLAN-DE-MEJORA.md` **sin volver aquí**, y de estas ocho preguntas cuelgan cinco exclusiones de `docs/backlog/architecture-post-v0.md`. Las respuestas parciales quedan escritas dentro de cada pregunta, con su fuente y con **lo que siguen sin contestar**, que es la parte que no se puede saltar: dos casos no son una semana de trabajo. Ver §11 de `docs/BACKLOG-CONSOLIDADO.md`.
+- **Y una que cambió de estatus: la 6 (copia de seguridad).** Se marcó como no bloqueante del diseño pero sí de *«el paso de datos sintéticos a expedientes reales»*. **Ese paso ya se dio, dos veces, sin la respuesta.** El riesgo que la pregunta nombra —*«el robo del portátil destruye y expone todo a la vez»*— está vigente ahora, no en el futuro.
 - **Advertencia de método:** estas preguntas buscan **describir el trabajo real**, no validar el diseño. Una pregunta que sugiere su propia respuesta ("¿verdad que necesita X?") produce confirmación, no información. Las redacciones de abajo están escritas para que la respuesta pueda contradecirnos.
 
 ---
@@ -38,6 +40,13 @@
 
 **¿BLOQUEA el Technical Design?** **NO.** **DECISIÓN APROBADA (ADR-006):** V0 opera con **Inbox local únicamente**, sin conectores externos, y la frontera de incorporación se diseña de forma **invariante al origen**: los conectores cambian de dónde viene el material, no la operación que lo convierte en Evidence. Los mismos invariantes que se ejercitan hoy con archivos locales gobernarán mañana a los conectores sin cambio en Domain ni Application.
 
+**RESPUESTA PARCIAL DE CAMPO — registrada el 2026-09-05, sin haber hecho la pregunta.** Dos pases del arnés sobre expedientes reales la contestaron por la vía de los hechos, y el dato estuvo semanas en el repositorio sin volver aquí:
+
+- **`docs/PASE-REAL-SALENTO-2026-08-27.md` (2026-08-27):** el material llegó como **23 fotografías JPG — 8 documentos, 23 páginas, 45,5 MB**.
+- **`docs/PLAN-DE-MEJORA.md` (2026-08-26):** el caso anterior, **56 páginas**, por la misma vía.
+
+**Qué se puede afirmar y qué no.** Se puede afirmar que **el canal observado dos veces es fotografiar un expediente en papel** — ni correo, ni plataforma, ni USB. **No se puede afirmar que sea el único ni el más frecuente**: son dos casos, no una descripción de su semana, y la pregunta de abajo sigue en pie tal cual. Lo que este dato **sí cierra** es la parte que más pesaba: un canal así **no deja constancia de remitente**, de modo que el sobre de origen no puede prometer autenticidad. El diseño ya lo asumía; ahora está observado.
+
 **Redacción sugerida.**
 
 > Cuénteme cómo le llegan los documentos y las grabaciones de un caso, en la práctica y sin idealizar: ¿por correo, por WhatsApp, en una memoria USB, escaneados en la oficina, descargados de una plataforma, en papel? ¿Qué es lo más frecuente y qué es lo más incómodo?
@@ -53,6 +62,15 @@
 **Qué decisión técnica depende.** Los **valores numéricos** del presupuesto por scope de `get_case_context` (pendiente abierto de ADR-004) y el dimensionamiento del almacén local. **No depende de esta respuesta** el contrato: el mecanismo `completeness ∈ COMPLETE | PARTIAL` con `omissions[]` obligatorio cuando es `PARTIAL` está fijado (kernel §9) y es correcto con cualquier volumen — lo que cambia es a partir de qué tamaño empieza a omitirse, no que la omisión se declare.
 
 **¿BLOQUEA el Technical Design?** **NO.** V0 opera con **datos sintéticos o anonimizados, una usuaria, una máquina** (kernel §11). Los umbrales se fijan provisionalmente en implementación y quedan marcados como calibrables; ningún invariante depende de su valor.
+
+**RESPUESTA PARCIAL DE CAMPO — registrada el 2026-09-05, en el orden de magnitud que esta pregunta pide.** La propia redacción dice *«no necesito el número exacto: quiero saber si hablamos de cinco documentos o de quinientos»*. Dos expedientes reales lo contestan:
+
+| Caso | Fecha | Tamaño |
+|---|---|---|
+| Familia (`PLAN-DE-MEJORA`) | 2026-08-26 | **56 páginas**, 39 de anexos, **14 legibles** |
+| Salento (`PASE-REAL`) | 2026-08-27 | **8 documentos, 23 páginas**, 45,5 MB |
+
+**Son decenas por expediente, no centenares.** Y sigue **sin contestar** la parte que no es volumen sino **retención** —*«cuando un caso ya se acabó, ¿por cuánto tiempo necesita seguir teniendo el material a la mano?»*—, que es la que dimensiona el almacén a largo plazo. La cadencia semanal tampoco: dos casos no son un ritmo.
 
 **Redacción sugerida.**
 
@@ -125,6 +143,14 @@
 **Qué decisión técnica depende.** El diseño del contexto B completo: política de custodia (primario vs secundario), semántica de "original", y si `DECLARED_PROVEN` tiene sentido propio. Alimenta también los conceptos reservados `Ruling` y `ProceduralEvent`.
 
 **¿BLOQUEA el Technical Design?** **NO.** V0 es **contexto A (rol `LITIGANT`) únicamente** (kernel §11). **NO TENEMOS INFORMACIÓN SUFICIENTE** sobre el contexto B: su trabajo real **no ha sido levantado**, no hay descripción validada de su flujo, sus gates ni su vocabulario. Que la primera usuaria opere ambos contextos es **SUPUESTO, no hecho verificado**, y está registrado como tal (hallazgo de la verificación de consistencia). Esta pregunta bloquea el diseño del contexto B — que no se está haciendo.
+
+**LA MITAD DE ESTA PREGUNTA YA ESTÁ CONTESTADA, y la otra mitad pasó a bloquear — registrado el 2026-09-05.**
+
+**Lo que dejó de ser SUPUESTO.** Este apartado dice *«que la primera usuaria opere ambos contextos es SUPUESTO, no hecho verificado»*. **Ya no lo es.** El encabezado versionado de `docs/PASE-REAL-SALENTO-2026-08-27.md` lo dice: *«la usuaria es abogada de la Inspección de Policía de Salento y actúa como contradictor interno»*.
+
+**Lo que dejó de ser cierto.** Este apartado se aparcó con el argumento *«esta pregunta bloquea el diseño del contexto B — que no se está haciendo»*. **Se hizo el 2026-09-05:** `docs/specs/SPEC-03-contexto-b-autoridad.md` puso el bloque de posición en los once `SKILL.md` del plugin.
+
+**Y por eso la mitad que falta ahora bloquea algo concreto.** Tres `SKILL.md` justifican la protección de escritura más fuerte del producto con la frase *«es lo único que no se puede reconstruir»*, dicha de `1-Documentos recibidos/`. Si en su inspección existe un expediente digital oficial, **esa frase es falsa ahí** — la protección seguiría siendo la correcta, pero su razón declarada no lo sería. **Ninguna frase del producto se toca hasta que ella conteste**, y la redacción de abajo sirve tal cual.
 
 **Redacción sugerida.**
 

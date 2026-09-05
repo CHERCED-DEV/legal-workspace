@@ -513,9 +513,65 @@ Ese principio **sí tiene objeto hoy**, aunque no haya MCP: la superficie por la
 | **A-5** | Revisar *«lo único que no se puede reconstruir»* según la respuesta | En espera de A-4 |
 | ~~**A-6**~~ | ~~Contar la superficie real de hoy~~ | **HECHA el 2026-09-05**, y con prueba que falla si crece — arriba |
 | **A-7** | Que la instalación en otra máquina (fila 3 de §2) **se registre como el disparo de dos exclusiones**, no solo como una prueba de que abre el `.md` | Cuando ocurra |
-| **A-8** | **Indexar `docs/discovery/business-questions-next.md`** — es el noveno corpus, del que cuelgan cinco disparadores | Vivo. Hoy solo se leyó lo necesario para las preguntas 2 y 7 |
+| ~~**A-8**~~ | ~~Indexar `docs/discovery/business-questions-next.md`~~ | **HECHA el mismo día: §11**, y contestó tres de las ocho desde el disco |
 
 ---
 ---
 
-*Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura parcial: quedan `technical-design/`, los veinte dosieres de `skills-support/` y `discovery/business-questions-next.md` (§0.3, A-8).** Nada de este documento reemplaza a sus fuentes.*
+## §11 · Las ocho preguntas de negocio, y las tres que ya tienen respuesta en el disco
+
+**Leído el 2026-09-05**, porque §10 lo obligó: **cinco de los 24 disparadores del backlog de arquitectura cuelgan de estas ocho preguntas**, y una de ellas —la 7— resultó ser el disparador que ya se había disparado.
+
+`docs/discovery/business-questions-next.md` es lo mejor escrito de este corpus para su propósito: ocho preguntas **redactadas para ella y no para un ingeniero**, cada una con qué decisión depende, si bloquea, y una redacción sin jerga. Trae incluso la advertencia de método correcta: *«una pregunta que sugiere su propia respuesta produce confirmación, no información»*.
+
+**Y ninguna de las ocho tiene respuesta escrita.** Pero tres ya la tienen **en el disco de este repositorio**, puestas ahí por el trabajo de campo y nunca devueltas al documento que las esperaba.
+
+### Las tres que el propio repositorio ya contestó
+
+| # | Qué pregunta | Qué hay ya escrito, y dónde |
+|---|---|---|
+| **2** | *«¿cómo le llegan los documentos, en la práctica y sin idealizar?»* | **Contestada por dos pases reales.** `PASE-REAL-SALENTO` §encabezado: **23 fotografías JPG, 8 documentos, 23 páginas, 45,5 MB**. El canal real es *fotografiar un expediente en papel* — ni correo, ni plataforma. **Y el producto ya está construido sobre esa respuesta**: `preparar-material` existe porque el material llega así |
+| **3** | *«¿hablamos de cinco documentos o de quinientos?»* — el propio documento dice que **no necesita el número exacto** | **Contestada en orden de magnitud, dos veces.** Caso de familia: **56 páginas**, 39 de anexos, **14 legibles**. Salento: **8 documentos, 23 páginas**. Son **decenas**, no centenares. Es exactamente la precisión que la pregunta pide |
+| **7** | *«cuando le toca decidir, ¿cuál es el expediente que vale?»* | **Contestada a medias** — ver §10. La mitad que sí: **es autoridad**, y consta versionado en el encabezado del `PASE-REAL` (*«abogada de la Inspección de Policía de Salento, actúa como contradictor interno»*). **La mitad que falta es la que importa** y sigue siendo A-4 |
+
+> **Lo que esto dice del proyecto no es que el documento estuviera mal.** Estaba bien, y sigue estándolo. Es que **el trabajo de campo y el documento que lo esperaba nunca se cruzaron**: el pase midió, escribió sus números y siguió; las preguntas se quedaron en la carpeta de al lado, esperando una conversación que ya había ocurrido en parte. Es la misma enfermedad de §8 en su otra dirección — allí un documento sin leer costó dos defectos; aquí **un hecho sin devolver dejó cinco disparadores colgando de una pregunta que ya tenía media respuesta**.
+
+### La columna «¿BLOQUEA?» mide algo que ya no existe
+
+Las ocho responden **NO** a *«¿bloquea el Technical Design?»*, y el documento aclara que el resultado no se forzó: *«es consecuencia de que varias decisiones ya tomadas se tomaron precisamente para que estas preguntas no bloquearan»*. Es verdad y está bien argumentado.
+
+**Pero el Technical Design describe un Core que no se está construyendo** (§7, ADR-018). La pregunta que hoy vale es otra: **¿bloquea el producto que sí existe?** Releídas contra ese eje, la respuesta cambia en tres:
+
+| # | ¿Bloquea el Technical Design? | ¿Bloquea el producto de hoy? |
+|---|---|---|
+| **1** · «hecho acreditado» | NO — `ProfessionalDetermination` no tiene productor en V0 | **NO, y por una razón más fuerte que la del documento.** El riesgo que la pregunta existe para desactivar —*«un nombre equivocado puede sugerir efectos procesales»*— **no puede materializarse aquí**: este producto **nunca escribe la palabra «acreditado» como afirmación propia**. Está en la lista de palabras prohibidas de cinco métodos. No hay estado que nombrar mal porque no hay estado |
+| **2** · canales | NO — frontera de incorporación invariante al origen | **Ya no bloquea: está contestada** (arriba) |
+| **3** · volumen | NO — los umbrales son calibrables | **Ya no bloquea en su parte útil** (arriba). Lo que sigue abierto es *«cuando un caso se acaba, ¿cuánto tiempo necesita el material a la mano?»*, que no es volumen sino retención |
+| **4** · fuentes jurídicas | NO — ningún Knowledge Pack se carga | **NO. Y menos aún:** el producto **no cita derecho en absoluto** (§9). La abstinencia es total |
+| **5** · personas | NO — la tripleta de actor está en el schema | **SÍ, de otra manera.** Aquí no hay schema donde reservar un hueco: la única persona que el producto nombra es **ella**, en prosa, once veces. Si mañana un dependiente ejecuta un comando, **no hay dónde registrarlo** — y la marca ` - REVISADO` presupone que quien la puso fue ella |
+| **6** · backups | NO — pero **bloquea operar con datos reales** | **SÍ, y hoy más:** el producto ya corrió sobre **dos expedientes reales**, sin que esa pregunta se contestara. El documento decía que su respuesta *«habilita el paso de datos sintéticos a expedientes reales»*. **Ese paso ya se dio** |
+| **7** · expediente oficial | NO — «bloquea el diseño del contexto B, que no se está haciendo» | **SÍ.** El contexto B se hizo. Ver §10 |
+| **8** · ritmo | NO | NO |
+
+> **La fila 6 es la que incomoda, y por eso se escribe.** Es la única de las ocho que el documento marca como bloqueante de algo con nombre propio —*operar con datos reales*— y es el único umbral que el proyecto ya cruzó **sin la respuesta**. No es reprochable: el pase real fue lo que hizo bueno a este producto, y los cuatro de los cinco defectos vivos salieron de ahí. Pero **el riesgo que la pregunta 6 nombra sigue entero**: *«el robo del portátil destruye y expone todo a la vez»*, y hoy no consta que exista copia de nada.
+
+### Una referencia que no lleva a ninguna parte
+
+El encabezado del `PASE-REAL-SALENTO` —la pieza versionada que sostiene *«es autoridad»*— remite a `memory/contexto-b-inspeccion-salento.md`. **Ese archivo no está en el repositorio y no puede estarlo:** `memory/` es la carpeta que el asistente se guarda **por máquina**, fuera del control de versiones (`platform-facts.md` lo documenta: `~/.claude/projects/<proyecto>/memory/`).
+
+**El hecho no se cae** —el propio encabezado lo dice con todas las letras, y eso sí está versionado—, **pero su ampliación no la puede abrir nadie más**. Y de ese hecho cuelgan hoy `C-8`, SPEC-03 completa, el disparador de §10 y las preguntas A-4/A-5.
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| **A-8** | ~~Indexar las ocho preguntas~~ | **HECHA.** Este apartado |
+| ~~**A-9**~~ | ~~Devolver al documento de preguntas lo que el campo ya contestó~~ | **HECHA el mismo día.** Las preguntas 2, 3 y 7 llevan ahora su respuesta parcial, con fuente, fecha **y lo que siguen sin contestar** — que es la parte que no se puede saltar: dos casos no son una semana |
+| **A-10** | **La pregunta 6 —copia de seguridad— pasa de «no bloquea» a bloqueante retroactivo**, porque el paso que habilitaba ya se dio dos veces | **Del dueño.** No es diseño: es preguntarle a ella si hay copia de algo, hoy |
+| **A-11** | **La pregunta 5 empieza a bloquear el producto de hoy**, no el Core: la marca ` - REVISADO` presupone que la puso ella, y no hay nada que lo distinga si la pone otra persona | **Registrada, sin decidir.** Cuelga de A-4 en la práctica: las dos son la misma conversación |
+| ~~**A-12**~~ | ~~La referencia colgante a `memory/…`~~ | **HECHA el mismo día**, y con la corrección explicada dentro del propio documento de campo, no en silencio |
+
+---
+---
+
+*Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura parcial: quedan `technical-design/` y los veinte dosieres de `skills-support/` (§0.3).** Nada de este documento reemplaza a sus fuentes.*
