@@ -164,7 +164,7 @@ Esto es lo que apareció al mirar los cuatro juntos. **Ninguno de los 177 ítems
 | `H-16` · `EP-1.1-COORDENADA` | ADR-016 y ADR-017 documentan el límite; **no consta la regla de fallo declarado dentro de los `SKILL.md`** |
 | `PASE §6-1` · `PLAN §4-6` | El conversor existe, pero «por ahora a mano»: o el Core lo asume, o depende de que alguien corra un script |
 | `PLAN §4-4` | Falta calibrar o **retirar** la métrica de cobertura vieja |
-| `P-01` | La `Ñ` mayúscula, `Ú`, `¿` y `¡` siguen rotas |
+| `P-01` | La `Ñ` mayúscula, `Ú`, `¿` y `¡` siguen rotas. **Y desde el 2026-09-05 se sabe exactamente qué falta para arreglarlo.** El modelo latino que `PROCEDENCIA.md` daba por inalcanzable **está en Hugging Face con licencia Apache-2.0**, se baja con `scripts/traer_modelos.py --latino`, y su diccionario —836 caracteres, no 502— **trae `Ñ`, `Ú` y `¿`; `¡` tampoco está ahí**. **Lo que bloquea no es encontrarlo: es medirlo.** Cambiar de reconocedor es versión nueva (ADR-016 §9) y el actual tiene 12 de 12 identificadores críticos sin regresión sobre 23 fotografías reales; el latino, cero mediciones. **Hacen falta las fotografías, que son del bloque 0** |
 | `PLAN §8-4` | Falta la **regla de consumo**: que los agentes reciban el texto de referencia y no la carpeta de imágenes |
 | `PM-M-5` | El vehículo Word existe; **las reglas de ancho, orientación y fila de títulos no constan escritas en la skill** |
 | `PLAN §5.3-c` | La regla de licencias está escrita y **no tiene mecanismo que la haga cumplir** |

@@ -7,3 +7,4 @@ __pycache__/
 # Modelos de OCR: binarios de terceros, 16 MB. Ver plugins/despacho/scripts/modelos/PROCEDENCIA.md
 plugins/despacho/scripts/modelos/*.onnx
 plugins/despacho/scripts/modelos/*.txt
+plugins/despacho/scripts/modelos/*.yml
