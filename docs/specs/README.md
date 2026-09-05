@@ -72,7 +72,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | **Que una skill ejecute código** | ~~No existe~~ **SÍ SE PUEDE, y ya se hace.** El Core nunca hizo falta | **ADR-018** | probado con `/preparar-material` |
 | **Que lo que ella escribe sobreviva a una pasada** | **Construido el 2026-09-05.** El archivo de estado reemplaza solo su cabecera; lo suyo se conserva byte a byte y se comprueba | `PM-M-8` | **SPEC-06**, con banco de 13 pruebas |
 | **Saber qué produjo el sistema en una carpeta** | **Construido el 2026-09-05**, dentro de `/estado-del-caso`: qué comando, de qué pasada, y cuál aprobó ella | ninguna | **SPEC-08** |
-| **Copia de seguridad del trabajo de ella** | **No existe.** ADR escrito, cero implementación. **No la resuelve SPEC-06**: esa salva un archivo, no la carpeta | ADR-013 | **ninguna** — hueco `V-5` |
+| **Copia de seguridad del trabajo de ella** | **No existe.** ADR escrito, cero implementación. **No la resuelve SPEC-06**: esa salva un archivo, no la carpeta | ADR-013 **con diez preguntas pendientes, leídas el 2026-09-05** (`BACKLOG` §7) | **ninguna, y no puede haberla todavía:** dos de esas preguntas son para la oficina de ella —si ya tiene respaldo, y qué cifrado ofrece su Windows— y **el ADR manda preguntarlas antes de proponer nada**. Y el riesgo real lo escribe ADR-012 q8: **git no respalda nada de lo que importa** |
 | **Medir horas-persona y coste por caso** | **No existe.** Todo se mide en tokens | ninguna | **ninguna** — huecos `V-2`, `V-3` |
 | **Reanudar un comando que se cayó** | **No existe** | ninguna | **ninguna** — hueco `V-4` |
 | **Riesgo de que la usuaria sea autoridad** | **Cero líneas en todo el repositorio** | ninguna | **ninguna** — hueco `V-7` |

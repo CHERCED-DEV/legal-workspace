@@ -53,7 +53,7 @@ Y peor, porque es un identificador y no una prosa:
 
 ### 0.3 Lo que este documento NO cubre todavía
 
-**Los ADR no se leyeron.** El lector asignado a `docs/architecture/adrs/` cayó por un error de conexión a mitad de trabajo. Por tanto **las preguntas pendientes y las validaciones necesarias de los diecisiete ADR no están en este índice**, y son de los ítems mejor formulados del repositorio.
+~~**Los ADR no se leyeron.**~~ **LEÍDOS Y TRIADOS EL 2026-09-05 — ver §7.** Eran dieciocho, no diecisiete, y traen **más de ochenta preguntas pendientes**. No se volcaron: se cortaron primero entre las que gobiernan el producto construido (ADR-012 a 018) y las que diseñan un Core que no existe (ADR-001 a 011). **Tres estaban ya contestadas por el código y nadie las cerró**, y de las vivas salieron diez ítems y un hueco nuevo.
 
 También quedan fuera, y hay que decirlo: `docs/backlog/architecture-post-v0.md`, `docs/REFINADO-Y-FUENTES.md`, `docs/PENDIENTE-FORMA-DE-ENTREGA.md`, `docs/technical-design/` y los veinte dossiers de `docs/skills-support/`.
 
@@ -121,6 +121,7 @@ Esto es lo que apareció al mirar los cuatro juntos. **Ninguno de los 177 ítems
 | **V-9** | **Bus factor.** La disponibilidad del dueño figura como dependencia operativa y no como riesgo de producto | — |
 | **V-10** | **No hay alcance de la primera versión, ni precio, ni revisión de qué existe ya en el mercado colombiano** | La regla de composición implica cuatro o cinco versiones y ningún documento dice qué va en la primera |
 | ~~V-11~~ **CERRADO el 2026-09-05: reescrito entero.** | ~~**`scripts/README-md2docx.md` describe un producto que ya no existe.**~~ Encontrado el 2026-09-05. Tiene arriba una nota de corrección del 01/09 y **el cuerpo entero sigue siendo el de antes**: manda instalar Node, exportar `NODE_PATH`, correr `node md2docx.js`, dice que el conversor «vive en `tools/` y no en `plugins/`» y repite la premisa que ADR-018 derribó —«mientras el plugin sea texto puro, la skill no puede ejecutar código»— | **Es la única documentación de una pieza que sí viaja en el plugin**, y las instrucciones que da fallan. Una nota arriba no corrige un cuerpo: quien lo lea de corrido hace lo que dice el cuerpo. Y repite en el disco de ella la suposición falsa que costó tres capacidades |
+| **V-14** | **`2-Borradores/` guarda tres cosas distintas y nada marca cuál es cuál:** lo que produjo el sistema, lo que escribió ella, y los derivados de máquina —el texto de referencia del OCR—. Encontrado el 2026-09-05 al triar ADR-016 q3 | **En un solo día, tres mecanismos han tenido que aprender a distinguirlas por su cuenta**: el índice de salidas de SPEC-08, el clasificador de `buscar.py` y la regla de la marca. **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no tres reglas** |
 | ~~V-13~~ **CERRADO el 2026-09-05, y sin esperar a la instalación.** Se entrecomillaron las **once** descripciones, no solo las cinco rotas: los once parsean con PyYAML y **ninguna cambió de contenido** —comprobado par a par contra el diff—. Se arregló en vez de dejarlo registrado porque **entrecomillar no tiene coste ni pierde nada**: retira el riesgo en lugar de convertirlo en una pregunta que solo la instalación contestaría, y hacerlo en las once impide que la próxima edición lo reintroduzca | ~~**Cinco de los once `SKILL.md` tienen un frontmatter que un lector estricto de YAML rechaza.**~~ Encontrado el 2026-09-05 al comprobar los archivos tocados. La causa es la misma en los cinco: **un `:` seguido de espacio dentro de `description:`, sin comillas** — *«…de un caso leyendo su carpeta: qué documentos hay…»*. Afecta a `estado-del-caso`, `redactar-escrito`, `buscar-en-el-caso`, `preguntas-de-derecho` y `preparar-material`. **Lo verificado es que PyYAML los rechaza; lo que NO está verificado es si el lector de la plataforma es estricto** — y no se puede saber sin instalar | **Si lo es, esos cinco comandos no cargan en su máquina, y el fallo aparecería justo en la primera instalación** — la que nunca se ha hecho (`PLAN §5.2-1`, `G34`). El arreglo son cinco pares de comillas; lo que falta es **la instalación que diga si hace falta**, que es otra vez la entrada 0. Se registra sin arreglar a propósito: arreglarlo a ciegas convertiría una pregunta comprobable en una suposición más |
 | ~~V-12~~ **CERRADO el 2026-09-05: el árbol lista las once skills y los siete programas, y se comprueba con un `grep`.** | ~~**El árbol de archivos del `README.md` del plugin miente por omisión.**~~ Encontrado el 2026-09-05: lista seis skills de once y **no menciona `scripts/`**, que son siete programas | El árbol es lo que alguien lee para saber qué es esto. Hoy oculta la mitad del producto, incluida la parte que ADR-018 declaró posible |
 
@@ -245,6 +246,9 @@ Y de la corrección del §0.2 sale una segunda: **ningún documento nuevo de pla
 | **0.6** | **Diez minutos de audiencia real**, con transcripción manual de referencia | Una tarde | Todo el uso de audio |
 | **0.7** | **El formulario 11 de vuelta**, aunque sea a medias | — | La única señal externa que existe sobre si esto sirve |
 | **0.8** | **Los dos PDF del caso-01, para reconstruir el truth set del banco** — o decir que ese caso se retira y cuál lo sustituye | Sacarlos de donde estén | **Es lo que desbloquea la fila 1.3, que estaba mal puesta en mi bloque.** Sin material no hay banco, y sin banco ningún cambio del método es reversible con criterio (G22) |
+| **0.9** | **¿La oficina ya tiene algún mecanismo de respaldo?** —servidor, NAS, unidad de red, una costumbre no escrita | **Una pregunta** | `A-2` · ADR-013 q2. **Se pregunta antes de proponer nada:** si existe, el respaldo se integra con él en vez de crear un segundo mecanismo paralelo. Puede ahorrar el diseño entero |
+| **0.10** | **Cómo obtiene ella el `pull`** — clon con credencial de solo lectura instalada una vez (recomendada), token suyo, o cuenta suya de GitHub. **Y si necesita `git` instalado** | Una decisión y media hora | `A-3` · `A-4` · ADR-012 q1 y q5. **Bloquean la instalación**, que es la fila 3 de §2 |
+| **0.11** | **Cómo quiere ella que se llame el comando de revisión de rigor.** Dijo «contradictor interno» | Una pregunta | `A-7` · ADR-015 q1. Hoy se llama como lo decidimos nosotros, que es `H-08` en pequeño |
 
 ### Bloque 1 — Puedo empezar ya, en este orden
 
@@ -293,6 +297,65 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 3. **Los dos PDF del caso-01** (0.8), o decir qué caso lo sustituye. Sin eso no hay banco, y sin banco **ninguna de las ~20 propuestas de recorte se puede evaluar**.
 
 **Y una advertencia sobre este documento, que es la conclusión de nueve días:** de los diez ítems de §2, **dos estaban mal contados y uno era falso**. De los seis ítems nacidos de leer diagnósticos que se han verificado, **ninguno estaba como decía**. Antes de trabajar sobre cualquier fila de aquí, **léala contra el código** — y si la fila nació de un pase real, es la que probablemente sea cierta.
+
+
+---
+
+## §7 · Los dieciocho ADR, leídos por fin
+
+**Añadido el 2026-09-05.** El §0.3 de este documento declara, desde el 28 de agosto, que **los ADR no se leyeron** —*«el lector asignado cayó por un error de conexión a mitad de trabajo»*— y que sus preguntas pendientes *«son de los ítems mejor formulados del repositorio»*. Aquí están.
+
+**Y no se vuelcan tal cual.** Los dieciocho ADR contienen **más de ochenta preguntas pendientes**, y volcarlas sería ochenta ítems nuevos sin verificar — el pecado que este documento existe para no repetir. Antes hay que hacer un corte que nadie había hecho.
+
+### 7.1 El corte: cuáles gobiernan lo que existe
+
+| ADR | De qué tratan | ¿Gobiernan el producto construido? |
+|---|---|---|
+| **001 a 011** | La frontera de confianza, el modelo epistémico tipado, la memoria del caso, el log de eventos con hash-chain, las propuestas y autorizaciones, la superficie MCP, SQLite, el anclaje de fragmentos | **No.** Diseñan **el Core**, que no existe. Lo construido son once `SKILL.md` y siete programas |
+| **012 a 018** | Distribución y actualización, respaldo, entrega en Word, revisión de rigor, límite del OCR, límite del audio, la oficina de programas | **Sí.** Cada uno describe algo que hoy está en el disco |
+
+> **El corte no es una opinión mía: lo hace ADR-018**, cuya decisión 1 dice con todas las letras: *«**El Core deja de ser dependencia de nada que ya funcione.** Si algún día existe, será para otra cosa; **ninguna capacidad construida vuelve a esperarlo.»*
+>
+> **Lo que eso significa para las ~60 preguntas de 001-011:** no están resueltas ni descartadas — **están en suspenso**, porque preguntan por decisiones de un sistema que nadie ha empezado a construir. *«¿`better-sqlite3` o `node:sqlite`?»* no bloquea nada hoy. **Entran a este índice el día que se decida construir el Core, y no antes.** Nombrarlas ahora las convertiría en deuda aparente y taparía las que sí pesan.
+
+### 7.2 Lo que el código ya contestó, y nadie cerró
+
+**Tres preguntas de ADR marcadas «pendientes» están respondidas en el disco.** Es el mismo patrón que `V-1`: el trabajo se hizo y el ADR no se enteró.
+
+| Pregunta | Qué dice el código |
+|---|---|
+| **ADR-015 q4** — *«¿Qué severidades existen? Un vocabulario abierto en un campo obligatorio es una grieta»* | **Cerrado.** `revision-de-rigor` §5 tiene **tres grados de vocabulario cerrado** —`soportado`, `limitado`, `sin soporte`— y **cinco valores cerrados** para el veredicto global. La grieta que temía no existe |
+| **ADR-016 q2** — *«¿El OCR corre siempre, o solo cuando el material no tiene capa de texto?»* | **Cerrado.** `preparar_material.py` solo lo ejecuta sobre **archivos de imagen** (`if not a.sin_ocr and imagenes`), más una bandera `--sin-ocr`. Un PDF con capa de texto no se reconoce nunca |
+| **ADR-014 q2** — *«¿Quién genera el `.docx`: la skill o el Core?»* | **Ya estaba tachada** por ADR-018 el 01/09. Se anota por completitud del corte |
+
+### 7.3 Las preguntas vivas, y dos son más grandes que su ADR
+
+**Estas sí entran al índice.** Ordenadas por lo que bloquean, no por su número.
+
+| # | De dónde | Qué pregunta | Por qué pesa |
+|---|---|---|---|
+| **A-1** | ADR-012 q8 | **Política de respaldo de la zona de trabajo de ella:** destino, frecuencia, cifrado, quién verifica, y qué se le enseña | **Es `V-5` con contenido, y más grande de lo que `V-5` decía.** El propio ADR lo escribe: *«es su riesgo real de pérdida total: **git no respalda nada de lo que importa**»*. La distribución por `git` protege el plugin, **no su trabajo** |
+| **A-2** | ADR-013 q2 | **¿La oficina ya tiene algún mecanismo de respaldo?** —servidor, NAS, unidad de red, costumbre no escrita | **Se pregunta antes de proponer nada.** Si existe, este ADR se integra con él en vez de crear un segundo mecanismo paralelo. **Cuesta una pregunta y puede ahorrar el diseño entero** |
+| **A-3** | ADR-012 q1 | **Cómo obtiene ella el `pull`:** clon inicial con credencial de solo lectura instalada una vez, token propio, o cuenta suya de GitHub | **Bloquea la instalación**, que es la fila 3 de §2. El ADR ya trae recomendación —la primera, *«ella nunca escribe una credencial»*— y **falta la decisión de los dueños** |
+| **A-4** | ADR-012 q5 | **¿Necesita `git` instalado en su máquina?** Y si no: ¿git portable, biblioteca, o lo instalan los dueños? | Bloquea la instalación por la vía práctica |
+| **A-5** | ADR-013 q1 | **Cifrado del disco del portátil y del externo — `POR VERIFICAR`** en la edición concreta de Windows | De la respuesta depende si hace falta una herramienta adicional o revisar la decisión de respaldo |
+| **A-6** | ADR-017 q5 | **Dos licencias con problema** en los modelos de diarización y en la herramienta contra la alucinación | Ya está en el índice como `PLAN §5.3-e`. **Se confirma con su origen**, que es mejor formulación que la que había |
+| **A-7** | ADR-015 q1 | **Cómo se llama en la superficie.** *«La usuaria dijo «contradictor interno»; la palabra de ella suele ser mejor que la nuestra»* | Cuesta una pregunta. Hoy se llama `revision-de-rigor` **porque lo decidimos nosotros**, que es exactamente lo que `H-08` —la jerga que llega a su pantalla— señala |
+| **A-8** | ADR-015 q3 | **¿La revisión de rigor se aplica también al material de la otra parte, o solo al propio?** En el pase se aplicó a los tres y funcionó; falta decidir si esa es la regla | **Y hoy pesa más que cuando se escribió:** con SPEC-03, en posición de autoridad **no hay «material propio» frente a «de la contraparte»** — hay dos partes y su propio proyecto, y la simetría obliga a los tres |
+| **A-9** | ADR-014 q3 y q4 | **¿El PDF consolidado se regenera con material nuevo o se produce uno por tanda?** · **¿Se entrega también `.pdf`**, para imprimir sin riesgo de edición accidental? | Producto. La segunda es barata y toca cómo llega a sus manos |
+| **A-10** | ADR-016 q5 · ADR-017 q4 | **Qué se hace cuando el derivado y el original no se pueden cotejar:** OCR que difiere del modelo con el original inaccesible; audio no disponible y solo transcripción de un tercero | Los dos son el mismo hueco: **el invariante de cotejo no se puede cumplir y hay que decir qué pasa entonces** |
+
+### 7.4 Y una pregunta de ADR que hoy describe un defecto vivo
+
+**ADR-016 q3** pregunta *«¿dónde vive el texto extraído — zona 2 o zona 3?»* y se contesta sola: *«Hoy se dejó en `2-Borradores/`, que es zona 2, y **probablemente esté mal**: es un derivado de material incorporado»*.
+
+**En el producto construido no hay zona 3**, así que la pregunta tal como está formulada no tiene respuesta posible. Pero **su síntoma sí es real y hoy se puede nombrar mejor que en agosto**:
+
+> **`2-Borradores/` guarda tres cosas distintas y ninguna marca cuál es cuál:** lo que produjo el sistema, lo que escribió ella, y **los derivados de máquina** —el texto de referencia del OCR—. Y en un solo día, **tres mecanismos distintos han tenido que aprender a distinguirlas por su cuenta**: el índice de salidas de SPEC-08, el clasificador de `buscar.py`, y la regla de la marca ` - REVISADO`.
+>
+> **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no tres reglas.** Queda registrado como **`V-14`**.
+
+**Cierre honesto del §0.3:** los ADR ya están leídos y triados. Lo que **sigue sin cubrir** de aquel párrafo es `docs/REFINADO-Y-FUENTES.md`, `docs/PENDIENTE-FORMA-DE-ENTREGA.md`, `docs/backlog/architecture-post-v0.md`, `docs/technical-design/` y los veinte dossiers de `docs/skills-support/`.
 
 ---
 
