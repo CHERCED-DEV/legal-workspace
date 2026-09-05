@@ -353,7 +353,7 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 
 > **`2-Borradores/` guarda tres cosas distintas y ninguna marca cuál es cuál:** lo que produjo el sistema, lo que escribió ella, y **los derivados de máquina** —el texto de referencia del OCR—. Y en un solo día, **tres mecanismos distintos han tenido que aprender a distinguirlas por su cuenta**: el índice de salidas de SPEC-08, el clasificador de `buscar.py`, y la regla de la marca ` - REVISADO`.
 >
-> **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no tres reglas.** Queda registrado como **`V-14`**.
+> **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no tres reglas.** Queda registrado como **`V-14`**, y escrito como **[AC-05](architecture/adrs/AMENDMENT-CANDIDATES.md)** — candidato de enmienda a ADR-016, **abierto y esperando decisión**, con sus tres opciones y su recomendación. **No se resuelve unilateralmente**, que es la regla de ese documento; y la opción recomendada **le cambia una carpeta a ella**, lo que ADR-012 q7 manda validar con la profesional.
 
 **Cierre honesto del §0.3:** los ADR ya están leídos y triados. Lo que **sigue sin cubrir** de aquel párrafo es `docs/REFINADO-Y-FUENTES.md`, `docs/PENDIENTE-FORMA-DE-ENTREGA.md`, `docs/backlog/architecture-post-v0.md`, `docs/technical-design/` y los veinte dossiers de `docs/skills-support/`.
 

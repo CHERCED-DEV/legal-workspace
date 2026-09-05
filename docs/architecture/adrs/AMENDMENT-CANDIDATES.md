@@ -1,6 +1,8 @@
 # ADR Amendment Candidates — enmiendas que requieren decisión de los dueños
 
-**Estado:** **APROBADAS POR LOS DUEÑOS.** Las cuatro enmiendas fueron aprobadas y **ya están aplicadas** a los ADRs correspondientes (001, 004, 005), que siguen `Accepted` con su texto enmendado y su supersede registrado. Este documento queda como **registro histórico** del análisis que las sustentó.
+> **AÑADIDO EL 2026-09-05 — hay un quinto candidato, y este está ABIERTO.** Las cuatro primeras son registro histórico; **AC-05 no**: nace de leer los ADR contra el código el 2026-09-05 y **espera decisión**. Ver el final de este documento.
+
+**Estado de las cuatro primeras:** **APROBADAS POR LOS DUEÑOS.** Las cuatro enmiendas fueron aprobadas y **ya están aplicadas** a los ADRs correspondientes (001, 004, 005), que siguen `Accepted` con su texto enmendado y su supersede registrado. Este documento queda como **registro histórico** del análisis que las sustentó.
 
 | Enmienda | ADR | Supersede | Estado |
 |---|---|---|---|
@@ -89,3 +91,56 @@ Para cada enmienda basta una de estas tres respuestas:
 - **APROBAR** — se enmienda el ADR, se actualiza el corpus y se registra el supersede.
 - **RECHAZAR** — el ADR queda como está y el Technical Design se corrige para ser fiel a su letra.
 - **APLAZAR** — se mantiene el diseño neutral donde lo es (AC-02 y AC-04 lo son; AC-01 y AC-03 no: bloquean el schema de autorizaciones y el manifiesto de tools respectivamente).
+
+---
+
+## AC-05 — ADR-016: dónde viven los derivados de máquina
+
+**Estado: ABIERTO.** Propuesto el 2026-09-05. **No se aplica nada hasta que ustedes decidan**, por la misma regla que gobierna a los cuatro anteriores: los conflictos se declaran, no se resuelven unilateralmente.
+
+### La pregunta original, y por qué ya no se puede contestar tal como está
+
+**ADR-016, pregunta pendiente 3:**
+
+> *«¿Dónde vive el texto extraído — zona 2 o zona 3 de ADR-012? Hoy se dejó en `2-Borradores/`, que es zona 2, y **probablemente esté mal**: es un derivado de material incorporado.»*
+
+**En el producto construido no existe la zona 3.** Las zonas son del diseño de ADR-012 para un Core que no se construyó (ver `BACKLOG` §7.1): lo que hay en el disco son tres carpetas —`1-Documentos recibidos/`, `2-Borradores/`, `3-Para presentar/`— y nada más. **La pregunta, literalmente, no tiene respuesta posible hoy.**
+
+### Pero el síntoma es real, y el 2026-09-05 se pudo medir
+
+`2-Borradores/` guarda **tres cosas de naturaleza distinta**, y ninguna marca cuál es cuál:
+
+| Qué hay | Quién lo produjo | Qué se puede hacer con ello |
+|---|---|---|
+| Hoja de hechos, cronología, inventarios | **El sistema** | Pista, nunca origen — salvo con la marca ` - REVISADO` |
+| Borradores y notas de ella | **Ella** | Es suyo. Lo que escriba manda |
+| `Texto de referencia - <fecha>.txt` | **Una máquina**, sin criterio | **Nunca se cita.** Sirve para saber en qué página mirar |
+
+**Y la medida es esta: en un solo día, tres mecanismos distintos tuvieron que aprender a distinguirlas por su cuenta.**
+
+1. **El índice de salidas** de SPEC-08, que deduce el comando por la convención de nombre.
+2. **El clasificador de `buscar.py`**, que marca `<- NO es material del caso` todo lo que está fuera de `1-Documentos recibidos/`.
+3. **La regla de la marca ` - REVISADO`**, que decide cuál de esos archivos puede usarse como fuente.
+
+> **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no de que falten tres reglas.** Y los tres la resuelven **por inferencia** —por el nombre, por la carpeta— cuando podría estar dicha por la estructura.
+
+### Las tres opciones, con lo que cuesta cada una
+
+| | Qué es | A favor | En contra |
+|---|---|---|---|
+| **(a) Dejarlo como está** | Los tres mecanismos siguen infiriendo | Cuesta cero. Funciona hoy | **Cada mecanismo nuevo tendrá que aprenderlo otra vez**, y el cuarto puede aprenderlo distinto. Es deriva garantizada |
+| **(b) Una subcarpeta `2-Borradores/derivados-de-maquina/`** | Los derivados salen del montón | **La distinción queda dicha por la estructura y no por inferencia.** Un mecanismo nuevo la hereda gratis. Y a ella le separa lo que no debe leer como borrador | Toca `preparar_material.py` y la mención del texto de referencia en seis `SKILL.md`. **Le cambia una carpeta a ella**, y eso no lo decidimos nosotros |
+| **(c) Una convención de nombre** —prefijo fijo | Igual que (b) sin mover archivos | Más barato | Sigue siendo inferencia, solo que mejor. **No resuelve la causa** |
+
+**Recomendación: (b)**, y con una condición — **preguntárselo a ella antes**, porque es su carpeta y ADR-012 q7 ya dice que la estructura de la zona de trabajo *«se valida con la profesional, no entre nosotros»*.
+
+### Lo que esta enmienda haría con ADR-016
+
+- **Cerrar la q3 tal como está** —zona 2 o zona 3— por **premisa inexistente**, igual que ADR-018 cerró la q2 de ADR-014.
+- **Abrir en su lugar** la pregunta que sí tiene respuesta: *«¿los derivados de máquina se separan de los borradores dentro de `2-Borradores/`?»*.
+- **No tocar ninguno de sus invariantes.** El límite del OCR —falla callándose, no se cita, la ausencia no es información— **sigue mandando entero**, esté el archivo donde esté.
+
+### Y lo que no depende de ustedes
+
+Independientemente de lo que decidan, **la distinción ya está escrita en los tres sitios** y con test donde se pudo (`evals/scripts/test_buscar.py`). Esta enmienda no arregla un defecto abierto: **evita el cuarto mecanismo.**
+
