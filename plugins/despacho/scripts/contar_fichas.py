@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Cuenta las fichas de una salida de `hechos-con-prueba`, por estado.
+"""Cuenta las fichas de una salida y contrasta el conteo que la salida declara.
+
+Sirve a los tres metodos que cuentan: `hechos-con-prueba` (fichas H-NN por
+estado), `cronologia` (eventos E-NN por grado de certeza) y `revision-de-rigor`
+(hallazgos F-NN por grado de soporte). Reconoce cual es por su forma.
 
 **No es parte del producto.** Es la guarda de un conteo que el propio metodo
 pide -- Fase 6, punto 3: *«cuenta y entrega el conteo: cuantos hechos
@@ -27,6 +31,9 @@ ESTADOS = [u"Apoyado y contradicho", u"Apoyado", u"Contradicho",
 
 # Los cinco grados de `cronologia` §3. Vocabulario fijo: no hay un sexto.
 GRADOS = [u"en conflicto", u"documentada", u"referida", u"aproximada", u"deducida"]
+
+# Los tres grados de soporte de `revision-de-rigor` §5.
+SOPORTES = [u"sin soporte", u"soportado", u"limitado"]
 
 
 def contar(texto):
@@ -170,6 +177,69 @@ def main_cronologia(ruta, texto):
     return 0
 
 
+def contar_rigor(texto):
+    """Los grados de soporte de las fichas F-NN de `revision-de-rigor`."""
+    fichas = re.findall(r"(?m)^#+\s+(F-\d+)\b", texto)
+    por = dict((s, 0) for s in SOPORTES)
+    sin = []
+    partes = re.split(r"(?m)^#+\s+(F-\d+)\b", texto)
+    for ficha, cuerpo in zip(partes[1::2], partes[2::2]):
+        m = re.search(r"(?im)^-\s+\*\*Grado de soporte:\*\*\s*(.+)$", cuerpo)
+        if not m:
+            sin.append(ficha)
+            continue
+        d = plano(re.sub(r"[*_`.]", "", m.group(1)).strip())
+        for s in SOPORTES:                    # «sin soporte» antes que «soportado»
+            if d.startswith(plano(s)):
+                por[s] += 1
+                break
+        else:
+            sin.append("%s (grado no reconocido: %s)" % (ficha, m.group(1).strip()))
+    return fichas, por, sin
+
+
+def conteo_rigor_escrito(texto):
+    fuera = {}
+    m = re.search(u"\\*\\*(\\d+) hallazgos?\\*\\*", texto)
+    fuera["total"] = int(m.group(1)) if m else None
+    for s, patron in ((u"soportado", u"\\*\\*(\\d+) soportados?\\*\\*"),
+                      (u"limitado", u"\\*\\*(\\d+) limitados?\\*\\*"),
+                      (u"sin soporte", u"\\*\\*(\\d+) sin soporte\\*\\*")):
+        m = re.search(patron, texto)
+        fuera[s] = int(m.group(1)) if m else None
+    return fuera
+
+
+def main_rigor(ruta, texto):
+    fichas, por, sin = contar_rigor(texto)
+    d = conteo_rigor_escrito(texto)
+    print("\n== %s   (revision de rigor)" % ruta)
+    print("   hallazgos: %d  (%s)" % (len(fichas), ", ".join(fichas)))
+    for s in SOPORTES:
+        if por[s]:
+            print("   %-14s %d" % (s, por[s]))
+    if sin:
+        print("   SIN GRADO LEGIBLE: %s" % ", ".join(sin))
+
+    problemas = []
+    if sum(por.values()) != len(fichas):
+        problemas.append(u"los grados suman %d y hay %d fichas"
+                         % (sum(por.values()), len(fichas)))
+    if d.get("total") is not None and d["total"] != len(fichas):
+        problemas.append(u"declara %d hallazgos y hay %d" % (d["total"], len(fichas)))
+    for s in SOPORTES:
+        if d.get(s) is not None and d[s] != por[s]:
+            problemas.append(u"declara %d «%s» y hay %d" % (d[s], s, por[s]))
+    print("")
+    if problemas:
+        for x in problemas:
+            print("   NO COINCIDE: %s" % x)
+        print("\n   Una discrepancia pide RECONTAR, no explicarla.")
+        return 2
+    print("   el conteo escrito coincide con las fichas")
+    return 0
+
+
 def main(args):
     if len(args) != 1:
         sys.stderr.write(__doc__)
@@ -178,6 +248,8 @@ def main(args):
         print("no existe: %s" % args[0])
         return 1
     texto = io.open(args[0], encoding="utf-8").read()
+    if re.search(r"(?m)^#+\s+F-\d+\b", texto):
+        return main_rigor(args[0], texto)
     if re.search(r"(?m)^\|\s*E-\d+\s*\|", texto) and not re.search(r"(?m)^##\s+H-", texto):
         return main_cronologia(args[0], texto)
     fichas, por_estado, sin_estado = contar(texto)

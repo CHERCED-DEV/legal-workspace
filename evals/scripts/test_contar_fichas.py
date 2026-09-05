@@ -129,5 +129,52 @@ class ContarCronologia(unittest.TestCase):
         self.assertEqual(0, C.main([str(CRONO)]))
 
 
+RIGOR = (Path(__file__).resolve().parents[1] / "casos"
+         / "caso-03-hidraulica-desde-el-diseno" / "2-Borradores"
+         / "Revision de rigor - Hidraulica - 2026-09-05.md")
+
+
+def rigor(*fichas, **kw):
+    t = []
+    for f, grado in fichas:
+        t += ["### %s — la duda" % f, "",
+              "- **Grado de soporte:** %s" % grado, ""]
+    t.append(kw.get("conteo", ""))
+    return "\n".join(t)
+
+
+class ContarRevisionDeRigor(unittest.TestCase):
+
+    def test_sin_soporte_no_cuenta_como_soportado(self):
+        """El mismo fallo de forma que «Apoyado y contradicho», tercera vez.
+
+        «sin soporte» contiene «soporte» y empieza distinto que «soportado»,
+        pero el orden de la lista es lo que lo garantiza -- y por eso se prueba.
+        """
+        _, por, sin = C.contar_rigor(rigor(("F-01", "sin soporte"),
+                                           ("F-02", "soportado")))
+        self.assertEqual(1, por["sin soporte"])
+        self.assertEqual(1, por["soportado"])
+        self.assertEqual([], sin)
+
+    def test_limitado_cuenta(self):
+        _, por, _ = C.contar_rigor(rigor(("F-01", "limitado.")))
+        self.assertEqual(1, por["limitado"])
+
+    def test_un_cuarto_grado_inventado_se_denuncia(self):
+        """§5 dice tres grados y ninguno mas."""
+        _, _, sin = C.contar_rigor(rigor(("F-01", "parcialmente soportado")))
+        self.assertEqual(1, len(sin))
+
+    def test_detecta_el_conteo_mal_escrito(self):
+        doc = rigor(("F-01", "soportado"), ("F-02", "limitado"),
+                    conteo=u"**2 hallazgos** · **2 soportados** · **0 limitados**")
+        self.assertEqual(2, C.main_rigor("x", doc))
+
+    def test_la_revision_real_cuadra(self):
+        self.assertTrue(RIGOR.exists(), RIGOR)
+        self.assertEqual(0, C.main([str(RIGOR)]))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

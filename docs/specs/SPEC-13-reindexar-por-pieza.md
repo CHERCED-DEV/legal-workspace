@@ -20,6 +20,17 @@ El defecto está en dos frases, las dos del mismo tipo: **indexan por lo que se 
 
 **Verificado contra el código el 2026-09-05, y con una corrección al propio ítem.** `PM-M-4` dice que la cadena está también en `inventario-de-anexos` Fases 1-4. **Ya no:** ese comando —y `inventario-de-bienes`— tienen desde hace tiempo la forma buena, con su nombre puesto (*«Fase 1 — el recorrido de captura: se lee una vez y se anota todo»*, *«Fase 5 — numerar, comprobar en bloque y entregar»*). **El defecto sigue vivo en dos de los cuatro**, no en los cuatro.
 
+> **SEGUNDA CORRECCIÓN, del mismo 2026-09-05 y unas horas después: «dos de los cuatro» tampoco era la cuenta.** Al ejecutar `revision-de-rigor` contra el `caso-03` apareció que **el defecto seguía vivo en dos sitios más**, los dos en el paso de comprobación y no en el de captura, que es donde esta spec miró:
+>
+> | Dónde | Qué decía | Qué es |
+> |---|---|---|
+> | `revision-de-rigor` Fase 6.1 | *«Abre cada localizador que citaste, **uno por uno**»* | **El mismo defecto.** Su objeto es un expediente con varias piezas: es el bucle anidado completo, y esta spec no lo miró porque solo revisó los cuatro métodos que leen material |
+> | `hechos-con-prueba` §9, pregunta 7 | *«¿comprobé, **uno por uno**, que cada fragmento citado dice lo que le atribuyo?»* | **Una contradicción dentro del mismo archivo.** Su Fase 6.1 dice *«en bloque y una sola vez, nunca por hecho»* y su autoevaluación preguntaba lo contrario. Una regla con dos redacciones, en el mismo fichero |
+>
+> **Los dos corregidos.** Y uno que **NO** se toca, y decir por qué es parte de la corrección: `revisar-documento` dice *«abre cada cita una por una»* y **ahí no es defecto** — su objeto es **una sola pieza**, así que abrir sus citas una por una no son dos bucles anidados sobre el material. La forma correcta depende de cuántas piezas hay, no de la palabra.
+>
+> **Es la quinta cuenta mal hecha del día**, y la primera que se le hace a una spec. Ninguna se encontró releyendo.
+
 > **Y eso hace que esta spec no invente nada.** No hay que diseñar la forma nueva: **hay que portar la que ya está escrita y funcionando en dos comandos del mismo plugin**, con su vocabulario y sus pasos. Es la diferencia entre una reforma y una copia.
 
 ## 2. Comportamiento observable

@@ -2,7 +2,7 @@
 name: revision-de-rigor
 description: "Método para poner a prueba una conclusión, un escrito propio, un borrador o un expediente entero, con una sola pregunta — qué de esto no se sostiene con el material disponible. Produce hallazgos falsables, cada uno con su localizador, lo que lo refutaría y su grado de soporte. Úsalo cuando pidan revisar antes de presentar, buscar lo que no se sostiene, hacer de contradictor, encontrar lo que la contraparte podría alegar, o preparar la revisión de un expediente. No lo uses para leer una pieza recibida, valorar prueba, decidir estrategia ni responder preguntas de derecho."
 version: 0.3.3
-allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
+allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/contar_fichas.py *)
 ---
 
 # revision-de-rigor — qué de esto no se sostiene
@@ -198,8 +198,16 @@ Cada hallazgo lleva los trece. Si alguno no se puede llenar, **se dice que no se
 
 ### Fase 6 — Revisar la propia salida
 
-1. **Abre cada localizador que citaste**, uno por uno, y comprueba que dice lo que le atribuyes. **La cita fantasma —referencia real, contenido inexistente— es el error más peligroso disponible aquí**, porque en un informe de rigor nadie la busca.
+1. **Comprueba los localizadores en bloque y una sola vez.** **La cita fantasma —referencia real, contenido inexistente— es el error más peligroso disponible aquí**, porque en un informe de rigor nadie la busca. Se caza así: reúne **todos** los localizadores que van a salir con la cita que les atribuyes, **ordénalos por pieza y, dentro de cada pieza, por página —nunca por hallazgo—**, y recórrelos de una vez: **cada pieza se abre una sola vez y se contrasta de golpe todo lo que dice salir de ella.** **No se comprueba menos: se comprueba lo mismo, en otro orden**, y se detecta más, porque las citas que dicen salir de la misma página se ven juntas contra esa página. Lo que no se pueda comprobar se declara.
 2. **Cuenta y reparte:** cuántos hallazgos, de qué grado, y **cuántos tocan a cada lado**. Si el reparto es desigual, dilo con los números.
+
+   **Y el conteo no lo haces de memoria: lo hace un programa.**
+
+   ```
+   python ${CLAUDE_PLUGIN_ROOT}/scripts/contar_fichas.py "<el .md que acabas de escribir>"
+   ```
+
+   Cuenta los hallazgos por grado de soporte y **contrasta el resultado con el conteo que escribiste**. Denuncia además un **cuarto grado inventado**, que §5 prohíbe. **Si no cuadra, se recuenta; no se explica.** El reparto por lado sí lo cuentas tú: el programa no sabe quién es cada parte.
 3. **Lee tu informe entero de un tirón** y pregúntate qué historia cuenta (§2.4).
 4. **Responde la lista del §9.**
 

@@ -466,7 +466,7 @@ LO QUE ESTA PASADA SE CORRIGIÓ A SÍ MISMA
 6. ¿Fusioné dos hechos que difieren en quién, qué, cuándo, cuánto o dónde? ¿Fundí dos nombres parecidos?
 
 **Sobre los emparejamientos**
-7. ¿Volví al material y comprobé, **uno por uno**, que cada fragmento citado dice lo que le atribuyo? ¿Cité como origen de algún dato una salida del propio sistema, en vez del documento original?
+7. ¿Volví al material y comprobé **en bloque, abriendo cada pieza una sola vez** (Fase 6.1), que cada fragmento citado dice lo que le atribuyo? ¿Cité como origen de algún dato una salida del propio sistema, en vez del documento original?
 8. ¿Algún emparejamiento apunta a un documento entero en vez de a un fragmento localizable?
 9. ¿Usé "sitúa" donde en realidad quería decir "apoya a medias"? (Si sí: descomponer el hecho, o declarar el alcance de la cita.)
 10. ¿Forcé el uno a uno — dejé fuera una prueba por ya usada, o repartí pruebas para que a cada hecho le tocara una?
