@@ -28,6 +28,10 @@ SCRIPTS = RAIZ / "plugins" / "despacho" / "scripts"
 # Los seis que el modelo puede invocar, y por qué cada uno.
 EXPUESTOS = {
     "buscar.py":              "buscar sin leerlo todo",
+    # Septimo, anadido el 2026-09-05 con la medicion delante: la Fase 6 pide un
+    # conteo que llama «instrumento de honestidad», y la primera pasada real lo
+    # dio mal. Contar es trabajo mecanico con respuesta correcta comprobable.
+    "contar_fichas.py":       "contar las fichas por estado y contrastar",
     "estado_del_caso.py":     "sustituir la cabecera conservando sus notas",
     "md2docx.py":             "entregar en el formato que ella abre",
     "preparar_material.py":   "el trabajo mecánico de la ingesta",
@@ -55,7 +59,12 @@ def declarados():
 class LaSuperficieSeCuenta(unittest.TestCase):
 
     def test_la_superficie_es_exactamente_la_declarada(self):
-        """Si aparece un séptimo programa expuesto, esta prueba falla."""
+        """Si aparece un octavo programa expuesto, esta prueba falla.
+
+        Fueron seis hasta el 2026-09-05, y el septimo entro con su medicion
+        delante y esta linea escrita. Que crezca no esta prohibido; que crezca
+        sin que nadie lo decida, si.
+        """
         self.assertEqual(sorted(EXPUESTOS), sorted(declarados()))
 
     def test_admin_cuenta_cero(self):

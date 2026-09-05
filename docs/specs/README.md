@@ -108,12 +108,13 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | [SPEC-11](SPEC-11-la-primera-instalacion.md) | La primera instalación: que empezar no dependa de preguntar | defecto | `H-08` · defecto abierto de SPEC-01 | **Ejecutada** — falta que alguien instale |
 | [SPEC-12](SPEC-12-lo-que-la-pasada-atrapo.md) | Que cada pasada diga qué se corrigió a sí misma | defecto | `PM-M-1` (c) y (d) · G23 | **Ejecutada** en los once — falta una pasada real que produzca cifras |
 | [SPEC-13](SPEC-13-reindexar-por-pieza.md) | Abrir cada pieza una vez, no veintiuna | defecto | `PM-M-4` · G24 · §2 ítem 8 | **Ejecutada** en los dos que lo tenían vivo — los dos inventarios ya tenían la forma |
+| [SPEC-14](SPEC-14-el-conteo-lo-hace-un-programa.md) | El conteo que se pedía a ojo | defecto | **la primera pasada real sobre el `caso-03`** | **Ejecutada.** Es la única spec cuyo defecto no salió de leer nada: salió de correr el método |
 
-> **Cuenta honesta, al final del 2026-09-05: once escritas y ejecutadas, dos retiradas, ninguna pendiente de escribir.** Las dos retiradas —SPEC-02 y SPEC-07— lo fueron por la misma razón: **el defecto que iban a arreglar ya estaba arreglado**. «Pendiente» aquí significaba que el archivo no existía, y hoy no queda ninguna en ese estado.
+> **Cuenta honesta, al final del 2026-09-05: doce escritas y ejecutadas, dos retiradas, ninguna pendiente de escribir.** Las dos retiradas —SPEC-02 y SPEC-07— lo fueron por la misma razón: **el defecto que iban a arreglar ya estaba arreglado**. «Pendiente» aquí significaba que el archivo no existía, y hoy no queda ninguna en ese estado.
 
 ### Y una cuenta que importa más que esa
 
-**Once specs ejecutadas. Cero comprobadas en una pasada real.** Lo que sí hubo, el 2026-09-05, fue una **pasada de escritorio** sobre un expediente sintético construido para el caso — y **encontró dieciocho defectos, los dieciocho míos**, ninguno visible releyendo la spec:
+**Doce specs ejecutadas. Una comprobada en una pasada real** —la última, SPEC-14, que **no existe por haber leído nada**: existe porque el método se ejecutó entero contra el `caso-03` y **su propio conteo salió mal**. Las otras once siguen sin comprobarse así. Lo que sí hubo, el 2026-09-05, fue una **pasada de escritorio** sobre un expediente sintético construido para el caso — y **encontró dieciocho defectos, los dieciocho míos**, ninguno visible releyendo la spec:
 
 | # | Spec | Qué estaba mal |
 |---|---|---|

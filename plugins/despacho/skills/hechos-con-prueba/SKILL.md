@@ -2,7 +2,7 @@
 name: hechos-con-prueba
 description: "Método para convertir el material de un caso (entrevistas, declaraciones, documentos, comprobantes) en hechos candidatos emparejados con la prueba que los apoya, los contradice o los sitúa. Úsalo cuando pidan construir, extraer u ordenar los hechos de un asunto, armar el relato fáctico, o establecer qué está apoyado y qué no. No lo uses para redactar escritos, valorar prueba, decidir estrategia ni responder preguntas de derecho."
 version: 0.2.7
-allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
+allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/contar_fichas.py *)
 ---
 
 # hechos-con-prueba — construir hechos con su prueba
@@ -251,6 +251,18 @@ Antes de entregar, haz cuatro cosas:
    **No se comprueba menos que antes: se comprueba lo mismo, en otro orden.** Y se detecta más, porque las doce citas que dicen salir de la misma página se ven juntas contra esa página, que es cuando salta la que no está ahí. Lo que no se pueda comprobar **se declara**, como siempre.
 2. **Responde la lista de la sección 10 sobre tu propia salida.** Si alguna respuesta es "no", corrige. Si no puedes corregir, dilo en la entrega.
 3. **Cuenta y entrega el conteo:** cuántos hechos propuestos, cuántos apoyados, cuántos sin apoyo, cuántos contradichos, cuántos vacíos, cuántos descartes. El conteo es un instrumento de honestidad: obliga a mirar la proporción real de lo que produjiste.
+
+   **Y el conteo no lo haces de memoria: lo hace un programa.**
+
+   ```
+   python ${CLAUDE_PLUGIN_ROOT}/scripts/contar_fichas.py "<el .md que acabas de escribir>"
+   ```
+
+   Lee las fichas, las cuenta por estado y **contrasta el resultado con el conteo que escribiste**. Si no coinciden, lo dice y sale distinto de cero.
+
+   > **Por qué esto es un programa y no un cuidado.** Contar es trabajo mecánico con respuesta correcta comprobable, que es el mismo criterio por el que `preparar-material` no descomprime a mano. Y hay medición: **en la primera pasada real sobre un caso de banco, este conteo salió mal** —«10 apoyados · 7 sin apoyo» donde eran 9 y 6—, y la causa es concreta: **«Apoyado y contradicho» empieza por «Apoyado»** y se cuenta dos veces sin querer. Un instrumento de honestidad calculado a ojo mide sobre todo el cansancio de quien cuenta.
+   >
+   > **Si el programa no está o falla:** cuenta a mano **listando las fichas y su estado una por una**, nunca de memoria, y **dilo en la entrega**. El comando funciona sin él, peor, y diciéndolo.
 4. **Elige qué debe comprobar ella primero.** Una pasada normal deja decenas de comprobaciones posibles y ninguna indicación de por dónde empezar; en la práctica, una lista sin orden se parece mucho a ninguna comprobación. Escoge **entre tres y cinco anclajes, no más**, y escribe al lado de cada uno por qué está en la lista. El criterio, en este orden:
    - los que **sostienen solos** un hecho: si ese anclaje no dice lo que dices que dice, el hecho se queda sin nada detrás;
    - los que salen de **material producido por la propia interesada**, porque son los que con más facilidad se leen como prueba sin serlo, y los que salen **solo de una transcripción**, que se comprueban contra el audio;
