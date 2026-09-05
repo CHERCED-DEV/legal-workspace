@@ -168,6 +168,10 @@ se escribe al lado de la ficha.
 Cuando termine, guarde este archivo añadiendo « - REVISADO» al final del
 nombre. Solo así cuenta como hechos aprobados: un archivo sin esa marca es
 una propuesta que nadie ha mirado.
+No se preocupe por la terminacion del archivo: Windows se la oculta, y si
+al renombrar le queda « - REVISADO.md.md», « - REVISADO.txt» o
+« - REVISADO» a secas, cuenta igual. Lo unico que importa es que el nombre
+TERMINE en REVISADO.
 
 3. LAS FICHAS
 ────────────────────────────────────────────────────────────────────
@@ -287,7 +291,9 @@ Hechos - Ríos - 2026-08-25.md              <- lo que él le propuso
 Hechos - Ríos - 2026-08-25 - REVISADO.md   <- lo que usted aprobó
 ```
 
-Solo el archivo cuyo nombre termina en ` - REVISADO` cuenta como hechos aprobados. El otro es una propuesta que nadie ha mirado todavía, y él lo trata como tal. Si más adelante le pide un borrador y no encuentra ningún archivo con esa marca, se lo dirá con esas palabras —no hay hechos aprobados— y le preguntará, en vez de tirar del archivo sin marcar como si usted lo hubiera visto.
+Solo el archivo cuyo nombre termina en ` - REVISADO` cuenta como hechos aprobados. El otro es una propuesta que nadie ha mirado todavía, y él lo trata como tal.
+
+**Y no tiene que pelearse con la terminación del archivo.** Windows le esconde el `.md` del final, así que al renombrar puede quedarle en el disco `Hechos - Ríos - 2026-08-25 - REVISADO.md.md`, o `- REVISADO.txt`, o `- REVISADO` sin nada detrás — y usted no tiene cómo verlo. **Las cinco formas cuentan igual.** Lo único que importa es que el nombre **termine** en REVISADO: escriba la marca al final y olvídese del resto. Él le dirá, en su respuesta, el nombre exacto del archivo que tomó como aprobado, para que usted lo desmienta si tomó el que no era. Y si encuentra un archivo con «revisado» puesto de otra forma —al principio del nombre, o un `(revisar)`— **no lo da por aprobado ni lo pasa por alto: se lo nombra y le pregunta**. Si más adelante le pide un borrador y no encuentra ningún archivo con esa marca, se lo dirá con esas palabras —no hay hechos aprobados— y le preguntará, en vez de tirar del archivo sin marcar como si usted lo hubiera visto.
 
 **Y esa marca vale para cualquier entrega, no solo para la de hechos.** Si repasa una cronología o un inventario y le parece bien, guárdelo añadiendo ` - REVISADO` al nombre, igual que la hoja de hechos: desde ese momento él puede apoyarse en ese archivo. Sin la marca lo usa solo para saber dónde mirar y vuelve a sacar cada dato del documento original — que es más lento, y es justo lo que impide que un error de una entrega se cuele en la siguiente sin que nadie lo note. La marca no dice que el contenido esté perfecto; dice que usted lo miró, y eso es lo que cambia.
 

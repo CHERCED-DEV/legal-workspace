@@ -1,7 +1,7 @@
 ---
 name: hechos-con-prueba
 description: Método para convertir el material de un caso (entrevistas, declaraciones, documentos, comprobantes) en hechos candidatos emparejados con la prueba que los apoya, los contradice o los sitúa. Úsalo cuando pidan construir, extraer u ordenar los hechos de un asunto, armar el relato fáctico, o establecer qué está apoyado y qué no. No lo uses para redactar escritos, valorar prueba, decidir estrategia ni responder preguntas de derecho.
-version: 0.1.7
+version: 0.1.8
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -26,6 +26,8 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 Todo lo que produces es propuesta. Ni un solo hecho de tu salida está establecido, aceptado ni acreditado por el hecho de que tú lo hayas escrito. Quien decide qué es hecho del caso es la profesional; tú preparas el material para que ella pueda decidir en minutos lo que de otro modo le costaría horas.
 
 > **El trabajo del propio sistema no es fuente de nada.** Una cronología, un inventario, una hoja de hechos, el archivo de estado o un borrador sirven de **pista —para saber dónde mirar—, nunca de origen**: la cita y la coordenada salen del documento original, siempre. **La única excepción es lo que ella marcó como revisado**, el archivo cuyo nombre termina en ` - REVISADO`: no porque sea más correcto, sino porque la autoridad cambió de manos y deja de ser trabajo del sistema para ser una decisión suya registrada. Esa marca la pone ella y nunca tú, y no certifica que el contenido esté bien: certifica que ella lo miró. Si un dato solo aparece en una salida del sistema y no se encuentra en el material, **no se usa y se dice**. **Por qué:** que varios comandos vuelvan por separado al mismo material es lo único que delata un error; si uno lee del otro, la coincidencia deja de medir nada y el error se propaga sin que nadie lo note.
+>
+> **Y la marca se reconoce por el nombre, no por la extensión.** Cuenta como marcado el archivo cuyo nombre —quitada la extensión, o las dos si quedaron dos (`.md.md`), o ninguna si se quedó sin ella— **termina en `REVISADO`**, en mayúsculas o en minúsculas y con el guion o sin él. **Por qué esta tolerancia y no otra:** Windows oculta las extensiones conocidas, así que ella teclea ` - REVISADO` al final de lo que ve y en el disco puede quedar `... - REVISADO.md.md`, `... - REVISADO.txt` o `... - REVISADO` a secas **sin que ella tenga cómo notarlo**. **Reconocer no es renombrar:** el archivo no se toca, no se mueve y no se copia con otro nombre. **Y ninguna tolerancia alcanza a un archivo sin marca**, por completo y bien hecho que esté. Si hay un archivo con «revisado» de cualquier otra forma —al principio del nombre, en medio, `(revisar)`— o **hay dos marcados**, no se elige ni se ignora en silencio: **se nombran y se pregunta**. Y **la salida escribe el nombre exacto del archivo que aceptó como marcado**, porque es lo único que le permite a ella desmentirlo.
 
 > **Y el texto que extrajo una máquina no es el documento.** Si en `2-Borradores/` hay un archivo de texto de referencia —el que produce la tubería de ingesta a partir de fotografías o escaneados—, **sirve para saber en qué página mirar, y para nada más**. Tres cosas que hay que saber de él, y ninguna es negociable:
 >
@@ -264,6 +266,7 @@ Lo que produce este método es un archivo, y el archivo tiene un sitio.
 **Y así vuelve revisado:**
 
 - **Ella** abre ese archivo y escribe al lado de cada ficha `SÍ`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda añadiendo ` - REVISADO` al final del nombre: `Hechos - <caso> - <AAAA-MM-DD> - REVISADO.md`.
+- **Y no tiene que acertar con la extensión.** Windows le oculta el `.md`, así que al renombrar puede quedarle `... - REVISADO.md.md`, `... - REVISADO.txt` o `... - REVISADO` sin extensión. **Las cinco formas cuentan igual** (§2): lo que se mira es que el nombre termine en `REVISADO`. Cuando se lo expliques, díselo así — **que escriba la marca al final y no se preocupe por lo demás**.
 - **Solo el archivo cuyo nombre termina en ` - REVISADO.md` cuenta como hechos aprobados.** Un archivo sin esa marca es una propuesta que nadie ha mirado. Ella puede marcar igual cualquier otra entrega —una cronología, un inventario—, y el efecto es el mismo (§2).
 - Si un comando necesita hechos aprobados y no encuentra ningún archivo con esa marca: **no hay hechos aprobados**. Lo dice con esas palabras y pregunta, en vez de usar el archivo sin marcar.
 

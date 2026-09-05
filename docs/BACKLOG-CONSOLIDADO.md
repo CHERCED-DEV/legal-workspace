@@ -5,6 +5,15 @@
 > **CORRECCIÓN — 2026-08-31.** Al ir a escribir la spec del ítem **4 de §2** —«la hoja de hechos: dos comandos consumen un archivo que nadie escribe»— se leyó el código y **el defecto ya estaba cerrado y verificado en ejecución real** desde antes de esta consolidación. Estaba mal contado aquí: entró como abierto porque se consolidó leyendo documentos de diagnóstico, no los `SKILL.md`. Las tres filas afectadas quedan tachadas en su sitio, no borradas.
 >
 > **Y esa es la lección, no la errata:** un backlog que se consolida leyendo diagnósticos y no el código **produce trabajo inventado**. La regla 4 de `docs/specs/README.md` sale de aquí — antes de escribir una spec de defecto, se comprueba que el defecto siga vivo. **El resto de este índice tiene el mismo origen y no ha sido reverificado contra el código.**
+>
+> **SEGUNDA CORRECCIÓN — 2026-09-05, y afina la anterior.** Van nueve ítems verificados contra el código, y el patrón ya no es «el backlog está mal contado»: **es más fino y más útil.**
+>
+> | De dónde nació el ítem | Verificados | Estaban como decían |
+> |---|---|---|
+> | De **leer documentos de diagnóstico** (`H-04`, `H-05`, `H-10`, `H-11`, `H-16`) | 5 | **0 de 5** |
+> | De **ejecutar el producto en un caso real** (`PM-M-2`, `P-05`, `P-06`, `P-07`) | 4 | **4 de 4** |
+>
+> **La regla que sale de ahí gobierna en qué orden se lee lo que queda:** *un ítem que nació ejecutando el producto describe un defecto real; uno que nació leyendo un documento sobre el producto, la mitad de las veces describe algo ya arreglado, o describe mal lo que está roto.* De los ~108 identificadores sin verificar, **los que tienen un pase real detrás van primero** — y los cuatro que se cerraron el 2026-09-05 son precisamente esos.
 
 ---
 
@@ -46,7 +55,7 @@ No son ítems de trabajo: son **avisos de que dos documentos dicen cosas incompa
 |---|---|---|
 | C-1 | `H-04` dice que el bloque anti-inyección vive «en 1 de 6 comandos» | ~~Está en los nueve~~ **Comprobado el 2026-08-31: estaba en OCHO.** Faltaba en `preguntas-de-derecho` — la única skill cuyo trabajo entero es negarse. **Añadido por SPEC-09; ahora sí son nueve** |
 | C-2 | `H-09` da por pendiente renombrar `fact-builder` | **Ya se llama `hechos-con-prueba/`** y el README lo documenta → **cerrable** |
-| C-3 | **Cuántos comandos hay:** `PM-M-10` dice cinco, casi todo `ESTADO` dice seis, otros hablan del séptimo | **El repositorio tiene nueve.** Cuatro cifras sobre la misma cosa |
+| C-3 | **Cuántos comandos hay:** `PM-M-10` dice cinco, casi todo `ESTADO` dice seis, otros hablan del séptimo | ~~El repositorio tiene nueve~~ **Once desde el 2026-09-01.** Cinco cifras sobre la misma cosa, y **esta línea era la quinta**: se quedó vieja seis días después de escribirse. Un conteo dentro de un documento envejece solo |
 | C-4 | **Qué es «el séptimo comando»** | Cuatro respuestas incompatibles. Ver §0.2 |
 | C-5 | `PM-RECHAZO-OCR` **rechazó** el OCR con dos condiciones escritas; ADR-016 y `preparar_material.py` **lo construyeron** | No consta que las condiciones se escribieran, y **la `Ñ` mayúscula sigue rota** — el error exacto que el rechazo temía |
 | C-6 | El registro del pase vendió el OCR como «divide por ~7 el coste»; **su propio §5.4 lo desmiente** | La justificación válida es la corroboración, no el ahorro. Ya corregido en el documento |
@@ -77,7 +86,7 @@ Deduplicados, ordenados por **cuánto desbloquean**, no por esfuerzo.
 | **9** | **Cuánto puede costar un caso.** Cuesta nada: es una pregunta a una persona | G35 · `PLAN §5.2-5` | Todo el capítulo de economía | Abierto |
 | **10** | **Fichar `inventario-de-bienes` y `preguntas-de-derecho`, y aplicar los doce hallazgos de la crítica** | sin origen — ver §3 | Cualquier cuenta honesta de qué es el producto | **Nadie lo cubre** |
 
-**Se quedaron a un paso:** `PM-M-2` (blindar la marca ` - REVISADO` contra la extensión oculta de Windows — la victoria más barata que existe) y `H-11`/`PM-M-8` (media hora que convierte una pérdida irreversible en recuperable).
+~~**Se quedaron a un paso:** `PM-M-2` … y `H-11`/`PM-M-8` …~~ **CERRADOS el 2026-09-05.** `PM-M-2` con SPEC-05 y `PM-M-8` con SPEC-06. Y `H-11` **no estaba abierto**: sus dos mitades llevaban tiempo cerradas en el código (ver §4). Lo que quedaba vivo del grupo `G19` no era la pérdida —la copia previa existe desde antes— sino **la copia**: que el modelo tuviera que volver a teclear un texto de ella para conservarlo. Eso es lo que cierra SPEC-06, y con banco de pruebas.
 
 ---
 
@@ -97,6 +106,9 @@ Esto es lo que apareció al mirar los cuatro juntos. **Ninguno de los 177 ítems
 | **V-8** | **Datos de terceros que no consintieron.** El riesgo está declarado y **no tiene dueño**: nadie produce la política de tratamiento ni dice quién responde | Freno número uno para licenciar |
 | **V-9** | **Bus factor.** La disponibilidad del dueño figura como dependencia operativa y no como riesgo de producto | — |
 | **V-10** | **No hay alcance de la primera versión, ni precio, ni revisión de qué existe ya en el mercado colombiano** | La regla de composición implica cuatro o cinco versiones y ningún documento dice qué va en la primera |
+| **V-11** | **`scripts/README-md2docx.md` describe un producto que ya no existe.** Encontrado el 2026-09-05. Tiene arriba una nota de corrección del 01/09 y **el cuerpo entero sigue siendo el de antes**: manda instalar Node, exportar `NODE_PATH`, correr `node md2docx.js`, dice que el conversor «vive en `tools/` y no en `plugins/`» y repite la premisa que ADR-018 derribó —«mientras el plugin sea texto puro, la skill no puede ejecutar código»— | **Es la única documentación de una pieza que sí viaja en el plugin**, y las instrucciones que da fallan. Una nota arriba no corrige un cuerpo: quien lo lea de corrido hace lo que dice el cuerpo. Y repite en el disco de ella la suposición falsa que costó tres capacidades |
+| **V-13** | **Cinco de los once `SKILL.md` tienen un frontmatter que un lector estricto de YAML rechaza.** Encontrado el 2026-09-05 al comprobar los archivos tocados. La causa es la misma en los cinco: **un `:` seguido de espacio dentro de `description:`, sin comillas** — *«…de un caso leyendo su carpeta: qué documentos hay…»*. Afecta a `estado-del-caso`, `redactar-escrito`, `buscar-en-el-caso`, `preguntas-de-derecho` y `preparar-material`. **Lo verificado es que PyYAML los rechaza; lo que NO está verificado es si el lector de la plataforma es estricto** — y no se puede saber sin instalar | **Si lo es, esos cinco comandos no cargan en su máquina, y el fallo aparecería justo en la primera instalación** — la que nunca se ha hecho (`PLAN §5.2-1`, `G34`). El arreglo son cinco pares de comillas; lo que falta es **la instalación que diga si hace falta**, que es otra vez la entrada 0. Se registra sin arreglar a propósito: arreglarlo a ciegas convertiría una pregunta comprobable en una suposición más |
+| **V-12** | **El árbol de archivos del `README.md` del plugin miente por omisión.** Encontrado el 2026-09-05: lista seis skills de once y **no menciona `scripts/`**, que son siete programas | El árbol es lo que alguien lee para saber qué es esto. Hoy oculta la mitad del producto, incluida la parte que ADR-018 declaró posible |
 
 ---
 
@@ -117,6 +129,18 @@ Esto es lo que apareció al mirar los cuatro juntos. **Ninguno de los 177 ítems
 
 - **`H-04`** — ~~está en los nueve `SKILL.md`~~ **La salvedad tenía razón.** Al comprobarlo el 2026-08-31 estaban en ocho: `preguntas-de-derecho` no tenía ninguna sección. **SPEC-09 lo añadió y ahora son nueve** — cerrable de verdad, y no por lectura de diagnóstico.
 - **`H-09`** — la carpeta ya es `hechos-con-prueba/`.
+
+**Cerrado el 2026-09-05, con spec y con su verificación:**
+
+| Qué | Ítems que cierra | Con qué | Qué falta para darlo por muerto |
+|---|---|---|---|
+| La marca ` - REVISADO` frente a la extensión oculta de Windows | `PM-M-2` · `G25` · lo vivo de `G17` | **SPEC-05** — regla de reconocimiento en las seis skills que la citan, más la guía | Una pasada real con un `... - REVISADO.md.md` en la carpeta (O-2 a O-5) |
+| Que un texto de ella no se re-emita al reescribir el archivo de estado | `PM-M-8` · lo vivo de `G19` | **SPEC-06** — `scripts/estado_del_caso.py`, séptimo programa del plugin, **con 13 pruebas comprobadas capaces de fallar** | Una pasada real (O-10) |
+| Dónde va lo que ella dice y la carpeta no registra | `P-05` · `P-06` · `G6` | **SPEC-04** — bloque propio en `estado-del-caso` y sección 6 en `cronologia`, **sin inventar un sexto grado de certeza** | Una pasada real en que ella aporte un dato de viva voz |
+| El índice de las salidas de una pasada | `P-07` · `G37` | **SPEC-08** — dentro de `/estado-del-caso`, no un comando nuevo | Una pasada real sobre una carpeta con varias salidas |
+| `H-11`, las dos mitades | `H-11` · parte de `G19` | **Ya estaban cerradas antes.** `inventario-de-anexos` §1 tiene la regla de no sobrescritura; `estado-del-caso` Fase 6.4, la copia previa | Nada. **Estaba mal contado aquí** |
+
+> **Ninguno de los cuatro está comprobado muerto en uso.** «Ejecutada» significa que el cambio está en el código y que los observables que no dependen de nadie pasan. Los que exigen una pasada real están declarados pendientes en cada spec, **y no se cuentan como cerrados**.
 
 **Parciales, y por qué no se pueden cerrar:**
 
@@ -214,8 +238,8 @@ Y de la corrección del §0.2 sale una segunda: **ningún documento nuevo de pla
 | **1.1** | **Fichar `inventario-de-bienes` y `preguntas-de-derecho`** y aplicar los doce hallazgos de su crítica, tres graves | V-1 | **Hay defectos graves en un comando desplegado y nadie los está contando** |
 | **1.2** | **Instrumentar** (`PM-M-1`): etiquetar filas de coste, separar `input`/`cache_read`, contar anclajes corregidos y qué pregunta de autoevaluación disparó | G23 | Bloquea nueve ítems y las ~20 propuestas de recorte. **Ninguna de sus cuatro medidas toca el producto** |
 | **1.3** | **Correr el banco de evaluación que ya existe** — 678 líneas, seis fixtures, con truth set | G22 | Hoy **no hay ninguna prueba capaz de fallar**. Sin esto ningún cambio es reversible con criterio |
-| **1.4** | **Blindar la marca ` - REVISADO`** contra la extensión oculta de Windows | G25 | La victoria más barata que existe, y castiga a la usuaria justo después del trabajo más caro |
-| **1.5** | **`0-Estado del caso`: reemplazo dirigido**, no reescritura completa | G19 | Media hora que convierte una pérdida irreversible en recuperable |
+| ~~1.4~~ | ~~**Blindar la marca ` - REVISADO`**~~ **HECHO el 2026-09-05 — SPEC-05.** Las seis skills que citan la marca la reconocen ahora en sus cinco formas, no la renombran, y declaran el nombre exacto del archivo que aceptaron | G25 | Cerrado salvo la pasada real |
+| ~~1.5~~ | ~~**`0-Estado del caso`: reemplazo dirigido**~~ **HECHO el 2026-09-05 — SPEC-06**, y no era lo que decía esta fila: la pérdida ya era recuperable. Lo que faltaba es que **un texto de ella dejara de pasar por el modelo** para volver al disco | G19 | Cerrado salvo la pasada real. **Único ítem del proyecto con banco de pruebas propio** |
 | ~~1.6~~ | ~~La hoja de hechos: dónde se escribe + mecanismo de aprobación~~ | G17 | **Retirado el 2026-08-31: el eslabón no estaba partido.** Se descubrió al ir a escribir su spec. Lo que queda del grupo es `PM-M-2` (fila 1.x de la marca) |
 | **1.7** | **Variante de contexto B** de los `SKILL.md` | G7 | La única usuaria real es autoridad y el producto le habla de «su clienta» |
 | **1.8** | **Reindexar la Fase 4 y la 6.1 por pieza** | G24 | 76 barridas y 239 aperturas donde caben 14 y 14. **Es el ahorro que no gasta garantía** |
