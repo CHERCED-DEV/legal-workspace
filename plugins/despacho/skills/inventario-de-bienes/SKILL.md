@@ -1,7 +1,7 @@
 ---
 name: inventario-de-bienes
 description: "Método para recorrer el material de un caso e inventariar los bienes y las deudas que aparecen en él —qué documento lo respalda y en qué página, a nombre de quién figura según ese documento, qué fecha trae, qué valor aparece escrito y quién produjo ese documento—, más lo que falta y las contradicciones entre documentos. Úsalo cuando pidan armar el inventario de bienes de una separación, un divorcio, una sucesión o cualquier asunto donde haya que saber qué bienes aparecen y con qué papel detrás. No lo uses para decidir qué bienes entran y cuáles no, calcular valores, sumar, restar deudas, sacar porcentajes, proponer un reparto ni decir a quién le corresponde qué."
-version: 0.3.1
+version: 0.3.2
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -34,7 +34,7 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 | **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
 | **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
 
-**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y no se adivina**. Adivinar aquí no se nota en la salida y lo cambia todo.
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y se espera la respuesta antes de producir nada**. Ni se adivina, ni se pregunta y se sigue sobre una suposición: **lo segundo es adivinar con el trámite de la pregunta por delante**, y encima deja escrito que se consultó. Adivinar aquí no se nota en la salida —sale entera, bien escrita, en el registro que no era— **y lo cambia todo**: la posición gobierna a quién le hablas, si la simetría aplica, y si algo puede ordenarse por lo que le conviene a alguien.
 
 **Y en posición de autoridad, tres cosas se endurecen:**
 

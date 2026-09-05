@@ -67,7 +67,7 @@ El pase del 27/08 anotó, entre lo que funcionó:
 | # | Observable | Cómo se comprueba | Resultado |
 |---|---|---|---|
 | O-1 | Los **once** `SKILL.md` traen el bloque de posición, con la misma redacción | `grep -c` de la frase canónica = 11 | **Pasa** |
-| O-2 | En los once está escrito que si no se puede saber la posición, **se pregunta una vez** | `grep` | **Pasa** |
+| O-2 | En los once está escrito que si no se puede saber la posición, **se pregunta una vez y se espera la respuesta antes de producir nada** | `grep` | **Pasa — el «y se espera» no estaba.** Preguntar y seguir sobre una suposición produce una salida entera, bien escrita, en el registro que no era |
 | O-3 | En los once está la **simetría obligatoria**, con la orden de escribir el resultado la haya o no | `grep` | **Pasa** |
 | O-4 | En los once está que **ningún invariante cambia** con la posición | `grep` | **Pasa** |
 | O-5 | En los once está que los ejemplos no son la voz de la salida | `grep` | **Pasa** |

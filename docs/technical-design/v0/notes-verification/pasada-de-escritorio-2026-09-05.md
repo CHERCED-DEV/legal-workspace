@@ -8,7 +8,7 @@
 
 ## El resultado en una línea
 
-**Cinco defectos, los cinco míos y los cinco de esta semana.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+**Seis defectos, los seis míos y los seis de esta semana.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -17,6 +17,7 @@
 | 3 | SPEC-04 | Lo que ella escribe bajo `NOTAS SUYAS` no contaba como suyo |
 | 4 | SPEC-05 | «Pregunta cuál manda» **sin «y te detienes»** |
 | 5 | — | **Mi propio registro**: dije dónde dispara la simetría sin ir a mirar |
+| 6 | SPEC-03 | **La posición se preguntaba sin esperar respuesta** — el defecto 4, en los once y en la regla que gobierna a las demás |
 
 ---
 
@@ -79,6 +80,24 @@ La regla de SPEC-05 decía: *«no eliges. Los nombras los dos con su fecha y pre
 > **Y deja algo peor que no haber preguntado:** deja escrito en la salida que se consultó, así que quien la lea creerá que la elección la hizo ella.
 
 **Corregido:** en el bloque §2 de las seis, *«se nombran, se pregunta **y se espera la respuesta**»*, con la razón al lado —*preguntar no es seguir*—; y en `redactar-escrito` e `inventario-de-anexos`, la parada dicha con las mismas palabras que la de «no hay hechos aprobados», porque es el mismo alto.
+
+---
+
+## Defecto 6 — El mismo, más grande: la posición también se preguntaba sin esperar
+
+**El defecto 4 no era un caso: era una clase.** Encontrado uno, se barrieron los once buscando **toda regla que mande preguntar sin mandar detenerse**. El barrido devolvió tres candidatos y uno era grave.
+
+| Dónde | Qué decía | Veredicto |
+|---|---|---|
+| **El bloque de posición, en los ONCE** | *«se pregunta una vez … y no se adivina»* | **Roto.** No decía que se espere |
+| `inventario-de-anexos` §Fase 2, sin hechos aprobados | Pregunta y ofrece tres vías, y **resuelve qué hacer con cada respuesta** | Correcto, se deja como está |
+| `preparar-material` Fase 0 | *«Si falta una, se pregunta. No inventes un nombre de caso ni elijas un destino»* | Correcto: *«no inventes»* es la parada |
+
+**Por qué el de la posición es peor que el de las dos marcas.** Con dos archivos marcados, lo que se elige mal es cuál de dos decisiones suyas vale. **Con la posición se elige a quién le habla el producto** — y de ahí cuelga si la simetría aplica y si algo puede ordenarse por lo que le conviene a alguien. Un modelo que pregunte y siga sobre una suposición produce **una salida entera, bien escrita, en el registro que no era**, y nada en ella lo delata.
+
+**Corregido en los once:** *«se pregunta una vez … **y se espera la respuesta antes de producir nada**. Ni se adivina, ni se pregunta y se sigue sobre una suposición: lo segundo es adivinar con el trámite de la pregunta por delante, y encima deja escrito que se consultó.»*
+
+> **Y esto es lo que hace que un barrido valga más que una corrección.** El defecto 4 costó una regla; buscar a sus hermanos costó cinco minutos y encontró el mismo fallo en once archivos, en la regla que gobierna a las demás. **Un defecto encontrado es una pregunta sobre dónde más vive.**
 
 ---
 

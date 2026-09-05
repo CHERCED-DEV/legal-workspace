@@ -1,7 +1,7 @@
 ---
 name: buscar-en-el-caso
 description: "Método para encontrar dónde aparece un nombre, una cifra, una fecha, una matrícula o cualquier texto dentro de la carpeta de un caso, sin abrir ni leer los documentos. Recorre el texto de referencia, los borradores y lo terminado, y devuelve archivo y renglón para que ella vaya directo. Úsalo cuando pregunten dónde aparece algo, si algo se menciona, en qué documento está una cifra o un nombre, o para localizar antes de citar. No cita: dice dónde mirar. Y no concluye ausencia: lo que no sale puede estar en el papel igual."
-version: 0.2.0
+version: 0.2.1
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/buscar.py *)
 ---
 
@@ -26,7 +26,7 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/buscar.py *)
 | **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
 | **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
 
-**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y no se adivina**. Adivinar aquí no se nota en la salida y lo cambia todo.
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y se espera la respuesta antes de producir nada**. Ni se adivina, ni se pregunta y se sigue sobre una suposición: **lo segundo es adivinar con el trámite de la pregunta por delante**, y encima deja escrito que se consultó. Adivinar aquí no se nota en la salida —sale entera, bien escrita, en el registro que no era— **y lo cambia todo**: la posición gobierna a quién le hablas, si la simetría aplica, y si algo puede ordenarse por lo que le conviene a alguien.
 
 **Y en posición de autoridad, tres cosas se endurecen:**
 

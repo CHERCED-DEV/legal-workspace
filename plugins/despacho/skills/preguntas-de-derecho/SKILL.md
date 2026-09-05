@@ -1,7 +1,7 @@
 ---
 name: preguntas-de-derecho
 description: "Qué hacer cuando la pregunta es de derecho y no de material — qué dice la ley, qué norma aplica, si algo procede o caducó, cuánto es el término, qué dijo una sentencia, si una cláusula es válida, qué se necesita para presentar algo. Aplica también cuando la pregunta viene mezclada con una tarea del caso. No responde derecho de su propia memoria: explica por qué y ofrece lo que sí puede hacer con el material. Si la abogada aporta ella misma la norma, el plazo o el criterio, lo aplica atribuido a ella y sin ampliarlo."
-version: 0.3.0
+version: 0.3.1
 ---
 
 # preguntas-de-derecho — la única pregunta que este arnés no contesta
@@ -25,7 +25,7 @@ Cuando lo que se pregunta **no se responde leyendo la carpeta**. Da igual cómo 
 | **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
 | **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
 
-**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y no se adivina**. Adivinar aquí no se nota en la salida y lo cambia todo.
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y se espera la respuesta antes de producir nada**. Ni se adivina, ni se pregunta y se sigue sobre una suposición: **lo segundo es adivinar con el trámite de la pregunta por delante**, y encima deja escrito que se consultó. Adivinar aquí no se nota en la salida —sale entera, bien escrita, en el registro que no era— **y lo cambia todo**: la posición gobierna a quién le hablas, si la simetría aplica, y si algo puede ordenarse por lo que le conviene a alguien.
 
 **Y en posición de autoridad, tres cosas se endurecen:**
 
