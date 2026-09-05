@@ -1,7 +1,7 @@
 ---
 name: buscar-en-el-caso
 description: "Método para encontrar dónde aparece un nombre, una cifra, una fecha, una matrícula o cualquier texto dentro de la carpeta de un caso, sin abrir ni leer los documentos. Recorre el texto de referencia, los borradores y lo terminado, y devuelve archivo y renglón para que ella vaya directo. Úsalo cuando pregunten dónde aparece algo, si algo se menciona, en qué documento está una cifra o un nombre, o para localizar antes de citar. No cita: dice dónde mirar. Y no concluye ausencia: lo que no sale puede estar en el papel igual."
-version: 0.3.1
+version: 0.3.2
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/buscar.py *)
 ---
 
@@ -60,6 +60,10 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/buscar.py *)
 > **Y la segunda cosa que hay que saber de esta búsqueda: recorre TODA la carpeta, y no todo lo que devuelve es material.** Un resultado en `2-Borradores/` es **trabajo del sistema o un borrador de ella**; uno en `3-Para presentar/`, algo que ella dio por terminado. **Ninguno de los dos es el expediente.**
 >
 > El programa los marca `<- NO es material del caso` y cuenta cuántos son. **Tú repites esa distinción en tu respuesta**, y nunca das una aparición de `2-Borradores/` como si fuera el papel: sirve para saber dónde mirar, y **la cita sale del documento original, siempre** (§2). El caso peligroso es concreto: una hoja de hechos marcada ` - REVISADO` aparece en los resultados **con aspecto de fuente autorizada**, y no lo es para esto — la marca dice que ella la miró, no que el dato salga de ahí.
+
+> **Y dos cosas del conteo, que son las que tú le repites a ella.** La salida cuenta **renglones**, no coincidencias: un renglón sale **una vez** aunque la cadena aparezca varias, y entonces lo dice —`[2 veces en este renglon]`—. **Por qué importa:** repetir el renglón idéntico no dice mejor dónde mirar y **hincha el número que ella lee**.
+>
+> **Y la búsqueda no distingue tildes ni la eñe, a propósito.** Buscar «señora» encuentra «senora», que es **justo lo que salva al texto extraído**: el reconocedor no tiene `Ñ` mayúscula en su vocabulario y escribe «SENOR» — sin esa tolerancia, buscar en el material fotografiado no encontraría nada. **El precio es que «AÑO» también encuentra «DAÑO»**, porque busca la cadena dentro del renglón; si eso estorba, `--exacto`. Dilo cuando el resultado sorprenda.
 
 **Las tres cosas que la salida siempre declara, y que tú repites en tu respuesta:**
 

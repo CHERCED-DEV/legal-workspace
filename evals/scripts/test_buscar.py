@@ -42,7 +42,7 @@ class LaBusquedaDiceQueEsMaterialYQueNo(unittest.TestCase):
 
     def test_cuenta_cuantas_estan_fuera(self):
         s = correr("cerca")
-        self.assertIn("De estas apariciones, 5 estan FUERA de 1-Documentos recibidos", s)
+        self.assertIn("De estos renglones, 5 estan FUERA de 1-Documentos recibidos", s)
 
     def test_una_hoja_marcada_revisado_tambien_se_marca(self):
         """El caso peligroso: parece fuente autorizada y no lo es para esto."""
@@ -62,6 +62,53 @@ class LoQueNuncaSeDejaDeDecir(unittest.TestCase):
 
     def test_declara_cuantos_archivos_miro(self):
         self.assertIn("Se miraron", correr("cerca"))
+
+
+class LaBusquedaSalvaLaEnneRota(unittest.TestCase):
+    """El OCR no tiene «Ñ» en su vocabulario y escribe «SENOR». Que la
+    busqueda tienda ese puente es lo que hace el defecto superable: la cita
+    sale del original, pero al menos se sabe DONDE mirar.
+
+    Comprobado el 2026-09-05 sobre texto que imita lo que el OCR produce.
+    """
+
+    def setUp(self):
+        import shutil, tempfile
+        self.tmp = Path(tempfile.mkdtemp())
+        (self.tmp / "1-Documentos recibidos").mkdir()
+        (self.tmp / "2-Borradores").mkdir()
+        (self.tmp / "1-Documentos recibidos" / "original.txt").write_text(
+            "SEÑOR INSPECTOR\nEl año pasado hubo un daño en el predio.\n"
+            "La señora Ríos compareció.\n", encoding="utf-8")
+        (self.tmp / "2-Borradores" / "Texto de referencia - 2026-09-05.txt").write_text(
+            "SENOR INSPECTOR\nEl ano pasado hubo un dano en el predio.\n"
+            "La senora Rios comparecio.\n", encoding="utf-8")
+        self._rm = shutil.rmtree
+
+    def tearDown(self):
+        self._rm(self.tmp, ignore_errors=True)
+
+    def _correr(self, *args):
+        r = subprocess.run([sys.executable, str(PROGRAMA), str(self.tmp)] + list(args),
+                           capture_output=True, text=True)
+        return r.stdout
+
+    def test_buscar_con_enne_encuentra_lo_que_el_ocr_escribio_sin_ella(self):
+        s = self._correr("señora")
+        self.assertIn("La señora Ríos compareció", s)
+        self.assertIn("La senora Rios comparecio", s)
+
+    def test_y_al_reves(self):
+        """Control: escribiendo sin enne tambien encuentra el original."""
+        s = self._correr("senora")
+        self.assertIn("La señora Ríos compareció", s)
+
+    def test_un_renglon_sale_una_vez_y_dice_cuantas(self):
+        """«AÑO» esta dos veces en «El año pasado hubo un daño»: ano y dano."""
+        s = self._correr("AÑO")
+        self.assertEqual(1, s.count("El año pasado hubo un daño en el predio."))
+        self.assertIn("[2 veces en este renglon]", s)
+        self.assertIn("(4 apariciones: alguna se repite en su renglon)", s)
 
 
 class ElJsonDiceLoMismo(unittest.TestCase):

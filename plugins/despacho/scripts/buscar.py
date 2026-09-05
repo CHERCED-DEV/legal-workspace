@@ -34,7 +34,7 @@ NO_CITABLE = ("Esto es el texto EXTRAIDO, no el documento. El reconocedor omite 
 # caso: es trabajo del sistema, o de ella. El §2 de seis SKILL.md dice que el
 # trabajo del sistema es pista y nunca origen, y una busqueda que devuelve las
 # tres cosas en una sola lista invita justo a citar la que no se puede citar.
-NO_ES_MATERIAL = ("De estas apariciones, %d estan FUERA de 1-Documentos recibidos: "
+NO_ES_MATERIAL = ("De estos renglones, %d estan FUERA de 1-Documentos recibidos: "
                   "no son material del caso.\n"
                   "  Lo que hay en 2-Borradores es trabajo del sistema o borradores "
                   "de ella; lo de 3-Para presentar es lo que ella dio por terminado.\n"
@@ -133,15 +133,22 @@ def buscar(caso, aguja, exacto=False, contexto=90, ambito=None):
         lineas = t.split('\n')
         for n, linea in enumerate(lineas, 1):
             campo = linea if exacto else plano(linea)
-            for m in patron.finditer(campo):
-                ini = max(0, m.start() - contexto)
-                fin = min(len(linea), m.end() + contexto)
-                hallazgos.append({
-                    'archivo': str(f.relative_to(caso)),
-                    'linea': n,
-                    'texto': linea[ini:fin].strip(),
-                    'sospechoso': bool(CJK.search(linea)) or len(linea.strip()) < 3,
-                })
+            # Un renglon se devuelve UNA vez, aunque la cadena aparezca varias.
+            # Repetirlo idéntico no dice donde mirar mejor y ademas hincha el
+            # conteo, que es lo que ella lee. Las veces se dicen aparte.
+            veces = len(patron.findall(campo))
+            if not veces:
+                continue
+            m = patron.search(campo)
+            ini = max(0, m.start() - contexto)
+            fin = min(len(linea), m.end() + contexto)
+            hallazgos.append({
+                'archivo': str(f.relative_to(caso)),
+                'linea': n,
+                'veces': veces,
+                'texto': linea[ini:fin].strip(),
+                'sospechoso': bool(CJK.search(linea)) or len(linea.strip()) < 3,
+            })
     return hallazgos, leidos, ilegibles
 
 
@@ -203,11 +210,14 @@ def main():
         marca = '  [renglon dudoso: basura probable del OCR]' if x['sospechoso'] else ''
         if x['sospechoso']:
             dudosos += 1
-        print('  linea %-5d %s%s' % (x['linea'], x['texto'], marca))
+        veces = '  [%d veces en este renglon]' % x['veces'] if x.get('veces', 1) > 1 else ''
+        print('  linea %-5d %s%s%s' % (x['linea'], x['texto'], veces, marca))
     print()
     fuera = len([x for x in hall if origen(x['archivo']) != 'material'])
-    print('%d apariciones en %d archivos.%s'
-          % (len(hall), len({x['archivo'] for x in hall}),
+    total = sum(x.get('veces', 1) for x in hall)
+    extra = ' (%d apariciones: alguna se repite en su renglon)' % total if total != len(hall) else ''
+    print('%d renglones en %d archivos%s.%s'
+          % (len(hall), len({x['archivo'] for x in hall}), extra,
              ('  %d en renglones dudosos.' % dudosos) if dudosos else ''))
     if fuera:
         print(NO_ES_MATERIAL % fuera)

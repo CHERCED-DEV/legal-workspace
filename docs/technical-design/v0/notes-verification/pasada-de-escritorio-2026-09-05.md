@@ -8,7 +8,7 @@
 
 ## El resultado en una línea
 
-**Quince defectos, los quince míos — y el último es uno de los otros, repetido por mí después de haberlo escrito.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+**Dieciséis defectos, los dieciséis míos — y el decimoquinto es uno de los otros, repetido por mí después de haberlo escrito.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -27,6 +27,7 @@
 | 13 | — | **«Vereda» contaba como identificador**: dos predios vecinos se habrían fundido en una fila |
 | 14 | — | **Ninguna negativa estaba hecha para quien decide.** Contestarle a una autoridad qué resolver no es opinar: es tomarle el acto |
 | 15 | — | **El defecto 7 otra vez, cometido por mí dos horas después de escribirlo.** El cuidado no basta: hace falta la guarda |
+| 16 | — | **El conteo de la búsqueda mezclaba renglones con coincidencias** y devolvía el mismo renglón repetido |
 
 ---
 
@@ -276,6 +277,24 @@ Al cerrar el defecto 14 hice una comprobación de rutina: **¿en cuántos sitios
 **Corregido con la forma que la lección exige, no con la que sale sola.** La razón —`V-7`, y el valor por defecto estrecho mientras no haya ADR— **se escribe una sola vez**, en el punto 4 del bloque de posición, que es byte a byte idéntico en los once y ya tiene test. Los dos métodos que la aplican **conservan su regla operativa** —uno no redacta la parte que decide, el otro no propone qué resolver— **y apuntan a la razón en vez de repetirla**.
 
 **Y la guarda, que es lo que faltaba:** `test_la_razon_de_v7_se_escribe_una_sola_vez` comprueba que ese motivo **no aparece fuera del bloque** en esos dos archivos, y que sí aparece la remisión. Comprobado con un mutante: devolverle a `redactar-escrito` su explicación propia hace caer la prueba.
+
+---
+
+## Defecto 16 — El conteo de la búsqueda mezclaba renglones con coincidencias
+
+**Encontrado corriendo `buscar.py` sobre un texto que imita lo que el OCR produce.** Buscando «AÑO» en *«El año pasado hubo un daño en el predio»*, la salida devolvía **el mismo renglón dos veces, idéntico**, y lo contaba como dos apariciones.
+
+**La causa es correcta y el efecto no:** «AÑO» sin tildes es `ano`, que aparece dos veces en el renglón —en `ano` y dentro de `dano`—. **Pero repetir el renglón no dice mejor dónde mirar, y hincha el número que ella lee.**
+
+**Corregido:** un renglón sale **una vez** y dice `[2 veces en este renglon]` cuando corresponde; el cierre distingue *«N renglones en M archivos»* de *«(N apariciones: alguna se repite en su renglon)»*. Con tres pruebas y un mutante que devuelve el comportamiento viejo — cae con 10 fallos.
+
+### Y lo que la misma prueba confirmó, que vale más que el defecto
+
+**La búsqueda tiende el puente sobre la eñe rota del OCR.** El reconocedor no tiene `Ñ` mayúscula y escribe `SENOR`; **buscar «señora» encuentra «senora»**, y al revés.
+
+> **Es lo que hace superable el defecto `P-01`.** La cita sigue saliendo del original —eso no cambia—, pero **al menos se sabe dónde mirar**. Sin esa tolerancia, buscar sobre material fotografiado no encontraría nada y el defecto del vocabulario sería total en vez de parcial.
+
+Queda con prueba propia, en las dos direcciones, y escrito en el `SKILL.md` con su precio: **«AÑO» también encuentra «DAÑO»**, y para eso está `--exacto`.
 
 ---
 
