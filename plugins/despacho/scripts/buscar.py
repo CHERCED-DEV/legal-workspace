@@ -42,8 +42,21 @@ NO_ES_MATERIAL = ("De estos renglones, %d estan FUERA de 1-Documentos recibidos:
                   "original, siempre.")
 
 
-def origen(rel):
-    """Material recibido, o no. Es la unica distincion que cambia que se puede citar."""
+# Un derivado de maquina se declara a si mismo en su primera linea. Leer esa
+# declaracion es mejor que deducirla de la carpeta: viaja con el archivo aunque
+# ella lo mueva, y no le cuesta una carpeta ni un renombrado. Ver AC-05.
+DECLARACION = re.compile(r'^\s*(TEXTO DE REFERENCIA|TEXTO EXTRAIDO)\b', re.I)
+
+
+def se_declara_derivado(texto):
+    """¿El archivo dice en sus primeras lineas que lo produjo una maquina?"""
+    return any(DECLARACION.match(l) for l in texto.split('\n', 5)[:5])
+
+
+def origen(rel, texto=None):
+    """Tres cosas, y la del medio la dice el archivo, no la carpeta."""
+    if texto is not None and se_declara_derivado(texto):
+        return 'derivado'
     return 'material' if str(rel).replace('\\', '/').startswith('1-Documentos recibidos') else 'otro'
 # Un expediente colombiano no contiene ideogramas: si salen, es basura del OCR.
 CJK = re.compile(r'[一-鿿぀-ヿ가-힯]')
@@ -130,6 +143,7 @@ def buscar(caso, aguja, exacto=False, contexto=90, ambito=None):
             ilegibles.append(str(f.relative_to(caso)))
             continue
         leidos.append(str(f.relative_to(caso)))
+        derivado = se_declara_derivado(t)
         lineas = t.split('\n')
         for n, linea in enumerate(lineas, 1):
             campo = linea if exacto else plano(linea)
@@ -146,6 +160,7 @@ def buscar(caso, aguja, exacto=False, contexto=90, ambito=None):
                 'archivo': str(f.relative_to(caso)),
                 'linea': n,
                 'veces': veces,
+                'derivado': derivado,
                 'texto': linea[ini:fin].strip(),
                 'sospechoso': bool(CJK.search(linea)) or len(linea.strip()) < 3,
             })
@@ -173,7 +188,7 @@ def main():
 
     if a.json:
         for x in hall:
-            x['origen'] = origen(x['archivo'])
+            x['origen'] = 'derivado' if x.get('derivado') else origen(x['archivo'], None)
         print(json.dumps({'cadena': a.cadena, 'hallazgos': hall, 'leidos': leidos,
                           'ilegibles': ilegibles,
                           'fuera_de_recibidos': len([x for x in hall if x['origen'] != 'material']),
@@ -205,7 +220,13 @@ def main():
     for x in hall:
         if x['archivo'] != actual:
             actual = x['archivo']
-            etiqueta = '' if origen(actual) == 'material' else '   <- NO es material del caso'
+            if x.get('derivado'):
+                etiqueta = ('   <- NO es material: lo produjo una MAQUINA, y el archivo'
+                            ' lo dice en su primera linea')
+            elif origen(actual) == 'material':
+                etiqueta = ''
+            else:
+                etiqueta = '   <- NO es material del caso'
             print('### %s%s' % (actual, etiqueta))
         marca = '  [renglon dudoso: basura probable del OCR]' if x['sospechoso'] else ''
         if x['sospechoso']:
@@ -213,7 +234,8 @@ def main():
         veces = '  [%d veces en este renglon]' % x['veces'] if x.get('veces', 1) > 1 else ''
         print('  linea %-5d %s%s%s' % (x['linea'], x['texto'], veces, marca))
     print()
-    fuera = len([x for x in hall if origen(x['archivo']) != 'material'])
+    fuera = len([x for x in hall if origen(x['archivo'], None) != 'material'])
+    derivados = len([x for x in hall if x.get('derivado')])
     total = sum(x.get('veces', 1) for x in hall)
     extra = ' (%d apariciones: alguna se repite en su renglon)' % total if total != len(hall) else ''
     print('%d renglones en %d archivos%s.%s'
@@ -221,6 +243,10 @@ def main():
              ('  %d en renglones dudosos.' % dudosos) if dudosos else ''))
     if fuera:
         print(NO_ES_MATERIAL % fuera)
+    if derivados:
+        print("  Y %d de esos renglones salen de un archivo que se declara producido"
+              "\n  por una maquina: no es citable como literal, y que algo no aparezca"
+              "\n  ahi NO es informacion sobre el papel." % derivados)
     print(NO_CITABLE)
 
 

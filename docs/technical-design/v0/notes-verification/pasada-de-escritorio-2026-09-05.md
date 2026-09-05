@@ -8,7 +8,7 @@
 
 ## El resultado en una línea
 
-**Diecisiete defectos, los diecisiete míos — y el decimoquinto es uno de los otros, repetido por mí después de haberlo escrito.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+**Dieciocho defectos, los dieciocho míos — y el decimoquinto es uno de los otros, repetido por mí después de haberlo escrito.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -29,6 +29,7 @@
 | 15 | — | **El defecto 7 otra vez, cometido por mí dos horas después de escribirlo.** El cuidado no basta: hace falta la guarda |
 | 16 | — | **El conteo de la búsqueda mezclaba renglones con coincidencias** y devolvía el mismo renglón repetido |
 | 17 | SPEC-08 | **El índice no reconocía los borradores de `/redactar-escrito`** — la única salida que ella firma |
+| 18 | AC-05 | **Tres mecanismos adivinando lo que el archivo dice en su primera línea**, y una recomendación mía corregida por un documento sin indexar |
 
 ---
 
@@ -318,6 +319,30 @@ Queda con prueba propia, en las dos direcciones, y escrito en el `SKILL.md` con 
 **Corregido:** la tabla dice *«el nombre **lleva**»*, incluye las dos formas de `redactar-escrito`, y advierte de las dos trampas — que no todos empiezan por el comando, y que **guion corto y raya larga se parecen a ojo**, así que se compara por el texto de al lado y no por el signo. El arreglo de fondo —unificar las convenciones— **no se hace desde ahí**, y ya está pedido en `PENDIENTE-FORMA-DE-ENTREGA` §1.
 
 > **Y la lección, que no es sobre nombres de archivo:** escribí una tabla de convenciones **leyendo las skills que escriben salidas** y me faltó una. El documento que lo decía llevaba en el repositorio desde el 27 de agosto, **declarado sin leer en el §0.3**. Los documentos sin indexar no son deuda documental: **son defectos esperando.**
+
+---
+
+## Defecto 18 — Tres mecanismos adivinando lo que el archivo dice en su primera línea
+
+**El mismo `PENDIENTE-FORMA-DE-ENTREGA.md` corrigió AC-05, escrito por mí unas horas antes.** Yo había recomendado **una subcarpeta** para los derivados de máquina. Ese documento trae dos argumentos que yo no tenía:
+
+1. **La restricción del propio dueño:** *«sin que ellos sientan que es demasiado ruidoso o **lleno de carpetas**»*, resuelta entonces con *«las tres condiciones se cumplen a la vez solo si **la profundidad no la paga ella**»*. **Una carpeta más la paga ella.**
+2. Y el principio: **«una carpeta es una afirmación silenciosa, y este producto está construido para no hacer afirmaciones silenciosas»**.
+
+**Y al ir a escribir la alternativa, apareció que la respuesta ya estaba en el disco.** `preparar_material.py` escribe el texto de referencia con esta cabecera, desde antes:
+
+```text
+TEXTO DE REFERENCIA — extraido automaticamente
+
+NO ES CITABLE COMO LITERAL. Sirve para buscar dentro del material.
+LA AUSENCIA DE ALGO AQUI NO SIGNIFICA QUE NO ESTE EN EL DOCUMENTO.
+```
+
+> **El archivo dice qué es, dónde no puede usarse y cuál es su modo de fallo — y los tres mecanismos lo deducían de la carpeta.** Con la respuesta en el primer renglón.
+
+**Hecho:** `buscar.py` lee la declaración y marca por lo que el archivo dice ser, no por dónde está; el `--json` distingue **tres** orígenes —`material`, `derivado`, `otro`— y el cierre repite el modo de fallo del derivado. AC-05 pasa a recomendar esa vía, que **no le cambia a ella ni una carpeta ni un nombre**, y por eso ya no necesita preguntárselo.
+
+**Y una regresión que atrapó una prueba vieja:** la etiqueta nueva —*«lo produjo una MAQUINA»*— **dejaba de decir que no es material**, y un lector podía inferir lo contrario. Las dos van juntas ahora. La prueba que falló era del mismo día, tres horas antes.
 
 ---
 

@@ -72,6 +72,36 @@ class ElTextoDelOcrSeTrataComoLoQueEs(unittest.TestCase):
         self.fail("el texto de referencia no salio en los resultados")
 
 
+class ElDerivadoSeDeclaraYAlguienLoLee(unittest.TestCase):
+    """AC-05, opcion (d): el archivo ya dice en su primera linea que lo produjo
+    una maquina. Leer esa declaracion es mejor que deducirla de la carpeta --
+    viaja con el archivo aunque ella lo mueva, y no cuesta ni una carpeta."""
+
+    def test_lo_marca_por_lo_que_el_archivo_dice(self):
+        s = correr("cerca")
+        self.assertIn("Texto de referencia - 2026-04-08.txt   <- NO es material: lo produjo una MAQUINA", s)
+
+    def test_y_lo_cuenta_con_su_modo_de_fallo(self):
+        s = correr("cerca")
+        self.assertIn("se declara producido", s)
+        self.assertIn("NO es informacion sobre el papel", s)
+
+    def test_lo_demas_de_2_borradores_no_se_declara_derivado(self):
+        """Control positivo: sin esto, marcarlo todo pasaria el primero."""
+        s = correr("cerca")
+        for linea in s.splitlines():
+            if linea.startswith("### 2-Borradores/Hechos"):
+                self.assertIn("NO es material", linea)
+                self.assertNotIn("MAQUINA", linea)
+                return
+        self.fail("no salio ninguna hoja de hechos")
+
+    def test_el_json_lo_distingue_de_los_otros_dos(self):
+        d = json.loads(correr("cerca", "--json"))
+        self.assertEqual({"material", "otro", "derivado"},
+                         {x["origen"] for x in d["hallazgos"]})
+
+
 class LoQueNuncaSeDejaDeDecir(unittest.TestCase):
 
     def test_el_descargo_sale_con_resultados(self):
@@ -138,7 +168,7 @@ class ElJsonDiceLoMismo(unittest.TestCase):
     def test_cada_hallazgo_lleva_su_origen(self):
         d = json.loads(correr("cerca", "--json"))
         self.assertEqual(7, d["fuera_de_recibidos"])
-        self.assertEqual({"material", "otro"}, {x["origen"] for x in d["hallazgos"]})
+        self.assertEqual({"material", "otro", "derivado"}, {x["origen"] for x in d["hallazgos"]})
 
 
 if __name__ == "__main__":

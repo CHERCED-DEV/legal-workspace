@@ -128,17 +128,47 @@ Para cada enmienda basta una de estas tres respuestas:
 
 | | Qué es | A favor | En contra |
 |---|---|---|---|
-| **(a) Dejarlo como está** | Los tres mecanismos siguen infiriendo | Cuesta cero. Funciona hoy | **Cada mecanismo nuevo tendrá que aprenderlo otra vez**, y el cuarto puede aprenderlo distinto. Es deriva garantizada |
-| **(b) Una subcarpeta `2-Borradores/derivados-de-maquina/`** | Los derivados salen del montón | **La distinción queda dicha por la estructura y no por inferencia.** Un mecanismo nuevo la hereda gratis. Y a ella le separa lo que no debe leer como borrador | Toca `preparar_material.py` y la mención del texto de referencia en seis `SKILL.md`. **Le cambia una carpeta a ella**, y eso no lo decidimos nosotros |
-| **(c) Una convención de nombre** —prefijo fijo | Igual que (b) sin mover archivos | Más barato | Sigue siendo inferencia, solo que mejor. **No resuelve la causa** |
+| **(a) Dejarlo como está** | Los tres mecanismos siguen infiriendo | Cuesta cero. Funciona hoy | **Cada mecanismo nuevo tendrá que aprenderlo otra vez**, y el cuarto puede aprenderlo distinto |
+| **(b) Una subcarpeta `2-Borradores/derivados-de-maquina/`** | Los derivados salen del montón | La distinción queda dicha por la estructura | **Descartada — ver abajo.** Le cuesta una carpeta a ella, y una carpeta afirma |
+| **(c) Una convención de nombre** —prefijo fijo | Igual que (b) sin mover archivos | Más barato | Frágil: **las convenciones de nombre de este producto ya son tres distintas** (defecto 17 del 2026-09-05) |
+| **(d) Leer la declaración que el archivo ya trae** | El derivado **ya se declara a sí mismo en su primera línea**. Lo que falta es que alguien la lea | **Cuesta cero carpetas, cero renombrados y cero convenciones nuevas.** Y la declaración **viaja con el archivo** aunque ella lo mueva | Hay que escribir la convención para que la cumplan los derivados futuros, no solo este |
 
-**Recomendación: (b)**, y con una condición — **preguntárselo a ella antes**, porque es su carpeta y ADR-012 q7 ya dice que la estructura de la zona de trabajo *«se valida con la profesional, no entre nosotros»*.
+> **CORRECCIÓN DE ESTE MISMO DOCUMENTO — el 2026-09-05, unas horas después de escribirlo.** La recomendación era **(b)**. Se cambió al leer `PENDIENTE-FORMA-DE-ENTREGA.md` —del 27 de agosto, y declarado sin cubrir en el §0.3 del backlog—, que trae **dos argumentos que yo no tenía**:
+>
+> 1. **La restricción que fijó el propio dueño**, citada en `17-deployment-layout.md`: *«que sea muy intuitiva para ella… sin que ellos sientan que es demasiado ruidoso o **lleno de carpetas**»*. Y la resolución que se le dio: *«las tres condiciones se cumplen a la vez solo si **la profundidad no la paga ella**»*. **Una carpeta más la paga ella.**
+> 2. Y el principio, que es más fuerte: **«una carpeta es una afirmación silenciosa, y este producto está construido para no hacer afirmaciones silenciosas»**.
+>
+> Ese mismo documento propone la vía buena en su §2.d: *«que lo diga el nombre del archivo, no la carpeta… cuesta cero carpetas y es lo que menos paga ella»*.
+
+### Y al ir a escribir (c) apareció que la respuesta ya está en el disco
+
+**`preparar_material.py` ya escribe el texto de referencia con esta cabecera**, en sus tres primeras líneas:
+
+```text
+TEXTO DE REFERENCIA — extraido automaticamente
+
+NO ES CITABLE COMO LITERAL. Sirve para buscar dentro del material.
+LA AUSENCIA DE ALGO AQUI NO SIGNIFICA QUE NO ESTE EN EL DOCUMENTO.
+```
+
+**El archivo dice lo que es, dónde no puede usarse, y cuál es su modo de fallo — y ningún mecanismo lo lee.** Los tres lo deducen de la carpeta o del nombre, teniendo la respuesta en el primer renglón.
+
+**Recomendación: (d).** Con dos piezas:
+
+1. **La convención, escrita una vez:** *todo archivo que produzca una máquina sin criterio empieza declarando qué es y por qué no se cita.* Es ADR-018 decisión 3 —*«toda salida de un script es material derivado con su receta»*— llevada al propio archivo, y no crea nada nuevo.
+2. **Que los mecanismos la lean**, en vez de inferir. La carpeta sigue siendo pista; **la declaración manda**.
+
+**Lo que sigue necesitando decisión de ustedes:** si la convención se fija así, y si `preparar_material.py` es el único derivado o vienen más —la transcripción de audio es el siguiente—. **Lo que ya no hace falta preguntarle a ella:** nada, porque **no le cambia ni una carpeta ni un nombre.**
 
 ### Lo que esta enmienda haría con ADR-016
 
 - **Cerrar la q3 tal como está** —zona 2 o zona 3— por **premisa inexistente**, igual que ADR-018 cerró la q2 de ADR-014.
 - **Abrir en su lugar** la pregunta que sí tiene respuesta: *«¿los derivados de máquina se separan de los borradores dentro de `2-Borradores/`?»*.
 - **No tocar ninguno de sus invariantes.** El límite del OCR —falla callándose, no se cita, la ausencia no es información— **sigue mandando entero**, esté el archivo donde esté.
+
+### Lo que se hizo mientras tanto, y por qué no espera
+
+**`buscar.py` ya lee la declaración** desde el 2026-09-05: cuando un archivo la trae, sale marcado por lo que él dice ser y no por dónde está. **Es reversible y no compromete la decisión**: si ustedes eligen otra vía, se quita en una línea. Se hizo porque la alternativa era dejar el cuarto mecanismo inferiendo mal mientras se decide.
 
 ### Y lo que no depende de ustedes
 

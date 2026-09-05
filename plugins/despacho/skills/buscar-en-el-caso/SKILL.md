@@ -1,7 +1,7 @@
 ---
 name: buscar-en-el-caso
 description: "Método para encontrar dónde aparece un nombre, una cifra, una fecha, una matrícula o cualquier texto dentro de la carpeta de un caso, sin abrir ni leer los documentos. Recorre el texto de referencia, los borradores y lo terminado, y devuelve archivo y renglón para que ella vaya directo. Úsalo cuando pregunten dónde aparece algo, si algo se menciona, en qué documento está una cifra o un nombre, o para localizar antes de citar. No cita: dice dónde mirar. Y no concluye ausencia: lo que no sale puede estar en el papel igual."
-version: 0.3.2
+version: 0.4.0
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/buscar.py *)
 ---
 
@@ -60,6 +60,8 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/buscar.py *)
 > **Y la segunda cosa que hay que saber de esta búsqueda: recorre TODA la carpeta, y no todo lo que devuelve es material.** Un resultado en `2-Borradores/` es **trabajo del sistema o un borrador de ella**; uno en `3-Para presentar/`, algo que ella dio por terminado. **Ninguno de los dos es el expediente.**
 >
 > El programa los marca `<- NO es material del caso` y cuenta cuántos son. **Tú repites esa distinción en tu respuesta**, y nunca das una aparición de `2-Borradores/` como si fuera el papel: sirve para saber dónde mirar, y **la cita sale del documento original, siempre** (§2). El caso peligroso es concreto: una hoja de hechos marcada ` - REVISADO` aparece en los resultados **con aspecto de fuente autorizada**, y no lo es para esto — la marca dice que ella la miró, no que el dato salga de ahí.
+
+> **Y un archivo que se declara producido por una máquina sale marcado como tal**, porque **lo dice él en su primera línea** y no porque esté en una carpeta u otra. Es la diferencia entre leer y adivinar: la declaración **viaja con el archivo aunque ella lo mueva**. Cuando aparezca uno, repite lo que él mismo dice — no es citable como literal, y **que algo no aparezca ahí no es información sobre el papel**.
 
 > **Y dos cosas del conteo, que son las que tú le repites a ella.** La salida cuenta **renglones**, no coincidencias: un renglón sale **una vez** aunque la cadena aparezca varias, y entonces lo dice —`[2 veces en este renglon]`—. **Por qué importa:** repetir el renglón idéntico no dice mejor dónde mirar y **hincha el número que ella lee**.
 >
