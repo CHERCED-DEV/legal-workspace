@@ -13,6 +13,18 @@
 > | De **leer documentos de diagnóstico** (`H-04`, `H-05`, `H-10`, `H-11`, `H-16`) | 5 | **0 de 5** |
 > | De **ejecutar el producto en un caso real** (`PM-M-2`, `P-05`, `P-06`, `P-07`) | 4 | **4 de 4** |
 >
+> **TERCERA CORRECCIÓN — al cierre del 2026-09-05, y cambia la conclusión de las dos anteriores.** Las dos correcciones de arriba dicen que **el backlog** estaba mal contado. Al final del día la cuenta es peor y es sobre mí:
+>
+> | Origen del ítem | Verificados | Estaban como decían |
+> |---|---|---|
+> | De **leer documentos de diagnóstico** | 6 | **0 de 6** |
+> | De **ejecutar el producto en un caso real** | 4 | **4 de 4** |
+> | **De lo que yo escribí esta misma semana**, puesto a decidir sobre un expediente | 8 | **0 de 8** |
+>
+> **Ocho defectos en las specs escritas estos días**, encontrados en una tarde de ejecutarlas contra un expediente sintético, **ninguno visible releyéndolas** — y uno de ellos **en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse**. Está todo en [la pasada de escritorio](technical-design/v0/notes-verification/pasada-de-escritorio-2026-09-05.md).
+>
+> **Lo que eso significa para este documento:** el problema nunca fue que el backlog fuera viejo. **Es que escribir una regla y releerla no dice si decide.** Un ítem cerrado por lectura —el mío incluido, el de ayer incluido— vale lo que vale un ítem del 28/08: hay que ponerlo delante de un caso.
+>
 > **La regla que sale de ahí gobierna en qué orden se lee lo que queda:** *un ítem que nació ejecutando el producto describe un defecto real; uno que nació leyendo un documento sobre el producto, la mitad de las veces describe algo ya arreglado, o describe mal lo que está roto.* De los ~108 identificadores sin verificar, **los que tienen un pase real detrás van primero** — y los cuatro que se cerraron el 2026-09-05 son precisamente esos.
 
 ---

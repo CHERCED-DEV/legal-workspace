@@ -61,7 +61,10 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 |---|---|---|---|
 | **Instalar y actualizar el plugin** | Remoto publicado y **con hoja de instalación**. **Cero instalaciones fuera de esta máquina** | ADR-012 | **SPEC-01** + **SPEC-11** — lo que falta ocurre en su máquina |
 | **Los once métodos** | Desplegados; nueve ejecutados en dos casos reales, los dos de la oficina de programas todavía no | los `SKILL.md` son la spec | SPEC-04 · 05 · 06 · 08 **ejecutadas**; SPEC-07 pendiente |
-| **Hablarle a una autoridad, no a una parte** | **Construido el 2026-09-05 en su primera mitad:** los once preguntan la posición, ninguna regla presupone bando, y la **simetría obligatoria** —probada a mano en el pase real— es ahora método. **Lo que no existe es la decisión de `V-7`** | ninguna todavía — hace falta **un ADR** | **SPEC-03**, con el valor conservador puesto mientras tanto |
+| **Hablarle a una autoridad, no a una parte** | **Construido el 2026-09-05:** los once preguntan la posición **y esperan la respuesta**, ninguna regla presupone bando —siete reescritas, no dos—, y la **simetría obligatoria** es método, reconciliada con la que `revision-de-rigor` §2.3 ya tenía. **Lo que no existe es la decisión de `V-7`** | ninguna todavía — hace falta **un ADR** | **SPEC-03**, con el valor conservador puesto mientras tanto |
+| **Que dos pasadas del mismo caso se puedan comparar** | **Construido el 2026-09-05.** Cada pasada dice qué se corrigió a sí misma y qué pregunta lo atrapó | `PM-M-1` (c) y (d) | **SPEC-12** — y **sin una sola cifra todavía** |
+| **Que abrir el material no cueste veintiuna lecturas por página** | **Construido el 2026-09-05** en los dos comandos que lo tenían vivo; los dos inventarios ya lo tenían | `PM-M-4` | **SPEC-13** — el ahorro sigue sin medirse |
+| **Que las reglas repetidas no deriven** | **Construido el 2026-09-05.** 12 pruebas que exigen que los bloques repetidos **digan lo mismo**, no solo que estén | ninguna | `evals/scripts/test_bloques_identicos.py` |
 | **Leer fotos sin capa de texto (OCR)** | **Dentro del plugin** desde el 2026-09-01, con su comando `/preparar-material` | ADR-016 · **ADR-018** | el `SKILL.md` es su spec |
 | **Detectar la omisión silenciosa (dos motores)** | **Dentro del plugin**; sigue faltando el segundo motor | ADR-016 · **ADR-018** | Fase 5 de `/preparar-material` |
 | **Entregable en Word** | **Dentro del plugin, y las siete skills que entregan lo invocan** —`/redactar-escrito` incluida— con su regla de degradación escrita | ADR-014 · **ADR-018** | el `SKILL.md` es su spec |
@@ -106,9 +109,26 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | [SPEC-12](SPEC-12-lo-que-la-pasada-atrapo.md) | Que cada pasada diga qué se corrigió a sí misma | defecto | `PM-M-1` (c) y (d) · G23 | **Ejecutada** en los once — falta una pasada real que produzca cifras |
 | [SPEC-13](SPEC-13-reindexar-por-pieza.md) | Abrir cada pieza una vez, no veintiuna | defecto | `PM-M-4` · G24 · §2 ítem 8 | **Ejecutada** en los dos que lo tenían vivo — los dos inventarios ya tenían la forma |
 
-> **Cuenta honesta, al 2026-09-05: siete escritas y ejecutadas, una retirada, dos que hoy son solo una fila de esta tabla.** «Pendiente» aquí significa que el archivo **no existe**. Ninguna de las siete está *cerrada*: **seis esperan una pasada real** sobre una carpeta de ella, y así lo dice cada una en su apartado 5. Ejecutada quiere decir que el cambio está en el código y que los observables que no dependen de nadie pasan — **no que el defecto esté comprobado muerto en uso**.
->
-> **Y una diferencia que conviene no perder:** SPEC-06 es la primera que trae **pruebas automáticas** —trece, y comprobadas capaces de fallar con dos mutantes—. Las otras seis son texto dentro de los `SKILL.md` y su único banco posible es una pasada real. Eso no las hace peores; hace que **`PM-5.1-BANCO` siga siendo el ítem que más pesa del lado del método**.
+> **Cuenta honesta, al final del 2026-09-05: once escritas y ejecutadas, dos retiradas, ninguna pendiente de escribir.** Las dos retiradas —SPEC-02 y SPEC-07— lo fueron por la misma razón: **el defecto que iban a arreglar ya estaba arreglado**. «Pendiente» aquí significaba que el archivo no existía, y hoy no queda ninguna en ese estado.
+
+### Y una cuenta que importa más que esa
+
+**Once specs ejecutadas. Cero comprobadas en una pasada real.** Lo que sí hubo, el 2026-09-05, fue una **pasada de escritorio** sobre un expediente sintético construido para el caso — y **encontró ocho defectos, los ocho míos, los ocho escritos esa misma semana, ninguno visible releyendo la spec**:
+
+| # | Spec | Qué estaba mal |
+|---|---|---|
+| 1 | SPEC-05 | La regla se contradecía con su propio ejemplo: `(revisar)` no contiene «revisado» |
+| 2 | SPEC-03 | La simetría autorizaba a valorar un requisito — que es hacer derecho, prohibido en los once |
+| 3 | SPEC-04 | Lo que ella escribe bajo `NOTAS SUYAS` no contaba como suyo, y se perdía |
+| 4 | — | **El propio registro de la pasada**: dije dónde dispara la simetría sin ir a mirar |
+| 5 | SPEC-05 | «Pregunta cuál manda» **sin «y te detienes»** |
+| 6 | SPEC-03 | La posición también se preguntaba sin esperar — en los once |
+| 7 | SPEC-03 | Una segunda regla de simetría, más débil, al lado de la que `revision-de-rigor` §2.3 ya tenía |
+| 8 | SPEC-03 | El barrido de contexto B buscó **una sola palabra**: quedaban seis reglas con vocabulario de adversario |
+
+> **Y la conclusión, que gobierna cómo se lee esta tabla entera:** *«ejecutada» significa que el cambio está en el código y que pasan los observables que no dependen de nadie.* **No significa que funcione.** Ocho de ocho defectos aparecieron en la primera tarde de poner las reglas a decidir sobre un expediente concreto, y **el expediente lo construí yo, que escribí las reglas** — está sesgado hacia ellas por construcción. Lo que un caso real trae y ese no es lo que a nadie se le ocurrió poner.
+
+**Dos de los ocho eran clases, no casos, y las dos quedaron con guarda automática** (`evals/scripts/test_bloques_identicos.py`, 12 pruebas comprobadas con mutantes): que los bloques repetidos **digan lo mismo** y no solo estén, y que **toda regla que mande preguntar mande esperar**.
 
 ### Lo que las dos primeras ejecuciones enseñaron sobre el backlog
 
@@ -152,16 +172,13 @@ Iba a especificar el arreglo de `H-05` —*«dos comandos consumen una hoja de h
 
 **Las cuatro que podía escribir y ejecutar solo, están hechas** (2026-09-05): SPEC-05, SPEC-06, SPEC-04 y SPEC-08. Tres son texto dentro de los `SKILL.md`; SPEC-06 añadió además el séptimo programa del plugin y el primer banco de pruebas de la oficina.
 
-**Lo que queda de mi lado, y en este orden:**
+**De mi lado ya no queda ninguna spec sin escribir.** Lo que queda, y en este orden:
 
 | # | Qué | Por qué en ese puesto |
 |---|---|---|
-| ~~1~~ | ~~**SPEC-07**~~ **RETIRADA el 2026-09-05:** los doce hallazgos ya estaban aplicados | — |
-| 1 | **Una pasada real** que cierre los observables pendientes | **Nueve specs ejecutadas.** El 2026-09-05 se hizo una **pasada de escritorio** sobre un expediente sintético (`evals/casos/caso-02-sintetico-autoridad`) que subió un peldaño: [lo que aguantó y lo que se cayó](../technical-design/v0/notes-verification/pasada-de-escritorio-2026-09-05.md). **Encontró dos defectos, los dos míos y los dos de esa semana**, ninguno visible leyendo la spec. **No hay razón para creer que la proporción sea distinta en las siete a las que todavía no se les ha puesto nada delante** |
-| ~~2~~ | ~~**`PM-M-1`, instrumentar**~~ **HECHA la mitad, el 2026-09-05 — SPEC-12.** Las partes (c) y (d) son texto y están en los once; (a) y (b) necesitan los logs de una corrida | Quedan del lado de la pasada real |
-| ~~3~~ | ~~**SPEC-03** — contexto B~~ **HECHA la mitad, el 2026-09-05.** El vocabulario, la simetría obligatoria y la prohibición de orientar están en los once. Lo que falta **no es trabajo mío**: es el ADR de `V-7` | — |
-
-> **Y una cosa que el plan daba por mía y no lo es.** `BACKLOG` §6 fila 1.3 pone *«correr el banco de evaluación que ya existe»* en «Puedo empezar ya». **No puedo:** `evals/casos/caso-01-familia.json` dice en su propio campo `_material` que **el material no está en este repositorio y no lo estará** —son documentos de una clienta real, con datos de una menor—, y que quien mida necesita los dos PDF originales, que custodia el dueño. Además el fixture **está invalidado por su propia nota desde el 2026-08-26**. Correr el banco es del bloque 0, no del 1.
+| 1 | **Seguir ejecutando los métodos contra el `caso-02`**, uno por uno | Ocho defectos en la primera tarde. **No hay razón para creer que la proporción baje** en los que todavía no han tocado un expediente |
+| 2 | **Ampliar el `caso-02`** con trampas que no se me ocurrieron a mí | Su límite es que **lo construyó quien escribió las reglas**. Cada trampa que salga de un caso real vale por diez inventadas |
+| 3 | **`PM-M-1` (a) y (b)** — etiquetar filas de coste y separar `input`/`cache_read` | Necesitan **los logs de una corrida**, y no los hay |
 
 **SPEC-03 —contexto B— es la más valiosa y la más delicada:** cambia a quién le habla el producto en su único uso real. No es una corrección de redacción; toca qué puede y qué no puede proponerle un sistema a quien decide. Merece decidirse, no escribirse de una.
 
