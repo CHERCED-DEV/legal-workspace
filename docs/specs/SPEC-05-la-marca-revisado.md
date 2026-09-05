@@ -66,6 +66,7 @@ Observables, cada uno capaz de fallar:
 | O-3 | En una pasada, la salida **nombra el archivo aceptado**, con su extensión tal cual | Solo una pasada real | **Pendiente** |
 | O-4 | Un archivo `Hechos (revisar).md` **no cuenta y se detecta** para poder nombrarlo | `test_marca_revisado.py` | **Pasa — y no pasaba** |
 | O-5 | Con dos archivos marcados, **la regla no elige**: los reconoce a los dos | `test_marca_revisado.py` | **Pasa** |
+| O-8 | Con dos marcados, el comando **se detiene**, no solo pregunta | Ejecución de `/redactar-escrito` sobre `caso-02` | **Pasa — y no pasaba.** La regla decía «pregunta cuál manda» y no decía «y te detienes»; con cero marcados la parada estaba escrita desde antes, con dos no. Un modelo con prisa pregunta, se contesta solo «será el más reciente» y sigue |
 | O-6 | La guía de ella explica las cinco formas y **le dice que no tiene que acertar con la extensión** | Se lee `GUIA-PARA-LA-ABOGADA.md` |
 | O-7 | Ninguna skill renombra nada: la regla R-2 está escrita donde se reconoce la marca | `grep` de la regla |
 

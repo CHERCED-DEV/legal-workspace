@@ -8,7 +8,15 @@
 
 ## El resultado en una línea
 
-**Nueve specs ejecutadas, dos defectos, los dos míos y los dos de esta semana.** Ninguno se veía leyendo la spec; los dos aparecieron al ponerla a decidir sobre nombres de archivo concretos y sobre un expediente con dos partes.
+**Cinco defectos, los cinco míos y los cinco de esta semana.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+
+| # | Spec | Qué estaba mal |
+|---|---|---|
+| 1 | SPEC-05 | La regla se contradecía con su propio ejemplo: `(revisar)` no contiene «revisado» |
+| 2 | SPEC-03 | La simetría autorizaba a valorar un requisito, que es hacer derecho |
+| 3 | SPEC-04 | Lo que ella escribe bajo `NOTAS SUYAS` no contaba como suyo |
+| 4 | SPEC-05 | «Pregunta cuál manda» **sin «y te detienes»** |
+| 5 | — | **Mi propio registro**: dije dónde dispara la simetría sin ir a mirar |
 
 ---
 
@@ -42,7 +50,7 @@
 
 ---
 
-## Defecto 3 — Dije dónde dispara la simetría sin comprobarlo, y me equivoqué de comando
+## Defecto 5 — Dije dónde dispara la simetría sin comprobarlo, y me equivoqué de comando
 
 **Añadido el 2026-09-05, unas horas después, ejecutando `/inventario-de-anexos` contra el mismo expediente.**
 
@@ -55,6 +63,22 @@ El párrafo de arriba decía, en su primera versión, que quien hace visible la 
 **Y hacía falta algo más que saberlo: la regla no tenía anclaje.** Estaba escrita como principio general en el bloque de posición de los once, y **un principio sin punto de enganche es un principio que no dispara**. Se ancló en la fila «Sin apoyo» de la Fase 5 de `hechos-con-prueba`, con el caso real como ejemplo y con la distinción escrita al lado: *no estás diciendo que haga falta acreditar nada —eso es derecho— estás diciendo que una afirmación del material no tiene detrás ninguna pieza, aplicado a los dos lados en vez de a uno.*
 
 **La cadena correcta, entonces, es de dos pasos y no de uno:** `hechos-con-prueba` lo hace visible y aplica la simetría → ella lo aprueba → `inventario-de-anexos` lo empareja con el documento ausente. Que sea una cadena y no un solo comando **es la razón por la que no se veía**.
+
+---
+
+## Defecto 4 — La regla decía «pregunta» y no decía «y te detienes»
+
+**Encontrado ejecutando `/redactar-escrito`** —«el comando más peligroso del despacho»— contra el mismo expediente, que tiene **dos** archivos de hechos marcados a propósito.
+
+La regla de SPEC-05 decía: *«no eliges. Los nombras los dos con su fecha y preguntas cuál manda.»* **Y ahí terminaba.**
+
+**Compárese con el caso de cero marcados**, que sí está resuelto desde antes: *«Si no hay hechos aprobados, **dilo y detente** … — y esperas.»* Con cero hay una parada explícita. **Con dos había una orden de preguntar y ninguna de parar.**
+
+**Por qué el fallo es más fácil aquí, y no al revés.** Con cero marcados **no hay sobre qué redactar** y la parada se impone sola. **Con dos hay dos archivos completos y utilizables delante**, y seguir es cómodo: un modelo con prisa pregunta, se contesta solo *«será el más reciente»* y sigue. Y entonces **ha elegido él cuál de las dos decisiones de ella vale** — que es exactamente lo que la marca existe para no decidir.
+
+> **Y deja algo peor que no haber preguntado:** deja escrito en la salida que se consultó, así que quien la lea creerá que la elección la hizo ella.
+
+**Corregido:** en el bloque §2 de las seis, *«se nombran, se pregunta **y se espera la respuesta**»*, con la razón al lado —*preguntar no es seguir*—; y en `redactar-escrito` e `inventario-de-anexos`, la parada dicha con las mismas palabras que la de «no hay hechos aprobados», porque es el mismo alto.
 
 ---
 
