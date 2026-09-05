@@ -165,7 +165,9 @@ Cada referencia debe poder abrirse en el material.
 
 ## CONTRADICCIONES
 
-- **C1 — Valor total y saldo.** El contrato dice *«$4.800.000»* de valor total y *«$2.800.000»* de saldo (DOC-01, cláusula tercera). El correo dice *«$4.300.000»* de valor total y *«$2.300.000»* de saldo (DOC-04, p. 1). **La diferencia es de $500.000 en las dos cifras.** Ninguna pieza del material explica el cambio.
+- **C1 — Valor total y saldo.** El contrato dice *«$4.800.000»* de valor total y *«$2.800.000»* de saldo (DOC-01, cláusula tercera). El correo dice *«$4.300.000»* de valor total y *«$2.300.000»* de saldo (DOC-04, p. 1). Ninguna pieza del material explica el cambio, y **las cuatro cifras se entregan tal como están escritas**.
+
+  > **Segunda corrección de esta pasada, y del mismo tipo que la de C5.** Aquí decía *«la diferencia es de $500.000 en las dos cifras»*. **$500.000 no aparece en ninguna pieza del material: salió de una resta mía.** Es la misma regla —no se produce un dato operando— aplicada a importes en vez de a fechas, y la guarda que se había construido esa mañana solo miraba fechas. **Dos defectos de la misma clase en el mismo archivo, y el segundo lo encontró ampliar la guarda, no releer.**
 - **C2 — Fecha pactada de entrega.** DOC-01, cláusula quinta: *«12 de mayo de 2025»*. DOC-04, p. 1: *«Conforme a lo acordado, la entrega se pacto para el 21 de mayo de 2025»*.
 - **C3 — Fecha del pago.** La clienta dice el 9 de abril (entrevista, SEG-006). El comprobante registra el 7 de abril (DOC-02, p. 1). **Es una contradicción entre el relato y una pieza**, y las dos se entregan.
 - **C4 — Qué se firmó el 30 de mayo.** DOC-03 se titula acta de entrega y recibo a satisfacción y lleva rúbrica bajo el rótulo del cliente. La clienta dice que firmó una hoja de asistencia (entrevista, SEG-016). **Las dos versiones se entregan sin resolver.**

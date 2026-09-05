@@ -105,5 +105,47 @@ class ContrastarConElMaterial(unittest.TestCase):
         self.assertEqual([], afirmadas, "hay una cuenta afirmada sin comillas")
 
 
+class ImportesQueSalenDeUnaCuenta(unittest.TestCase):
+    """El segundo defecto de la misma clase, en el mismo archivo.
+
+    La salida escribio «la diferencia es de $500.000 en las dos cifras».
+    4.800.000 menos 4.300.000. Esa cifra no esta en ninguna pieza, y la guarda
+    de esa manana solo miraba fechas.
+    """
+
+    def _importes(self, texto):
+        fd, ruta = tempfile.mkstemp(suffix=".md")
+        os.close(fd)
+        io.open(ruta, "w", encoding="utf-8").write(texto)
+        try:
+            return B.importes(ruta, B.material(str(MATERIAL)))
+        finally:
+            os.unlink(ruta)
+
+    def test_la_resta_de_importes_se_detecta(self):
+        r = self._importes(u"La diferencia es de $500.000 en las dos cifras.")
+        self.assertEqual([u"500.000"], [c for c, _, _ in r])
+
+    def test_los_importes_del_contrato_no_encienden(self):
+        """Las cuatro cifras del caso estan escritas: citarlas es lo correcto."""
+        r = self._importes(u"El contrato dice $4.800.000 de total y $2.800.000 "
+                           u"de saldo; el correo dice $4.300.000 y $2.300.000. "
+                           u"El anticipo fue de $2.000.000.")
+        self.assertEqual([], r)
+
+    def test_un_total_inventado_se_detecta(self):
+        """El «total asciende a» que `inventario-de-bienes` prohibe por su nombre."""
+        r = self._importes(u"Total de bienes: $7.100.000.")
+        self.assertEqual([u"7.100.000"], [c for c, _, _ in r])
+
+    def test_las_dos_salidas_reales_no_afirman_ningun_importe_calculado(self):
+        borradores = (Path(__file__).resolve().parents[1] / "casos"
+                      / "caso-03-hidraulica-desde-el-diseno" / "2-Borradores")
+        m = B.material(str(MATERIAL))
+        for f in sorted(borradores.glob("*.md")):
+            afirmados = [c for c, cita, _ in B.importes(str(f), m) if not cita]
+            self.assertEqual([], afirmados, "%s afirma un importe calculado" % f.name)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

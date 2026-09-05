@@ -85,6 +85,36 @@ def material(carpeta):
     return plano("\n".join(trozos))
 
 
+# Un importe se escribe con separadores de miles: $4.800.000, 2.300.000.
+# Se comparan por sus digitos, que es como aparecen en el material aunque el
+# documento los escriba ademas en letras.
+IMPORTE = u"\\$?\\s?(\\d{1,3}(?:[.,]\\d{3})+)"
+
+
+def importes(ruta, texto_material):
+    """Cifras de dinero de la salida que NO estan en ninguna pieza.
+
+    Existe por el segundo defecto de la misma clase en el mismo archivo: la
+    pasada de `hechos-con-prueba` escribio «la diferencia es de $500.000 en las
+    dos cifras». $500.000 no aparece en el material -- salio de restar 4.800.000
+    menos 4.300.000. La guarda de esa manana solo miraba fechas.
+
+    Es la misma regla y no una nueva: **ningun dato se produce operando.**
+    """
+    bruto = io.open(ruta, encoding="utf-8", errors="replace").read()
+    fuera = []
+    vistos = set()
+    for m in re.finditer(IMPORTE, bruto):
+        cifra = m.group(1)
+        if cifra in vistos:
+            continue
+        vistos.add(cifra)
+        if cifra not in texto_material:
+            fuera.append((cifra, citado(m.start(), bruto),
+                          " ".join(bruto[max(0, m.start() - 60):m.end() + 60].split())))
+    return fuera
+
+
 def revisar(ruta, texto_material=None):
     bruto = io.open(ruta, encoding="utf-8", errors="replace").read()
     t = plano(bruto)
@@ -131,18 +161,32 @@ def main(args):
             marca = "ESTA EN EL MATERIAL"
         elif en_material is False:
             marca = "NO ESTA EN EL MATERIAL -- mirelo"
-            mirar += 1
         else:
             marca = "sin material que comparar"
+        # Citar no es afirmar, igual que en `puntuar_caso03.py`: una nota que
+        # dice «aqui decia N dias y esa cifra salio de una resta» tiene que
+        # poder escribirse sin dejar la guarda en rojo para siempre.
         if es_cita:
             marca += " (entre comillas)"
-        else:
-            if en_material is None:
-                mirar += 1
+        elif en_material is not True:
+            mirar += 1
         print("   %-11s «%s»  %s" % (clase, expr, marca))
         print("       ...%s..." % trozo)
-    print("\n   Este programa NO decide. Una duracion escrita en el contrato se"
-          "\n   cita y es correcto; la que sale de una resta, no se escribe.")
+    if texto_material is not None:
+        raros = importes(ruta, texto_material)
+        if raros:
+            print("\n   IMPORTES que no aparecen en ninguna pieza:")
+            for cifra, es_cita, trozo in raros:
+                marca = " (entre comillas)" if es_cita else ""
+                if not es_cita:
+                    mirar += 1
+                print("   importe     «%s»  NO ESTA EN EL MATERIAL -- mirelo%s"
+                      % (cifra, marca))
+                print("       ...%s..." % trozo)
+
+    print("\n   Este programa NO decide. Una duracion o un importe escritos en"
+          "\n   el material se citan y es correcto; los que salen de una cuenta,"
+          "\n   no se escriben. Es la misma regla: ningun dato se produce operando.")
     print("\n%d expresion(es) que mirar." % mirar)
     return 2 if mirar else 0
 
