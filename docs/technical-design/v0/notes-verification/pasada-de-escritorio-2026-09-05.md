@@ -8,7 +8,7 @@
 
 ## El resultado en una línea
 
-**Trece defectos, los trece míos.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+**Catorce defectos, los catorce míos.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -25,6 +25,7 @@
 | 11 | SPEC-03 | **La regla exigía un número que el formato de salida no tenía dónde poner** |
 | 12 | — | **`buscar.py` devolvía el trabajo del sistema como si fuera el expediente** — y el peor caso llevaba la marca ` - REVISADO` |
 | 13 | — | **«Vereda» contaba como identificador**: dos predios vecinos se habrían fundido en una fila |
+| 14 | — | **Ninguna negativa estaba hecha para quien decide.** Contestarle a una autoridad qué resolver no es opinar: es tomarle el acto |
 
 ---
 
@@ -239,6 +240,27 @@ La regla de identidad, corregida en su día por el hallazgo H2 de la crítica, d
 > **Y es el hallazgo H2 rebotando.** H2 arregló que el método **partiera** un predio en dos por traer cada documento un identificador distinto. La corrección abrió la puerta contraria: **fundir dos por compartir un dato que no identifica a nadie.** Las dos formas de fallo salen de la misma frase.
 
 **Corregido:** un identificador solo lo es si **dos bienes distintos no pueden compartirlo**. Vereda, barrio, sector, manzana, corregimiento y municipio **ubican y no identifican**: van en la descripción, se anotan igual con su página, y **no funden nada**. Una dirección sí identifica cuando llega a ser única —calle, número, interior—; si se queda en el sector, no. Con su pregunta en la autoevaluación.
+
+---
+
+## Defecto 14 — Todas las negativas estaban hechas para quien pregunta la ley; ninguna para quien la decide
+
+**Encontrado ejecutando `/preguntas-de-derecho`**, que es la skill cuyo trabajo entero es negarse — y por eso el hueco pesa más.
+
+**Sus ejemplos, uno por uno, son de parte:** *«¿Cuál es el término para contestar?»*, *«¿Qué necesito para radicar?»*, *«¿Sirve esta cláusula?»*. Y sus prohibiciones también: *«no opina sobre si a ella le conviene una vía»*.
+
+**Ninguna cubre la forma que toma la pregunta cuando quien la hace decide:** *«¿amparo la posesión?»*, *«¿le doy la razón a quién?»*, *«¿qué debo resolver aquí?»*. **No suenan a preguntas de derecho —suenan a la decisión misma— y son las dos cosas a la vez.**
+
+> **Y la diferencia no es de forma, es de qué pasa si se contesta.** Cuando la pregunta la hace una parte, la negativa cuesta una molestia. **Cuando la hace quien decide, responderla no es opinar: es tomarle el acto.**
+
+**Y había un segundo filo, en el sitio donde menos se ve.** El §6 de esa skill existe para no tratar a la abogada como a la propia memoria del modelo: si ella aporta la norma, se usa. **Eso, para una autoridad, tiene un límite que no estaba escrito:**
+
+| Ella da… | Y pregunta… | El resultado es… |
+|---|---|---|
+| Una regla de **cómputo** | qué fecha sale | **un dato.** Se hace la cuenta a la vista. Correcto |
+| Una regla de **fondo** —*«procede el amparo cuando hay perturbación»*— | si procede | **su decisión.** Y esa no se calcula |
+
+**Corregido:** §1 reconoce la forma autoritativa de la pregunta y da la razón entera de la negativa; §7 añade *«no propone qué resolver»* con el mismo valor conservador que `/redactar-escrito` y la misma remisión a `V-7`; §6 gana su límite —se devuelve **qué consta y qué no bajo esa regla**, y ahí se detiene—; y la autoevaluación, su octava pregunta.
 
 ---
 
