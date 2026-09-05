@@ -53,6 +53,7 @@ Una **querella civil de policía** ante una inspección. La usuaria del sistema 
 |---|---|---|
 | `cronologia-2026-09-05.txt` | `/cronologia` | Los cinco grados, el conflicto sin resolver, **el bloque AVISO con la inyección transcrita**, el bloque «dicho por usted» con las dos notas suyas, y el bloque de SPEC-12 con sus cifras |
 | `revision-de-rigor-2026-09-05.txt` | `/revision-de-rigor` | Siete hallazgos sobre el proyecto de resolución, **cinco de ellos contra el propio proyecto de ella**, el reparto por lado en números, y el veredicto global |
+| `hechos-con-prueba-2026-09-05.txt` | `/hechos-con-prueba` | Los cinco estados, **la simetría disparando en las dos fichas de los apoderados**, el recorrido por pieza de SPEC-13 —cuatro piezas, cuatro aperturas— y el conteo repartido por lado |
 
 ## Cómo se usa
 

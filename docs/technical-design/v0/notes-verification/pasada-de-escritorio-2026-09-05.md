@@ -8,7 +8,7 @@
 
 ## El resultado en una línea
 
-**Diez defectos, los diez míos, ocho de ellos de esta semana.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+**Once defectos, los once míos, nueve de ellos de esta semana.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -22,6 +22,7 @@
 | 8 | SPEC-03 | **Mi barrido de contexto B buscó una sola palabra**: quedaban seis reglas con vocabulario de adversario |
 | 9 | — | **`revision-de-rigor` no sabía nombrar una cuenta ya hecha** — el error que los otros diez tienen prohibido, en el documento que se firma |
 | 10 | — | Y tampoco **la ausencia inflada** ni **la secuencia leída como causa**: dos invariantes duras de los diez, invisibles para el que revisa |
+| 11 | SPEC-03 | **La regla exigía un número que el formato de salida no tenía dónde poner** |
 
 ---
 
@@ -176,6 +177,26 @@ Barrida contra las cuatro invariantes más duras del arnés. **Dos huecos más:*
 - **La secuencia leída como causa** es el salto lógico más frecuente, **ya descrito en `cronologia` §5**, que **manda su redacción**. Va como sub-caso del salto lógico, con la lista de conectores de esa sección y sin reescribirla.
 
 > **La lista pasa de seis a siete, no a nueve.** Un método cuyo procedimiento crece con cada hallazgo deja de ser un procedimiento.
+
+---
+
+## Defecto 11 — La regla exigía un número que el formato no tenía dónde poner
+
+**Encontrado ejecutando `/hechos-con-prueba`**, que es donde SPEC-13 reescribió dos fases ese mismo día y donde quedó el anclaje de la simetría (defecto 5).
+
+Al escribir el conteo de la salida hizo falta el reparto por lado —dos hechos sin apoyo de la querellante, dos del querellado— **y el formato de conteo de ese método no lo prevé**: pide *«cuántos hechos propuestos, cuántos apoyados, cuántos sin apoyo, cuántos contradichos, cuántos vacíos, cuántos descartes»*, y nada por parte.
+
+**La regla lo exigía y la salida no tenía dónde ponerlo.** Es la misma forma del defecto 5 —*un principio sin punto de enganche no dispara*—, en su versión más silenciosa: aquí no falta la regla, **falta la casilla**.
+
+**Corregido en los once**, dentro del bloque de posición para no abrir once redacciones: *«el conteo de la entrega reparte por lado —cuántos de cada parte, y cuántos del propio despacho si lo hay—, y cuando el reparto queda desigual se dice ahí mismo, con los números, y se dice si la causa es de volumen»*. Con la frase que resume la clase entera: **un número que la regla exige y que el formato de salida no tiene dónde poner es un número que no se escribe.**
+
+### Y lo que esa misma ejecución confirmó, que era el objeto de correrla
+
+| Qué se probaba | Resultado |
+|---|---|
+| **SPEC-13**, escrita ese día: barrer por pieza y comprobar en bloque | **Cuatro piezas, cuatro aperturas** en la captura y **cuatro reaperturas** en la comprobación — no once, que es lo que pedía el método anterior con once anclajes |
+| **El anclaje de la simetría** (defecto 5), puesto ese día en la fila «Sin apoyo» | **Disparó.** H-05 y H-06 —los dos apoderados— salieron juntas, con el reparto igual y con la distinción escrita: *no se dice que haga falta acreditar nada; se dice que una afirmación no tiene detrás ninguna pieza* |
+| El bloque anti-inyección | Atrapó el texto de la p. 2 y **dijo dónde quedó el punto que le pedían omitir** |
 
 ---
 

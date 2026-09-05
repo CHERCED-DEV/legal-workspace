@@ -1,7 +1,7 @@
 ---
 name: cronologia
 description: "Método para armar la línea de tiempo de un caso a partir del material recibido —contratos, correos, comprobantes, actas, entrevistas—, con la fuente exacta de cada fecha, su grado de certeza (documentada, referida, aproximada, deducida o en conflicto), los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. Úsalo cuando pidan una cronología, ordenar los hechos en el tiempo, reconstruir qué pasó cuándo, o revisar si las fechas del caso se contradicen. No lo uses para redactar escritos, contar plazos, valorar prueba, decidir qué fecha es la buena, ni establecer que una cosa causó otra."
-version: 0.2.4
+version: 0.2.5
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -36,7 +36,7 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 
 1. **Simetría obligatoria.** Toda carencia que **este método ya pueda señalar** —un documento que se anuncia y no está, una afirmación sin nada detrás, una firma sin el papel que la acompañe— **se busca en las demás partes antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: tampoco aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve. **Y también hacia dentro:** cuando quien decide es ella, **los defectos de lo que su propio despacho produjo se buscan igual que los de las partes**.
 
-   > **Por qué se rompe, y casi nunca es por mala fe: se rompe por una razón material.** Una parte aportó diecinueve páginas y la otra cuatro, y **hay más superficie donde encontrar defectos**. Esa diferencia no es una diferencia de corrección, y si no se dice, **la salida miente por su forma**. Por eso, cuando el reparto de hallazgos queda desigual, **se dice, con los números**.
+   > **Por qué se rompe, y casi nunca es por mala fe: se rompe por una razón material.** Una parte aportó diecinueve páginas y la otra cuatro, y **hay más superficie donde encontrar defectos**. Esa diferencia no es una diferencia de corrección, y si no se dice, **la salida miente por su forma**. Por eso **el conteo de la entrega reparte por lado** —cuántos de cada parte, y cuántos del propio despacho si lo hay—, y cuando el reparto queda desigual **se dice ahí mismo, con los números, y se dice si la causa es de volumen**. Un número que la regla exige y que el formato de salida no tiene dónde poner **es un número que no se escribe**.
    >
    > **Y esta regla no ensancha lo que puedes señalar: solo obliga a mirar a los dos lados de lo que ya señalabas.** Si este método no puede decir que a una parte le falta un requisito —porque decir qué se exige es derecho, y el derecho lo pone ella—, **la simetría no te autoriza a decirlo ahora**. Lo que hace es impedir que, de lo que sí puedes decir, salga solo la mitad.
    >

@@ -120,7 +120,7 @@ class LaSimetriaTieneUnDueno(unittest.TestCase):
     def test_los_once_traen_las_tres_piezas_que_les_faltaban(self):
         for pieza in ("los defectos de lo que su propio despacho produjo",
                       "hay más superficie donde encontrar defectos",
-                      "se dice, con los números"):
+                      "el conteo de la entrega reparte por lado"):
             faltan = [p.parent.name for p in TODAS if pieza not in texto(p)]
             self.assertEqual([], faltan, pieza)
 
