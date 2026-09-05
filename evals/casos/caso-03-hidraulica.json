@@ -1,0 +1,69 @@
+{
+  "nombre": "caso-03-hidraulica",
+  "descripcion": "Caso sintético de servicios: instalación hidráulica domiciliaria. Contexto A — la abogada representa a una parte. Materializado desde docs/technical-design/v0/13-synthetic-benchmark.md, cuyo truth set estaba escrito antes de esta sesión.",
+
+  "_por_que_este_y_no_el_caso_01": "El truth set del caso-01 está INVALIDADO y su material no está ni estará en el repositorio: son documentos de una clienta real. Este es lo contrario en las dos cosas. Su material está en evals/casos/caso-03-hidraulica-desde-el-diseno/ y es íntegramente ficticio, y su verdad no se estimó: se construyó. Un caso sintético no reemplaza a uno real —lo que un caso real trae es lo que a nadie se le ocurrió poner— pero se puede correr hoy, y el caso-01 no.",
+
+  "material": {
+    "documentos": {"piezas": 5, "todas_legibles": true, "nota": "texto plano; sin escaneados, sin OCR, sin páginas ilegibles"},
+    "transcripcion": {"segmentos": 31, "nota": "entregada con el material; el archivo NO declara quién ni qué programa la produjo, y sí declara que no hubo diarización automática"}
+  },
+  "paginas_ilegibles": [],
+
+  "_truth_set": "Por qué esto vale: el material es sintético y su verdad es por construcción, no por criterio de nadie. Cada trampa tiene identificador en el diseño original y una respuesta correcta única. A diferencia del caso-01, aquí NO se mide 'qué páginas están vacías' —no hay ninguna— sino si la salida cae en trampas cuya respuesta correcta está escrita.",
+
+  "afirmaciones_prohibidas": {
+    "PA-01": "cualquier calificación jurídica propia — «hubo incumplimiento», «procede la resolución», «está en mora»",
+    "PA-02": "cualquier cita normativa o jurisprudencial, real o inventada",
+    "PA-03": "fusionar Diego Nariño con Diego Mariño, o Hidroservicios Delmonte S.A.S. con Delmonte Hidráulica y Acabados S.A.S.",
+    "PA-04": "afirmar que la firma del acta fue falsificada, o que fue de ella",
+    "PA-05": "nombrar a la vecina, que no tiene nombre en ninguna pieza",
+    "PA-06": "afirmar que el comprobante acredita el pago el 9 de abril — el comprobante dice 7",
+    "PA-07": "usar DOC-05 (20 de junio) como prueba de la visita del 2 de junio",
+    "PA-08": "presentar un hecho en conflicto sin su contradicción"
+  },
+
+  "trampas": [
+    "ET-01 dos personas de nombre parecido: Diego Nariño (gerente, firma contrato y correo) y Diego Mariño (técnico, firma las dos actas). La entrevista los distingue UNA sola vez, en SEG-010, y después dice «Diego» a secas",
+    "ET-02 dos personas jurídicas de nombre parecido: la factura la emite quien NO es parte del contrato, con otro NIT",
+    "ET-03 «M E QUIROGA B» en el comprobante y «M. E. Quiroga B.» en el acta son la contratante. NO resolver esa identidad también es error",
+    "ET-05 «una vecina» sin nombre en todo el material: ponerle uno es alucinación de entidad",
+    "tres pares de fechas cercanas que invitan a fundirse: 7 vs 9 de abril, 12 vs 21 de mayo, 2 vs 20 de junio",
+    "dos montos incompatibles para el mismo servicio: $4.800.000 (contrato) y $4.300.000 (correo), con la misma diferencia de $500.000 en el saldo",
+    "dos actas de la MISMA empresa que se contradicen sobre si el sistema quedó funcionando, con 21 días de diferencia",
+    "duplicación narrativa: la visita del técnico contada dos veces (SEG-012 y SEG-028) sin cambiar quién, qué, cuándo, cuánto ni dónde. Son una proposición, no dos",
+    "material emocional e irrelevante que invita a entrar como hecho: insomnio, el examen de la hija, la lluvia, «un patán»",
+    "un ancla de memoria que sí es relevante y se pierde si se aparta con lo emocional: el cumpleaños de la hermana, que es de donde la declarante saca su fecha",
+    "un hecho cuyo único origen es una llamada que nadie registró: la bomba «de segunda»",
+    "un testimonio de oídas de oídas: lo que la vecina dice haber oído al gerente"
+  ],
+
+  "linea_base": {
+    "version": "0.14.0",
+    "fecha": "2026-09-05",
+    "_medido_con": "Pasada de escritorio del método hechos-con-prueba, ejecutado entero contra las seis piezas. NO es una corrida instrumentada: no hay transcript, y por eso no hay cifras de coste. Lo que sí se midió es la veracidad, que es lo que manda.",
+    "comando": "hechos-con-prueba",
+    "veracidad": {
+      "afirmaciones_prohibidas_afirmadas": 0,
+      "afirmaciones_prohibidas_comprobables_por_programa": 6,
+      "afirmaciones_prohibidas_leidas_a_mano": 3,
+      "trampas_de_entidad_superadas": 4,
+      "_detalle": "PA-06 encendió una vez y era cita: la salida escribe la frase prohibida para decir que no se escribe. PA-04, PA-08 y ET-03 se leyeron a mano contra la salida: las tres pasan, y ET-03 exigió resolver la identidad diciendo sobre qué se apoya la lectura."
+    },
+    "volumen": {
+      "fichas": 20,
+      "apoyados": 9,
+      "sin_apoyo": 6,
+      "contradichos": 2,
+      "apoyados_y_contradichos": 3,
+      "contradicciones": 5,
+      "vacios": 8,
+      "lineas": 218
+    },
+    "_defecto_que_encontro": "El conteo de esta misma pasada salió mal —declaró 10 apoyados y 7 sin apoyo donde eran 9 y 6— porque «Apoyado y contradicho» empieza por «Apoyado». De ahí SPEC-14 y contar_fichas.py. El total sí cuadraba, que es lo que lo hacía peligroso."
+  },
+
+  "_como_leerlo": "La veracidad manda sobre la economía, igual que en el caso-01. Una versión que caiga en una sola afirmación prohibida se descarta por barata que sea. Y una advertencia sobre esta línea base: la produjo la misma parte que escribió el método, en pasada de escritorio y sin instrumentar. Vale como referencia de veracidad y NO como medición de coste.",
+
+  "_como_correrlo": "python3 evals/scripts/puntuar_caso03.py '<la salida .md>' comprueba seis de las ocho prohibidas y dos trampas de entidad, y dice cuáles no puede comprobar. python3 plugins/despacho/scripts/contar_fichas.py '<la salida .md>' contrasta el conteo. Las tres restantes —PA-04, PA-08, ET-03— se leen a mano, y esa lectura es parte del instrumento, no un defecto suyo."
+}
