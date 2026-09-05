@@ -1,7 +1,7 @@
 ---
 name: hechos-con-prueba
 description: "Método para convertir el material de un caso (entrevistas, declaraciones, documentos, comprobantes) en hechos candidatos emparejados con la prueba que los apoya, los contradice o los sitúa. Úsalo cuando pidan construir, extraer u ordenar los hechos de un asunto, armar el relato fáctico, o establecer qué está apoyado y qué no. No lo uses para redactar escritos, valorar prueba, decidir estrategia ni responder preguntas de derecho."
-version: 0.2.1
+version: 0.2.2
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -199,6 +199,10 @@ Tres tratamientos, en orden de preferencia:
 | **Contradicho** | Hay al menos un fragmento que lo contradice | "[quién] afirma X en [dónde]; [pieza] dice Y en [dónde]." Se entregan las dos. |
 | **Apoyado y contradicho** | Hay de las dos cosas | Se listan las dos. **No es un error ni algo que resolver aquí**: es información, y la decisión es de ella |
 | **Sin apoyo** | Nada en el material lo apoya ni lo contradice; su única base es que alguien lo dijo | "Afirmado por [quién] en [dónde]. Sin apoyo en el material revisado." |
+
+> **Y aquí es donde engancha la simetría, si ella está en posición de autoridad (§1).** Antes de entregar un hecho **sin apoyo** que sea de una parte, **mira si el equivalente de la otra parte está en la misma situación y dilo**. El caso que lo enseña es real: en una querella, el escrito de una parte lo firmaba alguien que se presentaba como apoderado y **nada en el material lo respaldaba** — y al mirar el otro lado, **tampoco**. Entregar el primero sin el segundo no es un error de redacción: **es media verdad, y la mitad que falta favorece a alguien.**
+>
+> **Fíjate en lo que esto NO es.** No estás diciendo que haga falta acreditar nada —eso es derecho y lo pone ella—: estás diciendo que **una afirmación del material no tiene detrás ninguna pieza**, que es exactamente lo que este estado significa, aplicado a los dos lados en vez de a uno.
 | **No verificable con este material** | El material no permite pronunciarse en ningún sentido. No es lo mismo que *sin apoyo*: allí hay al menos alguien que lo afirma; aquí ni eso | "El material revisado no contiene nada que permita establecerlo." |
 
 Dos reglas gobiernan esa lista. La primera ya está en la Fase 4 —**situar no es apoyar**: un hecho cuyas únicas pruebas **sitúan** está **sin apoyo**, y así se escribe; presentar contexto como apoyo es una forma elegante de mentir—. La segunda:

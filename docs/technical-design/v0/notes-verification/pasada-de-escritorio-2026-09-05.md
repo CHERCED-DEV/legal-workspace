@@ -38,7 +38,23 @@
 
 **Corregido en los once:** la simetría alcanza a *«toda carencia que **este método ya pueda señalar**»*, con una advertencia explícita: *«esta regla no ensancha lo que puedes señalar: solo obliga a mirar a los dos lados de lo que ya señalabas»*.
 
-> **Y la trampa 1 no se pierde por eso: cambia de sitio.** Quien puede hacerla visible sin hacer derecho es `inventario-de-anexos`, con «quién produjo el documento» —fue lo que más valor produjo en el pase real—, y `revision-de-rigor`. En `estado-del-caso` lo correcto es **no decirlo**, y que la simetría no dispare ahí no es un fallo: es la regla comportándose bien.
+> **Y la trampa 1 no se pierde por eso: cambia de sitio.** En `estado-del-caso` lo correcto es **no decirlo**, y que la simetría no dispare ahí no es un fallo: es la regla comportándose bien.
+
+---
+
+## Defecto 3 — Dije dónde dispara la simetría sin comprobarlo, y me equivoqué de comando
+
+**Añadido el 2026-09-05, unas horas después, ejecutando `/inventario-de-anexos` contra el mismo expediente.**
+
+El párrafo de arriba decía, en su primera versión, que quien hace visible la carencia *«es `inventario-de-anexos`, con «quién produjo el documento»»*. **Escrito sin comprobarlo. Es falso.**
+
+`inventario-de-anexos` Fase 2 toma las afirmaciones que hay que sostener **de tres sitios y solo tres**: la hoja de hechos aprobada, el borrador del escrito, o lo que ella indique. **Ninguno es «lo que el propio material afirma».** Una firma de alguien que se presenta como apoderado, sin nada detrás, **no tiene entrada ahí tampoco**.
+
+**Dónde sí dispara, comprobado esta vez:** en **`hechos-con-prueba`**. Su Fase 2 recoge afirmaciones de *«algo que alguien dice o que un documento consigna»* —el material mismo—, la Fase 3 las consolida en hechos candidatos, y la Fase 5 marca **sin apoyo** al que no tiene ninguna pieza detrás. Ese es el estado exacto de la afirmación «X actúa como apoderado», y ahí la simetría tiene de qué agarrarse.
+
+**Y hacía falta algo más que saberlo: la regla no tenía anclaje.** Estaba escrita como principio general en el bloque de posición de los once, y **un principio sin punto de enganche es un principio que no dispara**. Se ancló en la fila «Sin apoyo» de la Fase 5 de `hechos-con-prueba`, con el caso real como ejemplo y con la distinción escrita al lado: *no estás diciendo que haga falta acreditar nada —eso es derecho— estás diciendo que una afirmación del material no tiene detrás ninguna pieza, aplicado a los dos lados en vez de a uno.*
+
+**La cadena correcta, entonces, es de dos pasos y no de uno:** `hechos-con-prueba` lo hace visible y aplica la simetría → ella lo aprueba → `inventario-de-anexos` lo empareja con el documento ausente. Que sea una cadena y no un solo comando **es la razón por la que no se veía**.
 
 ---
 

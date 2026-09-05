@@ -86,7 +86,11 @@ Al aplicarla al `caso-02` —donde ninguno de los dos apoderados acredita su cal
 
 **Corregido en los once:** la simetría alcanza a *«toda carencia que este método ya pueda señalar»*, con la advertencia escrita al lado — *«no ensancha lo que puedes señalar: solo obliga a mirar a los dos lados de lo que ya señalabas»*.
 
-> **Y la trampa no se pierde, cambia de sitio.** Quien la hace visible sin hacer derecho es `inventario-de-anexos` con «quién produjo el documento» —lo que más valor produjo en el pase real— y `revision-de-rigor`. Que la simetría no dispare en `estado-del-caso` **no es un fallo: es la regla comportándose bien.**
+> **Y la trampa no se pierde, cambia de sitio** — aunque no al sitio que escribí primero. **Dije que la hacía visible `inventario-de-anexos`, y lo dije sin comprobarlo: es falso.** Ese comando toma las afirmaciones que sostiene de tres sitios —hoja de hechos aprobada, borrador, o lo que ella indique— y **ninguno es «lo que el propio material afirma»**.
+>
+> **Dispara en `hechos-con-prueba`**, cuya Fase 2 sí recoge lo que el material afirma y cuya Fase 5 marca **sin apoyo** lo que no tiene ninguna pieza detrás. **Y hacía falta anclarla ahí**: un principio general escrito en once bloques, sin punto de enganche, es un principio que no dispara. Queda anclado en esa fila, con el caso real de los dos apoderados como ejemplo.
+>
+> **La cadena es de dos pasos:** `hechos-con-prueba` lo hace visible y aplica la simetría → ella lo aprueba → `inventario-de-anexos` lo empareja con el documento ausente. **Que sea una cadena y no un comando es la razón por la que no se veía.**
 
 ## 6. Qué toca
 
