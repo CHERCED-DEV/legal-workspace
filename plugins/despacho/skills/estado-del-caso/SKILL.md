@@ -1,7 +1,7 @@
 ---
 name: estado-del-caso
 description: "Método para reconstruir el estado de un caso leyendo su carpeta: qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta, y qué falta, quedó a medias o no tiene respuesta. Úsalo cuando pidan retomar un caso, ponerse al día, saber en qué va un asunto, inventariar la carpeta o preparar una revisión antes de trabajar. No lo uses para valorar la solidez del caso, pronosticar resultados, decidir estrategia, calcular plazos ni redactar escritos."
-version: 0.3.6
+version: 0.3.7
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/estado_del_caso.py *)
 ---
 
@@ -177,15 +177,24 @@ Recorres las tres carpetas y anotas, por cada archivo: **el nombre tal como est�
 
 **El nombre del archivo dice cuál comando fue.** Estas son las convenciones que escriben los comandos de este plugin:
 
-| El nombre empieza por | Lo produjo |
+| El nombre lleva | Lo produjo |
 |---|---|
 | `Hechos - <caso> - <fecha>` | `/hechos-con-prueba` |
 | `Cronologia - <caso> - <fecha>` | `/cronologia` |
 | `Inventario de anexos — <caso> — <fecha> — pasada <n>` | `/inventario-de-anexos` |
 | `Inventario de bienes — <caso> — <fecha> — pasada <n>` | `/inventario-de-bienes` |
 | `Revisión de rigor - <qué se revisó> - <fecha>` | `/revision-de-rigor` |
+| **`<radicado> — Borrador — <clase de escrito> — <fecha>`** y **`<radicado> — De dónde sale cada frase — <fecha>`** | **`/redactar-escrito`** |
 | `0-Estado del caso — anterior (<fecha>)` | este mismo comando, en una pasada anterior |
-| Un texto de referencia de lo escaneado | `/preparar-material` — **y no es el documento** (§2) |
+| `Texto de referencia - <fecha>` | `/preparar-material` — **y no es el documento** (§2) |
+
+> **Y ojo con dos cosas de esta tabla, que si no se saben la vuelven inútil.**
+>
+> **La primera: no todos empiezan por el comando.** Los dos de `/redactar-escrito` —**que son la salida más importante del producto**— empiezan por el **radicado del caso**. Buscar el nombre del comando al principio los deja fuera a los dos.
+>
+> **La segunda: el separador no es el mismo.** Unos usan guion corto `-` y otros raya larga `—`, y **a ojo se parecen**. Compara por el texto que hay a los lados, no por el signo.
+>
+> **Que las convenciones sean tres y no una es un defecto conocido y registrado** —`PENDIENTE-FORMA-DE-ENTREGA` §1 lo pide unificado— y **no se arregla aquí**: aquí se lee lo que hay.
 
 > **El nombre es una pista y se equivoca**, como la carpeta (§2.1, distinción 3). **Si un archivo no encaja en ninguna convención, se lista igual y se dice que no se pudo saber de dónde salió.** Nunca se le adivina un comando: un archivo que ella escribió a mano y tituló parecido pasaría a figurar como salida del sistema, y entonces el índice miente justo en la columna por la que existe.
 

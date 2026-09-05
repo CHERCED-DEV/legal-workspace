@@ -64,6 +64,21 @@ Faltan, entonces, cuatro cosas que la carpeta sí permite decir:
 | O-6 | El conteo incluye salidas y revisadas | Se lee el `CONTEO` | **Pasa** |
 | O-7 | La autoevaluación pregunta por el índice | Se lee §8 | **Pasa** |
 | O-8 | Una pasada real sobre una carpeta con varias salidas | — | **Pendiente** |
+| O-9 | La tabla de convenciones **cubre las tres formas que existen**, incluidas las de `/redactar-escrito` | Se lee la tabla | **Pasa — y no pasaba** |
+
+### Lo que encontró leer `PENDIENTE-FORMA-DE-ENTREGA`
+
+**La tabla de convenciones que esta spec escribió tenía un agujero del tamaño de la salida más importante del producto.** Ese documento —del 27 de agosto, nunca indexado— dice que las convenciones de nombre *«hoy son tres distintas (guion, raya, con y sin nombre de caso)»*. **Medido el 2026-09-05: es verdad, y hay una cuarta forma que el documento no nombra.**
+
+| Forma | Quién la usa |
+|---|---|
+| `<Comando> - <caso> - <fecha>`, con **guion corto** | `hechos-con-prueba`, `cronologia`, `revision-de-rigor` |
+| `<Comando> — <caso> — <fecha> — pasada <n>`, con **raya larga** | los dos inventarios, y la copia del archivo de estado |
+| **`<radicado> — <qué es> — <fecha>`** | **`/redactar-escrito`** |
+
+**La tercera empieza por el radicado, no por el comando.** La tabla de esta spec decía *«el nombre **empieza por**»* y no listaba a `redactar-escrito`: **el índice habría marcado «no se pudo saber qué comando lo produjo» en todos los borradores**, que son lo único que ella firma.
+
+**Corregido:** la tabla dice *«el nombre **lleva**»*, incluye las dos formas de `redactar-escrito`, y advierte de las dos trampas — que no todos empiezan por el comando, y que **guion corto y raya larga se parecen a ojo**. Y remite el arreglo de fondo a donde ya está pedido: unificar las convenciones no se hace desde aquí.
 
 ## 6. Qué toca
 

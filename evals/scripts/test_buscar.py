@@ -42,12 +42,34 @@ class LaBusquedaDiceQueEsMaterialYQueNo(unittest.TestCase):
 
     def test_cuenta_cuantas_estan_fuera(self):
         s = correr("cerca")
-        self.assertIn("De estos renglones, 5 estan FUERA de 1-Documentos recibidos", s)
+        self.assertIn("De estos renglones, 7 estan FUERA de 1-Documentos recibidos", s)
 
     def test_una_hoja_marcada_revisado_tambien_se_marca(self):
         """El caso peligroso: parece fuente autorizada y no lo es para esto."""
         s = correr("cerca")
         self.assertIn("REVISADO.md.md   <- NO es material", s)
+
+
+class ElTextoDelOcrSeTrataComoLoQueEs(unittest.TestCase):
+    """El expediente trae un texto de referencia con los fallos reales del
+    reconocedor. Salen del pase real de agosto, no de la imaginacion."""
+
+    def test_marca_el_renglon_con_ideogramas(self):
+        s = correr("estado")
+        self.assertIn("[renglon dudoso: basura probable del OCR]", s)
+        self.assertIn("en renglones dudosos", s)
+
+    def test_encuentra_señor_aunque_el_ocr_escribiera_senor(self):
+        s = correr("señor")
+        self.assertIn("SENOR INSPECTOR DE POLICIA DE SALENTO", s)
+
+    def test_el_texto_de_referencia_no_es_material(self):
+        s = correr("señor")
+        for linea in s.splitlines():
+            if linea.startswith("### 2-Borradores/Texto de referencia"):
+                self.assertIn("NO es material", linea)
+                return
+        self.fail("el texto de referencia no salio en los resultados")
 
 
 class LoQueNuncaSeDejaDeDecir(unittest.TestCase):
@@ -115,7 +137,7 @@ class ElJsonDiceLoMismo(unittest.TestCase):
 
     def test_cada_hallazgo_lleva_su_origen(self):
         d = json.loads(correr("cerca", "--json"))
-        self.assertEqual(5, d["fuera_de_recibidos"])
+        self.assertEqual(7, d["fuera_de_recibidos"])
         self.assertEqual({"material", "otro"}, {x["origen"] for x in d["hallazgos"]})
 
 

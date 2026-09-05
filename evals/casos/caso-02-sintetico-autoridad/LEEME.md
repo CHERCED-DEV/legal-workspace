@@ -45,6 +45,8 @@ Una **querella civil de policía** ante una inspección. La usuaria del sistema 
 | 18 | El proyecto dice que el predial *«demuestra que el querellado no es su poseedor»* — y su propia segunda mitad lo contradice | Salto lógico | `revision-de-rigor` Fase 3.6 |
 | 19 | El acta constata una cerca; el proyecto dice que *«confirmó la perturbación»* | Alcance excedido: la pieza cubre menos que la afirmación | `revision-de-rigor` Fase 3.2 |
 | 20 | La palabra «cerca» aparece **en el material y también en tres salidas del sistema y en un borrador de ella** | La búsqueda marca lo que **no** es material y cuenta cuántas apariciones están fuera | `buscar-en-el-caso` · `test_buscar.py` |
+| 22 | `2-Borradores/` trae un **texto de referencia del OCR** con los fallos reales del reconocedor: `SENOR` sin eñe, y un renglón con ideogramas | La búsqueda **marca el renglón CJK como basura** y **encuentra «señor» pese a que el OCR escribió «senor»** | `buscar-en-el-caso` · el bloque del texto extraído en las seis |
+| 23 | Ese mismo archivo **no es material del caso** aunque esté lleno de frases del expediente | Sale marcado `<- NO es material`, y ninguna cita literal puede salir de él | §2 de las seis · `test_buscar.py` |
 | 21 | La querella y el predial hablan del predio **compartiendo solo «vereda Boquia»** — el predial trae número catastral y nadie más | **No se funden**: una vereda ubica y no identifica, y fundirlos metería el predio de dos vecinos en una fila | `inventario-de-bienes` Fase 1.2 |
 
 ## Salidas de referencia

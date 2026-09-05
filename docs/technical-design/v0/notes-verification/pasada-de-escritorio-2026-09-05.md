@@ -8,7 +8,7 @@
 
 ## El resultado en una línea
 
-**Dieciséis defectos, los dieciséis míos — y el decimoquinto es uno de los otros, repetido por mí después de haberlo escrito.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+**Diecisiete defectos, los diecisiete míos — y el decimoquinto es uno de los otros, repetido por mí después de haberlo escrito.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -28,6 +28,7 @@
 | 14 | — | **Ninguna negativa estaba hecha para quien decide.** Contestarle a una autoridad qué resolver no es opinar: es tomarle el acto |
 | 15 | — | **El defecto 7 otra vez, cometido por mí dos horas después de escribirlo.** El cuidado no basta: hace falta la guarda |
 | 16 | — | **El conteo de la búsqueda mezclaba renglones con coincidencias** y devolvía el mismo renglón repetido |
+| 17 | SPEC-08 | **El índice no reconocía los borradores de `/redactar-escrito`** — la única salida que ella firma |
 
 ---
 
@@ -295,6 +296,28 @@ Al cerrar el defecto 14 hice una comprobación de rutina: **¿en cuántos sitios
 > **Es lo que hace superable el defecto `P-01`.** La cita sigue saliendo del original —eso no cambia—, pero **al menos se sabe dónde mirar**. Sin esa tolerancia, buscar sobre material fotografiado no encontraría nada y el defecto del vocabulario sería total en vez de parcial.
 
 Queda con prueba propia, en las dos direcciones, y escrito en el `SKILL.md` con su precio: **«AÑO» también encuentra «DAÑO»**, y para eso está `--exacto`.
+
+---
+
+## Defecto 17 — El índice de SPEC-08 no reconocía la salida más importante del producto
+
+**Encontrado leyendo `PENDIENTE-FORMA-DE-ENTREGA.md`**, uno de los documentos que el §0.3 del backlog declara sin cubrir desde el 28 de agosto. Dice, entre lo pendiente: *«una convención de nombres única, que hoy son tres distintas (guion, raya, con y sin nombre de caso)»*.
+
+**Medido el 2026-09-05: es verdad, y hay una forma que el documento no nombra.**
+
+| Forma del nombre | Quién la usa |
+|---|---|
+| `<Comando> - <caso> - <fecha>` — **guion corto** | `hechos-con-prueba`, `cronologia`, `revision-de-rigor` |
+| `<Comando> — <caso> — <fecha> — pasada <n>` — **raya larga** | los dos inventarios, y la copia del archivo de estado |
+| **`<radicado> — <qué es> — <fecha>`** | **`/redactar-escrito`** |
+
+**La tercera empieza por el radicado del caso, no por el comando.** Y la tabla de convenciones que escribí en SPEC-08 esa misma mañana decía *«el nombre **empieza por**»* y **no listaba a `redactar-escrito` en absoluto**.
+
+> **Consecuencia:** el índice de salidas habría marcado *«no se pudo saber qué comando lo produjo»* **en todos los borradores** — que son lo único que ella firma, y la salida más importante del producto. El índice existía para distinguir el trabajo del sistema del de ella, **y en el caso que más importa habría dicho que no sabía**.
+
+**Corregido:** la tabla dice *«el nombre **lleva**»*, incluye las dos formas de `redactar-escrito`, y advierte de las dos trampas — que no todos empiezan por el comando, y que **guion corto y raya larga se parecen a ojo**, así que se compara por el texto de al lado y no por el signo. El arreglo de fondo —unificar las convenciones— **no se hace desde ahí**, y ya está pedido en `PENDIENTE-FORMA-DE-ENTREGA` §1.
+
+> **Y la lección, que no es sobre nombres de archivo:** escribí una tabla de convenciones **leyendo las skills que escriben salidas** y me faltó una. El documento que lo decía llevaba en el repositorio desde el 27 de agosto, **declarado sin leer en el §0.3**. Los documentos sin indexar no son deuda documental: **son defectos esperando.**
 
 ---
 
