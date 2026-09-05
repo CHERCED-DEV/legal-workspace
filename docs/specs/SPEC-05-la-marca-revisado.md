@@ -62,14 +62,26 @@ Observables, cada uno capaz de fallar:
 | # | Observable | Cómo se comprueba |
 |---|---|---|
 | O-1 | Los **seis** `SKILL.md` que citan la marca traen la regla de reconocimiento, con la misma redacción | `grep -c` de la frase canónica = 6 |
-| O-2 | Con un archivo `... - REVISADO.md.md` en `2-Borradores/`, `/redactar-escrito` **trabaja** y no dice que no hay hechos aprobados | Pasada real sobre una carpeta de prueba |
-| O-3 | En esa misma pasada, la salida **nombra el archivo aceptado**, con su extensión tal cual está en el disco | Se lee la salida |
-| O-4 | Con un archivo `Hechos (revisar).md` y ninguno marcado, la salida **lo nombra** y dice que no cuenta | Pasada real |
-| O-5 | Con dos archivos marcados de fechas distintas, la salida **los nombra los dos y pregunta** | Pasada real |
+| O-2 | Un archivo `... - REVISADO.md.md` **cuenta como marcado** | `test_marca_revisado.py` sobre `caso-02` | **Pasa** |
+| O-3 | En una pasada, la salida **nombra el archivo aceptado**, con su extensión tal cual | Solo una pasada real | **Pendiente** |
+| O-4 | Un archivo `Hechos (revisar).md` **no cuenta y se detecta** para poder nombrarlo | `test_marca_revisado.py` | **Pasa — y no pasaba** |
+| O-5 | Con dos archivos marcados, **la regla no elige**: los reconoce a los dos | `test_marca_revisado.py` | **Pasa** |
 | O-6 | La guía de ella explica las cinco formas y **le dice que no tiene que acertar con la extensión** | Se lee `GUIA-PARA-LA-ABOGADA.md` |
 | O-7 | Ninguna skill renombra nada: la regla R-2 está escrita donde se reconoce la marca | `grep` de la regla |
 
-**O-1, O-6 y O-7 se comprueban aquí y ahora. O-2 a O-5 exigen una pasada real** y quedan declarados pendientes hasta que la haya: esta spec **no los da por pasados**.
+**O-1, O-6 y O-7 se comprobaron al escribirla. O-2, O-4 y O-5 se comprobaron el 2026-09-05** contra `evals/casos/caso-02-sintetico-autoridad`, con la regla traducida a código en `evals/scripts/test_marca_revisado.py`. **O-3 sigue pendiente: solo una pasada real lo enseña.**
+
+### Lo que encontró ejecutarla, y es la razón de que valga la pena traducir una regla en prosa a código
+
+**La prueba falló en su primera ejecución, y el defecto era de la regla, no del código.** La redacción decía:
+
+> *«Si hay un archivo con «revisado» de cualquier otra forma —al principio del nombre, en medio, `(revisar)`— … se nombran y se pregunta»*
+
+**Y «revisar» no contiene «revisado».** Son dos palabras distintas: la regla ofrecía como ejemplo un caso que su propio enunciado no cubre. Un modelo que aplicara la regla al pie —buscando «revisado»— **pasaría de largo por encima de `Hechos - Salento (revisar).md` sin verlo**, que es exactamente el fallo silencioso que esta spec existe para impedir, reproducido dentro de la spec.
+
+**Corregido en los seis:** la señal que se busca es **la raíz «revis»**, no la palabra, y la regla ahora dice por qué.
+
+> **La lección es sobre el método, no sobre esta regla.** Una regla en prosa que no se puede implementar sin inventar un criterio **es una regla ambigua**, y una regla ambigua la resuelve el modelo por su cuenta, distinto en cada pasada. Traducirla a código no la convierte en producto —el producto sigue siendo la prosa—: **la somete a la única pregunta que la prosa no se hace sola, que es si decide.**
 
 ## 6. Qué toca
 
