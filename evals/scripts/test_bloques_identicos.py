@@ -134,6 +134,46 @@ class LaSimetriaTieneUnDueno(unittest.TestCase):
                              "%s reescribe la razón de V-7 en vez de apuntar a ella" % skill)
             self.assertIn("punto 4 del bloque de posición", fuera, skill)
 
+    def test_la_fecha_calculada_se_prohibe_con_una_sola_redaccion(self):
+        """La restricción más dura del backlog de arquitectura, y la peor de vigilar.
+
+        `architecture-post-v0.md`, §Term/Deadline: *«nada en V0 debe calcular,
+        almacenar ni mostrar algo que se parezca a un plazo»*, y la razón que da
+        no es de arquitectura sino de confianza — **una fecha que aparece en la
+        pantalla se lee como afirmación del sistema**. Los siete métodos que
+        pueden escribir una fecha en la salida de ella lo prohíben con la MISMA
+        frase; los cuatro que no escriben fechas no la llevan, y uno de ellos
+        —`preguntas-de-derecho`— no puede llevarla porque su §6 tiene la única
+        excepción del producto: si ella da la regla de cómputo, se le hace la
+        cuenta a la vista. Una frase absoluta ahí contradiría esa excepción.
+        """
+        clausula = ("nunca sumas ni restas días sobre una fecha para producir "
+                    "otra, aunque el resultado no sea un plazo")
+        escriben_fechas = ["cronologia", "estado-del-caso", "hechos-con-prueba",
+                           "inventario-de-anexos", "inventario-de-bienes",
+                           "redactar-escrito", "revisar-documento"]
+        for p in TODAS:
+            n = p.parent.name
+            veces = texto(p).count(clausula)
+            if n in escriben_fechas:
+                self.assertEqual(1, veces,
+                                 "%s escribe fechas y la cláusula aparece %d veces"
+                                 % (n, veces))
+            else:
+                self.assertEqual(0, veces,
+                                 "%s no escribe fechas y la lleva igual" % n)
+
+    def test_la_excepcion_de_computo_vive_en_un_solo_sitio(self):
+        """Y la excepción tampoco puede tener dos redacciones.
+
+        Hacerle la cuenta a la vista cuando ella pone la regla es de
+        `preguntas-de-derecho` §6 y de nadie más. Si otro método la repitiera,
+        la excepción se ensancharía sin que nadie lo decidiera.
+        """
+        marca = "se muestra el cálculo paso a paso"
+        tienen = [p.parent.name for p in TODAS if marca in texto(p)]
+        self.assertEqual(["preguntas-de-derecho"], tienen)
+
     def test_los_once_traen_las_tres_piezas_que_les_faltaban(self):
         for pieza in ("los defectos de lo que su propio despacho produjo",
                       "hay más superficie donde encontrar defectos",

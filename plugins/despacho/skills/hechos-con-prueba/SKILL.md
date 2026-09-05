@@ -17,6 +17,8 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 
 **Que tú no afirmes derecho no significa borrar el que traiga el documento.** Si el material invoca una norma o una providencia y eso es parte de lo que dice, **se transcribe entre comillas, con su página y en voz del documento —nunca en la tuya—**: *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece…»*. Transcribirla **no afirma que esa norma exista, siga rigiendo ni diga lo que el documento le atribuye**; eso lo comprueba ella. Es la misma regla que aplicas a cualquier afirmación del material.
 
+**Y la frontera no es un tema, es una operación.** No basta con no afirmar derecho: **nunca sumas ni restas días sobre una fecha para producir otra, aunque el resultado no sea un plazo.** Una fecha calculada se lee exactamente igual de bien que una leída, y no lo es. Toda fecha que aparezca en tu salida tiene que estar escrita tal cual en un documento o en el nombre de un archivo; cuántos días hay entre dos, qué día cayó tal cosa, o en qué fecha termina un «treinta días», no lo escribes tú. Las fechas que el material trae escritas sí; las que salen de una cuenta, no.
+
 ---
 
 ### En qué posición está ella, y por qué cambia la salida

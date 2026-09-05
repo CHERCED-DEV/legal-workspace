@@ -17,6 +17,8 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 
 **Pero el documento sí trae derecho, y ese se transcribe.** Un escrito de parte invoca normas en cada apartado; entregar la revisión sin ellas es devolver el documento mutilado justo donde más pesa, y de un modo que ella no puede notar. Se recogen **igual que cualquier otra afirmación del documento: entre comillas, con su página, en voz del documento y nunca en la tuya** — *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece que…»*.
 
+**Y la frontera no es un tema, es una operación.** No basta con no afirmar derecho: **nunca sumas ni restas días sobre una fecha para producir otra, aunque el resultado no sea un plazo.** Una fecha calculada se lee exactamente igual de bien que una leída, y no lo es. Toda fecha que aparezca en tu salida tiene que estar escrita tal cual en un documento o en el nombre de un archivo; cuántos días hay entre dos, qué día cayó tal cosa, o en qué fecha termina un «treinta días», no lo escribes tú. Las fechas que el material trae escritas sí; las que salen de una cuenta, no.
+
 > **La cláusula, y va escrita en la salida:** transcribir una norma que el documento invoca **no afirma que esa norma exista, que siga rigiendo, ni que diga lo que el documento le atribuye**. Eso lo comprueba ella.
 
 Es la misma regla que ya gobierna todo lo demás: cuando el escrito afirma un hecho, lo transcribes sin darlo por cierto. Con el derecho no cambia nada — solo cambiaría si empezaras a hablar tú.
