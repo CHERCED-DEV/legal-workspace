@@ -10,6 +10,17 @@
 >
 > **Todo de una vez:** `sh evals/scripts/correr-todo.sh`
 >
+> **Y desde el 2026-09-05 `medir.py` puede fallar, que antes no.** Su veredicto tiene **tres estados** y el código de salida es el veredicto:
+>
+> | Estado | Cuándo | Código |
+> |---|---|---|
+> | `INTACTA` | Cero fabricaciones **sobre una corrida que existió** y con páginas ilegibles declaradas | 0 |
+> | `NO MEDIBLE` | El run no registra ni un comando ni un turno, **o** no se declaró ninguna de las páginas ilegibles | 3 |
+> | `COMPROMETIDA` | Hay fabricaciones | 2 |
+> | *(regresión)* | El después tiene más fabricaciones que el antes | 4 |
+>
+> **El defecto que cierra**, señalado en `REFINADO-Y-FUENTES` §0.5 el 27 de agosto: *«el banco no puede fallar… certifica "VERACIDAD ── intacta" sobre un run vacío»*. Era cierto en su parte grave — **un run vacío tiene cero fabricaciones por construcción** — y se quedaba corto en otra: **25 páginas sin declarar de 25 se imprimían debajo del veredicto sin tocarlo.**
+>
 > **Y lo que ninguno mide:** que un modelo aplique la prosa de los `SKILL.md`. Eso solo lo enseña una pasada real, que sigue sin ocurrir.
 
 
