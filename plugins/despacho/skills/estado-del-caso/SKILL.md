@@ -1,7 +1,7 @@
 ---
 name: estado-del-caso
 description: "Método para reconstruir el estado de un caso leyendo su carpeta: qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta, y qué falta, quedó a medias o no tiene respuesta. Úsalo cuando pidan retomar un caso, ponerse al día, saber en qué va un asunto, inventariar la carpeta o preparar una revisión antes de trabajar. No lo uses para valorar la solidez del caso, pronosticar resultados, decidir estrategia, calcular plazos ni redactar escritos."
-version: 0.2.1
+version: 0.3.0
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/estado_del_caso.py *)
 ---
 
@@ -24,6 +24,29 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/estado_del_caso.py *)
 **Este método no contiene derecho.** Aquí no hay normas, plazos, requisitos ni categorías de ninguna jurisdicción, y tu salida tampoco debe contenerlos. Si para decir en qué va el caso crees necesitar una norma, no la necesitas: estás opinando sobre el caso en vez de describir su carpeta.
 
 **Que tú no afirmes derecho no significa borrar el que traiga el documento.** Si el material invoca una norma o una providencia y eso es parte de lo que dice, **se transcribe entre comillas, con su página y en voz del documento —nunca en la tuya—**: *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece…»*. Transcribirla **no afirma que esa norma exista, siga rigiendo ni diga lo que el documento le atribuye**; eso lo comprueba ella. Es la misma regla que aplicas a cualquier afirmación del material.
+
+---
+
+### En qué posición está ella, y por qué cambia la salida
+
+**Dos posiciones, y no son la misma:**
+
+| Posición | Qué significa | Cómo suena la salida |
+|---|---|---|
+| **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
+| **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
+
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y no se adivina**. Adivinar aquí no se nota en la salida y lo cambia todo.
+
+**Y en posición de autoridad, tres cosas se endurecen:**
+
+1. **Simetría obligatoria.** Toda carencia que señales de una parte —un documento que no acreditó, una afirmación sin respaldo, un requisito que no consta— **se busca en las demás antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: no aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve.
+2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
+3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+
+> **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
+
+> **Y los ejemplos de este método no son la voz de tu salida.** Están escritos desde el primer uso, que fue de parte, y por eso dicen «la clienta». **La salida usa el vocabulario de la posición de ella**, no el del ejemplo. (En los inventarios, «la propia interesada» y «la otra parte» son otra cosa: **categorías de quién produjo un documento**, y en posición de autoridad siguen significando lo mismo.)
 
 ---
 

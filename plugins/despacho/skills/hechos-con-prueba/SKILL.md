@@ -1,7 +1,7 @@
 ---
 name: hechos-con-prueba
 description: "Método para convertir el material de un caso (entrevistas, declaraciones, documentos, comprobantes) en hechos candidatos emparejados con la prueba que los apoya, los contradice o los sitúa. Úsalo cuando pidan construir, extraer u ordenar los hechos de un asunto, armar el relato fáctico, o establecer qué está apoyado y qué no. No lo uses para redactar escritos, valorar prueba, decidir estrategia ni responder preguntas de derecho."
-version: 0.1.9
+version: 0.2.0
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -16,6 +16,29 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 **Este método no contiene derecho.** No hay aquí normas, plazos, categorías probatorias ni requisitos de ninguna jurisdicción, y tu salida tampoco debe contenerlos. Si para formular un hecho crees necesitar una norma, no la necesitas: estás calificando en vez de describir.
 
 **Que tú no afirmes derecho no significa borrar el que traiga el documento.** Si el material invoca una norma o una providencia y eso es parte de lo que dice, **se transcribe entre comillas, con su página y en voz del documento —nunca en la tuya—**: *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece…»*. Transcribirla **no afirma que esa norma exista, siga rigiendo ni diga lo que el documento le atribuye**; eso lo comprueba ella. Es la misma regla que aplicas a cualquier afirmación del material.
+
+---
+
+### En qué posición está ella, y por qué cambia la salida
+
+**Dos posiciones, y no son la misma:**
+
+| Posición | Qué significa | Cómo suena la salida |
+|---|---|---|
+| **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
+| **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
+
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y no se adivina**. Adivinar aquí no se nota en la salida y lo cambia todo.
+
+**Y en posición de autoridad, tres cosas se endurecen:**
+
+1. **Simetría obligatoria.** Toda carencia que señales de una parte —un documento que no acreditó, una afirmación sin respaldo, un requisito que no consta— **se busca en las demás antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: no aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve.
+2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
+3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+
+> **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
+
+> **Y los ejemplos de este método no son la voz de tu salida.** Están escritos desde el primer uso, que fue de parte, y por eso dicen «la clienta». **La salida usa el vocabulario de la posición de ella**, no el del ejemplo. (En los inventarios, «la propia interesada» y «la otra parte» son otra cosa: **categorías de quién produjo un documento**, y en posición de autoridad siguen significando lo mismo.)
 
 ---
 
@@ -51,7 +74,7 @@ De ahí se desprende todo el método:
 
 ### 2.2 Las cinco distinciones que sostienen el trabajo
 
-1. **Alegado no es acreditado.** Que alguien lo afirme —incluida tu propia clienta— no lo hace probado. Confundirlos es el error más grave de este oficio.
+1. **Alegado no es acreditado.** Que alguien lo afirme **—quienquiera que sea, y con más razón si es de la parte que a ella le interesa o le corresponde resolver—** no lo hace probado. Confundirlos es el error más grave de este oficio.
 2. **No encontrado no es inexistente.** Una búsqueda fallida es información sobre tu búsqueda, no sobre el mundo.
 3. **Un hecho puede tener varias pruebas y una prueba puede servir a varios hechos.** La relación es de muchos a muchos: no la fuerces a uno a uno.
 4. **Un hecho puede no tener apoyo, y eso es producto, no fallo.** Saber qué no está apoyado es exactamente lo que la profesional necesita antes de escribir.
@@ -153,7 +176,7 @@ Tres tratamientos, en orden de preferencia:
 2. **Si descomponer rompe el sentido**, conserva el hecho y escribe el **alcance de la cita**: qué parte cubre el fragmento y qué parte no. Esa línea se llama siempre igual, en la ficha y aquí.
 3. **Prohibido:** escribir "el comprobante acredita el pago del 5 de marzo" (redondear hacia arriba) o degradar el emparejamiento a "sitúa" para no comprometerte (redondear hacia abajo). Ambas cosas destruyen el matiz que la profesional necesita.
 
-**Contradicciones: se entregan, no se resuelven.** Si dos piezas son incompatibles, registra ambas con sus anclajes. No elijas la más creíble, la más reciente ni la de la propia clienta.
+**Contradicciones: se entregan, no se resuelven.** Si dos piezas son incompatibles, registra ambas con sus anclajes. No elijas la más creíble, la más reciente, ni la del lado que a ella le interese o le corresponda resolver.
 
 **Búsqueda fallida.** Si no encuentras apoyo, escribe **"no se encontró en el material revisado"** y **di dónde buscaste**. Nunca "no existe prueba", nunca "no hay documento".
 

@@ -1,7 +1,7 @@
 ---
 name: inventario-de-anexos
 description: "Método para recorrer los documentos de un caso y producir un inventario de anexos numerado —qué es cada documento, quién lo produjo, de qué fecha es y a qué afirmación sirve—, más un bloque separado con lo que falta. Úsalo cuando pidan armar la lista de anexos, ordenar los documentos que se acompañan a un escrito, o establecer qué documentos faltan, se mencionan y no están, o están pero no se pueden usar. No lo uses para valorar prueba, decidir qué se aporta, redactar el escrito ni responder preguntas de derecho."
-version: 0.2.8
+version: 0.3.0
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -24,6 +24,29 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 **Nunca sobrescribes un archivo que ya está en `2-Borradores/`.** Ella pudo haber anotado sobre él, y sus anotaciones son decisiones suyas. Antes de escribir, mira qué hay ya en la carpeta: si existe un inventario de ese caso con ese mismo nombre, **no lo tocas** — la nueva pasada sale aparte, con el número siguiente (`pasada 2`, `pasada 3`…) y una línea al principio de qué cambió respecto de la anterior. Dos pasadas del mismo día conviven y ninguna borra a la otra. La primera es siempre `pasada 1`, aunque nunca llegue a haber una segunda.
 
 **Nunca escribas, renombres, muevas ni corrijas nada dentro de `1-Documentos recibidos/`**: esa carpeta es el material tal como llegó y es lo único que no se puede reconstruir. Se lee y no se toca.
+
+---
+
+### En qué posición está ella, y por qué cambia la salida
+
+**Dos posiciones, y no son la misma:**
+
+| Posición | Qué significa | Cómo suena la salida |
+|---|---|---|
+| **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
+| **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
+
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y no se adivina**. Adivinar aquí no se nota en la salida y lo cambia todo.
+
+**Y en posición de autoridad, tres cosas se endurecen:**
+
+1. **Simetría obligatoria.** Toda carencia que señales de una parte —un documento que no acreditó, una afirmación sin respaldo, un requisito que no consta— **se busca en las demás antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: no aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve.
+2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
+3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+
+> **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
+
+> **Y los ejemplos de este método no son la voz de tu salida.** Están escritos desde el primer uso, que fue de parte, y por eso dicen «la clienta». **La salida usa el vocabulario de la posición de ella**, no el del ejemplo. (En los inventarios, «la propia interesada» y «la otra parte» son otra cosa: **categorías de quién produjo un documento**, y en posición de autoridad siguen significando lo mismo.)
 
 ---
 

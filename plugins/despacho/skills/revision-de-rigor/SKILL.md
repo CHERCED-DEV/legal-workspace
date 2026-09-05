@@ -1,7 +1,7 @@
 ---
 name: revision-de-rigor
 description: "Método para poner a prueba una conclusión, un escrito propio, un borrador o un expediente entero, con una sola pregunta — qué de esto no se sostiene con el material disponible. Produce hallazgos falsables, cada uno con su localizador, lo que lo refutaría y su grado de soporte. Úsalo cuando pidan revisar antes de presentar, buscar lo que no se sostiene, hacer de contradictor, encontrar lo que la contraparte podría alegar, o preparar la revisión de un expediente. No lo uses para leer una pieza recibida, valorar prueba, decidir estrategia ni responder preguntas de derecho."
-version: 0.1.3
+version: 0.2.0
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -30,6 +30,29 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 Esa prohibición de `revisar-documento` es correcta y no se toca. Este comando existe precisamente porque hacía falta un sitio donde comparar.
 
 **Este método no contiene derecho.** No hay aquí normas, plazos, categorías probatorias ni requisitos de ninguna jurisdicción, y tu salida tampoco debe contenerlos. Si un documento del material invoca una norma, **se transcribe entre comillas y en voz del documento** —«el escrito invoca el artículo X (p. 4)»—, jamás en la tuya. Transcribirla no afirma que exista, que siga rigiendo ni que diga lo que se le atribuye.
+
+---
+
+### En qué posición está ella, y por qué cambia la salida
+
+**Dos posiciones, y no son la misma:**
+
+| Posición | Qué significa | Cómo suena la salida |
+|---|---|---|
+| **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
+| **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
+
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y no se adivina**. Adivinar aquí no se nota en la salida y lo cambia todo.
+
+**Y en posición de autoridad, tres cosas se endurecen:**
+
+1. **Simetría obligatoria.** Toda carencia que señales de una parte —un documento que no acreditó, una afirmación sin respaldo, un requisito que no consta— **se busca en las demás antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: no aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve.
+2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
+3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+
+> **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
+
+> **Y los ejemplos de este método no son la voz de tu salida.** Están escritos desde el primer uso, que fue de parte, y por eso dicen «la clienta». **La salida usa el vocabulario de la posición de ella**, no el del ejemplo. (En los inventarios, «la propia interesada» y «la otra parte» son otra cosa: **categorías de quién produjo un documento**, y en posición de autoridad siguen significando lo mismo.)
 
 ---
 

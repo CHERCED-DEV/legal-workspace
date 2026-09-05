@@ -1,7 +1,7 @@
 ---
 name: inventario-de-bienes
 description: "Método para recorrer el material de un caso e inventariar los bienes y las deudas que aparecen en él —qué documento lo respalda y en qué página, a nombre de quién figura según ese documento, qué fecha trae, qué valor aparece escrito y quién produjo ese documento—, más lo que falta y las contradicciones entre documentos. Úsalo cuando pidan armar el inventario de bienes de una separación, un divorcio, una sucesión o cualquier asunto donde haya que saber qué bienes aparecen y con qué papel detrás. No lo uses para decidir qué bienes entran y cuáles no, calcular valores, sumar, restar deudas, sacar porcentajes, proponer un reparto ni decir a quién le corresponde qué."
-version: 0.2.7
+version: 0.3.0
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -22,6 +22,29 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 **Dónde se escribe.** A `2-Borradores/`, en **un documento de Word**, con nombre `Inventario de bienes — «caso» — «fecha» — pasada «n».docx`. La tabla se promete lista para pegar, y eso solo se cumple si sale como **tabla de verdad, con sus columnas y sus filas**. **Si no puedes producir un archivo de Word**, escribes el mismo contenido en texto en esa carpeta y **lo dices**; nunca das por hecho un archivo que no dejaste. **Nunca sobrescribes** lo que ya está en `2-Borradores/`: la pasada nueva sale aparte, con el número siguiente y una línea de qué cambió. La primera es siempre `pasada 1`.
 
 **Nunca escribas, renombres, muevas ni corrijas nada dentro de `1-Documentos recibidos/`**: esa carpeta es el material tal como llegó y es lo único que no se puede reconstruir. Se lee y no se toca.
+
+---
+
+### En qué posición está ella, y por qué cambia la salida
+
+**Dos posiciones, y no son la misma:**
+
+| Posición | Qué significa | Cómo suena la salida |
+|---|---|---|
+| **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
+| **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
+
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y no se adivina**. Adivinar aquí no se nota en la salida y lo cambia todo.
+
+**Y en posición de autoridad, tres cosas se endurecen:**
+
+1. **Simetría obligatoria.** Toda carencia que señales de una parte —un documento que no acreditó, una afirmación sin respaldo, un requisito que no consta— **se busca en las demás antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: no aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve.
+2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
+3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+
+> **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
+
+> **Y los ejemplos de este método no son la voz de tu salida.** Están escritos desde el primer uso, que fue de parte, y por eso dicen «la clienta». **La salida usa el vocabulario de la posición de ella**, no el del ejemplo. (En los inventarios, «la propia interesada» y «la otra parte» son otra cosa: **categorías de quién produjo un documento**, y en posición de autoridad siguen significando lo mismo.)
 
 ---
 
@@ -76,7 +99,7 @@ Una lista de bienes escrita por una de las partes **es una afirmación de esa pa
 
 **El nombre que el documento se da a sí mismo se transcribe, y ahí se detiene.** Si se titula «Escritura pública n.º 1234», eso es lo que se escribe, con su página. El método no añade ni una palabra sobre qué se sigue de eso: qué peso tiene ese documento es de ella.
 
-**Palabras que no se escriben nunca:** *probado, acreditado, demostrado, quedó claro, es de ella, es de él, le pertenece, le corresponde, entra, no entra*, y **el nombre de cualquier categoría que clasifique el bien por su origen o por su régimen**. Todas afirman algo que este método no puede afirmar. Se escribe qué documento nombra el bien y quién produjo ese documento; la conclusión la saca ella. **Estas palabras no se escriben como afirmación propia.** Si el documento las trae, se transcriben entre comillas, con su página y con quién lo produjo al lado: censurar el documento de la propia clienta es perder material.
+**Palabras que no se escriben nunca:** *probado, acreditado, demostrado, quedó claro, es de ella, es de él, le pertenece, le corresponde, entra, no entra*, y **el nombre de cualquier categoría que clasifique el bien por su origen o por su régimen**. Todas afirman algo que este método no puede afirmar. Se escribe qué documento nombra el bien y quién produjo ese documento; la conclusión la saca ella. **Estas palabras no se escriben como afirmación propia.** Si el documento las trae, se transcriben entre comillas, con su página y con quién lo produjo al lado: censurar el documento de una de las partes es perder material.
 
 **Y el vocabulario de la relación es de tres palabras, sin sinónimos ni cuarta categoría** —las mismas de `hechos-con-prueba`—:
 
@@ -128,7 +151,7 @@ Este es **el único recorrido completo del material hasta la comprobación final
 
 **Tres lecturas de la misma tabla, y ninguna exige abrir nada.** La primera va por filas: cada aparición con su documento y su productor. La segunda agrupa por etiqueta: **qué hay detrás de cada bien** —y ahí salta a la vista el bien que solo aparece en un documento producido por una parte, o el que no aparece en ninguno—. **Y la misma lectura al revés:** el bien que aparece en un documento de un tercero o de una oficina y **no** en ninguna lista de las partes; se marca, porque es el que nadie mencionó. La tercera es fila contra fila: **lo mismo con dos valores, dos fechas o dos nombres distintos**. Las tres se entregan (§7).
 
-**Las contradicciones se entregan, no se resuelven.** Se anotan **los dos datos, cada uno con su documento y su página**, y **sin decir cuál es el bueno**. No elijas el más reciente, ni el del tercero, ni el de tu propia clienta.
+**Las contradicciones se entregan, no se resuelven.** Se anotan **los dos datos, cada uno con su documento y su página**, y **sin decir cuál es el bueno**. No elijas el más reciente, ni el del tercero, ni el de la parte que a ella le interese o le corresponda resolver.
 
 ### Fase 3 — Detectar lo que falta: es la parte de mayor valor y tiene sección propia, **§5**
 

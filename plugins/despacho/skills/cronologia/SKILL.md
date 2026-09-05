@@ -1,7 +1,7 @@
 ---
 name: cronologia
 description: "Método para armar la línea de tiempo de un caso a partir del material recibido —contratos, correos, comprobantes, actas, entrevistas—, con la fuente exacta de cada fecha, su grado de certeza (documentada, referida, aproximada, deducida o en conflicto), los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. Úsalo cuando pidan una cronología, ordenar los hechos en el tiempo, reconstruir qué pasó cuándo, o revisar si las fechas del caso se contradicen. No lo uses para redactar escritos, contar plazos, valorar prueba, decidir qué fecha es la buena, ni establecer que una cosa causó otra."
-version: 0.1.8
+version: 0.2.0
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -20,6 +20,29 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 **Y la frontera no es un tema, es una operación.** No basta con no contar plazos: nunca sumas ni restas días sobre una fecha para producir otra, aunque el resultado no sea un plazo. Lo único que se deduce es lo que una fuente enuncia como relativo (ayer, el día anterior) y ahí solo se traduce la palabra de la fuente; no se opera con números. Cuántos días hay entre dos fechas, qué día cayó tal cosa, cuánto duró un silencio: nada de eso lo escribes tú. Las dos fechas sí; la distancia entre ellas, no.
 
 **Relación con `hechos-con-prueba`.** Son métodos hermanos y no se sustituyen: aquel empareja cada hecho con la prueba que lo apoya o lo contradice; este toma un solo eje, el tiempo, y lo agota. Si el material ya pasó por `hechos-con-prueba`, esa hoja es **pista de dónde mirar, nunca origen**: la cita y la coordenada de una fecha salen del documento (§2).
+
+### En qué posición está ella, y por qué cambia la salida
+
+**Dos posiciones, y no son la misma:**
+
+| Posición | Qué significa | Cómo suena la salida |
+|---|---|---|
+| **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
+| **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
+
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y no se adivina**. Adivinar aquí no se nota en la salida y lo cambia todo.
+
+**Y en posición de autoridad, tres cosas se endurecen:**
+
+1. **Simetría obligatoria.** Toda carencia que señales de una parte —un documento que no acreditó, una afirmación sin respaldo, un requisito que no consta— **se busca en las demás antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: no aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve.
+2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
+3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+
+> **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
+
+> **Y los ejemplos de este método no son la voz de tu salida.** Están escritos desde el primer uso, que fue de parte, y por eso dicen «la clienta». **La salida usa el vocabulario de la posición de ella**, no el del ejemplo. (En los inventarios, «la propia interesada» y «la otra parte» son otra cosa: **categorías de quién produjo un documento**, y en posición de autoridad siguen significando lo mismo.)
+
+---
 
 ## 2. El principio rector
 
@@ -44,7 +67,7 @@ Nada de lo que produces queda establecido por el hecho de que lo hayas puesto en
 
 1. **Ninguna fecha viaja sin su fuente.** Documento y página, cláusula o minuto exacto. *"Según el expediente"* no es una fuente; *"acta de entrega, p. 1"* sí.
 2. **Ninguna fecha viaja sin su grado.** Uno de los cinco del §3, con esas palabras y no otras.
-3. **Un conflicto no se resuelve: se muestra.** Nunca la más probable, nunca la más reciente, nunca "la del documento porque es documento", nunca "la de la clienta porque es la clienta".
+3. **Un conflicto no se resuelve: se muestra.** Nunca la más probable, nunca la más reciente, nunca "la del documento porque es documento", y **nunca la del lado que a ella le interese o le corresponda resolver, porque es ese lado**.
 4. **La precisión de la fuente no se sube ni se baja.** *"A mediados de marzo"* se queda en "a mediados de marzo"; si el correo dice *"5 de abril, 10:32"*, no lo degrades a "abril".
 
 > **El corolario:** es preferible un evento **sin fecha, declarado como tal**, que un evento con una fecha inventada. Una fecha que falta se ve de inmediato; una fecha falsa, bien puesta en una tabla ordenada, no se ve nunca. Ante la duda entre precisar y no precisar, **no precises y declara la duda**; ante dos fechas, **entrega las dos**; ante la duda de si dos fuentes hablan del mismo evento, **no las fundas** — dilo.
@@ -105,7 +128,7 @@ Ninguna fuente la afirma; sale de cruzar dos cosas del material. **Es legítima 
 
 **Cómo se escribe.** El evento aparece **una vez** en la línea de tiempo, situado en **la más temprana** de las fechas en conflicto, marcado `en conflicto`, con las dos fechas y sus dos fuentes; en la posición de la otra fecha va una línea de referencia cruzada; y debajo de la tabla se repite completo en el bloque de conflictos. **La posición no es una elección:** se sitúa en la más temprana por una razón mecánica —la tabla necesita un orden— y la regla se aplica siempre igual, para que nunca pueda leerse como preferencia.
 
-**Las cuatro formas prohibidas de "resolver":** elegir la del documento porque es documento; elegir la más reciente porque "ya se habrá corregido"; elegir la de la clienta porque es la clienta; y **elegir la que encaja mejor con el resto de la cronología** — la más tentadora y la peor, porque encajar es un argumento, no una prueba, y además la cronología la armaste tú.
+**Las cuatro formas prohibidas de "resolver":** elegir la del documento porque es documento; elegir la más reciente porque "ya se habrá corregido"; elegir la del lado que a ella le interese, o —si le corresponde decidir— la de cualquiera de las partes, porque es esa parte; y **elegir la que encaja mejor con el resto de la cronología** — la más tentadora y la peor, porque encajar es un argumento, no una prueba, y además la cronología la armaste tú.
 
 ### 3.6 Lo que ella dice en la conversación — y por qué NO es un sexto grado
 

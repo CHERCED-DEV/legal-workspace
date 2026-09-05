@@ -32,6 +32,26 @@ En la columna de la izquierda está lo que usted quiere lograr. En la de la dere
 
 ---
 
+## 1 bis. Le va a preguntar en qué posición está usted, y conviene saber por qué
+
+**La primera vez que trabaje un caso, le va a preguntar una cosa: si usted representa a alguna de las partes, o si le corresponde decidir el asunto.** Es una pregunta sola y no la repite.
+
+**No es burocracia. Cambia lo que recibe.**
+
+Si usted **representa a alguien**, el sistema habla de «su clienta» y de «el escrito que usted presenta», que es lo natural.
+
+Si a usted **le corresponde decidir** —una inspección, una comisaría, cualquier despacho que resuelve—, entonces **usted no tiene clienta**, y tres cosas cambian:
+
+- **No le va a hablar nunca de «su clienta».** Habla de las partes, de la actuación y de lo que consta en el expediente.
+- **Simetría obligatoria: si le señala que a una parte le falta algo, busca lo mismo en la otra y le dice qué encontró** — aunque no encuentre nada. Esto salió de un caso real suyo: al plantear que un apoderado no había acreditado su calidad, **la misma carencia aparecía en el otro lado**. Es el error más fácil de cometer cuando se revisa un expediente, y **no se comete eligiendo mal: se comete mirando solo un lado**.
+- **Nada le llega ordenado por lo que le conviene a nadie.** No hay «esto le sirve» ni «lo más favorable»: quien decide no tiene un lado al que servirle.
+
+**Y una cosa que no cambia, que es la que sostiene todo:** las reglas de siempre —de dónde sale cada dato, que lo alegado no es lo probado, que no calcula, que no dice derecho— **son exactamente las mismas en las dos posiciones**. La variante aprieta en un solo sitio y no afloja en ninguno.
+
+> **Y hay algo que hoy no hace, a propósito.** Si a usted le corresponde decidir, **`/redactar-escrito` le redacta la parte de los hechos y ahí se detiene: no redacta la parte que decide.** No es un fallo ni una limitación técnica. **Si una autoridad puede apoyar una decisión en lo que produce un sistema como este, si tiene que decirlo, y qué le pasa a la decisión si una cita sale mal, es algo que este proyecto no ha resuelto** — y mientras no esté resuelto, lo prudente es que la parte que decide la escriba usted. Cuando se resuelva, se le dirá.
+
+---
+
 ## 2. Cómo organizar sus carpetas
 
 Una carpeta por caso, con el nombre que usted quiera, y adentro estas cuatro cosas:

@@ -1,7 +1,7 @@
 ---
 name: redactar-escrito
 description: "Método para producir un borrador en Word a partir del material ya revisado de un caso: redacta la parte fáctica y monta la estructura, deja marcado y visible cada hueco que el material no permite llenar, y entrega aparte de dónde sale cada frase. Úsalo cuando pidan redactar, armar o preparar un escrito, una solicitud, un memorial o una respuesta con el material del caso. No lo uses para redactar fundamentos de derecho, citar normas o jurisprudencia, calificar jurídicamente los hechos, decidir qué clase de escrito presentar, ni construir los hechos (eso es hechos-con-prueba)."
-version: 0.1.8
+version: 0.2.0
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -13,9 +13,36 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 
 **Por qué es distinto de los demás.** Los otros comandos producen listas que ella lee con el material al lado. Este produce **prosa jurídica bien escrita**, y la prosa bien escrita tiene una propiedad peligrosa: **se lee como verdadera**. Un hecho inventado dentro de una lista salta a la vista; el mismo hecho inventado dentro de un párrafo redactado con oficio, entre dos frases correctas, **no salta a la vista de nadie** — ni de ella, que sabe el caso. Y es el único producto del despacho que puede terminar **presentado ante una autoridad con su firma**. De ahí sale todo lo que sigue.
 
+### En qué posición está ella, y por qué cambia la salida
+
+**Dos posiciones, y no son la misma:**
+
+| Posición | Qué significa | Cómo suena la salida |
+|---|---|---|
+| **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
+| **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
+
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y no se adivina**. Adivinar aquí no se nota en la salida y lo cambia todo.
+
+**Y en posición de autoridad, tres cosas se endurecen:**
+
+1. **Simetría obligatoria.** Toda carencia que señales de una parte —un documento que no acreditó, una afirmación sin respaldo, un requisito que no consta— **se busca en las demás antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: no aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve.
+2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
+3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+
+> **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
+
+> **Y los ejemplos de este método no son la voz de tu salida.** Están escritos desde el primer uso, que fue de parte, y por eso dicen «la clienta». **La salida usa el vocabulario de la posición de ella**, no el del ejemplo. (En los inventarios, «la propia interesada» y «la otra parte» son otra cosa: **categorías de quién produjo un documento**, y en posición de autoridad siguen significando lo mismo.)
+
+---
+
 ## 2. La regla que gobierna el comando, antes que cualquier procedimiento
 
 > **Solo se redacta sobre material que existe en el caso. Lo que falta se marca; jamás se rellena.**
+
+> **Y si ella está en posición de autoridad (§1), este comando redacta la parte fáctica y se detiene ahí.** No redacta la parte que decide —lo que se resuelve, lo que se ordena, lo que se niega—, y **lo dice con esas palabras** en vez de dejar el hueco sin explicar: *«redacté lo que consta; la parte que decide no la redacto yo»*.
+>
+> **Por qué, y es una limitación puesta a propósito, no un olvido.** Este es el comando más peligroso del despacho porque produce prosa que se lee como verdadera. Cuando quien firma **decide sobre otros**, esa propiedad deja de ser un riesgo para el escrito y pasa a serlo **para el acto y para quien lo recibe**. Si una autoridad puede apoyar una decisión en una salida de un sistema como este, si debe declararlo y qué le pasa al acto si una cita sale mal, **no está resuelto en ninguna parte de este proyecto** — es el hueco `V-7` y le falta una decisión con criterio jurídico, no una línea de método. **Hasta que exista, el valor por defecto es el estrecho.**
 
 ### 2.1 Las tres únicas fuentes admitidas
 

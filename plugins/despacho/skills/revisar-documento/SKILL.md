@@ -1,7 +1,7 @@
 ---
 name: revisar-documento
 description: "Método para revisar un documento que llegó al caso —un escrito de la contraparte, una comunicación de una autoridad, un contrato, un requerimiento, una respuesta— y devolver en una sola pasada qué es, qué afirma, qué pide, qué decide, qué referencias temporales contiene textualmente y qué parece exigir una actuación. Úsalo cuando pidan revisar, leer, entender o resumir un documento recibido. No lo uses para redactar la respuesta, calcular plazos, decir si algo está vencido, calificar el documento ni responder preguntas de derecho."
-version: 0.1.5
+version: 0.2.0
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -24,6 +24,29 @@ Es la misma regla que ya gobierna todo lo demás: cuando el escrito afirma un he
 **Dónde entra y dónde sale.** El documento se lee desde `1-Documentos recibidos/`, que es **solo lectura**: es el material tal como llegó, y alterarlo destruye lo único que no se puede reconstruir. Si ella pide el resultado como archivo, se escribe en `2-Borradores/`. Nunca se escribe en `1-Documentos recibidos/` y nunca se toca `0-Estado del caso (no editar).txt`.
 
 **Cómo se accede al documento, y por qué se dice.** El archivo se abre y se lee por dentro. **Un escaneado sin texto extraíble se abre por rangos de páginas y se lee como imagen** —no se salta, no se resume por el nombre del archivo, no se estima nada—. El apartado 1 dice cómo se leyó: si cada pasada elige por su cuenta cómo accedió al documento, **dos pasadas del mismo documento dejan de ser comparables** y nadie puede saber si la diferencia está en el papel o en la lectura.
+
+---
+
+### En qué posición está ella, y por qué cambia la salida
+
+**Dos posiciones, y no son la misma:**
+
+| Posición | Qué significa | Cómo suena la salida |
+|---|---|---|
+| **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
+| **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
+
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y no se adivina**. Adivinar aquí no se nota en la salida y lo cambia todo.
+
+**Y en posición de autoridad, tres cosas se endurecen:**
+
+1. **Simetría obligatoria.** Toda carencia que señales de una parte —un documento que no acreditó, una afirmación sin respaldo, un requisito que no consta— **se busca en las demás antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: no aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve.
+2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
+3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+
+> **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
+
+> **Y los ejemplos de este método no son la voz de tu salida.** Están escritos desde el primer uso, que fue de parte, y por eso dicen «la clienta». **La salida usa el vocabulario de la posición de ella**, no el del ejemplo. (En los inventarios, «la propia interesada» y «la otra parte» son otra cosa: **categorías de quién produjo un documento**, y en posición de autoridad siguen significando lo mismo.)
 
 ---
 
@@ -105,7 +128,7 @@ Tres listas distintas. No se mezclan nunca.
 
 ### Fase 5 — Localizar lo que exige una actuación
 
-**Señales de que algo la interpela.** El documento se dirige a ella o a su clienta; usa verbos de requerimiento (*aportar, remitir, comparecer, subsanar, pagar, corregir, manifestarse*); anuncia una consecuencia si no se hace; o fija un destinatario y un canal para responder.
+**Señales de que algo la interpela.** El documento se dirige a ella, a su despacho o a alguien de quien ella responde —según su posición—; usa verbos de requerimiento (*aportar, remitir, comparecer, subsanar, pagar, corregir, manifestarse*); anuncia una consecuencia si no se hace; o fija un destinatario y un canal para responder.
 
 **Cómo se escribe cada línea.** Tres partes, siempre, y nada más: **qué pide el documento** (literal) + **a quién se lo pide** + **ubicación**. Así: *"El documento pide «aportar copia del contrato de arrendamiento» (p. 10) y menciona un plazo de «cinco días» (p. 10)"*, nunca *"tiene que aportar el contrato antes del viernes"*. Y si no hay ninguna: *"en lo revisado no se localizó ninguna petición dirigida a usted"* — que es lo que se encontró, no una conclusión sobre lo que procede.
 

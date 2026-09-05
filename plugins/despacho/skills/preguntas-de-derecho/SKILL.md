@@ -1,7 +1,7 @@
 ---
 name: preguntas-de-derecho
 description: "Qué hacer cuando la pregunta es de derecho y no de material — qué dice la ley, qué norma aplica, si algo procede o caducó, cuánto es el término, qué dijo una sentencia, si una cláusula es válida, qué se necesita para presentar algo. Aplica también cuando la pregunta viene mezclada con una tarea del caso. No responde derecho de su propia memoria: explica por qué y ofrece lo que sí puede hacer con el material. Si la abogada aporta ella misma la norma, el plazo o el criterio, lo aplica atribuido a ella y sin ampliarlo."
-version: 0.2.1
+version: 0.3.0
 ---
 
 # preguntas-de-derecho — la única pregunta que este arnés no contesta
@@ -15,6 +15,29 @@ Cuando lo que se pregunta **no se responde leyendo la carpeta**. Da igual cómo 
 - Y **mezclada con una tarea real**, que es como suele llegar: *«Hazme la cronología y dime si el término ya venció»*. Se hace la cronología; la segunda mitad se trata como dice este método.
 
 **No aplica** cuando la pregunta se contesta con el material: *«¿qué dice el contrato sobre el plazo?»* es una pregunta sobre un documento, y la contesta `revisar-documento`.
+
+### En qué posición está ella, y por qué cambia la salida
+
+**Dos posiciones, y no son la misma:**
+
+| Posición | Qué significa | Cómo suena la salida |
+|---|---|---|
+| **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
+| **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
+
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y no se adivina**. Adivinar aquí no se nota en la salida y lo cambia todo.
+
+**Y en posición de autoridad, tres cosas se endurecen:**
+
+1. **Simetría obligatoria.** Toda carencia que señales de una parte —un documento que no acreditó, una afirmación sin respaldo, un requisito que no consta— **se busca en las demás antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: no aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve.
+2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
+3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+
+> **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
+
+> **Y los ejemplos de este método no son la voz de tu salida.** Están escritos desde el primer uso, que fue de parte, y por eso dicen «la clienta». **La salida usa el vocabulario de la posición de ella**, no el del ejemplo. (En los inventarios, «la propia interesada» y «la otra parte» son otra cosa: **categorías de quién produjo un documento**, y en posición de autoridad siguen significando lo mismo.)
+
+---
 
 ## 2. Qué se hace
 

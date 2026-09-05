@@ -61,7 +61,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 |---|---|---|---|
 | **Instalar y actualizar el plugin** | Remoto publicado y **con hoja de instalación**. **Cero instalaciones fuera de esta máquina** | ADR-012 | **SPEC-01** + **SPEC-11** — lo que falta ocurre en su máquina |
 | **Los once métodos** | Desplegados; nueve ejecutados en dos casos reales, los dos de la oficina de programas todavía no | los `SKILL.md` son la spec | SPEC-04 · 05 · 06 · 08 **ejecutadas**; SPEC-07 pendiente |
-| **Hablarle a una autoridad, no a una parte** | **No existe.** Los `SKILL.md` dicen «su clienta» y la única usuaria real es la inspección | ninguna | **SPEC-03** — pendiente |
+| **Hablarle a una autoridad, no a una parte** | **Construido el 2026-09-05 en su primera mitad:** los once preguntan la posición, ninguna regla presupone bando, y la **simetría obligatoria** —probada a mano en el pase real— es ahora método. **Lo que no existe es la decisión de `V-7`** | ninguna todavía — hace falta **un ADR** | **SPEC-03**, con el valor conservador puesto mientras tanto |
 | **Leer fotos sin capa de texto (OCR)** | **Dentro del plugin** desde el 2026-09-01, con su comando `/preparar-material` | ADR-016 · **ADR-018** | el `SKILL.md` es su spec |
 | **Detectar la omisión silenciosa (dos motores)** | **Dentro del plugin**; sigue faltando el segundo motor | ADR-016 · **ADR-018** | Fase 5 de `/preparar-material` |
 | **Entregable en Word** | **Dentro del plugin, y las siete skills que entregan lo invocan** —`/redactar-escrito` incluida— con su regla de degradación escrita | ADR-014 · **ADR-018** | el `SKILL.md` es su spec |
@@ -94,7 +94,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 |---|---|---|---|---|
 | [SPEC-01](SPEC-01-instalacion-del-plugin.md) | Instalación del plugin desde el remoto | defecto | `EP-ENTRADA-0` · `H-10` | **Parcialmente ejecutada.** O-1 a O-4 pasan; O-5 a O-7 solo en su máquina |
 | ~~SPEC-02~~ | ~~La hoja de hechos: dónde se escribe y cómo se aprueba~~ | — | ~~`H-05` · G17~~ | **RETIRADA — el defecto ya estaba cerrado.** Ver abajo |
-| SPEC-03 | Variante de contexto B | defecto | `P-02` · G7 | Pendiente — no escrita |
+| [SPEC-03](SPEC-03-contexto-b-autoridad.md) | Variante de contexto B: cuando ella no representa a nadie | defecto | `P-02` · G7 | **Ejecutada en su primera mitad.** La segunda —qué puede redactarle a quien decide— **espera el ADR de `V-7`**, y mientras tanto queda puesto el valor conservador |
 | [SPEC-04](SPEC-04-dicho-por-usted.md) | Bloque «dicho por usted, no documentado en la carpeta» | defecto | `P-05` · `P-06` · G6 | **Ejecutada** — falta una pasada real |
 | [SPEC-05](SPEC-05-la-marca-revisado.md) | Blindaje de la marca ` - REVISADO` | defecto | `PM-M-2` · G25 | **Ejecutada** — O-1, O-6 y O-7 pasan; O-2 a O-5 piden pasada real |
 | [SPEC-06](SPEC-06-escritura-dirigida-del-estado.md) | `0-Estado del caso`: reemplazo dirigido, no reescritura | defecto | `PM-M-8` · G19 | **Ejecutada** — **con banco de 13 pruebas en verde**; falta una pasada real |
@@ -158,7 +158,7 @@ Iba a especificar el arreglo de `H-05` —*«dos comandos consumen una hoja de h
 | ~~1~~ | ~~**SPEC-07**~~ **RETIRADA el 2026-09-05:** los doce hallazgos ya estaban aplicados | — |
 | 1 | **Una pasada real** que cierre los observables pendientes de las siete | Siete specs dicen «ejecutada, falta pasada real». Siete declaraciones sin comprobar **es exactamente el estado que la capa de specs existe para no repetir** |
 | ~~2~~ | ~~**`PM-M-1`, instrumentar**~~ **HECHA la mitad, el 2026-09-05 — SPEC-12.** Las partes (c) y (d) son texto y están en los once; (a) y (b) necesitan los logs de una corrida | Quedan del lado de la pasada real |
-| 3 | **SPEC-03** — contexto B | La más valiosa y la más delicada. Ver abajo |
+| ~~3~~ | ~~**SPEC-03** — contexto B~~ **HECHA la mitad, el 2026-09-05.** El vocabulario, la simetría obligatoria y la prohibición de orientar están en los once. Lo que falta **no es trabajo mío**: es el ADR de `V-7` | — |
 
 > **Y una cosa que el plan daba por mía y no lo es.** `BACKLOG` §6 fila 1.3 pone *«correr el banco de evaluación que ya existe»* en «Puedo empezar ya». **No puedo:** `evals/casos/caso-01-familia.json` dice en su propio campo `_material` que **el material no está en este repositorio y no lo estará** —son documentos de una clienta real, con datos de una menor—, y que quien mida necesita los dos PDF originales, que custodia el dueño. Además el fixture **está invalidado por su propia nota desde el 2026-08-26**. Correr el banco es del bloque 0, no del 1.
 
