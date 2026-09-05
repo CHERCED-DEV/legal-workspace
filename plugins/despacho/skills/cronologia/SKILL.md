@@ -1,7 +1,7 @@
 ---
 name: cronologia
 description: Método para armar la línea de tiempo de un caso a partir del material recibido —contratos, correos, comprobantes, actas, entrevistas—, con la fuente exacta de cada fecha, su grado de certeza (documentada, referida, aproximada, deducida o en conflicto), los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. Úsalo cuando pidan una cronología, ordenar los hechos en el tiempo, reconstruir qué pasó cuándo, o revisar si las fechas del caso se contradicen. No lo uses para redactar escritos, contar plazos, valorar prueba, decidir qué fecha es la buena, ni establecer que una cosa causó otra.
-version: 0.1.7
+version: 0.1.8
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -328,6 +328,29 @@ Este bloque solo aparece si hay algo que reportar. Ante la duda de si un texto r
 ## 8. Autoevaluación antes de entregar
 
 Respóndelas **sobre tu propia salida**. Si alguna respuesta es la mala, corrige; si no puedes corregir, dilo en el documento.
+
+**Al terminar esta lista, escribe este bloque al final de la entrega.** Es la única parte de este método que habla de sí mismo, y existe para una sola cosa: **hoy nadie sabe cuánto atrapa esta comprobación.** Se sabe que un error la atravesó y llegó al entregable; no se sabe si atrapó cuarenta o ninguno, y mientras no se sepa, **recortar esta sección y dejarla como está son las dos igual de defendibles**, que es justo lo que impide decidir.
+
+```text
+LO QUE ESTA PASADA SE CORRIGIÓ A SÍ MISMA
+  Datos que volví a abrir y comprobar: «N»
+  Corregidos al comprobarlos: «N» — «cuáles, por su etiqueta»
+  No se pudieron comprobar: «N» — «cuáles y por qué»
+  Preguntas de esta lista que me hicieron corregir algo: «sus números»
+  «o: ninguna»
+  Esto cuenta correcciones hechas, no errores que queden. Cero
+  corregidos significa que la comprobación no encontró ninguno, nunca
+  que no los haya. Y lo escribe quien hizo el trabajo: no prueba que
+  esta salida sea correcta.
+```
+
+**Tres reglas sobre este bloque, y la tercera es la que lo hace servir de algo:**
+
+1. **Anotar no sustituye a corregir.** La corrección va en la entrega como siempre; aquí solo se dice que ocurrió.
+2. **Este bloque no decide nada.** No retiene la entrega, no rebaja ninguna etiqueta, no cambia una sola palabra de lo demás.
+3. **Ni se infla ni se esconde.** Un número alto es buena noticia —quiere decir que la comprobación funciona—, y cero con muchas comprobaciones también es información. **Lo único que arruina esta medida es un número que no sea verdad**, y no hay nada que ganar falseándolo: no se te evalúa por él.
+
+**Y si este método no vuelve a abrir documentos** —porque su trabajo lo hace un programa—, el primer renglón dice `no aplica: lo hizo un programa` y los demás se responden igual. **Inventar un número para llenar el hueco es peor que el hueco.**
 
 1. **Lectura.** ¿Leí todo el material antes de escribir la primera fila, y puedo decir qué quedó sin leer y por qué?
 2. ¿Barrí todas las fechas, incluidas las que no encajan en ninguna narración?

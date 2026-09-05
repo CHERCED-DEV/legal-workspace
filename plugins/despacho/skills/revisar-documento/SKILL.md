@@ -1,7 +1,7 @@
 ---
 name: revisar-documento
 description: Método para revisar un documento que llegó al caso —un escrito de la contraparte, una comunicación de una autoridad, un contrato, un requerimiento, una respuesta— y devolver en una sola pasada qué es, qué afirma, qué pide, qué decide, qué referencias temporales contiene textualmente y qué parece exigir una actuación. Úsalo cuando pidan revisar, leer, entender o resumir un documento recibido. No lo uses para redactar la respuesta, calcular plazos, decir si algo está vencido, calificar el documento ni responder preguntas de derecho.
-version: 0.1.4
+version: 0.1.5
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -295,6 +295,29 @@ CONTEO: 3 afirmaciones · 2 peticiones · 0 decisiones ·
 ## 9. Autoevaluación antes de entregar
 
 Responde **sobre tu propia salida**. Si alguna falla, corrige; si no puedes corregir, dilo en la entrega.
+
+**Al terminar esta lista, escribe este bloque al final de la entrega.** Es la única parte de este método que habla de sí mismo, y existe para una sola cosa: **hoy nadie sabe cuánto atrapa esta comprobación.** Se sabe que un error la atravesó y llegó al entregable; no se sabe si atrapó cuarenta o ninguno, y mientras no se sepa, **recortar esta sección y dejarla como está son las dos igual de defendibles**, que es justo lo que impide decidir.
+
+```text
+LO QUE ESTA PASADA SE CORRIGIÓ A SÍ MISMA
+  Datos que volví a abrir y comprobar: «N»
+  Corregidos al comprobarlos: «N» — «cuáles, por su etiqueta»
+  No se pudieron comprobar: «N» — «cuáles y por qué»
+  Preguntas de esta lista que me hicieron corregir algo: «sus números»
+  «o: ninguna»
+  Esto cuenta correcciones hechas, no errores que queden. Cero
+  corregidos significa que la comprobación no encontró ninguno, nunca
+  que no los haya. Y lo escribe quien hizo el trabajo: no prueba que
+  esta salida sea correcta.
+```
+
+**Tres reglas sobre este bloque, y la tercera es la que lo hace servir de algo:**
+
+1. **Anotar no sustituye a corregir.** La corrección va en la entrega como siempre; aquí solo se dice que ocurrió.
+2. **Este bloque no decide nada.** No retiene la entrega, no rebaja ninguna etiqueta, no cambia una sola palabra de lo demás.
+3. **Ni se infla ni se esconde.** Un número alto es buena noticia —quiere decir que la comprobación funciona—, y cero con muchas comprobaciones también es información. **Lo único que arruina esta medida es un número que no sea verdad**, y no hay nada que ganar falseándolo: no se te evalúa por él.
+
+**Y si este método no vuelve a abrir documentos** —porque su trabajo lo hace un programa—, el primer renglón dice `no aplica: lo hizo un programa` y los demás se responden igual. **Inventar un número para llenar el hueco es peor que el hueco.**
 1. ¿Leí el documento entero —última página, pies, tablas, anexos— antes de escribir la primera línea?
 2. ¿Escribí en algún lugar qué **es** el documento, en vez de cómo se titula y quién lo firma?
 3. ¿Hay alguna petición presentada como decisión, o alguna decisión rebajada a petición?

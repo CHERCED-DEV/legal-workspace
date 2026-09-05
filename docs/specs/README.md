@@ -103,6 +103,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | [SPEC-09](SPEC-09-preguntas-de-derecho.md) | `preguntas-de-derecho`: las dos puertas que le faltan | defecto | salvedad de `H-04` · `V-1` | **Ejecutada** — falta probar la inyección |
 | [SPEC-10](SPEC-10-limite-del-texto-extraido.md) | El límite del material extraído, dentro de los `SKILL.md` | defecto | `H-16` · `EP-1.1-COORDENADA` | **Ejecutada** — falta una pasada real |
 | [SPEC-11](SPEC-11-la-primera-instalacion.md) | La primera instalación: que empezar no dependa de preguntar | defecto | `H-08` · defecto abierto de SPEC-01 | **Ejecutada** — falta que alguien instale |
+| [SPEC-12](SPEC-12-lo-que-la-pasada-atrapo.md) | Que cada pasada diga qué se corrigió a sí misma | defecto | `PM-M-1` (c) y (d) · G23 | **Ejecutada** en los once — falta una pasada real que produzca cifras |
 
 > **Cuenta honesta, al 2026-09-05: siete escritas y ejecutadas, una retirada, dos que hoy son solo una fila de esta tabla.** «Pendiente» aquí significa que el archivo **no existe**. Ninguna de las siete está *cerrada*: **seis esperan una pasada real** sobre una carpeta de ella, y así lo dice cada una en su apartado 5. Ejecutada quiere decir que el cambio está en el código y que los observables que no dependen de nadie pasan — **no que el defecto esté comprobado muerto en uso**.
 >
@@ -156,7 +157,7 @@ Iba a especificar el arreglo de `H-05` —*«dos comandos consumen una hoja de h
 |---|---|---|
 | ~~1~~ | ~~**SPEC-07**~~ **RETIRADA el 2026-09-05:** los doce hallazgos ya estaban aplicados | — |
 | 1 | **Una pasada real** que cierre los observables pendientes de las siete | Siete specs dicen «ejecutada, falta pasada real». Siete declaraciones sin comprobar **es exactamente el estado que la capa de specs existe para no repetir** |
-| 2 | **`PM-M-1`, instrumentar** — lo que se pueda escribir sin una ejecución delante | Bloquea nueve ítems y las ~20 propuestas de recorte, y **la parte de código sí se puede adelantar**; validarla necesita una pasada |
+| ~~2~~ | ~~**`PM-M-1`, instrumentar**~~ **HECHA la mitad, el 2026-09-05 — SPEC-12.** Las partes (c) y (d) son texto y están en los once; (a) y (b) necesitan los logs de una corrida | Quedan del lado de la pasada real |
 | 3 | **SPEC-03** — contexto B | La más valiosa y la más delicada. Ver abajo |
 
 > **Y una cosa que el plan daba por mía y no lo es.** `BACKLOG` §6 fila 1.3 pone *«correr el banco de evaluación que ya existe»* en «Puedo empezar ya». **No puedo:** `evals/casos/caso-01-familia.json` dice en su propio campo `_material` que **el material no está en este repositorio y no lo estará** —son documentos de una clienta real, con datos de una menor—, y que quien mida necesita los dos PDF originales, que custodia el dueño. Además el fixture **está invalidado por su propia nota desde el 2026-08-26**. Correr el banco es del bloque 0, no del 1.
