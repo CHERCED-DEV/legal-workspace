@@ -55,7 +55,7 @@ Y peor, porque es un identificador y no una prosa:
 
 ~~**Los ADR no se leyeron.**~~ **LEÍDOS Y TRIADOS EL 2026-09-05 — ver §7.** Eran dieciocho, no diecisiete, y traen **más de ochenta preguntas pendientes**. No se volcaron: se cortaron primero entre las que gobiernan el producto construido (ADR-012 a 018) y las que diseñan un Core que no existe (ADR-001 a 011). **Tres estaban ya contestadas por el código y nadie las cerró**, y de las vivas salieron diez ítems y un hueco nuevo.
 
-También quedan fuera, y hay que decirlo: `docs/backlog/architecture-post-v0.md`, `docs/REFINADO-Y-FUENTES.md`, `docs/PENDIENTE-FORMA-DE-ENTREGA.md`, `docs/technical-design/` y los **89 documentos** de `docs/skills-support/`.
+También quedaban fuera, y había que decirlo: `docs/backlog/architecture-post-v0.md`, `docs/REFINADO-Y-FUENTES.md`, `docs/PENDIENTE-FORMA-DE-ENTREGA.md`, `docs/technical-design/` (46 documentos) y `docs/skills-support/` (89). **Los seis se cubrieron el 2026-09-05: §§8 a 13.** Los dos grandes, como corpus y no pieza a pieza, con la razón escrita.
 
 **Este índice está incompleto y sabe dónde.**
 
@@ -355,7 +355,7 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 >
 > **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no tres reglas.** Queda registrado como **`V-14`**, y escrito como **[AC-05](architecture/adrs/AMENDMENT-CANDIDATES.md)** — candidato de enmienda a ADR-016, **abierto y esperando decisión**, con sus tres opciones y su recomendación. **No se resuelve unilateralmente**, que es la regla de ese documento; y la opción recomendada **le cambia una carpeta a ella**, lo que ADR-012 q7 manda validar con la profesional.
 
-**Cierre honesto del §0.3, al cierre del 2026-09-05:** leídos y triados los ADR (§7), `PENDIENTE-FORMA-DE-ENTREGA` (§8), `REFINADO-Y-FUENTES` (§9), **`architecture-post-v0` (§10)**, **las ocho preguntas de negocio (§11)** y **`skills-support` como corpus (§12)**. **Sigue sin cubrir un solo corpus:** `docs/technical-design/`, salvo su §13, materializado como `caso-03`.
+**Cierre honesto del §0.3, al cierre del 2026-09-05:** leídos y triados los ADR (§7), `PENDIENTE-FORMA-DE-ENTREGA` (§8), `REFINADO-Y-FUENTES` (§9), **`architecture-post-v0` (§10)**, **las ocho preguntas de negocio (§11)** y **`skills-support` como corpus (§12)**. **Y con §13 no queda ninguno: los seis corpus del §0.3 están cubiertos.** Lo que falta ahora no es leer — es ejecutar el producto otra vez y hablar con ella.
 
 ---
 
@@ -439,11 +439,13 @@ Y la pregunta 7, en `docs/discovery/business-questions-next.md`, se aparcó con 
 
 La pregunta 7 no es una curiosidad de diseño. Dice que si en el contexto autoridad existe **un expediente digital oficial en un sistema externo**, nuestro almacén sería *«copia de trabajo y no custodio primario»* — y llama a eso *«una inversión, no un ajuste»*.
 
-**Tres `SKILL.md` justifican hoy la protección de escritura más fuerte del producto con esta frase:**
+**Siete `SKILL.md` justifican hoy la protección de escritura más fuerte del producto con esa razón**, tres de ellos con esta frase exacta:
 
 > *«Nunca escribe dentro de `1-Documentos recibidos/`: eso es el material tal como llegó y **es lo único que no se puede reconstruir**.»*
 
-Si ella, decidiendo, tiene el expediente oficial en el sistema de su entidad, **esa frase es falsa ahí**: sí se puede reconstruir, bajándolo otra vez. La **protección seguiría siendo correcta** —es la conservadora, y no depende de la frase—, pero **su razón declarada no lo sería**. Y este producto entero se sostiene sobre que las razones que escribe sean verdad: es la misma disciplina que le prohíbe escribir una fecha que no leyó.
+Si ella, decidiendo, tiene el expediente oficial en el sistema de su entidad, **esa frase es falsa ahí**: sí se puede reconstruir, bajándolo otra vez.
+
+> **Y una corrección a este mismo apartado, hecha unas horas después de escribirlo.** Aquí decía **«tres `SKILL.md`»**. Son **siete** los que llevan la regla; tres usan esa redacción exacta y los otros cuatro dicen lo mismo con otras palabras. **Es la misma cuenta mal hecha que §12 encontró en el commit del 26 de agosto** —*«los tres skills que tocan fechas»*, cuando eran siete— **cometida por mí el mismo día en que la estaba señalando.** Dos veces «tres» donde había siete, con diez días de distancia y por la misma causa: contar con la vista en vez de contar con un comando. La **protección seguiría siendo correcta** —es la conservadora, y no depende de la frase—, pero **su razón declarada no lo sería**. Y este producto entero se sostiene sobre que las razones que escribe sean verdad: es la misma disciplina que le prohíbe escribir una fecha que no leyó.
 
 > **Esto se registra como pregunta, no como corrección.** Cuál es el expediente que vale cuando ella decide **es un hecho sobre su despacho**, no una decisión de arquitectura, y el propio documento ya trae la redacción para preguntárselo sin jerga. **Ninguna frase del producto se toca hasta que ella conteste.**
 
@@ -643,4 +645,57 @@ El `README` de este corpus cierra con una corrección de ruta: *«la ruta vigent
 ---
 ---
 
-*Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura parcial: queda `technical-design/` (§0.3); `skills-support/` está triado como corpus en §12, no pieza a pieza (S-3).** Nada de este documento reemplaza a sus fuentes.*
+## §13 · `technical-design`, y una regla que este mismo corpus demostró que no protege
+
+**Leído el 2026-09-05, y con esto se cierra el §0.3.** Es el corpus más grande del repositorio: **46 documentos, 17.990 líneas** — veinte documentos numerados del kernel al despliegue, más notas de diseñadores y de verificación.
+
+### El triaje es el mismo que el de los ADR, y por la misma razón
+
+Los veinte documentos numerados diseñan **el Core que no existe** (§7, ADR-018): modelo de dominio, contrato MCP, persistencia, proyecciones, ciclo de vida del artefacto, autorización humana server-side. Sus **ocho decisiones que esperan aprobación** —`principal_type` sin `EXTERNAL`, el retiro de `register_artifact`, separar `event_seq` de `case_revision`, las cinco políticas del Product Floor— son decisiones **sobre ese Core**, y ninguna toca el producto que hoy corre.
+
+Y lo que ya se aprovechó de aquí, se aprovechó bien: **su §13 se materializó como `caso-03`**, el banco sintético que este backlog dio por inexistente y estaba diseñado desde el principio.
+
+### Pero un hallazgo sí transfiere, y es el más duro del repositorio
+
+`ESTADO-Y-HALLAZGOS-CRITICOS.md` §1.1 registra cinco hechos **verificados contra documentación oficial**. El segundo:
+
+> *«**No existe deny por ruta en Cowork.** Adjuntar una carpeta concede su árbol completo; el agente puede leer y escribir todo lo que alcance la cuenta del sistema operativo. **El único remedio documentado es posicional:** dejar los datos fuera de las carpetas permitidas.»*
+
+Y la conclusión que saca en §1.3, sobre el almacén del Core:
+
+> *«**La protección del case store no puede ser una regla; tiene que ser una posición.**»*
+
+**Aplíquese eso a `1-Documentos recibidos/`, que es la carpeta que este producto protege con más fuerza.** El resultado no es cómodo:
+
+| | |
+|---|---|
+| **¿La protección es una regla o una posición?** | **Una regla.** Prosa, en **nueve** `SKILL.md` — se contaron |
+| **¿Está disponible el remedio posicional?** | **No, y no puede estarlo.** El remedio es *«dejar los datos fuera de las carpetas permitidas»*, y **los métodos tienen que leer esa carpeta**. Sacarla de alcance es apagar el producto |
+| **¿Hay algún mecanismo del anfitrión que la respalde?** | **Ninguno.** `plugin.json` trae nombre, versión, descripción y palabras clave. **Cero hooks, cero `permissions`, cero `deny`** en todo el repositorio |
+
+> **Así que hoy la protección más fuerte del producto descansa entera en que el modelo obedezca un párrafo, nueve veces.** No es un defecto encontrado —la regla está en los nueve, incluidos los dos casos especiales, y se comprobó uno por uno—; es **el mecanismo, dicho con precisión**, y este corpus es el que verificó que un mecanismo así no es un perímetro.
+>
+> **Lo que sí se puede hacer desde aquí se hizo:** una prueba que **fija la cuenta de los nueve**. No convierte la regla en perímetro —nada de este lado puede—, pero el modo de fallo real no es que alguien borre la regla: es **un método nuevo que lea esa carpeta y no la traiga**. Eso ahora falla.
+>
+> **Y una distinción que hay que dejar escrita antes de que alguien la borre:** este hallazgo es sobre **Cowork**. Que Cowork *no* herede la configuración de Claude Code (hallazgo §1.1.1) implica que **Claude Code sí tiene** reglas de permiso; de dónde se ejecute el plugin **cambia qué protecciones existen**. Nadie ha escrito esa decisión, y vuelve a caer sobre la instalación pendiente — **la cuarta cosa que esa fila de §2 desbloquea**.
+
+### El riesgo abierto que este corpus llama el más grave, y a quién le toca
+
+`B-04`: no está documentado si un servidor MCP local puede alcanzar rutas fuera de las carpetas adjuntadas. *«Hasta resolverlo empíricamente no puede afirmarse que el perímetro de ADR-002 sea realizable sobre Cowork»*, y el protocolo de 31 pasos ya está escrito en `experiments/cowork-capability-spike/`.
+
+**No es trabajo de este backlog y conviene decirlo:** `B-04` decide si **el Core** es construible sobre ese anfitrión. Hoy no hay Core. Queda registrado como lo que es — **el riesgo mejor identificado del repositorio, con su experimento ya diseñado y sin ejecutar** — y no como deuda del producto que corre.
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| ~~**T-1**~~ | ~~Contar la protección de `1-Documentos recibidos/`~~ | **HECHA.** Nueve métodos, nueve prohibiciones, y una prueba que falla si aparece un décimo sin ella |
+| **T-2** | **Decidir y escribir en qué anfitrión corre esto**, porque de eso depende si existe algún mecanismo además de la prosa | **Del dueño, y es la fila 3 de §2 otra vez.** Ya desbloquea cuatro cosas distintas |
+| **T-3** | **La razón de la protección queda pendiente de `A-4`** — la dan siete métodos, y si el contexto autoridad tiene expediente oficial es falsa ahí. La prueba fija los siete **para que el día que se decida se toquen los siete y no tres** | En espera de A-4 |
+| **T-4** | `B-04` — ejecutar el spike de 31 pasos | **Del dueño, y no urge:** decide sobre un Core que no existe |
+| **T-5** | Los **46 documentos** no se triaron pieza a pieza, por la misma razón que `S-3` | Vivo, de baja prioridad declarada |
+
+---
+---
+
+*Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura completa del §0.3 desde el 2026-09-05** (§§7 a 13). Los dos corpus grandes están triados **como corpus**, no pieza a pieza (`S-3`, `T-5`), y se dice por qué. Nada de este documento reemplaza a sus fuentes.*
