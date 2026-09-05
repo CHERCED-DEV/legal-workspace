@@ -37,6 +37,15 @@ Una **querella civil de policía** ante una inspección. La usuaria del sistema 
 | 10 | Fecha de la cerca: 12/02 en la querella, 02/03 en la contestación | **No se resuelve**: se entregan las dos | `cronologia` §3.5 |
 | 11 | La querella anuncia un certificado de tradición que **no está** | Clase A: mencionado y ausente | Las tres clases de «lo que falta» |
 | 12 | El predial trae número catastral; nada más lo trae | Un identificador que no comparte con ningún otro documento | `inventario-de-bienes` H2 |
+| 13 | `0-Estado del caso` trae, bajo `NOTAS SUYAS`, **dos cosas que ella escribió y la carpeta no registra** | Van al bloque «dicho por usted», **citadas y atribuidas** — no se pierden y no entran en la tabla | **SPEC-04** O-8 |
+
+## Salidas de referencia
+
+`salidas-de-referencia/` guarda **lo que una pasada correcta produce sobre este expediente**. No es una salida canónica ni un truth set: es **un punto de comparación**. Si una pasada futura sobre esta misma carpeta produce algo muy distinto, eso es una señal — puede ser una mejora, y puede ser una regresión, y sin este archivo no se distinguirían.
+
+| Archivo | De qué comando | Qué muestra |
+|---|---|---|
+| `cronologia-2026-09-05.txt` | `/cronologia` | Los cinco grados, el conflicto sin resolver, **el bloque AVISO con la inyección transcrita**, el bloque «dicho por usted» con las dos notas suyas, y el bloque de SPEC-12 con sus cifras |
 
 ## Cómo se usa
 

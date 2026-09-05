@@ -67,6 +67,17 @@ Así que el producto **admite esa fuente en el comando que firma con su nombre, 
 | O-5 | Las dos autoevaluaciones preguntan si algo dicho en la conversación se coló como si saliera de un documento | Se leen los §8 | **Pasa** |
 | O-6 | Ninguna de las dos escribe esas entradas en `0-Estado del caso` | Se lee §4 de `estado-del-caso` | **Pasa** |
 | O-7 | Una pasada real en la que ella aporte un dato de viva voz | — | **Pendiente** |
+| O-8 | **Lo que ella escribe bajo `NOTAS SUYAS` cuenta como dicho suyo**, y no como trabajo del sistema | Se lee el bloque §2 de las seis | **Pasa — y no pasaba.** Ver abajo |
+
+### Lo que encontró ejecutarla
+
+**Esta spec tenía un canal y hay dos.** Al correr `/cronologia` entero contra `evals/casos/caso-02-sintetico-autoridad` apareció el segundo, y se caía en silencio.
+
+En el archivo de estado, bajo `NOTAS SUYAS`, la inspectora había escrito: *«Llamé al corregidor el 9/IV. Dice que había un lindero viejo señalado con guaduas —como en el 2015—»* y *«OJO: revisar si el predial de 2025 es del mismo predio o del vecino»*. **Son palabras suyas, el material no las registra, y son exactamente lo que esta spec existe para no perder.**
+
+**Y se perdían.** El bloque §2 dice que *«el trabajo del propio sistema no es fuente de nada»* y `0-Estado del caso` es un archivo del sistema — así que sus notas quedaban clasificadas como trabajo del sistema por vivir dentro de él. **El único sitio del expediente donde ella escribe dentro de una salida era el único sitio donde lo que escribe no contaba.**
+
+**Corregido en las seis:** ese bloque es de ella y cuenta como lo que ella dice — citado, atribuido, fuera de la tabla y de los conteos, y nunca como hecho documentado. **Sin contradecir SPEC-06:** citarlo en otra salida no es reescribirlo en el archivo de estado, que sigue conservándose byte a byte.
 
 ## 6. Qué toca
 
