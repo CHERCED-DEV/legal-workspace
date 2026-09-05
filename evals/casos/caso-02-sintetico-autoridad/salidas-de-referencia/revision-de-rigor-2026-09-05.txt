@@ -1,0 +1,84 @@
+REVISIÓN DE RIGOR — proyecto de resolución, radicado 2026-014
+Pasada del 2026-09-05. Preparada para su revisión.
+  ESTO ES UNA PROPUESTA. Ningún hallazgo afirma que algo sea irregular,
+  nulo ni improcedente: dice qué afirmación no se sostiene en el
+  material que se revisó. La decisión es suya.
+
+POSICIÓN: usted decide este asunto (§1, deducido de la carpeta). Por eso
+esta revisión busca los defectos de las dos partes Y LOS DE SU PROPIO
+PROYECTO con el mismo rigor (§2.3).
+
+QUÉ SE REVISÓ
+  3-Para presentar/proyecto-resolucion.txt (25 renglones), contra las
+  cuatro piezas de 1-Documentos recibidos.
+
+HALLAZGOS
+
+R-01 · ESTADO INFLADO — considerando 1 — soporte: NINGUNO
+  Dice: «Quedó acreditado que la querellante ejerce la posesión... desde
+  hace más de diez años».
+  En el material: la única fuente es la propia querella (p. 1), que lo
+  afirma: «desde hace más de diez años». Ninguna otra pieza lo toca.
+  Alegado por una parte no es acreditado. La mejor objeción contra este
+  hallazgo: el acta de inspección constata una cerca, no una posesión de
+  diez años — no lo salva.
+
+R-02 · CONTRADICCIÓN — considerando 2 — soporte: NINGUNO
+  Dice: «El querellado instaló la cerca el 12 de febrero de 2026».
+  El material tiene DOS fechas: 12/02 (querella, p. 1) y 02/03
+  (contestación, p. 1). El proyecto elige una y no dice que eligió.
+  Y el acta (p. 1) dice que NO FUE POSIBLE establecerlo en el terreno.
+
+R-03 · CÁLCULO — considerando 2
+  Dice: «Han transcurrido más de seis meses desde entonces».
+  Ningún documento dice eso: sale de restar dos fechas, y una de las dos
+  está en conflicto (R-02). Este método no calcula y señala el cálculo.
+
+R-04 · ASIMETRÍA — considerando 3 — Y ESTE ES SOBRE SU PROPIO PROYECTO
+  Dice: «El apoderado del querellado no acreditó su calidad».
+  Es cierto según el material. Y EL DEL QUERELLANTE TAMPOCO: la querella
+  (p. 1) la firma un abogado y no hay en la carpeta tarjeta ni poder.
+  El proyecto señala la carencia de un lado y no la del otro.
+  Reparto de hallazgos por lado: querellado 1, querellante 0. Desigual,
+  y la causa no es de mérito: las dos partes están igual.
+
+R-05 · SALTO LÓGICO — considerando 4 — soporte: PARCIAL
+  Dice: el predial «demuestra que el querellado no es su poseedor».
+  El recibo dice quién figura como responsable del pago (predial, p. 1).
+  De ahí no se sigue quién posee — y el propio considerando lo admite en
+  su segunda mitad, que contradice a la primera.
+  Además: el predial trae número catastral y ninguna otra pieza trae ese
+  número, así que «corresponde al predio» tampoco está establecido.
+
+R-06 · ALCANCE EXCEDIDO — considerando 5 — soporte: PARCIAL
+  Dice: la inspección «confirmó la perturbación».
+  El acta constata una cerca de 40 metros (p. 1). «Perturbación» es una
+  calificación que el acta no hace.
+
+R-07 · PETICIÓN SIN RESPUESTA — buscada para las dos partes
+  La querella anuncia un certificado de tradición que no está (p. 1), y
+  el proyecto no se pronuncia sobre pedirlo ni sobre su ausencia.
+  Del lado del querellado: no hay peticiones expresas sin respuesta.
+
+VEREDICTO GLOBAL
+  El proyecto NO SE SOSTIENE sobre el material revisado: de sus cinco
+  considerandos, cuatro tienen hallazgos de soporte ninguno o parcial, y
+  la parte resolutiva descansa sobre el considerando 1, que es R-01.
+  Qué hacer con esto lo decide usted.
+
+CONTEO
+  7 hallazgos · 3 soporte ninguno · 2 parcial · 2 de forma
+  Por lado: querellado 1 · querellante 1 · del propio proyecto 5
+  Piezas revisadas: 5 · reabiertas para comprobar: 5
+
+LO QUE ESTA PASADA SE CORRIGIÓ A SÍ MISMA
+  Datos que volví a abrir y comprobar: 14
+  Corregidos al comprobarlos: 1 — R-06 decía «el acta no menciona la
+    cerca»; el acta sí la menciona, lo que no hace es calificarla.
+  No se pudieron comprobar: 0
+  Preguntas de esta lista que me hicieron corregir algo: la de alcance
+    excedido, que obliga a comparar la frase con lo que la pieza cubre.
+  Esto cuenta correcciones hechas, no errores que queden. Cero
+  corregidos significa que la comprobación no encontró ninguno, nunca
+  que no los haya. Y lo escribe quien hizo el trabajo: no prueba que
+  esta salida sea correcta.

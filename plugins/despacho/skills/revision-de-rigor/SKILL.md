@@ -1,7 +1,7 @@
 ---
 name: revision-de-rigor
 description: "Método para poner a prueba una conclusión, un escrito propio, un borrador o un expediente entero, con una sola pregunta — qué de esto no se sostiene con el material disponible. Produce hallazgos falsables, cada uno con su localizador, lo que lo refutaría y su grado de soporte. Úsalo cuando pidan revisar antes de presentar, buscar lo que no se sostiene, hacer de contradictor, encontrar lo que la contraparte podría alegar, o preparar la revisión de un expediente. No lo uses para leer una pieza recibida, valorar prueba, decidir estrategia ni responder preguntas de derecho."
-version: 0.2.3
+version: 0.3.0
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -141,7 +141,7 @@ Para cada afirmación que el objeto revisado sostiene, sepárala en cinco:
 
 **La mayoría de los hallazgos aparecen en la tercera fila.** El salto entre lo que la prueba cubre y lo que la afirmación dice es donde vive casi todo.
 
-### Fase 3 — Buscar las seis cosas
+### Fase 3 — Buscar las siete cosas
 
 Recorre el material buscando, en este orden:
 
@@ -151,8 +151,13 @@ Recorre el material buscando, en este orden:
 4. **Vacío de prueba.** Una afirmación que ninguna pieza sostiene.
 5. **Contradicción.** Dos piezas incompatibles, o una pieza que se contradice a sí misma.
 6. **Salto lógico.** La conclusión no se sigue de las premisas aunque las premisas estén bien.
+7. **Número o fecha que salió de una cuenta.** Una cifra que **no está escrita en ninguna pieza** y que solo se obtiene operando: *«han transcurrido más de seis meses»*, *«quedan tres días»*, *«el total asciende a»*, *«venció el»*, *«dos días después»*.
 
-**Y una séptima, solo cuando el objeto es un expediente:** **peticiones sin respuesta**. Algo que una parte pidió expresamente y sobre lo que no hay pronunciamiento. Se busca **para las dos partes**.
+   > **Y aquí lo que se señala es que la cuenta existe, no si está bien.** Decir «esa resta da mal» sería calcular para comprobar, y este método tampoco calcula. Se escribe **de qué dos datos salió y que ninguna pieza la trae escrita**, y se devuelve: *«"más de seis meses" no está en ningún documento; sale de restar el 12/02 —que además está en conflicto, ver R-02— y la fecha de hoy»*.
+   >
+   > **Por qué es una de las siete y no una nota al pie.** El arnés entero prohíbe calcular en todos los demás comandos, con el mismo argumento: **un número mal calculado se lee exactamente igual de bien que uno correcto**, no despierta ninguna sospecha, y basta una sola vez. **Este es el único método que se enfrenta a un texto donde la cuenta ya está hecha** — si no la nombra, la prohibición de los otros diez protege todo menos el documento que se firma.
+
+**Y una octava, solo cuando el objeto es un expediente:** **peticiones sin respuesta**. Algo que una parte pidió expresamente y sobre lo que no hay pronunciamiento. Se busca **para las dos partes**.
 
 ### Fase 4 — Formular la mejor objeción contra tu propio hallazgo
 

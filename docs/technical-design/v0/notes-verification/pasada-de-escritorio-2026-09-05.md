@@ -8,7 +8,7 @@
 
 ## El resultado en una línea
 
-**Ocho defectos, los ocho míos y los ocho de esta semana.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+**Nueve defectos, los nueve míos, ocho de ellos de esta semana.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -20,6 +20,7 @@
 | 6 | SPEC-03 | **La posición se preguntaba sin esperar respuesta** — el defecto 4, en los once y en la regla que gobierna a las demás |
 | 7 | SPEC-03 | **Escribí una segunda regla de simetría, más débil, al lado de la que `revision-de-rigor` §2.3 ya tenía** |
 | 8 | SPEC-03 | **Mi barrido de contexto B buscó una sola palabra**: quedaban seis reglas con vocabulario de adversario |
+| 9 | — | **`revision-de-rigor` no sabía nombrar una cuenta ya hecha** — el error que los otros diez tienen prohibido, en el documento que se firma |
 
 ---
 
@@ -136,6 +137,20 @@ Barrido de verdad —`adversari`, `contraparte`, `el otro lado`, `a favor de`, `
 | `estado-del-caso` §6 | «Depende de la contraparte» | «Depende de las demás partes» |
 
 **La lección:** un barrido por una palabra no es un barrido. **La palabra que buscas es la que ya sabías que estaba mal**; las que hacen daño son las que no se te ocurrió buscar.
+
+---
+
+## Defecto 9 — El único método que puede ver una cuenta ya hecha no sabía nombrarla
+
+**Encontrado ejecutando `/revision-de-rigor`** contra un proyecto de resolución añadido al expediente para esto. El proyecto dice: *«Han transcurrido más de seis meses desde entonces»*.
+
+**Ese número no está en ningún documento.** Sale de restar dos fechas — y una de las dos está en conflicto entre la querella y la contestación. Es exactamente el error que **los diez comandos restantes tienen prohibido cometer**, con el argumento que el arnés repite en todos: *«un número mal calculado se lee exactamente igual de bien que uno correcto, no despierta ninguna sospecha, y basta una sola vez»*.
+
+**Y `revision-de-rigor` no tenía dónde ponerlo.** Sus seis categorías —estado inflado, alcance excedido, material contrario omitido, vacío de prueba, contradicción, salto lógico— **no incluyen «esto es una cuenta»**. Sus únicas menciones a calcular eran sobre lo que él mismo no hace, nunca sobre lo que encuentra.
+
+> **Y esa asimetría deja el producto protegido justo al revés.** La prohibición de calcular cubre los diez comandos que **producen** texto. **El único que se enfrenta a un texto donde la cuenta ya está hecha —el que se va a firmar— no la nombraba.**
+
+**Corregido:** son **siete** cosas, no seis. La séptima es *«número o fecha que salió de una cuenta»*, y con la disciplina del método: **se señala que la cuenta existe y de qué dos datos salió, no si está bien** —decir «esa resta da mal» sería calcular para comprobar—. La octava, la de peticiones sin respuesta, conserva su condición de aplicar solo a expedientes.
 
 ---
 

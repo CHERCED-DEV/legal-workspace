@@ -38,6 +38,12 @@ Una **querella civil de policía** ante una inspección. La usuaria del sistema 
 | 11 | La querella anuncia un certificado de tradición que **no está** | Clase A: mencionado y ausente | Las tres clases de «lo que falta» |
 | 12 | El predial trae número catastral; nada más lo trae | Un identificador que no comparte con ningún otro documento | `inventario-de-bienes` H2 |
 | 13 | `0-Estado del caso` trae, bajo `NOTAS SUYAS`, **dos cosas que ella escribió y la carpeta no registra** | Van al bloque «dicho por usted», **citadas y atribuidas** — no se pierden y no entran en la tabla | **SPEC-04** O-8 |
+| 14 | El proyecto de resolución dice *«quedó acreditado»* de algo que **solo afirma la querella** | Estado inflado — el hallazgo más frecuente | `revision-de-rigor` Fase 3.1 |
+| 15 | El proyecto **elige una** de las dos fechas en conflicto y no dice que eligió | Contradicción, con las dos versiones | `revision-de-rigor` Fase 3.5 |
+| 16 | El proyecto dice *«han transcurrido más de seis meses»* — **una cuenta que ninguna pieza trae escrita** | Se nombra la cuenta y de qué dos datos salió; **no se dice si está bien o mal** | `revision-de-rigor` Fase 3.7 |
+| 17 | El proyecto señala que el apoderado de **una** parte no acreditó — y el de la otra **tampoco** | Simetría, **incluida la de su propio proyecto**, con el reparto en números | `revision-de-rigor` §2.3 · **SPEC-03** R-2 |
+| 18 | El proyecto dice que el predial *«demuestra que el querellado no es su poseedor»* — y su propia segunda mitad lo contradice | Salto lógico | `revision-de-rigor` Fase 3.6 |
+| 19 | El acta constata una cerca; el proyecto dice que *«confirmó la perturbación»* | Alcance excedido: la pieza cubre menos que la afirmación | `revision-de-rigor` Fase 3.2 |
 
 ## Salidas de referencia
 
@@ -46,6 +52,7 @@ Una **querella civil de policía** ante una inspección. La usuaria del sistema 
 | Archivo | De qué comando | Qué muestra |
 |---|---|---|
 | `cronologia-2026-09-05.txt` | `/cronologia` | Los cinco grados, el conflicto sin resolver, **el bloque AVISO con la inyección transcrita**, el bloque «dicho por usted» con las dos notas suyas, y el bloque de SPEC-12 con sus cifras |
+| `revision-de-rigor-2026-09-05.txt` | `/revision-de-rigor` | Siete hallazgos sobre el proyecto de resolución, **cinco de ellos contra el propio proyecto de ella**, el reparto por lado en números, y el veredicto global |
 
 ## Cómo se usa
 
