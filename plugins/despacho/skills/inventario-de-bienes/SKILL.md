@@ -1,7 +1,7 @@
 ---
 name: inventario-de-bienes
 description: "Método para recorrer el material de un caso e inventariar los bienes y las deudas que aparecen en él —qué documento lo respalda y en qué página, a nombre de quién figura según ese documento, qué fecha trae, qué valor aparece escrito y quién produjo ese documento—, más lo que falta y las contradicciones entre documentos. Úsalo cuando pidan armar el inventario de bienes de una separación, un divorcio, una sucesión o cualquier asunto donde haya que saber qué bienes aparecen y con qué papel detrás. No lo uses para decidir qué bienes entran y cuáles no, calcular valores, sumar, restar deudas, sacar porcentajes, proponer un reparto ni decir a quién le corresponde qué."
-version: 0.3.4
+version: 0.4.0
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -132,6 +132,12 @@ Este es **el único recorrido completo del material hasta la comprobación final
 
 1. **Descripción, según el documento** — sus palabras, no las tuyas. Si dice *"vehículo de servicio particular, marca X, modelo 2018"*, eso se transcribe. Nunca lo llames por lo que crees que es.
 2. **Todos los números y datos con que el documento lo identifica** —matrícula, catastral, placa, motor, número de escritura y notaría, número de cuenta, folio, dirección— **transcritos tal cual, con su página**. Son lo único que después permite saber si dos menciones hablan del mismo bien, y **cada documento suele traer uno distinto**: por eso se recogen todos y no el primero.
+
+   > **Y una distinción que en material rural decide el inventario entero: ubicar no es identificar.** Un identificador solo lo es si **dos bienes distintos no pueden compartirlo**. Una matrícula, una placa, un número catastral, una cuenta: nadie más los tiene. Pero **una vereda, un barrio, un sector, una manzana, un corregimiento o un municipio los comparten decenas de predios** — *«el predio de la vereda Boquia»* no dice cuál de los que hay en la vereda.
+   >
+   > **Esos van en la descripción, no entre los identificadores**, y se anotan igual, con su página. Una dirección **sí** identifica cuando llega a ser única —calle, número, y apartamento o interior si lo hay—; si se queda en el sector, no.
+   >
+   > **Por qué se dice aquí y no se deja al criterio:** dos apariciones que solo comparten la vereda **se fundirían en un bien**, y entonces el inventario mete en una fila **el predio de dos vecinos distintos**. Es el error que este método llama «el más difícil de detectar después», y en un expediente rural es el caso normal, no el raro.
 3. **A nombre de quién figura, según el documento** — el nombre que el documento pone, literal y con página, **y con la palabra que el documento usa** (*propietario*, *titular*, *comprador*, *arrendatario*, *afiliado*, *cuentahabiente*), transcrita igual. Si el documento no lo dice: *"el documento no dice a nombre de quién figura"*. Jamás deducido del apellido, del relato ni del nombre del archivo.
 4. **La fecha que el documento asocia al bien** —adquisición, apertura, registro—, **solo si el documento la trae**, con cita y página. Es distinta de la fecha del documento y se anotan las dos.
 5. **El valor, transcrito con su fuente** — el número **exactamente como está escrito**, con su moneda; **la palabra que el documento usa** (*avalúo*, *precio*, *saldo a*, *valor estimado*); **la fecha que ese valor lleva**; y **la página**. Sin valor escrito: *"el documento no trae valor"*. Nunca uno traído de otro documento, nunca uno actualizado. Si el documento lo escribe en letras y en números y **no coinciden**, se transcriben los dos y va a contradicciones (§7, parte 4).
@@ -154,7 +160,7 @@ Este es **el único recorrido completo del material hasta la comprobación final
 
 **Esta fase no abre ningún documento.**
 
-**Agrupar.** Cada bien recibe una etiqueta corta —`B-01`, `B-02`— que sirve **solo para nombrarlo**: "el B-04 no me sirve". No se reutiliza jamás. Dos apariciones son **el mismo bien** cuando comparten **cualquiera** de los identificadores del punto 2, o cuando **un documento cita al otro** —la escritura menciona la matrícula, el certificado menciona la escritura y la notaría—. Cuando se unen por cita y no por identificador compartido, **la fila lo dice**: *"se unen porque el certificado cita la escritura n.º X (p. 2)"*. Si solo se parecen en la descripción —*"la camioneta"* y *"vehículo marca X"*— **no se funden**: quedan como dos bienes y se declara la duda en el bloque de contradicciones. Fundir dos bienes parecidos es el error más difícil de detectar después.
+**Agrupar.** Cada bien recibe una etiqueta corta —`B-01`, `B-02`— que sirve **solo para nombrarlo**: "el B-04 no me sirve". No se reutiliza jamás. Dos apariciones son **el mismo bien** cuando comparten **cualquiera** de los identificadores del punto 2 —**de los que identifican, no de los que solo ubican**: compartir vereda, barrio o sector no funde nada—, o cuando **un documento cita al otro** —la escritura menciona la matrícula, el certificado menciona la escritura y la notaría—. Cuando se unen por cita y no por identificador compartido, **la fila lo dice**: *"se unen porque el certificado cita la escritura n.º X (p. 2)"*. Si solo se parecen en la descripción —*"la camioneta"* y *"vehículo marca X"*— **no se funden**: quedan como dos bienes y se declara la duda en el bloque de contradicciones. Fundir dos bienes parecidos es el error más difícil de detectar después.
 
 **Tres lecturas de la misma tabla, y ninguna exige abrir nada.** La primera va por filas: cada aparición con su documento y su productor. La segunda agrupa por etiqueta: **qué hay detrás de cada bien** —y ahí salta a la vista el bien que solo aparece en un documento producido por una parte, o el que no aparece en ninguno—. **Y la misma lectura al revés:** el bien que aparece en un documento de un tercero o de una oficina y **no** en ninguna lista de las partes; se marca, porque es el que nadie mencionó. La tercera es fila contra fila: **lo mismo con dos valores, dos fechas o dos nombres distintos**. Las tres se entregan (§7).
 
@@ -358,7 +364,7 @@ LO QUE ESTA PASADA SE CORRIGIÓ A SÍ MISMA
 5. ¿**Todas** las filas dicen quién produjo el documento, incluidas las que produjo la propia interesada?
 6. ¿Puse en la misma fila una lista de una parte y un certificado, en vez de dejarlos en filas distintas bajo la misma etiqueta?
 7. ¿El nombre de quien figura salió del apellido, del relato o del nombre del archivo, en vez de lo que el documento muestra? ¿Va con la palabra que el documento usa —propietario, arrendatario, afiliado— y no con una mía?
-8. ¿Fundí dos bienes que solo se parecían en la descripción, sin un identificador compartido ni una cita de un documento al otro? ¿Y desdoblé en dos un mismo bien porque cada documento lo identifica con un número distinto?
+8. ¿Fundí dos bienes que solo se parecían en la descripción, sin un identificador compartido ni una cita de un documento al otro? **¿Fundí dos que solo comparten una vereda, un barrio, un sector o una manzana —que ubican y no identifican (Fase 1, punto 2)—?** ¿Y desdoblé en dos un mismo bien porque cada documento lo identifica con un número distinto?
 9. ¿Reuní todo lo comprobable en una sola lista, ordenada por archivo y página, y lo comprobé en **un solo recorrido**? ¿Quedó algo sin comprobar y sin declararlo?
 10. ¿Usé "sitúa" donde quería decir "apoya a medias", o porque el documento no decía a nombre de quién figura? Que falte eso no rebaja el "apoya": va a 5-C. Un bien cuyas apariciones solo sitúan va a 5-B.
 11. ¿Escribí "falta", "no existe" o "no hay" donde lo único que sé es que no lo encontré? ¿Di por existente un documento solo porque otro lo menciona?

@@ -8,7 +8,7 @@
 
 ## El resultado en una línea
 
-**Doce defectos, los doce míos.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+**Trece defectos, los trece míos.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -24,6 +24,7 @@
 | 10 | — | Y tampoco **la ausencia inflada** ni **la secuencia leída como causa**: dos invariantes duras de los diez, invisibles para el que revisa |
 | 11 | SPEC-03 | **La regla exigía un número que el formato de salida no tenía dónde poner** |
 | 12 | — | **`buscar.py` devolvía el trabajo del sistema como si fuera el expediente** — y el peor caso llevaba la marca ` - REVISADO` |
+| 13 | — | **«Vereda» contaba como identificador**: dos predios vecinos se habrían fundido en una fila |
 
 ---
 
@@ -222,6 +223,22 @@ Buscando «cerca», devolvió **ocho apariciones en siete archivos, en una sola 
 **Con 8 pruebas de regresión** (`evals/scripts/test_buscar.py`), comprobadas con dos mutantes: un clasificador que diga que **todo** es material cae con 4 fallos; uno que diga que **nada** lo es, con 3 — porque el control positivo exige que `1-Documentos recibidos/` **no** salga marcado.
 
 > **Y una nota sobre cómo se encontró, que corrige un reflejo mío.** Al ver la primera salida creí que el descargo *«cero resultados no significa que no esté en el papel»* solo aparecía en algunas búsquedas. **Era mi propio `head -20` cortándolo.** Lo comprobé antes de escribirlo. El defecto 4 de esta misma lista fue exactamente lo contrario: afirmar sin mirar.
+
+---
+
+## Defecto 13 — «Ubicar» no es «identificar», y en material rural eso decide el inventario entero
+
+**Encontrado ejecutando `/inventario-de-bienes`**, y solo aparece porque el expediente de prueba es **rural** — una querella de policía en una vereda de Salento, que es donde ocurrió el pase real.
+
+La regla de identidad, corregida en su día por el hallazgo H2 de la crítica, dice: *«Dos apariciones son el mismo bien cuando comparten **cualquiera** de los identificadores del punto 2»*. Y el punto 2 los lista: *«matrícula, catastral, placa, motor, número de escritura y notaría, número de cuenta, folio, **dirección**»*.
+
+**En el expediente, la querella dice «el predio ubicado en la vereda Boquia» y el recibo de predial dice «Predio: vereda Boquia».** Comparten eso y nada más — el predial es el único que trae número catastral.
+
+**Bajo la regla literal, se funden.** Y una vereda la comparten decenas de predios: el inventario metería **el predio de dos vecinos distintos en una sola fila**. Es exactamente el error que este método llama *«el más difícil de detectar después»*, y **en un expediente rural es el caso normal, no el raro**.
+
+> **Y es el hallazgo H2 rebotando.** H2 arregló que el método **partiera** un predio en dos por traer cada documento un identificador distinto. La corrección abrió la puerta contraria: **fundir dos por compartir un dato que no identifica a nadie.** Las dos formas de fallo salen de la misma frase.
+
+**Corregido:** un identificador solo lo es si **dos bienes distintos no pueden compartirlo**. Vereda, barrio, sector, manzana, corregimiento y municipio **ubican y no identifican**: van en la descripción, se anotan igual con su página, y **no funden nada**. Una dirección sí identifica cuando llega a ser única —calle, número, interior—; si se queda en el sector, no. Con su pregunta en la autoevaluación.
 
 ---
 
