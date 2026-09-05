@@ -55,7 +55,7 @@ Y peor, porque es un identificador y no una prosa:
 
 ~~**Los ADR no se leyeron.**~~ **LEÍDOS Y TRIADOS EL 2026-09-05 — ver §7.** Eran dieciocho, no diecisiete, y traen **más de ochenta preguntas pendientes**. No se volcaron: se cortaron primero entre las que gobiernan el producto construido (ADR-012 a 018) y las que diseñan un Core que no existe (ADR-001 a 011). **Tres estaban ya contestadas por el código y nadie las cerró**, y de las vivas salieron diez ítems y un hueco nuevo.
 
-También quedan fuera, y hay que decirlo: `docs/backlog/architecture-post-v0.md`, `docs/REFINADO-Y-FUENTES.md`, `docs/PENDIENTE-FORMA-DE-ENTREGA.md`, `docs/technical-design/` y los veinte dossiers de `docs/skills-support/`.
+También quedan fuera, y hay que decirlo: `docs/backlog/architecture-post-v0.md`, `docs/REFINADO-Y-FUENTES.md`, `docs/PENDIENTE-FORMA-DE-ENTREGA.md`, `docs/technical-design/` y los **89 documentos** de `docs/skills-support/`.
 
 **Este índice está incompleto y sabe dónde.**
 
@@ -355,7 +355,7 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 >
 > **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no tres reglas.** Queda registrado como **`V-14`**, y escrito como **[AC-05](architecture/adrs/AMENDMENT-CANDIDATES.md)** — candidato de enmienda a ADR-016, **abierto y esperando decisión**, con sus tres opciones y su recomendación. **No se resuelve unilateralmente**, que es la regla de ese documento; y la opción recomendada **le cambia una carpeta a ella**, lo que ADR-012 q7 manda validar con la profesional.
 
-**Cierre honesto del §0.3:** leídos y triados los ADR (§7), `PENDIENTE-FORMA-DE-ENTREGA` (§8) y **`REFINADO-Y-FUENTES` (§9)**. **Sigue sin cubrir** `docs/backlog/architecture-post-v0.md`, `docs/technical-design/` —salvo su §13, materializado como `caso-03`— y los veinte dossiers de `docs/skills-support/`.
+**Cierre honesto del §0.3, al cierre del 2026-09-05:** leídos y triados los ADR (§7), `PENDIENTE-FORMA-DE-ENTREGA` (§8), `REFINADO-Y-FUENTES` (§9), **`architecture-post-v0` (§10)**, **las ocho preguntas de negocio (§11)** y **`skills-support` como corpus (§12)**. **Sigue sin cubrir un solo corpus:** `docs/technical-design/`, salvo su §13, materializado como `caso-03`.
 
 ---
 
@@ -574,4 +574,73 @@ El encabezado del `PASE-REAL-SALENTO` —la pieza versionada que sostiene *«es 
 ---
 ---
 
-*Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura parcial: quedan `technical-design/` y los veinte dosieres de `skills-support/` (§0.3).** Nada de este documento reemplaza a sus fuentes.*
+## §12 · `skills-support`, y una cuenta mal hecha el 26 de agosto que se cerró hoy
+
+**Leído el 2026-09-05.** Y lo primero es una corrección a este mismo backlog: **no son «los veinte dossiers»**. Son **89 documentos y 5.429 líneas**, en once carpetas. La cifra venía de contar la raíz sin abrir las subcarpetas, y se arrastró por tres apartados.
+
+### Qué es, y por qué no cubrirlo no era deuda
+
+Es investigación para **skills jurídicas**: catálogo normativo, gobierno de jurisprudencia, cobertura del derecho colombiano, mapas de dependencias, marcos adversariales, evaluaciones sintéticas. **Y el producto que existe no cita derecho en absoluto** (§9, *«la abstinencia»*).
+
+> **Así que este corpus no está desactualizado: está por delante.** Describe la línea de producto que empieza el día que exista el Knowledge Pack, y §9 ya dejó dicho qué garantiza mientras tanto — *«hoy no hay mecanismo que impida citar una norma derogada; lo impide que el producto no cita normas»*. **Un corpus por delante no cobra defectos**, que es exactamente lo contrario de lo que pasó con `PENDIENTE-FORMA-DE-ENTREGA` (§8). Por eso este quedó de último, y estuvo bien.
+
+Y **se declara a sí mismo con honestidad**, en su primera pantalla: `SKILL_SUPPORT_CORPUS_NOT_READY`, `COVERAGE_GAPS_PRESENT`. No hay que descubrir que no está listo: lo dice.
+
+### La disciplina que este corpus sí practica
+
+Dos cosas que en otros sitios de este repositorio salieron mal, aquí salieron bien, y merece decirse porque §5 solo cuenta duplicados:
+
+| Riesgo | Cómo lo resolvió |
+|---|---|
+| **Dos documentos para lo mismo** — `00-scope-and-governance` / `00-scope-and-principles`, `03-priority-roadmap` / `03-skill-priority-roadmap` | **Cada uno abre con una nota de navegación que dice cuál prevalece.** No es la enfermedad de §5: es la enfermedad tratada |
+| **Dos listas de preguntas para la misma profesional** | `open-questions/questions-for-professional.md` **abre declarando la regla**: *«no repetir preguntas ya cubiertas sobre canales de evidencia, volumen, fuentes habituales, participantes, backups, expediente oficial y ritmo»*, y nombra el documento que las tiene. **Quince preguntas, cero solapes** |
+
+### Y la misma pregunta que §10 y §11, por tercera vez
+
+Esa segunda lista tiene, bajo **`BLOCKING SKILL DESIGN`**, esta:
+
+> *6. **Si llegara a actuar como autoridad**, ¿qué partes de una propuesta de decisión tendría que revisar o reescribir siempre usted misma, aunque una herramienta hubiera organizado el material?*
+
+**«Si llegara a actuar como autoridad.» Actúa.** Es la tercera vez en dos apartados que un documento aparca algo sobre el condicional de un hecho que el trabajo de campo ya estableció — el disparador `Ruling` (§10), la pregunta de negocio 7 (§11) y ahora esta. **Tres documentos, tres corpus distintos, la misma pregunta sin hacer.**
+
+Y hay una cuarta de esa lista que este producto ya contestó **sin preguntar**:
+
+> *2. ¿Qué revisión hace personalmente antes de permitir que un hecho llegue a un escrito?*
+
+La respuesta que el producto lleva escrita es la marca ` - REVISADO`: ella escribe `SÍ`, `NO` o `A MEDIAS` al lado de cada ficha y renombra el archivo. **Es una respuesta buena y es una suposición**, y coincide con `A-11` de §11 por el otro extremo — **nada distingue hoy que la marca la haya puesto ella y no un dependiente**.
+
+### La cuenta mal hecha, que es el hallazgo de este apartado
+
+El `README` de este corpus cierra con una corrección de ruta: *«la ruta vigente del plugin existente es `plugins/despacho/skills/fact-builder/`»*. **Esa carpeta no existe.** Se borró el **2026-08-26**, un día después de la fecha de referencia del corpus, en el commit que aplicó la crítica al arnés: **`H-09 fact-builder pasa a llamarse hechos-con-prueba`**. Hoy la nombran **55 documentos** del repositorio, 27 de ellos aquí.
+
+**No se van a renombrar los 55**, y decir por qué importa: son **registro histórico** —ADRs, notas de diseño, verificaciones— y reescribirlos falsearía lo que se decidió con la información de entonces. Se corrige **la única línea que afirma un hecho sobre hoy** y es falsa, y se deja dicho en qué se convirtió.
+
+**Pero ese mismo commit trae el hallazgo bueno**, en su propio texto:
+
+> *`H-03` la frontera del cálculo pasa a estar escrita por operación, no por tema, **en los tres skills que tocan fechas***
+
+**No son tres. Son siete.** Ese mismo día se contaron mal los métodos que pueden escribir una fecha en la salida de ella, la regla se puso en tres, y los otros cuatro se quedaron con el *«no calcular»* genérico —que no dice nada de convertir *«treinta días»* en una fecha— **durante diez días**.
+
+> **Y esto es lo que retro-justifica §10 entero.** La cuenta no se corrigió leyendo el producto: **once relecturas de estos `SKILL.md` en dos semanas no la vieron**. Se corrigió porque un documento de **otro corpus**, `architecture-post-v0`, obligó a contar: *«nada en V0 debe calcular, almacenar ni mostrar algo que se parezca a un plazo»*. Es la misma lección de la tabla de §0 con un tercer renglón:
+>
+> | Origen del hallazgo | Encontró algo |
+> |---|---|
+> | Releer lo que uno escribió | **No** — diez días mirándolo |
+> | Ejecutar el producto | **Sí** — 4 de 4 |
+> | **Cruzar dos corpus que nadie había cruzado** | **Sí — y encontró lo que releer no encontraba** |
+>
+> Escribir una regla y releerla no dice si decide. **Y contarla contra un documento que no la escribió, sí.**
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| ~~**S-1**~~ | ~~La ruta `fact-builder` que el `README` da por vigente~~ | **HECHA el 2026-09-05.** Corregida la línea, con la fecha del cambio y su commit; los 55 usos históricos **se dejan como están, y se dice por qué** |
+| **S-2** | **Preguntar la pregunta 6 de esta lista** — qué de una propuesta de decisión reescribiría siempre ella | **Del dueño. Es la misma conversación que `A-4`**, y conviene que sea una sola |
+| **S-3** | Las **89 piezas** de este corpus siguen sin triar una por una. **No urge**, por la razón de arriba | Vivo, de baja prioridad declarada |
+| **S-4** | Corregida en este backlog la cifra **«veinte dossiers»** → **89 documentos** | **HECHA.** Estaba en tres sitios |
+
+---
+---
+
+*Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura parcial: queda `technical-design/` (§0.3); `skills-support/` está triado como corpus en §12, no pieza a pieza (S-3).** Nada de este documento reemplaza a sus fuentes.*
