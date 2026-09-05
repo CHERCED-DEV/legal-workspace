@@ -156,7 +156,7 @@ Iba a especificar el arreglo de `H-05` —*«dos comandos consumen una hoja de h
 | # | Qué | Por qué en ese puesto |
 |---|---|---|
 | ~~1~~ | ~~**SPEC-07**~~ **RETIRADA el 2026-09-05:** los doce hallazgos ya estaban aplicados | — |
-| 1 | **Una pasada real** que cierre los observables pendientes de las siete | Siete specs dicen «ejecutada, falta pasada real». Siete declaraciones sin comprobar **es exactamente el estado que la capa de specs existe para no repetir** |
+| 1 | **Una pasada real** que cierre los observables pendientes | **Nueve specs ejecutadas.** El 2026-09-05 se hizo una **pasada de escritorio** sobre un expediente sintético (`evals/casos/caso-02-sintetico-autoridad`) que subió un peldaño: [lo que aguantó y lo que se cayó](../technical-design/v0/notes-verification/pasada-de-escritorio-2026-09-05.md). **Encontró dos defectos, los dos míos y los dos de esa semana**, ninguno visible leyendo la spec. **No hay razón para creer que la proporción sea distinta en las siete a las que todavía no se les ha puesto nada delante** |
 | ~~2~~ | ~~**`PM-M-1`, instrumentar**~~ **HECHA la mitad, el 2026-09-05 — SPEC-12.** Las partes (c) y (d) son texto y están en los once; (a) y (b) necesitan los logs de una corrida | Quedan del lado de la pasada real |
 | ~~3~~ | ~~**SPEC-03** — contexto B~~ **HECHA la mitad, el 2026-09-05.** El vocabulario, la simetría obligatoria y la prohibición de orientar están en los once. Lo que falta **no es trabajo mío**: es el ADR de `V-7` | — |
 

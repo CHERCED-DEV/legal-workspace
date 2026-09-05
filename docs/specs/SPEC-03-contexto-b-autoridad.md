@@ -75,6 +75,18 @@ El pase del 27/08 anotó, entre lo que funcionó:
 | O-7 | Las categorías de productor de los dos inventarios **no cambiaron** | `git diff` de esas líneas: vacío | **Pasa** |
 | O-8 | Una pasada real en posición de autoridad, en la que ella **no tenga que traducir nada** | — | **Pendiente. Es el observable que importa** |
 | O-9 | En esa pasada, que la simetría dispare al menos una vez y se vea en la salida | — | **Pendiente** |
+| O-10 | La posición se deduce de la carpeta sin preguntar cuando la carpeta lo dice | Pasada de escritorio sobre `caso-02` | **Pasa** |
+| O-11 | **La simetría no ensancha lo que un método puede señalar** | La pasada de escritorio, que encontró que **sí lo ensanchaba** | **Pasa — y no pasaba.** Ver abajo |
+
+### Lo que encontró ejecutarla
+
+**La regla de simetría, tal como la escribí, abría la puerta a la infracción más grave del producto.** Decía que se buscara en las demás partes *«toda carencia que señales de una parte —un documento que no acreditó, una afirmación sin respaldo, **un requisito que no consta**—»*.
+
+Al aplicarla al `caso-02` —donde ninguno de los dos apoderados acredita su calidad, que es la trampa puesta para esto— apareció el problema: **`estado-del-caso` no puede decir eso.** Que la acreditación se exija es una regla de derecho, y los once métodos tienen prohibido contener derecho. *«Un requisito que no consta»* **es una invitación a valorar un requisito**: escribí una regla de imparcialidad que autorizaba a hacer derecho.
+
+**Corregido en los once:** la simetría alcanza a *«toda carencia que este método ya pueda señalar»*, con la advertencia escrita al lado — *«no ensancha lo que puedes señalar: solo obliga a mirar a los dos lados de lo que ya señalabas»*.
+
+> **Y la trampa no se pierde, cambia de sitio.** Quien la hace visible sin hacer derecho es `inventario-de-anexos` con «quién produjo el documento» —lo que más valor produjo en el pase real— y `revision-de-rigor`. Que la simetría no dispare en `estado-del-caso` **no es un fallo: es la regla comportándose bien.**
 
 ## 6. Qué toca
 
