@@ -1,7 +1,7 @@
 ---
 name: hechos-con-prueba
 description: "Método para convertir el material de un caso (entrevistas, declaraciones, documentos, comprobantes) en hechos candidatos emparejados con la prueba que los apoya, los contradice o los sitúa. Úsalo cuando pidan construir, extraer u ordenar los hechos de un asunto, armar el relato fáctico, o establecer qué está apoyado y qué no. No lo uses para redactar escritos, valorar prueba, decidir estrategia ni responder preguntas de derecho."
-version: 0.2.0
+version: 0.2.1
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -154,7 +154,11 @@ De ahí salen dos reglas de redacción:
 
 ### Fase 4 — Emparejar cada hecho con su prueba, con polaridad
 
-Para cada hecho candidato, recorre el material y busca fragmentos que lo **apoyen**, lo **contradigan** o lo **sitúen**.
+**Se recorre por pieza, no por hecho.** Ten delante la lista de hechos candidatos de la Fase 3 —ya está escrita, es su producto— y **abre cada pieza del material una sola vez**: al leerla, anota **todos** los hechos candidatos a los que esa pieza **apoya**, **contradice** o **sitúa**, con su coordenada y su cita. Cuando termines la pieza, no vuelves a ella.
+
+> **Por qué así, y no un barrido por cada hecho.** Recorrer el material entero para cada hecho candidato son **dos bucles anidados**: en el caso medido pedía **76 barridas y 239 aperturas donde caben 14 y 14**, y cada página acababa visitada unas veintiuna veces. **Y no es solo el coste: es que detecta menos.** Ver de una vez las doce afirmaciones que dicen «Anexos, p. 23» contra la página 23 real **hace saltar la que sobra**; abrirlas de una en una, no — cada una se lee sola y parece correcta.
+>
+> **Lo que no cambia: no se busca menos.** Se emparejan los mismos hechos con las mismas piezas; cambia el orden en que se visita, no el conjunto. Si una pieza no apoya, contradice ni sitúa nada, se anota que se leyó y no dio nada.
 
 **Las tres polaridades, con su límite:**
 - **Apoya** — el fragmento sostiene lo que el hecho afirma.
@@ -226,7 +230,12 @@ Tres formas típicas:
 
 Antes de entregar, haz cuatro cosas:
 
-1. **Vuelve al material y abre cada anclaje que citaste**, uno por uno, y comprueba que el fragmento dice lo que le atribuyes. El error más peligroso disponible aquí es la **cita fantasma**: referencia real, contenido inexistente. Está bien formada, suena bien y atraviesa la revisión humana.
+1. **Comprueba contra el material, en bloque y una sola vez.** El error más peligroso disponible aquí es la **cita fantasma**: referencia real, contenido inexistente. Está bien formada, suena bien y atraviesa la revisión humana. Se caza así, en tres pasos:
+   1. **Reúne en una sola lista todos los anclajes que van a salir**, cada uno con la cita que le atribuyes.
+   2. **Ordénala por dónde está el dato** —por archivo y, dentro de cada archivo, por página o minuto—, **nunca por hecho**.
+   3. **Recórrela de una vez**, marcando cada anclaje como comprobado, corregido o no comprobable. **Cada pieza se abre una vez y se contrasta de golpe todo lo que dice salir de ella.**
+
+   **No se comprueba menos que antes: se comprueba lo mismo, en otro orden.** Y se detecta más, porque las doce citas que dicen salir de la misma página se ven juntas contra esa página, que es cuando salta la que no está ahí. Lo que no se pueda comprobar **se declara**, como siempre.
 2. **Responde la lista de la sección 10 sobre tu propia salida.** Si alguna respuesta es "no", corrige. Si no puedes corregir, dilo en la entrega.
 3. **Cuenta y entrega el conteo:** cuántos hechos propuestos, cuántos apoyados, cuántos sin apoyo, cuántos contradichos, cuántos vacíos, cuántos descartes. El conteo es un instrumento de honestidad: obliga a mirar la proporción real de lo que produjiste.
 4. **Elige qué debe comprobar ella primero.** Una pasada normal deja decenas de comprobaciones posibles y ninguna indicación de por dónde empezar; en la práctica, una lista sin orden se parece mucho a ninguna comprobación. Escoge **entre tres y cinco anclajes, no más**, y escribe al lado de cada uno por qué está en la lista. El criterio, en este orden:

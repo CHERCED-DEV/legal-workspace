@@ -104,6 +104,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | [SPEC-10](SPEC-10-limite-del-texto-extraido.md) | El límite del material extraído, dentro de los `SKILL.md` | defecto | `H-16` · `EP-1.1-COORDENADA` | **Ejecutada** — falta una pasada real |
 | [SPEC-11](SPEC-11-la-primera-instalacion.md) | La primera instalación: que empezar no dependa de preguntar | defecto | `H-08` · defecto abierto de SPEC-01 | **Ejecutada** — falta que alguien instale |
 | [SPEC-12](SPEC-12-lo-que-la-pasada-atrapo.md) | Que cada pasada diga qué se corrigió a sí misma | defecto | `PM-M-1` (c) y (d) · G23 | **Ejecutada** en los once — falta una pasada real que produzca cifras |
+| [SPEC-13](SPEC-13-reindexar-por-pieza.md) | Abrir cada pieza una vez, no veintiuna | defecto | `PM-M-4` · G24 · §2 ítem 8 | **Ejecutada** en los dos que lo tenían vivo — los dos inventarios ya tenían la forma |
 
 > **Cuenta honesta, al 2026-09-05: siete escritas y ejecutadas, una retirada, dos que hoy son solo una fila de esta tabla.** «Pendiente» aquí significa que el archivo **no existe**. Ninguna de las siete está *cerrada*: **seis esperan una pasada real** sobre una carpeta de ella, y así lo dice cada una en su apartado 5. Ejecutada quiere decir que el cambio está en el código y que los observables que no dependen de nadie pasan — **no que el defecto esté comprobado muerto en uso**.
 >
