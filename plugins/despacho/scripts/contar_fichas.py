@@ -25,6 +25,9 @@ import sys
 ESTADOS = [u"Apoyado y contradicho", u"Apoyado", u"Contradicho",
            u"Sin apoyo", u"No verificable con este material"]
 
+# Los cinco grados de `cronologia` §3. Vocabulario fijo: no hay un sexto.
+GRADOS = [u"en conflicto", u"documentada", u"referida", u"aproximada", u"deducida"]
+
 
 def contar(texto):
     fichas = re.findall(r"(?m)^##\s+(H-\d+)\b", texto)
@@ -46,6 +49,72 @@ def contar(texto):
     return fichas, por_estado, sin_estado
 
 
+def contar_cronologia(texto):
+    """Los grados de la tabla de `cronologia`, contados por su ultima celda.
+
+    Existe por el cuarto conteo mal hecho del 2026-09-05, que fue el peor: la
+    cronologia del caso-03 declaro «5 documentadas» donde habia cuatro, los
+    numeros no cuadraron -- 15 donde habia 14 eventos -- y en vez de recontar se
+    escribio un parrafo explicando la discrepancia. **El conteo existe para eso,
+    y una discrepancia pide recontar, no justificar.**
+    """
+    # Solo la tabla 2. La tabla 3 -- eventos SIN fecha -- tiene otra ultima
+    # columna («de donde sale la ubicacion»), y contarla aqui hacia que sus
+    # filas salieran como «grado no reconocido». Cada tabla se cuenta donde va.
+    linea, sin = partir_tablas(texto)
+    filas = re.findall(r"(?m)^\|\s*(E-\d+)\s*\|.*\|([^|]*)\|\s*$", linea)
+    por_grado = dict((g, 0) for g in GRADOS)
+    sin_grado = []
+    for ev, celda in filas:
+        d = plano(celda.strip())
+        for g in GRADOS:                      # «en conflicto» primero: ver ESTADOS
+            if d.startswith(plano(g)):
+                por_grado[g] += 1
+                break
+        else:
+            sin_grado.append("%s (grado no reconocido: %s)" % (ev, celda.strip()))
+    sin_fecha = re.findall(r"(?m)^\|\s*(E-\d+)\s*\|", sin)
+    return [e for e, _ in filas], por_grado, sin_grado, sin_fecha
+
+
+def partir_tablas(texto):
+    """(la linea de tiempo, los eventos sin fecha), por sus encabezados."""
+    def corte(marca, desde=0):
+        m = re.search(marca, texto[desde:])
+        return desde + m.start() if m else None
+    i = corte(r"(?im)^#+.*L[IÍ]NEA DE TIEMPO")
+    j = corte(r"(?im)^#+.*EVENTOS SIN FECHA")
+    k = corte(r"(?im)^#+.*CONFLICTOS DE FECHA")
+    if i is None:
+        return texto, ""
+    fin_linea = j if j is not None else (k if k is not None else len(texto))
+    if j is None:
+        return texto[i:fin_linea], ""
+    return texto[i:j], texto[j:(k if k is not None else len(texto))]
+
+
+def plano(t):
+    import unicodedata
+    t = unicodedata.normalize("NFD", t)
+    return "".join(c for c in t if unicodedata.category(c) != "Mn").lower()
+
+
+def conteo_cronologia_escrito(texto):
+    fuera = {}
+    m = re.search(u"\\*\\*(\\d+) eventos\\*\\*", texto)
+    fuera["total"] = int(m.group(1)) if m else None
+    for g, patron in ((u"documentada", u"\\*\\*(\\d+) documentadas\\*\\*"),
+                      (u"referida", u"\\*\\*(\\d+) referidas\\*\\*"),
+                      (u"aproximada", u"\\*\\*(\\d+) aproximadas\\*\\*"),
+                      (u"deducida", u"\\*\\*(\\d+) deducidas\\*\\*"),
+                      (u"en conflicto", u"\\*\\*(\\d+) en conflicto\\*\\*")):
+        m = re.search(patron, texto)
+        fuera[g] = int(m.group(1)) if m else None
+    m = re.search(u"\\*\\*(\\d+) sin fecha\\*\\*", texto)
+    fuera["sin fecha"] = int(m.group(1)) if m else None
+    return fuera
+
+
 def bloques(texto):
     partes = re.split(r"(?m)^##\s+(H-\d+)", texto)
     return list(zip(partes[1::2], partes[2::2]))
@@ -65,6 +134,42 @@ def conteo_escrito(texto):
     return fuera
 
 
+def main_cronologia(ruta, texto):
+    eventos, por_grado, sin_grado, sin_fecha = contar_cronologia(texto)
+    d = conteo_cronologia_escrito(texto)
+    print("\n== %s   (cronologia)" % ruta)
+    print("   en la linea de tiempo: %d  (%s)" % (len(eventos), ", ".join(eventos)))
+    if sin_fecha:
+        print("   sin fecha:             %d  (%s)"
+              % (len(sin_fecha), ", ".join(sin_fecha)))
+    for g in GRADOS:
+        if por_grado[g]:
+            print("   %-16s %d" % (g, por_grado[g]))
+    if sin_grado:
+        print("   SIN GRADO LEGIBLE: %s" % ", ".join(sin_grado))
+
+    problemas = []
+    for g in GRADOS:
+        if d.get(g) is not None and d[g] != por_grado[g]:
+            problemas.append(u"declara %d «%s» y hay %d" % (d[g], g, por_grado[g]))
+    con_fecha = sum(por_grado.values())
+    if d.get("sin fecha") is not None and d["sin fecha"] != len(sin_fecha):
+        problemas.append(u"declara %d sin fecha y la tabla 3 tiene %d"
+                         % (d["sin fecha"], len(sin_fecha)))
+    if d.get("total") is not None and con_fecha + len(sin_fecha) != d["total"]:
+        problemas.append(u"%d con fecha + %d sin fecha = %d, y declara %d eventos"
+                         % (con_fecha, len(sin_fecha),
+                            con_fecha + len(sin_fecha), d["total"]))
+    print("")
+    if problemas:
+        for x in problemas:
+            print("   NO COINCIDE: %s" % x)
+        print("\n   Una discrepancia pide RECONTAR, no explicarla.")
+        return 2
+    print("   el conteo escrito coincide con la tabla")
+    return 0
+
+
 def main(args):
     if len(args) != 1:
         sys.stderr.write(__doc__)
@@ -73,6 +178,8 @@ def main(args):
         print("no existe: %s" % args[0])
         return 1
     texto = io.open(args[0], encoding="utf-8").read()
+    if re.search(r"(?m)^\|\s*E-\d+\s*\|", texto) and not re.search(r"(?m)^##\s+H-", texto):
+        return main_cronologia(args[0], texto)
     fichas, por_estado, sin_estado = contar(texto)
     escrito = conteo_escrito(texto)
 

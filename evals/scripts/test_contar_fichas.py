@@ -68,5 +68,66 @@ class ContrastarConLoDeclarado(unittest.TestCase):
         self.assertEqual(0, C.main([str(SALIDA)]))
 
 
+CRONO = (Path(__file__).resolve().parents[1] / "casos"
+         / "caso-03-hidraulica-desde-el-diseno" / "2-Borradores"
+         / "Cronologia - Hidraulica - 2026-09-05.md")
+
+
+def crono(filas_linea, filas_sin=(), conteo=""):
+    t = ["## 2. LÍNEA DE TIEMPO", "", "| Ev | Fecha | Qué | De dónde | Grado |",
+         "|---|---|---|---|---|"]
+    for ev, grado in filas_linea:
+        t.append("| %s | 1/1/2025 | algo | pieza, p. 1 | %s |" % (ev, grado))
+    t += ["", "## 3. EVENTOS SIN FECHA", "", "| Ev | Qué | Situado | De dónde |",
+          "|---|---|---|---|"]
+    for ev in filas_sin:
+        t.append("| %s | algo | sin ancla | nada lo sitúa |" % ev)
+    t += ["", "## 4. CONFLICTOS DE FECHA", "", conteo]
+    return "\n".join(t)
+
+
+class ContarCronologia(unittest.TestCase):
+
+    def test_la_tabla_de_sin_fecha_no_ensucia_los_grados(self):
+        """El primer fallo de esta parte: la tabla 3 tiene otra ultima columna.
+
+        Sus filas salian como «grado no reconocido» porque se contaban con las
+        de la linea de tiempo. Cada tabla se cuenta donde va.
+        """
+        _, _, sin_grado, sin_fecha = C.contar_cronologia(
+            crono([("E-01", "documentada")], ["E-02", "E-03"]))
+        self.assertEqual([], sin_grado)
+        self.assertEqual(["E-02", "E-03"], sin_fecha)
+
+    def test_en_conflicto_no_se_lee_como_otro_grado(self):
+        _, por, _, _ = C.contar_cronologia(
+            crono([("E-01", "en conflicto"), ("E-02", "documentada")]))
+        self.assertEqual(1, por["en conflicto"])
+        self.assertEqual(1, por["documentada"])
+
+    def test_referida_con_coletilla_sigue_contando(self):
+        _, por, sin, _ = C.contar_cronologia(
+            crono([("E-01", "referida por la señora Quiroga")]))
+        self.assertEqual(1, por["referida"])
+        self.assertEqual([], sin)
+
+    def test_un_sexto_grado_inventado_se_denuncia(self):
+        """§3 dice: vocabulario fijo, cinco palabras y ninguna otra."""
+        _, _, sin, _ = C.contar_cronologia(crono([("E-01", "probable")]))
+        self.assertEqual(1, len(sin))
+        self.assertIn("E-01", sin[0])
+
+    def test_detecta_el_conteo_mal_escrito(self):
+        """Reproduce el cuarto fallo del dia: 5 documentadas donde habia 4."""
+        doc = crono([("E-0%d" % i, "documentada") for i in range(1, 5)],
+                    ["E-05"],
+                    u"**5 eventos** · **5 documentadas** · **1 sin fecha**")
+        self.assertEqual(2, C.main_cronologia("x", doc))
+
+    def test_la_cronologia_real_cuadra(self):
+        self.assertTrue(CRONO.exists(), CRONO)
+        self.assertEqual(0, C.main([str(CRONO)]))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

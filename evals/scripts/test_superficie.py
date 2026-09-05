@@ -31,7 +31,7 @@ EXPUESTOS = {
     # Septimo, anadido el 2026-09-05 con la medicion delante: la Fase 6 pide un
     # conteo que llama «instrumento de honestidad», y la primera pasada real lo
     # dio mal. Contar es trabajo mecanico con respuesta correcta comprobable.
-    "contar_fichas.py":       "contar las fichas por estado y contrastar",
+    "contar_fichas.py":       "contar fichas o eventos, y contrastar lo declarado",
     "estado_del_caso.py":     "sustituir la cabecera conservando sus notas",
     "md2docx.py":             "entregar en el formato que ella abre",
     "preparar_material.py":   "el trabajo mecánico de la ingesta",

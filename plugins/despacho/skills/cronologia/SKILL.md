@@ -2,7 +2,7 @@
 name: cronologia
 description: "Método para armar la línea de tiempo de un caso a partir del material recibido —contratos, correos, comprobantes, actas, entrevistas—, con la fuente exacta de cada fecha, su grado de certeza (documentada, referida, aproximada, deducida o en conflicto), los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. Úsalo cuando pidan una cronología, ordenar los hechos en el tiempo, reconstruir qué pasó cuándo, o revisar si las fechas del caso se contradicen. No lo uses para redactar escritos, contar plazos, valorar prueba, decidir qué fecha es la buena, ni establecer que una cosa causó otra."
 version: 0.2.6
-allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
+allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/contar_fichas.py *)
 ---
 
 # cronologia — la línea de tiempo, con la calidad de cada fecha
@@ -234,6 +234,18 @@ Con frecuencia lo más importante del caso es justo lo que nadie fechó. **Un ev
 2. **Comprueba contra el material, en bloque y una sola vez.** El error más peligroso aquí es la **cita fantasma**: coordenada real, contenido inexistente. Está bien formada, suena bien y atraviesa la revisión. Se caza reuniendo **todas** las fechas y citas que van a salir en una sola lista, **ordenándola por archivo y por página o minuto —nunca por evento—**, y recorriéndola de una vez: **cada fuente se abre una vez y se contrasta de golpe todo lo que dice salir de ella.** **No se comprueba menos: se comprueba lo mismo, en otro orden**, y se detecta más, porque las citas que dicen salir de la misma página se ven juntas contra esa página. Lo que no se pueda comprobar se declara.
 3. **Responde la lista del §8** sobre tu propia salida.
 4. **Cuenta y entrega el conteo:** cuántos eventos, cuántos de cada grado, cuántos sin fecha, cuántos conflictos, cuántos vacíos, y **aparte, cuántas cosas dijo ella que el material no registra** (§3.6) — que no suman eventos, porque no salieron del material. La proporción es información en sí misma: una cronología de 40 eventos con 3 fechas documentadas dice algo del caso antes de leer una sola fila.
+
+   **Y el conteo no lo haces de memoria: lo hace un programa.**
+
+   ```
+   python ${CLAUDE_PLUGIN_ROOT}/scripts/contar_fichas.py "<el .md que acabas de escribir>"
+   ```
+
+   Cuenta los grados de la línea de tiempo, los eventos sin fecha, y **contrasta el resultado con el conteo que escribiste**. Denuncia además un **sexto grado inventado**, que §3 prohíbe y hasta ahora nadie comprobaba.
+
+   > **Y si el conteo no cuadra, se recuenta. No se explica.** La primera pasada real de este método sobre un caso de banco declaró *«5 documentadas»* donde había cuatro; los números daban 15 eventos donde había 14, **y en vez de recontar se escribió un párrafo explicando la discrepancia**. La explicación era plausible y era falsa: sobraba una documentada. **Una discrepancia es la señal que pide recontar**, y es justo para eso que existe el conteo.
+   >
+   > **Si el programa no está o falla:** cuenta a mano recorriendo la tabla fila por fila, nunca de memoria, **y dilo en la entrega**.
 
 ## 5. La trampa del orden: secuencia no es causa
 
