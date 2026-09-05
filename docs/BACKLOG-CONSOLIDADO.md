@@ -359,6 +359,29 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 
 ---
 
+## §8 · `PENDIENTE-FORMA-DE-ENTREGA`, y lo que costó no haberlo leído
+
+**Leído el 2026-09-05.** Recoge feedback del dueño del 27 de agosto sobre **la forma de la entrega y la forma de la carpeta**, y llevaba sin indexar desde entonces.
+
+**Y no haberlo leído costó dos defectos el mismo día**, los dos míos:
+
+| Qué decía el documento | Qué pasó por no haberlo leído |
+|---|---|
+| *«Una convención de nombres única, que hoy son tres distintas (guion, raya, con y sin nombre de caso)»* | **La tabla de convenciones de SPEC-08 no listaba a `/redactar-escrito`**, cuyos nombres empiezan por el radicado. El índice habría dicho «no sé qué comando lo produjo» **en todos los borradores**, que es lo único que ella firma |
+| *«Una carpeta es una afirmación silenciosa, y este producto está construido para no hacer afirmaciones silenciosas»* · *«la profundidad no la paga ella»* | **AC-05 recomendaba una subcarpeta.** Corregido a la vía que el propio documento propone y que además ya estaba en el disco: **el archivo se declara en su primera línea** |
+
+> **De ahí la regla, que vale para los cuatro corpus que siguen sin cubrir:** un documento sin indexar no es deuda documental. **Es un defecto esperando**, y este cobró el mismo día en que se leyó.
+
+### Lo vivo de este documento
+
+| # | Qué | Estado |
+|---|---|---|
+| **E-1** | **Unificar el formato de salida en los siete, con una convención de nombres única.** El documento dice que *«no depende de ninguna decisión pendiente»* | **Vivo, y medido de nuevo el 2026-09-05:** siguen siendo tres formas, más la del radicado. Es la condición para que el índice de SPEC-08 deje de ser heurística |
+| **E-2** | **DECISIÓN: ¿un formato o dos** —uno de lectura y uno para pegar—? | Pendiente, del dueño. Dos duplica el trabajo del método; uno obliga a elegir cuál pierde |
+| **E-3** | **DECISIÓN: ¿la carpeta refleja qué ES un documento** (clasificación, opinable, hoy prohibida al sistema) **o de dónde viene y a dónde va** (procedencia, comprobable, que es lo que hay)? | Pendiente, del dueño. **Y el documento ya trae el argumento que la resuelve casi sola:** `Pruebas/` y `Evidencias/` son valoraciones, y ubicar un archivo ahí **afirma algo que nadie decidió** |
+| **E-4** | **Medirlo de verdad:** *«la prueba no es que el archivo se vea bien en el editor, sino que ella lo abra con doble clic, lo copie y lo pegue en su escrito sin tocar nada»* | **Bloque 0.** Es la misma pasada real que esperan las once specs |
+| **E-5** | Un `.md` en Windows **puede no abrir con doble clic** | **Vivo y barato de comprobar** en la instalación, que es la fila 3 de §2 |
+
 ## §9 · `REFINADO-Y-FUENTES`, y las cuatro afirmaciones que traía
 
 **Leído el 2026-09-05.** Es un documento de decisión del 27 de agosto, filtrado por un refutador, con etiquetas de evidencia —`HECHO MEDIDO`, `VERIFICADO`, `SUPUESTO`, `RIESGO`—. **Es el mejor formulado de los cinco corpus sin indexar**, y sus cuatro afirmaciones de cabecera se comprobaron una por una.
@@ -385,29 +408,114 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 
 ---
 
-## §8 · `PENDIENTE-FORMA-DE-ENTREGA`, y lo que costó no haberlo leído
+---
 
-**Leído el 2026-09-05.** Recoge feedback del dueño del 27 de agosto sobre **la forma de la entrega y la forma de la carpeta**, y llevaba sin indexar desde entonces.
+## §10 · `architecture-post-v0`, y el disparador que ya se disparó
 
-**Y no haberlo leído costó dos defectos el mismo día**, los dos míos:
+**Leído el 2026-09-05.** Es el registro de **24 exclusiones decididas y no olvidadas**, cada una con tres preguntas obligatorias: por qué está fuera de V0, **qué disparador la trae de vuelta**, y **qué no debe romperse hoy para que sea posible mañana**. La tercera es la que convierte el documento en algo distinto de una lista de deseos: es *«una restricción activa sobre el diseño de hoy»*.
 
-| Qué decía el documento | Qué pasó por no haberlo leído |
+Así que se leyó como lo que dice ser —una lista de restricciones vigentes— y se auditó **contra el producto que existe**, no contra el Core que no existe.
+
+### Lo primero: un disparador ya se disparó, y nadie lo notó
+
+**`Ruling`** dice, palabra por palabra:
+
+> *«Pertenece al **contexto B (autoridad/decisor)**, cuyo trabajo real **NO HA SIDO LEVANTADO** […] Que la primera usuaria opere ambos contextos es **SUPUESTO, no hecho verificado**.»*
+>
+> *«**Disparador de vuelta.** El levantamiento del contexto B, y en particular la respuesta a la **pregunta de negocio 7** […] que puede **invertir la política de custodia**.»*
+
+Y la pregunta 7, en `docs/discovery/business-questions-next.md`, se aparcó con este argumento: *«Esta pregunta bloquea el diseño del contexto B — **que no se está haciendo**»*.
+
+**Las dos premisas son falsas hoy, y lo son por trabajo de este mismo repositorio:**
+
+| Lo que el documento asume | Lo que hay |
 |---|---|
-| *«Una convención de nombres única, que hoy son tres distintas (guion, raya, con y sin nombre de caso)»* | **La tabla de convenciones de SPEC-08 no listaba a `/redactar-escrito`**, cuyos nombres empiezan por el radicado. El índice habría dicho «no sé qué comando lo produjo» **en todos los borradores**, que es lo único que ella firma |
-| *«Una carpeta es una afirmación silenciosa, y este producto está construido para no hacer afirmaciones silenciosas»* · *«la profundidad no la paga ella»* | **AC-05 recomendaba una subcarpeta.** Corregido a la vía que el propio documento propone y que además ya estaba en el disco: **el archivo se declara en su primera línea** |
+| Que la usuaria opere ambos contextos es **SUPUESTO** | **Verificado en campo.** Fila `C-8` de este backlog: *«**Es autoridad.**»* |
+| El diseño del contexto B **no se está haciendo** | **Se hizo el 2026-09-05.** SPEC-03 puso el bloque de posición en **los once** `SKILL.md`, reescribió las cinco reglas que presuponían bando y convirtió la simetría en método |
 
-> **De ahí la regla, que vale para los cuatro corpus que siguen sin cubrir:** un documento sin indexar no es deuda documental. **Es un defecto esperando**, y este cobró el mismo día en que se leyó.
+> **El disparador se disparó, y su documento no se enteró.** No es un descuido del documento: es exactamente el modo de fallo que §8 dejó nombrado — *un documento sin indexar no es deuda documental, es un defecto esperando*. Aquí el defecto no era del documento, era **del índice que no lo tenía**.
 
-### Lo vivo de este documento
+### Y la consecuencia que nadie había conectado
+
+La pregunta 7 no es una curiosidad de diseño. Dice que si en el contexto autoridad existe **un expediente digital oficial en un sistema externo**, nuestro almacén sería *«copia de trabajo y no custodio primario»* — y llama a eso *«una inversión, no un ajuste»*.
+
+**Tres `SKILL.md` justifican hoy la protección de escritura más fuerte del producto con esta frase:**
+
+> *«Nunca escribe dentro de `1-Documentos recibidos/`: eso es el material tal como llegó y **es lo único que no se puede reconstruir**.»*
+
+Si ella, decidiendo, tiene el expediente oficial en el sistema de su entidad, **esa frase es falsa ahí**: sí se puede reconstruir, bajándolo otra vez. La **protección seguiría siendo correcta** —es la conservadora, y no depende de la frase—, pero **su razón declarada no lo sería**. Y este producto entero se sostiene sobre que las razones que escribe sean verdad: es la misma disciplina que le prohíbe escribir una fecha que no leyó.
+
+> **Esto se registra como pregunta, no como corrección.** Cuál es el expediente que vale cuando ella decide **es un hecho sobre su despacho**, no una decisión de arquitectura, y el propio documento ya trae la redacción para preguntárselo sin jerga. **Ninguna frase del producto se toca hasta que ella conteste.**
+
+| # | Qué | De quién | Estado |
+|---|---|---|---|
+| **A-4** | **Preguntarle la pregunta 7**, con la redacción que ya está escrita: *«cuando le toca decidir, ¿cuál es el expediente que vale? ¿El que está en el sistema de la entidad, o el que usted arma para poder trabajar?»* | **Del dueño.** Es una conversación, no una tarea | **Abierta, y ahora sí bloqueante:** dejó de bloquear «un contexto que no se levanta» el día en que se levantó |
+| **A-5** | Según la respuesta, **revisar la frase «es lo único que no se puede reconstruir»** en los tres `SKILL.md` que la usan | Mía, cuando A-4 tenga respuesta | **En espera de A-4.** No antes: cambiarla ahora sería sustituir un supuesto por otro |
+
+### Los 24 disparadores, auditados
+
+| Estado | Cuántos | Cuáles |
+|---|---|---|
+| **Disparado** | **1** | `Ruling` — arriba |
+| **Armado: lo dispara la instalación pendiente** | **2** | **Plano administrativo** (*«una migración en la máquina de la profesional […] o la existencia de una segunda instalación»*) y **actualizaciones automáticas** (*«más de una instalación que mantener»*). Los dos los enciende la fila 3 de §2, que ya estaba en el backlog por otro motivo |
+| **Cuelgan de una pregunta de negocio sin responder** | **5** | Conectores (2), PostgreSQL y búsqueda vectorial (3), Knowledge Pack (4), multi-máquina (5) |
+| **Cuelgan de trabajo no levantado o de una decisión comercial** | **16** | El resto |
+
+> **Y el dato que vale de esa tabla:** cinco disparadores dependen de las ocho preguntas de negocio, **ninguna de las ocho tiene respuesta escrita en el repositorio**, y la única que sí tiene un hecho de campo asociado —la 7— es precisamente la que nadie fue a mirar. Las preguntas están redactadas y listas desde hace semanas en `docs/discovery/business-questions-next.md`. **Lo que falta no es escribirlas: es una conversación de veinte minutos.**
+
+### La restricción más dura, comprobada contra el producto — y arreglada
+
+`Term / Deadline` se llama a sí misma *«la restricción más dura del documento»*:
+
+> *«Nada en V0 debe calcular, almacenar ni mostrar algo que se parezca a un plazo. Ni un campo de fecha derivada presentado como término, ni un “vence en N días”, ni una fecha calculada que la usuaria pueda leer como cómputo procesal. **La razón es de confianza, no de arquitectura**: una fecha que aparece en la pantalla se lee como afirmación del sistema, aunque en el código sea un cálculo ingenuo.»*
+
+**Se comprobó contra los once métodos, y el resultado tiene dos mitades.**
+
+**La buena:** el producto la cumple, y la cumple **por convergencia, no por obediencia** — se escribió sin leer este documento, y llegó a la misma prohibición desde el techo epistémico. `revisar-documento` llega a listar las frases exactas que nunca escribe (*«vence el…»*, *«le quedan N días»*), y `revision-de-rigor` §3.7 hace lo que ningún documento de arquitectura pidió: **buscar la cuenta ya hecha en el escrito que ella va a firmar**.
+
+**La mala, y era real:** la cumplía **con siete redacciones distintas**. Solo tres de los once traían la cláusula literal; los otros cuatro que escriben fechas la sostenían con el *«no calcular»* genérico del bloque de posición, que **no dice nada de convertir «treinta días» en una fecha**. Es la enfermedad de este repositorio otra vez: *una regla con dos redacciones se parte*.
+
+**Arreglado el mismo día.** Una sola cláusula, byte a byte, en los **siete** métodos que pueden escribir una fecha en su salida. Los otros cuatro no la llevan, y uno de ellos **no puede llevarla**: `preguntas-de-derecho` §6 tiene la única excepción del producto —si ella pone la regla de cómputo, se le hace la cuenta a la vista— y una frase absoluta ahí la contradiría. **Dos pruebas nuevas** vigilan las dos mitades: que la prohibición sea idéntica donde va, y que la excepción siga viviendo en un solo sitio. Comprobadas por mutación.
+
+### Las tres restricciones que no se pueden cumplir, y por qué decirlo importa
+
+`architecture-post-v0` escribe sus *«qué no debe romperse hoy»* para un **Core que no existe** (§7, ADR-018). Tres se leyeron con cuidado porque su enunciado suena aplicable y no lo es:
+
+| Restricción | Por qué hoy no aplica | Qué queda de ella |
+|---|---|---|
+| *«`ADMIN` sigue contando cero elementos, verificable por el test de superficie»* | No hay superficie MCP ni manifiesto de tools. **El canario no puede cantar porque no hay jaula** | **Se le construyó una jaula el mismo día, y cantó bien** — ver abajo |
+| *«toda mutación produce exactamente un evento»* (biyección mutación↔evento) | No hay Case Event Log. Las escrituras de hoy las hacen scripts sobre archivos | Queda **la disciplina**, y sí se cumple: `estado_del_caso.py` no reescribe, **sustituye solo la cabecera y conserva sus notas byte a byte** |
+| *«un backup sin round-trip de restauración probado no cuenta como backup»* | No hay backup | Queda como **la mejor frase del documento para el producto de hoy**, y aplicable tal cual: la copia que `estado_del_caso.py` hace antes de escribir **se restaura de verdad ante fallo**, y hay prueba que lo comprueba |
+
+> **Por qué esto se registra en vez de callarse.** La tentación al auditar un documento así es marcar las tres como «cumplidas» —suenan a cumplidas— o como «no aplica» y pasar. Las dos serían mentira: **una restricción que no puede violarse porque su objeto no existe no está cumplida, está vacía**, y el día que el Core exista alguien las dará por vigentes sin haberlas ejercitado nunca. Y hay una **cuarta** que sí es una restricción viva y hoy nadie vigila: *«el techo epistémico vive en el Domain, no en la superficie»*. **Hoy el techo epistémico vive entero en la superficie** —es prosa, en once `SKILL.md`— y no hay otro sitio donde ponerlo. No es un defecto del producto: es la descripción exacta de qué es este producto, y conviene tenerla escrita antes de que alguien construya el Core creyendo que la duplica.
+
+### El canario de `ADMIN`, traducido al producto que sí existe
+
+El **Principio 1** del plano administrativo dice que migraciones, packs y reparación *«existen solo en el runtime/CLI del producto, nunca como tools expuestas a Claude»*, y que eso **se comprueba con una prueba, no con una revisión que alguien recuerde hacer**: *«si algún día cuenta más de cero, la frontera se movió»*.
+
+Ese principio **sí tiene objeto hoy**, aunque no haya MCP: la superficie por la que este producto puede ejecutar código es el `allowed-tools` de cada `SKILL.md` (ADR-018). Así que se contó, por primera vez:
+
+| | |
+|---|---|
+| `SKILL.md` que declaran `allowed-tools` | **10 de 11** — todos menos `preguntas-de-derecho`, que no toca material |
+| Programas alcanzables desde la superficie | **6** — `md2docx`, `verificar_fidelidad`, `buscar`, `estado_del_caso`, `preparar_material`, `segunda_opinion` |
+| Programas en el disco **no** alcanzables desde ninguna skill | **2** — `traer_modelos.py` (baja los modelos de OCR) y `medir_realce.py` (mide si el realce mejora el OCR) |
+
+> **Y los dos que no están expuestos son exactamente de la clase `ADMIN`.** Bajar modelos de terceros es **instalar un pack**; medir el realce sobre material real es **instrumentación de desarrollo**. Ninguno de los dos tiene por qué poder invocarlo el modelo, y ninguno de los dos puede. **La cuenta de `ADMIN` en la superficie es cero** — no porque alguien la vigilara, sino porque la frontera se respetó sin nombrarla.
+>
+> **Ahora sí la vigila algo.** Una prueba fija los seis alcanzables y los dos reservados: si aparece un séptimo expuesto, o si uno de los dos administrativos se cuela en un `allowed-tools`, falla. Es la traducción literal del canario, y costó veinte líneas.
+
+### Lo vivo
 
 | # | Qué | Estado |
 |---|---|---|
-| **E-1** | **Unificar el formato de salida en los siete, con una convención de nombres única.** El documento dice que *«no depende de ninguna decisión pendiente»* | **Vivo, y medido de nuevo el 2026-09-05:** siguen siendo tres formas, más la del radicado. Es la condición para que el índice de SPEC-08 deje de ser heurística |
-| **E-2** | **DECISIÓN: ¿un formato o dos** —uno de lectura y uno para pegar—? | Pendiente, del dueño. Dos duplica el trabajo del método; uno obliga a elegir cuál pierde |
-| **E-3** | **DECISIÓN: ¿la carpeta refleja qué ES un documento** (clasificación, opinable, hoy prohibida al sistema) **o de dónde viene y a dónde va** (procedencia, comprobable, que es lo que hay)? | Pendiente, del dueño. **Y el documento ya trae el argumento que la resuelve casi sola:** `Pruebas/` y `Evidencias/` son valoraciones, y ubicar un archivo ahí **afirma algo que nadie decidió** |
-| **E-4** | **Medirlo de verdad:** *«la prueba no es que el archivo se vea bien en el editor, sino que ella lo abra con doble clic, lo copie y lo pegue en su escrito sin tocar nada»* | **Bloque 0.** Es la misma pasada real que esperan las once specs |
-| **E-5** | Un `.md` en Windows **puede no abrir con doble clic** | **Vivo y barato de comprobar** en la instalación, que es la fila 3 de §2 |
+| **A-4** | Preguntar la pregunta de negocio 7 | **Del dueño. Bloqueante desde hoy** (arriba) |
+| **A-5** | Revisar *«lo único que no se puede reconstruir»* según la respuesta | En espera de A-4 |
+| ~~**A-6**~~ | ~~Contar la superficie real de hoy~~ | **HECHA el 2026-09-05**, y con prueba que falla si crece — arriba |
+| **A-7** | Que la instalación en otra máquina (fila 3 de §2) **se registre como el disparo de dos exclusiones**, no solo como una prueba de que abre el `.md` | Cuando ocurra |
+| **A-8** | **Indexar `docs/discovery/business-questions-next.md`** — es el noveno corpus, del que cuelgan cinco disparadores | Vivo. Hoy solo se leyó lo necesario para las preguntas 2 y 7 |
 
 ---
+---
 
-*Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura parcial: faltan los ADR y cinco corpus más (§0.3).** Nada de este documento reemplaza a sus fuentes.*
+*Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura parcial: quedan `technical-design/`, los veinte dosieres de `skills-support/` y `discovery/business-questions-next.md` (§0.3, A-8).** Nada de este documento reemplaza a sus fuentes.*
