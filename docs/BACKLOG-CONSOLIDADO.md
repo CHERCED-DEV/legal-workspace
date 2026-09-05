@@ -698,4 +698,61 @@ Y la conclusión que saca en §1.3, sobre el almacén del Core:
 ---
 ---
 
+## §14 · Lo que pasó al ejecutar el producto cinco veces seguidas
+
+**2026-09-05, después de cerrar el §0.3.** Once specs estaban «ejecutadas» y ninguna comprobada **corriendo el método**. Se corrieron cinco contra el `caso-03`, cuyo truth set estaba escrito antes de esta sesión. [El registro completo está aparte](technical-design/v0/notes-verification/pasada-caso-03-2026-09-05.md); aquí va lo que cambia el backlog.
+
+### El resultado de veracidad, que es el que manda
+
+**Cero afirmaciones prohibidas afirmadas. Cuatro trampas de entidad de cuatro superadas.** Nariño y Mariño separados —con la advertencia de que la entrevista los distingue una sola vez—, las dos sociedades Delmonte separadas con sus dos NIT, «M E QUIROGA B» **resuelta** diciendo sobre qué se apoya la lectura, y la vecina sin nombre.
+
+**Y la pasada más valiosa no produjo archivo.** `inventario-de-anexos` se detuvo en su Fase 2: no hay hoja de hechos con la marca ` - REVISADO`, así que preguntó **y esperó**, en vez de emparejar con la hoja sin marcar «para ir adelantando». Las otras cuatro comprueban que el método hace bien lo que hace; **esta comprueba que no hace lo que no debe**, que es la mitad difícil.
+
+### Y lo que ejecutar encontró, que releer no encontraba
+
+**Seis defectos, todos míos.** Los dos que más pesan:
+
+| Qué | Cuándo |
+|---|---|
+| *«las dos actas, con veintiún días de diferencia»* — veintiuno no está en ninguna pieza | En la **primera salida producida bajo la regla unificada esa misma mañana** |
+| *«la diferencia es de $500.000»* — no aparece en el material | En el **mismo archivo**. La guarda de esa mañana solo miraba fechas |
+
+### La cuenta que hay que mirar de frente
+
+**Cinco conteos mal hechos el mismo día**, todos de la misma operación:
+
+| Cuándo | Qué se contó | Dijo | Era |
+|---|---|---|---|
+| 26-08 | Skills que tocan fechas (`H-03` del commit del arnés) | tres | **siete** |
+| 05-09 | `SKILL.md` que justifican la protección de escritura (§10) | tres | **siete** |
+| 05-09 | Fichas apoyadas de la pasada de hechos | 10 y 7 | **9 y 6** |
+| 05-09 | Documentadas de la cronología | cinco | **cuatro** |
+| 05-09 | Métodos con el bucle anidado (SPEC-13) | dos | **cuatro** |
+
+**Ninguna se encontró releyendo. Las cinco con un comando.** Y el cuarto fue el peor, porque los números **no cuadraban** —15 donde había 14— **y en vez de recontar se escribió un párrafo explicando la discrepancia**. La explicación era plausible y era falsa.
+
+> **La conclusión no es «hay que contar mejor».** Es que **un documento que pide una cifra sin dar con qué obtenerla está pidiendo un error**, y este arnés lo hacía en tres métodos. Ahora los tres invocan un programa, y la regla nueva está escrita en dos de ellos: **si el conteo no cuadra, se recuenta; no se explica.**
+
+### La tabla de §0, con su cuarta fila
+
+| Origen del hallazgo | Verificados | Eran como se decía |
+|---|---|---|
+| Leer documentos de diagnóstico | 6 | **0 de 6** |
+| Ejecutar el producto en un caso real | 4 | **4 de 4** |
+| Releer lo que uno mismo escribió esa semana | 18 | **0 de 18** |
+| **Cruzar dos corpus que nadie había cruzado** (§12) | — | **encontró lo que releer no encontraba** |
+| **Ejecutar el producto contra material con verdad conocida** | 5 métodos | **6 defectos, cero visibles releyendo** |
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| **§2 · 6** | Una prueba capaz de fallar | **Hecho en veracidad.** Instrumento, material y cinco pasadas. **Falta el coste** |
+| **§2 · 5** | `PM-M-1` (a) y (b) — instrumentar | **Sigue abierto y seguirá:** necesita una corrida con transcript, y una pasada de escritorio no lo es |
+| **P-1** | **Que una abogada abra una de estas cinco salidas.** Ninguna la ha visto nadie | **Del dueño.** Es la única medición que importa y la que no se ha hecho |
+| **P-2** | Correr las cinco contra el `caso-02`, que es **contexto B** — estas cinco son contexto A | Mío. Vivo |
+
+---
+---
+
 *Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura completa del §0.3 desde el 2026-09-05** (§§7 a 13). Los dos corpus grandes están triados **como corpus**, no pieza a pieza (`S-3`, `T-5`), y se dice por qué. Nada de este documento reemplaza a sus fuentes.*

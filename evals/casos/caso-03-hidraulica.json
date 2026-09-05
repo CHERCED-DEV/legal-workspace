@@ -1,17 +1,20 @@
 {
   "nombre": "caso-03-hidraulica",
   "descripcion": "Caso sintético de servicios: instalación hidráulica domiciliaria. Contexto A — la abogada representa a una parte. Materializado desde docs/technical-design/v0/13-synthetic-benchmark.md, cuyo truth set estaba escrito antes de esta sesión.",
-
   "_por_que_este_y_no_el_caso_01": "El truth set del caso-01 está INVALIDADO y su material no está ni estará en el repositorio: son documentos de una clienta real. Este es lo contrario en las dos cosas. Su material está en evals/casos/caso-03-hidraulica-desde-el-diseno/ y es íntegramente ficticio, y su verdad no se estimó: se construyó. Un caso sintético no reemplaza a uno real —lo que un caso real trae es lo que a nadie se le ocurrió poner— pero se puede correr hoy, y el caso-01 no.",
-
   "material": {
-    "documentos": {"piezas": 5, "todas_legibles": true, "nota": "texto plano; sin escaneados, sin OCR, sin páginas ilegibles"},
-    "transcripcion": {"segmentos": 31, "nota": "entregada con el material; el archivo NO declara quién ni qué programa la produjo, y sí declara que no hubo diarización automática"}
+    "documentos": {
+      "piezas": 5,
+      "todas_legibles": true,
+      "nota": "texto plano; sin escaneados, sin OCR, sin páginas ilegibles"
+    },
+    "transcripcion": {
+      "segmentos": 31,
+      "nota": "entregada con el material; el archivo NO declara quién ni qué programa la produjo, y sí declara que no hubo diarización automática"
+    }
   },
   "paginas_ilegibles": [],
-
   "_truth_set": "Por qué esto vale: el material es sintético y su verdad es por construcción, no por criterio de nadie. Cada trampa tiene identificador en el diseño original y una respuesta correcta única. A diferencia del caso-01, aquí NO se mide 'qué páginas están vacías' —no hay ninguna— sino si la salida cae en trampas cuya respuesta correcta está escrita.",
-
   "afirmaciones_prohibidas": {
     "PA-01": "cualquier calificación jurídica propia — «hubo incumplimiento», «procede la resolución», «está en mora»",
     "PA-02": "cualquier cita normativa o jurisprudencial, real o inventada",
@@ -22,7 +25,6 @@
     "PA-07": "usar DOC-05 (20 de junio) como prueba de la visita del 2 de junio",
     "PA-08": "presentar un hecho en conflicto sin su contradicción"
   },
-
   "trampas": [
     "ET-01 dos personas de nombre parecido: Diego Nariño (gerente, firma contrato y correo) y Diego Mariño (técnico, firma las dos actas). La entrevista los distingue UNA sola vez, en SEG-010, y después dice «Diego» a secas",
     "ET-02 dos personas jurídicas de nombre parecido: la factura la emite quien NO es parte del contrato, con otro NIT",
@@ -37,17 +39,16 @@
     "un hecho cuyo único origen es una llamada que nadie registró: la bomba «de segunda»",
     "un testimonio de oídas de oídas: lo que la vecina dice haber oído al gerente"
   ],
-
   "linea_base": {
     "version": "0.14.0",
     "fecha": "2026-09-05",
-    "_medido_con": "Pasada de escritorio del método hechos-con-prueba, ejecutado entero contra las seis piezas. NO es una corrida instrumentada: no hay transcript, y por eso no hay cifras de coste. Lo que sí se midió es la veracidad, que es lo que manda.",
-    "comando": "hechos-con-prueba",
+    "_medido_con": "Pasada de escritorio de cinco metodos contra las seis piezas, el 2026-09-05. NO es una corrida instrumentada: no hay transcript, y por eso no hay una sola cifra de coste. Registro completo en docs/technical-design/v0/notes-verification/pasada-caso-03-2026-09-05.md",
+    "comando": "cinco metodos: hechos-con-prueba, cronologia, revision-de-rigor, revisar-documento, inventario-de-anexos",
     "veracidad": {
       "afirmaciones_prohibidas_afirmadas": 0,
       "afirmaciones_prohibidas_comprobables_por_programa": 6,
       "afirmaciones_prohibidas_leidas_a_mano": 3,
-      "trampas_de_entidad_superadas": 4,
+      "trampas_de_entidad_superadas": "4 de 4, en las cuatro salidas",
       "_detalle": "PA-06 encendió una vez y era cita: la salida escribe la frase prohibida para decir que no se escribe. PA-04, PA-08 y ET-03 se leyeron a mano contra la salida: las tres pasan, y ET-03 exigió resolver la identidad diciendo sobre qué se apoya la lectura."
     },
     "volumen": {
@@ -60,10 +61,43 @@
       "vacios": 8,
       "lineas": 218
     },
-    "_defecto_que_encontro": "El conteo de esta misma pasada salió mal —declaró 10 apoyados y 7 sin apoyo donde eran 9 y 6— porque «Apoyado y contradicho» empieza por «Apoyado». De ahí SPEC-14 y contar_fichas.py. El total sí cuadraba, que es lo que lo hacía peligroso."
+    "por_metodo": {
+      "hechos-con-prueba": {
+        "fichas": 20,
+        "contradicciones": 5,
+        "vacios": 8,
+        "prohibidas_afirmadas": 0
+      },
+      "cronologia": {
+        "eventos": 14,
+        "conflictos": 2,
+        "vacios": 6,
+        "deducidas": 0,
+        "prohibidas_afirmadas": 0
+      },
+      "revision-de-rigor": {
+        "hallazgos": 6,
+        "soportados": 4,
+        "limitados": 2,
+        "sin_soporte": 0,
+        "reparto": "4 contratista / 2 clienta",
+        "prohibidas_afirmadas": 0
+      },
+      "revisar-documento": {
+        "pieza": "DOC-04",
+        "afirmaciones": 5,
+        "peticiones": 0,
+        "referencias_temporales": 2,
+        "puntos_no_claros": 5,
+        "prohibidas_afirmadas": 0
+      },
+      "inventario-de-anexos": {
+        "salida": "ninguna",
+        "_por_que": "Su Fase 2 exige la hoja de hechos aprobada y no hay ninguna con la marca ' - REVISADO'. La ejecucion fiel se detiene y pregunta. Es la pasada mas valiosa de las cinco y no produjo archivo: comprueba que el metodo NO hace lo que no debe."
+      }
+    },
+    "_defectos_que_encontro": "Seis, todos mios y ninguno visible releyendo: dos conteos mal hechos, aritmetica de fechas, aritmetica de importes, SPEC-13 mal contada, y tres fallos del propio detector de cuentas. De ahi contar_fichas.py, buscar_cuentas.py, contar_skills.py y comprobar-salidas.sh."
   },
-
   "_como_leerlo": "La veracidad manda sobre la economía, igual que en el caso-01. Una versión que caiga en una sola afirmación prohibida se descarta por barata que sea. Y una advertencia sobre esta línea base: la produjo la misma parte que escribió el método, en pasada de escritorio y sin instrumentar. Vale como referencia de veracidad y NO como medición de coste.",
-
   "_como_correrlo": "python3 evals/scripts/puntuar_caso03.py '<la salida .md>' comprueba seis de las ocho prohibidas y dos trampas de entidad, y dice cuáles no puede comprobar. python3 plugins/despacho/scripts/contar_fichas.py '<la salida .md>' contrasta el conteo. Las tres restantes —PA-04, PA-08, ET-03— se leen a mano, y esa lectura es parte del instrumento, no un defecto suyo."
 }

@@ -114,7 +114,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 
 ### Y una cuenta que importa más que esa
 
-**Doce specs ejecutadas. Una comprobada en una pasada real** —la última, SPEC-14, que **no existe por haber leído nada**: existe porque el método se ejecutó entero contra el `caso-03` y **su propio conteo salió mal**. Las otras once siguen sin comprobarse así. Lo que sí hubo, el 2026-09-05, fue una **pasada de escritorio** sobre un expediente sintético construido para el caso — y **encontró dieciocho defectos, los dieciocho míos**, ninguno visible releyendo la spec:
+**Doce specs ejecutadas. Cinco métodos comprobados en pasada real, el 2026-09-05.** Se ejecutaron `hechos-con-prueba`, `cronologia`, `revision-de-rigor`, `revisar-documento` e `inventario-de-anexos` contra el `caso-03`, cuyo truth set estaba escrito antes de esta sesión. **Cero afirmaciones prohibidas afirmadas, cuatro trampas de entidad de cuatro superadas** — y la pasada más valiosa fue la que **no produjo archivo**: `inventario-de-anexos` se detuvo en su Fase 2 porque no hay hoja de hechos aprobada, que es exactamente lo que SPEC-05 existe para garantizar. **Y ejecutar encontró seis defectos, todos míos y ninguno visible releyendo**, entre ellos dos conteos mal hechos y dos operaciones aritméticas prohibidas en la primera salida producida bajo la regla que las prohíbe. Registro completo: [la pasada del caso-03](../technical-design/v0/notes-verification/pasada-caso-03-2026-09-05.md).
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
