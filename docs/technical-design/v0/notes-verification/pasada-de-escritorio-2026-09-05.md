@@ -8,7 +8,7 @@
 
 ## El resultado en una línea
 
-**Seis defectos, los seis míos y los seis de esta semana.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+**Ocho defectos, los ocho míos y los ocho de esta semana.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -18,6 +18,8 @@
 | 4 | SPEC-05 | «Pregunta cuál manda» **sin «y te detienes»** |
 | 5 | — | **Mi propio registro**: dije dónde dispara la simetría sin ir a mirar |
 | 6 | SPEC-03 | **La posición se preguntaba sin esperar respuesta** — el defecto 4, en los once y en la regla que gobierna a las demás |
+| 7 | SPEC-03 | **Escribí una segunda regla de simetría, más débil, al lado de la que `revision-de-rigor` §2.3 ya tenía** |
+| 8 | SPEC-03 | **Mi barrido de contexto B buscó una sola palabra**: quedaban seis reglas con vocabulario de adversario |
 
 ---
 
@@ -98,6 +100,59 @@ La regla de SPEC-05 decía: *«no eliges. Los nombras los dos con su fecha y pre
 **Corregido en los once:** *«se pregunta una vez … **y se espera la respuesta antes de producir nada**. Ni se adivina, ni se pregunta y se sigue sobre una suposición: lo segundo es adivinar con el trámite de la pregunta por delante, y encima deja escrito que se consultó.»*
 
 > **Y esto es lo que hace que un barrido valga más que una corrección.** El defecto 4 costó una regla; buscar a sus hermanos costó cinco minutos y encontró el mismo fallo en once archivos, en la regla que gobierna a las demás. **Un defecto encontrado es una pregunta sobre dónde más vive.**
+
+---
+
+## Defecto 7 — Escribí una segunda regla de simetría al lado de una mejor que ya existía
+
+**Encontrado al abrir `revision-de-rigor` para ejecutarlo.** Su **§2.3 se llama «La simetría es obligatoria, y no se negocia»** y lleva ahí desde antes de que yo escribiera SPEC-03.
+
+**Y es mejor que la mía en tres cosas que a mí no se me ocurrieron:**
+
+| Lo que tiene §2.3 | Lo que tenía la mía |
+|---|---|
+| **Simetría hacia dentro:** *«cuando quien pide la revisión es la propia autoridad, los defectos de sus propios actos se buscan igual que los de las partes»* | Nada. Solo miraba entre partes |
+| **Por qué se rompe, y es material:** *«una parte aportó diecinueve páginas y la otra cuatro, y hay más superficie donde encontrar defectos. Esa diferencia no es una diferencia de corrección»* | Nada. La mía suponía que el sesgo es de intención |
+| **Una consecuencia contable:** el conteo reparte los hallazgos por lado, y si el reparto es desigual **se dice, con los números** | Nada |
+
+**Así que hice exactamente lo que este repositorio lleva documentado como su enfermedad:** una segunda regla, más débil, para lo mismo, **en once archivos**, al lado de una que ya funcionaba. Es «dos ledgers con identificadores que colisionan» otra vez, y esta vez la escribí yo mientras la citaba.
+
+**Corregido:** el bloque de los once adopta las tres piezas que le faltaban y **dice de quién es la regla**: *«Esta regla no es nueva y no es otra: `revision-de-rigor` §2.3 la tiene desarrollada para su caso desde antes, y es la misma. Si alguna vez las dos redacciones dicen cosas distintas, manda la de `revision-de-rigor` y esta se corrige.»* Una regla con dos redacciones necesita saber cuál manda, o vuelve a partirse.
+
+## Defecto 8 — Mi barrido de contexto B buscó una sola palabra
+
+**SPEC-03 se ejecutó grepeando «clienta».** Al ejecutar `/revisar-documento` apareció lo que ese grep no ve: su Fase 6 termina en *«describe huecos del documento, **no defectos del adversario**»*. **Quien decide no tiene adversario.**
+
+Barrido de verdad —`adversari`, `contraparte`, `el otro lado`, `a favor de`, `le conviene`— y salieron **seis reglas más**, en tres comandos:
+
+| Dónde | Decía | Dice |
+|---|---|---|
+| `revisar-documento` (descripción) | «un escrito de la contraparte» | «un escrito de una de las partes» |
+| `revisar-documento` §1 | «Un escrito de la contraparte invoca normas» | «Un escrito de parte invoca normas» |
+| `revisar-documento` Fase 6 | «no defectos del adversario» | «no defectos de quien lo escribió» + *si ella decide, no existe un adversario cuyos defectos buscar* |
+| `revision-de-rigor` §4 | «Una contraparte razonable podría alegar X» | «Otra parte razonable…» + *vale para cualquiera de las partes* |
+| `revision-de-rigor` §7 | «su objeto es a menudo material de la contraparte» | «material producido por otro» |
+| `redactar-escrito` §1 | «deja de leerse como cita del adversario» | «como cita de quien la invocó» |
+| `estado-del-caso` §6 | «Depende de la contraparte» | «Depende de las demás partes» |
+
+**La lección:** un barrido por una palabra no es un barrido. **La palabra que buscas es la que ya sabías que estaba mal**; las que hacen daño son las que no se te ocurrió buscar.
+
+---
+
+## Dos barridos que no encontraron nada, y decirlo también es el resultado
+
+**(a) Reglas que pudieran empujar a un método más allá del límite de derecho** —la clase del defecto 2—. Se buscó `requisito`, `acreditar`, `procedente`, `suficiente`, `idóneo`, `legitimación`, `válido`, `competente`, `nulidad`, `caducidad`, `prescripción` en los once. **Ninguna aparición autoriza cruzar el límite:** todas son prohibiciones —nombrar la figura para vetarla, que es el uso correcto—, declaraciones de «este método no contiene derecho», o el guardarraíl que se añadió al corregir el defecto 2.
+
+**(b) Qué métodos declaran el límite.** Siete lo dicen con esas palabras. Los cuatro que no, comprobados uno por uno **y ninguno es un hueco**:
+
+| Método | Por qué no lo dice |
+|---|---|
+| `redactar-escrito` | Tiene una regla **más dura**: *«ninguna norma entra por ninguna vía, ni la que invoca el escrito contrario, ni la que ella misma te dictó»* — y la llama su restricción más importante |
+| `preguntas-de-derecho` | **Su método entero es negarse a responder derecho.** Declararlo sería repetir el título |
+| `buscar-en-el-caso` | Devuelve archivo y renglón. Su principio rector es otro, y es el suyo: *«cero apariciones significa "no aparece en lo que se pudo leer", jamás "no está en el papel"»* |
+| `preparar-material` | Trabajo mecánico de un programa; no produce afirmaciones sobre el caso |
+
+> **Un barrido que vuelve limpio vale lo mismo que uno que encuentra algo, si se escribe.** Sin este apartado, dentro de un mes alguien vuelve a preguntarse lo mismo y lo vuelve a mirar.
 
 ---
 

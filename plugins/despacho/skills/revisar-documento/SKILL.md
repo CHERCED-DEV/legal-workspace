@@ -1,7 +1,7 @@
 ---
 name: revisar-documento
-description: "Método para revisar un documento que llegó al caso —un escrito de la contraparte, una comunicación de una autoridad, un contrato, un requerimiento, una respuesta— y devolver en una sola pasada qué es, qué afirma, qué pide, qué decide, qué referencias temporales contiene textualmente y qué parece exigir una actuación. Úsalo cuando pidan revisar, leer, entender o resumir un documento recibido. No lo uses para redactar la respuesta, calcular plazos, decir si algo está vencido, calificar el documento ni responder preguntas de derecho."
-version: 0.2.1
+description: "Método para revisar un documento que llegó al caso —un escrito de una de las partes, una comunicación de una autoridad, un contrato, un requerimiento, una respuesta— y devolver en una sola pasada qué es, qué afirma, qué pide, qué decide, qué referencias temporales contiene textualmente y qué parece exigir una actuación. Úsalo cuando pidan revisar, leer, entender o resumir un documento recibido. No lo uses para redactar la respuesta, calcular plazos, decir si algo está vencido, calificar el documento ni responder preguntas de derecho."
+version: 0.2.3
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -15,7 +15,7 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 
 **Este método no contiene derecho.** No hay aquí normas, plazos, clases de escritos ni requisitos de ninguna jurisdicción, y **tú no afirmas ninguno**. Si para decir qué es el documento crees necesitar una categoría jurídica, no la necesitas: **transcribe cómo se llama a sí mismo**.
 
-**Pero el documento sí trae derecho, y ese se transcribe.** Un escrito de la contraparte invoca normas en cada apartado; entregar la revisión sin ellas es devolver el documento mutilado justo donde más pesa, y de un modo que ella no puede notar. Se recogen **igual que cualquier otra afirmación del documento: entre comillas, con su página, en voz del documento y nunca en la tuya** — *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece que…»*.
+**Pero el documento sí trae derecho, y ese se transcribe.** Un escrito de parte invoca normas en cada apartado; entregar la revisión sin ellas es devolver el documento mutilado justo donde más pesa, y de un modo que ella no puede notar. Se recogen **igual que cualquier otra afirmación del documento: entre comillas, con su página, en voz del documento y nunca en la tuya** — *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece que…»*.
 
 > **La cláusula, y va escrita en la salida:** transcribir una norma que el documento invoca **no afirma que esa norma exista, que siga rigiendo, ni que diga lo que el documento le atribuye**. Eso lo comprueba ella.
 
@@ -40,9 +40,13 @@ Es la misma regla que ya gobierna todo lo demás: cuando el escrito afirma un he
 
 **Y en posición de autoridad, tres cosas se endurecen:**
 
-1. **Simetría obligatoria.** Toda carencia que **este método ya pueda señalar** —un documento que se anuncia y no está, una afirmación sin nada detrás, una firma sin el papel que la acompañe— **se busca en las demás partes antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: tampoco aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve.
+1. **Simetría obligatoria.** Toda carencia que **este método ya pueda señalar** —un documento que se anuncia y no está, una afirmación sin nada detrás, una firma sin el papel que la acompañe— **se busca en las demás partes antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: tampoco aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve. **Y también hacia dentro:** cuando quien decide es ella, **los defectos de lo que su propio despacho produjo se buscan igual que los de las partes**.
 
+   > **Por qué se rompe, y casi nunca es por mala fe: se rompe por una razón material.** Una parte aportó diecinueve páginas y la otra cuatro, y **hay más superficie donde encontrar defectos**. Esa diferencia no es una diferencia de corrección, y si no se dice, **la salida miente por su forma**. Por eso, cuando el reparto de hallazgos queda desigual, **se dice, con los números**.
+   >
    > **Y esta regla no ensancha lo que puedes señalar: solo obliga a mirar a los dos lados de lo que ya señalabas.** Si este método no puede decir que a una parte le falta un requisito —porque decir qué se exige es derecho, y el derecho lo pone ella—, **la simetría no te autoriza a decirlo ahora**. Lo que hace es impedir que, de lo que sí puedes decir, salga solo la mitad.
+   >
+   > **Esta regla no es nueva y no es otra:** `revision-de-rigor` §2.3 la tiene desarrollada para su caso desde antes, y es **la misma**. Si alguna vez las dos redacciones dicen cosas distintas, manda la de `revision-de-rigor` y esta se corrige — **dos reglas para lo mismo es la avería que este arnés lleva documentada**.
 2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
 3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
 
@@ -148,7 +152,7 @@ Tres formas típicas: **el anexo que se anuncia y no está**; **el hecho que se 
 
 **El anexo anunciado solo se da por ausente después de mirar.** Antes de escribir *"no aparece entre lo recibido"*, lista `1-Documentos recibidos/` (Fase 1). Si no pudiste mirarla, la línea se escribe *"anuncia el «Anexo 3 — comprobante» (p. 12); no se comprobó contra la carpeta"*, que es lo que sabes.
 
-Es la fase más útil y la que más fácil se contamina: **describe huecos del documento, no defectos del adversario.**
+Es la fase más útil y la que más fácil se contamina: **describe huecos del documento, no defectos de quien lo escribió.** Y si ella decide el asunto (§1), **no existe un adversario cuyos defectos buscar**: existen dos partes, y lo que se señale de una se busca en la otra.
 
 ### Fase 7 — Revisar la propia salida
 

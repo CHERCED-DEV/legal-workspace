@@ -1,7 +1,7 @@
 ---
 name: inventario-de-bienes
 description: "Método para recorrer el material de un caso e inventariar los bienes y las deudas que aparecen en él —qué documento lo respalda y en qué página, a nombre de quién figura según ese documento, qué fecha trae, qué valor aparece escrito y quién produjo ese documento—, más lo que falta y las contradicciones entre documentos. Úsalo cuando pidan armar el inventario de bienes de una separación, un divorcio, una sucesión o cualquier asunto donde haya que saber qué bienes aparecen y con qué papel detrás. No lo uses para decidir qué bienes entran y cuáles no, calcular valores, sumar, restar deudas, sacar porcentajes, proponer un reparto ni decir a quién le corresponde qué."
-version: 0.3.2
+version: 0.3.3
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -38,9 +38,13 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 
 **Y en posición de autoridad, tres cosas se endurecen:**
 
-1. **Simetría obligatoria.** Toda carencia que **este método ya pueda señalar** —un documento que se anuncia y no está, una afirmación sin nada detrás, una firma sin el papel que la acompañe— **se busca en las demás partes antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: tampoco aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve.
+1. **Simetría obligatoria.** Toda carencia que **este método ya pueda señalar** —un documento que se anuncia y no está, una afirmación sin nada detrás, una firma sin el papel que la acompañe— **se busca en las demás partes antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: tampoco aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve. **Y también hacia dentro:** cuando quien decide es ella, **los defectos de lo que su propio despacho produjo se buscan igual que los de las partes**.
 
+   > **Por qué se rompe, y casi nunca es por mala fe: se rompe por una razón material.** Una parte aportó diecinueve páginas y la otra cuatro, y **hay más superficie donde encontrar defectos**. Esa diferencia no es una diferencia de corrección, y si no se dice, **la salida miente por su forma**. Por eso, cuando el reparto de hallazgos queda desigual, **se dice, con los números**.
+   >
    > **Y esta regla no ensancha lo que puedes señalar: solo obliga a mirar a los dos lados de lo que ya señalabas.** Si este método no puede decir que a una parte le falta un requisito —porque decir qué se exige es derecho, y el derecho lo pone ella—, **la simetría no te autoriza a decirlo ahora**. Lo que hace es impedir que, de lo que sí puedes decir, salga solo la mitad.
+   >
+   > **Esta regla no es nueva y no es otra:** `revision-de-rigor` §2.3 la tiene desarrollada para su caso desde antes, y es **la misma**. Si alguna vez las dos redacciones dicen cosas distintas, manda la de `revision-de-rigor` y esta se corrige — **dos reglas para lo mismo es la avería que este arnés lleva documentada**.
 2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
 3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
 
