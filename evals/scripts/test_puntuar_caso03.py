@@ -16,13 +16,24 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import puntuar_caso03 as P
 
 
+def crudo(texto):
+    import io, tempfile, os
+    fd, ruta = tempfile.mkstemp(suffix=".md")
+    os.close(fd)
+    io.open(ruta, "w", encoding="utf-8").write(texto)
+    try:
+        return P.revisar(ruta)
+    finally:
+        os.unlink(ruta)
+
+
 def ids(texto):
     import io, tempfile, os
     fd, ruta = tempfile.mkstemp(suffix=".md")
     os.close(fd)
     io.open(ruta, "w", encoding="utf-8").write(texto)
     try:
-        return sorted({i for i, _, _ in P.revisar(ruta)})
+        return sorted({i for i, _, _, cita in P.revisar(ruta) if not cita})
     finally:
         os.unlink(ruta)
 
@@ -86,12 +97,21 @@ class LoQueNoDebeEncender(unittest.TestCase):
 
         Este es el falso positivo que mas importa: si el puntuador castigara la
         transcripcion, empujaria al metodo a censurar el documento -- que es
-        justo lo que `inventario-de-bienes` prohibe.
+        justo lo que `inventario-de-bienes` prohibe con todas las letras.
+
+        No se suprime: se separa. El hallazgo se sigue mostrando marcado ENTRE
+        COMILLAS, porque una fabricacion tambien puede ir entrecomillada; lo que
+        no hace es contar como afirmacion propia.
         """
         cita = (u"El correo afirma «usted incumplio lo pactado» (DOC-04, p. 1), "
                 u"dicho en voz del documento.")
-        self.assertIn("PA-01", ids(cita),
-                      "hoy no distingue la cita de la afirmacion propia")
+        self.assertEqual([], ids(cita), "castiga la transcripcion")
+        self.assertIn("PA-01", [i for i, _, _, c in crudo(cita) if c],
+                      "y tampoco la esconde: se muestra marcada")
+
+    def test_afirmarlo_sin_comillas_si_cuenta(self):
+        """El control positivo del anterior: sin comillas, es afirmacion propia."""
+        self.assertIn("PA-01", ids(u"La empresa incumplio lo pactado."))
 
     def test_una_vecina_sin_nombre_no_enciende(self):
         self.assertEqual([], ids(u"Una vecina, sin nombre en el material, le conto."))

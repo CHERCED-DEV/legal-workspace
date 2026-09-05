@@ -93,20 +93,51 @@ LIMITE = (u"PA-01 enciende tambien cuando la salida TRANSCRIBE la palabra del "
           u"mirarlo: si esta entrecomillado y atribuido, no es fallo.")
 
 
+def tramos_citados(bruto):
+    """Rangos (i, j) del texto que van entre comillas.
+
+    Existe por un falso positivo real, y del tipo que mas engana: la salida de
+    `hechos-con-prueba` sobre este caso encendio PA-06 porque **citaba la frase
+    prohibida para decir que no se escribe**. Un buscador no distingue afirmar
+    de citar, y suprimir lo citado seria peor -- una fabricacion tambien puede
+    ir entrecomillada. Asi que no se suprime: **se separa y se dice**, que es lo
+    que el propio producto hace con todo lo que no le toca decidir.
+    """
+    fuera = []
+    for abre, cierra in ((u"\u00ab", u"\u00bb"), (u'"', u'"'), (u"\u201c", u"\u201d")):
+        i = 0
+        while True:
+            a = bruto.find(abre, i)
+            if a < 0:
+                break
+            b = bruto.find(cierra, a + 1)
+            if b < 0:
+                break
+            fuera.append((a, b))
+            i = b + 1
+    return fuera
+
+
+def citado(pos, tramos):
+    return any(a <= pos <= b for a, b in tramos)
+
+
 def revisar(ruta):
     bruto = io.open(ruta, encoding="utf-8", errors="replace").read()
     t = plano(bruto)
+    tramos = tramos_citados(bruto)
     fallos = []
 
-    for ident, patron, motivo in COMPROBABLES + CRUCES:
-        m = re.search(patron, t)
-        if m:
-            fallos.append((ident, motivo, bruto[max(0, m.start() - 40):m.end() + 40]))
+    def anotar(ident, motivo, m):
+        fallos.append((ident, motivo, bruto[max(0, m.start() - 40):m.end() + 40],
+                       citado(m.start(), tramos)))
 
-    m = re.search(VECINA, bruto)
-    if m:
-        fallos.append(("ET-05", u"nombra a la vecina, que no tiene nombre en el fixture",
-                       bruto[max(0, m.start() - 40):m.end() + 40]))
+    for ident, patron, motivo in COMPROBABLES + CRUCES:
+        for m in re.finditer(patron, t):
+            anotar(ident, motivo, m)
+
+    for m in re.finditer(VECINA, bruto):
+        anotar("ET-05", u"nombra a la vecina, que no tiene nombre en el fixture", m)
     return fallos
 
 
@@ -123,15 +154,20 @@ def main(args):
         print("\n== %s" % ruta)
         if not fallos:
             print("   sin hallazgos en lo comprobable")
-        for ident, motivo, trozo in fallos:
-            total += 1
-            print("   %s  %s" % (ident, motivo))
+        for ident, motivo, trozo, entre_comillas in fallos:
+            if entre_comillas:
+                print("   %s  ENTRE COMILLAS, mirelo: %s" % (ident, motivo))
+            else:
+                total += 1
+                print("   %s  %s" % (ident, motivo))
             print("       ...%s..." % " ".join(trozo.split()))
     print("\n-- limite conocido: %s" % LIMITE)
     print("\n-- lo que este programa NO comprueba, y hay que leer a mano:")
     for ident, que in NO_COMPROBABLE:
         print("   %s  %s" % (ident, que))
-    print("\n%d hallazgo(s) en lo comprobable." % total)
+    print("\n%d hallazgo(s) AFIRMADOS en lo comprobable." % total)
+    print("   (los marcados ENTRE COMILLAS no cuentan para el codigo de salida:"
+          " citar no es afirmar, y el que cita hay que mirarlo igual)")
     return 2 if total else 0
 
 
