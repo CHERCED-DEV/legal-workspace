@@ -1,0 +1,17 @@
+FIXTURE NO DE PRODUCCION — contenido integramente ficticio
+
+(PDF de 2 paginas: p. 1 impresion del correo, p. 2 factura adjunta)
+
+--- pagina 1: CORREO ---
+Fecha: 15 de julio de 2025
+De: Area de facturacion, HIDROSERVICIOS DELMONTE S.A.S.
+Firma: Diego Narino Pelaez
+
+Senora Quiroga:
+El valor total del servicio asciende a $4.300.000.
+Saldo pendiente: $2.300.000.
+Conforme a lo acordado, la entrega se pacto para el 21 de mayo de 2025.
+
+--- pagina 2: FACTURA ADJUNTA ---
+FACTURA DE VENTA No. FV-2087
+Emisor: DELMONTE HIDRAULICA Y ACABADOS S.A.S., NIT FIX-NIT-0002

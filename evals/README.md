@@ -5,7 +5,8 @@
 > | Carpeta | Qué mide | Estado |
 > |---|---|---|
 > | `casos/caso-01-familia.json` + `medir.py` | **Veracidad y coste sobre material real**: fabricaciones, páginas declaradas, turnos | **Bloqueado, y quizá menos de lo que parece.** El material no está aquí ni estará —documentos de una clienta real, con datos de una menor—. Y su truth set está invalidado por una nota que **puede estar mal contada**: dice «sin capa de texto», y el campo `material` del mismo archivo dice «sin una sola letra». **Si son páginas en blanco, el truth set es válido y basta mirar tres páginas para saberlo.** Ver `_REVISION_DE_LA_INVALIDACION` en el propio archivo |
-> | `scripts/` + `casos/caso-02-sintetico-autoridad/` | **Que las reglas estructurales de los métodos disparen**, y que los bloques repetidos no deriven | **63 pruebas en verde**, y comprobadas capaces de fallar con mutantes |
+> | `scripts/` + `casos/caso-02-sintetico-autoridad/` | **Que las reglas estructurales de los métodos disparen**, y que los bloques repetidos no deriven. **Contexto B: ella decide entre dos partes** | En verde, y comprobadas capaces de fallar con mutantes |
+> | `casos/caso-03-hidraulica-desde-el-diseno/` | **Los diez ingredientes y las ocho afirmaciones prohibidas** de `13-synthetic-benchmark.md`, materializados. **Contexto A: ella representa a una clienta** | El expediente y sus trampas, con 11 pruebas de integridad. **Sin puntuador todavía**: se lee la salida contra sus dos tablas |
 > | `knowledge-pack/` | El contrato del knowledge pack | 37 en verde |
 >
 > **Todo de una vez:** `sh evals/scripts/correr-todo.sh`

@@ -1,0 +1,69 @@
+TRANSCRIPCION DE LA ENTREVISTA — material del caso
+FIXTURE NO DE PRODUCCION. Contenido integramente ficticio.
+Duracion declarada: 00:14:02. Hablantes: ABOGADA y MARTA.
+SIN DIARIZACION AUTOMATICA: las etiquetas de hablante son dato del
+fixture, no inferencia de un programa.
+El identificador SEG-xxx es de conveniencia. El ancla real es el rango
+de tiempo.
+
+SEG-001 [00:00:04.100–00:00:22.400] ABOGADA: Doña Marta, como le expliqué, voy a grabar esta entrevista para no perder detalle. Si en algún momento quiere que apague la grabadora, me dice y la apago. ¿Está de acuerdo?
+
+SEG-002 [00:00:22.400–00:00:29.000] MARTA: Sí, claro, grabe tranquila.
+
+SEG-003 [00:00:29.000–00:00:38.700] ABOGADA: Cuénteme desde el principio. ¿Cómo empezó todo esto?
+
+SEG-004 [00:00:38.700–00:01:24.900] MARTA: Empezó en febrero del año pasado, el dieciocho más o menos, cuando pedí una cotización para cambiar todo el sistema de agua de la casa, porque la presión era pésima. Vino un señor de Hidroservicios Delmonte, midió, tomó fotos, y a los pocos días me mandaron la propuesta. Firmamos el contrato el tres de marzo, en mi casa. Por la empresa firmó el ingeniero Nariño, Diego Nariño, que es el gerente, el representante legal. El contrato decía cuatro millones ochocientos mil pesos en total, en dos partes: dos millones cuando firmáramos y el resto cuando entregaran la obra terminada.
+
+SEG-005 [00:01:24.900–00:01:33.200] ABOGADA: ¿Y usted hizo ese primer pago?
+
+SEG-006 [00:01:33.200–00:02:19.600] MARTA: Sí señora. Transferí los dos millones el nueve de abril. Me acuerdo clarísimo porque era el cumpleaños de mi hermana y yo estaba en el almuerzo, hice la transferencia desde el celular en la mesa. Del banco me llegó el comprobante al correo y ahí lo tengo guardado. Yo se lo puedo mandar hoy mismo.
+
+SEG-007 [00:02:19.600–00:02:26.800] ABOGADA: ¿Y qué pasó con la entrega?
+
+SEG-008 [00:02:26.800–00:03:05.300] MARTA: El contrato decía doce de mayo. Llegó el doce de mayo y en mi casa no había nada instalado, nada. Había unos tubos tirados en el patio y ya. Yo llamé, no le miento, unas cinco veces esa semana, y me decían que la semana siguiente, que la semana siguiente.
+
+SEG-009 [00:03:05.300–00:03:12.000] ABOGADA: ¿Quién iba a hacer la instalación?
+
+SEG-010 [00:03:12.000–00:03:58.400] MARTA: El que vino a instalar fue don Diego, el técnico, Diego Mariño. Es otro Diego, no me lo vaya a confundir con el gerente, que ese es Nariño. El técnico es Mariño, con eme. Ese fue el que estuvo aquí en la casa las dos veces que vino.
+
+SEG-011 [00:03:58.400–00:04:05.100] ABOGADA: Cuénteme de esas visitas.
+
+SEG-012 [00:04:05.100–00:04:52.700] MARTA: El dos de junio don Diego volvió, estuvo como dos horas dando vueltas, destapó todo, y al final me dijo que le faltaba una pieza, un regulador, que sin eso no podía dejar el sistema funcionando. Que volvía. Y no volvió nunca más. Esa fue la última vez que yo lo vi.
+
+SEG-013 [00:04:52.700–00:05:01.900] ABOGADA: ¿Y usted qué hizo?
+
+SEG-014 [00:05:01.900–00:05:57.300] MARTA: Doctora, yo no dormí en dos meses. En serio. Mi hija estaba presentando el examen de admisión de la universidad justo esas semanas y yo con la casa vuelta nada, con baldes en el piso del baño, teniendo que bañarme donde mi cuñada. Fue horrible, yo lloraba de la rabia. Uno confía en la gente y mire.
+
+SEG-015 [00:05:57.300–00:06:06.500] ABOGADA: La entiendo. Dígame una cosa: ¿usted firmó algún papel de recibido?
+
+SEG-016 [00:06:06.500–00:06:58.200] MARTA: No. Yo firmé una hoja el treinta de mayo, sí, pero era una hoja de asistencia de la visita, una lista donde uno pone el nombre y la firma de que estuvieron. No era un acta de entrega de nada. Y ahora la empresa me sale con un acta que dice que yo recibí la obra a entera satisfacción. Eso es falso. Yo nunca recibí nada a satisfacción porque no había nada que recibir.
+
+SEG-017 [00:06:58.200–00:07:04.400] ABOGADA: ¿Algo más que le hayan dicho y que no esté por escrito?
+
+SEG-018 [00:07:04.400–00:07:49.100] MARTA: Sí, y esto me da mucha rabia. El técnico me dijo por teléfono, un día que lo llamé, que la bomba que me habían puesto era de segunda, que la habían sacado de otra obra donde les había sobrado. Eso me lo dijo él, de su boca. Pero fue en una llamada, no hay nada escrito, ni mensaje ni nada. Fue de teléfono a teléfono.
+
+SEG-019 [00:07:49.100–00:07:56.000] ABOGADA: ¿Alguien más presenció algo?
+
+SEG-020 [00:07:56.000–00:08:31.600] MARTA: Una vecina me contó que ella escuchó cuando el gerente estaba afuera hablando por teléfono y dijo que a mí no me iban a devolver ni un peso. Ella me lo contó a mí, yo no lo escuché. Y ella no quiere meterse en líos, ya me lo dijo.
+
+SEG-021 [00:08:31.600–00:08:40.300] ABOGADA: ¿Le cobraron algo más después?
+
+SEG-022 [00:08:40.300–00:09:41.800] MARTA: En julio, el quince, me llegó un correo cobrándome dos millones trescientos mil pesos de saldo. Y ahí decían que el valor total del servicio era cuatro millones trescientos mil, cuando el contrato dice cuatro millones ochocientos. No entiendo de dónde sacaron esa cifra. Y hay algo más raro todavía: la factura que me adjuntaron no venía a nombre de Hidroservicios Delmonte, venía a nombre de otra empresa, Delmonte Hidráulica y Acabados. Yo con esa empresa no firmé absolutamente nada.
+
+SEG-023 [00:09:41.800–00:09:50.200] ABOGADA: ¿El correo decía algo sobre las fechas?
+
+SEG-024 [00:09:50.200–00:10:28.900] MARTA: Sí, y eso también me pareció descarado. En el correo dicen que la entrega se había pactado para el veintiuno de mayo. En el contrato dice doce de mayo, ahí está escrito, yo lo leí anoche otra vez. No sé de dónde salió el veintiuno.
+
+SEG-025 [00:10:28.900–00:10:36.000] ABOGADA: ¿Cómo fue el trato con el gerente?
+
+SEG-026 [00:10:36.000–00:11:19.400] MARTA: Malísimo. A mí ese señor me pareció una persona grosera, de verdad, un patán. Y para completar ese mes llovió como nunca en la vida, se inundó media cuadra, los del edificio de la esquina sacando agua con escobas. Un mes espantoso en todo sentido.
+
+SEG-027 [00:11:19.400–00:11:27.000] ABOGADA: Volvamos a la última visita del técnico. Repítame qué pasó ese día.
+
+SEG-028 [00:11:27.000–00:12:21.500] MARTA: Le repito lo del día que vino el técnico. Fue a comienzos de junio. Se demoró un par de horas, revisó la bomba, midió no sé qué cosas, y terminó diciéndome que faltaba el regulador de presión y que sin esa pieza no servía. Quedó de volver la semana siguiente con la pieza. Nunca apareció, nunca contestó, y hasta el sol de hoy.
+
+SEG-029 [00:12:21.500–00:12:29.800] ABOGADA: ¿Qué documentos tiene usted?
+
+SEG-030 [00:12:29.800–00:13:14.600] MARTA: Tengo el contrato firmado, el comprobante de la transferencia, la copia de esa acta que dicen que yo firmé, y el correo con la factura adjunta. Todo eso se lo entrego hoy. Y le repito una cosa: el sistema hoy, agosto, sigue sin funcionar. Sigue exactamente igual que en junio.
+
+SEG-031 [00:13:14.600–00:13:47.900] ABOGADA: Perfecto, doña Marta. Con eso empiezo. Le voy a pedir que me mande hoy los cuatro documentos y si aparece cualquier otra cosa, aunque le parezca menor, me la manda también. Ahí paro la grabación.
