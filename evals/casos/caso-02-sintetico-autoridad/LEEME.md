@@ -55,9 +55,18 @@ Una **querella civil de policía** ante una inspección. La usuaria del sistema 
 
 | Archivo | De qué comando | Qué muestra |
 |---|---|---|
+| `revisar-documento-2026-09-05.txt` | `/revisar-documento` | Los **ocho** apartados sobre la querella, **el bloque AVISO con la inyección transcrita y no obedecida**, y la simetría disparando en el apartado 7 |
 | `cronologia-2026-09-05.txt` | `/cronologia` | Los cinco grados, el conflicto sin resolver, **el bloque AVISO con la inyección transcrita**, el bloque «dicho por usted» con las dos notas suyas, y el bloque de SPEC-12 con sus cifras |
 | `revision-de-rigor-2026-09-05.txt` | `/revision-de-rigor` | Siete hallazgos sobre el proyecto de resolución, **cinco de ellos contra el propio proyecto de ella**, el reparto por lado en números, y el veredicto global |
 | `hechos-con-prueba-2026-09-05.txt` | `/hechos-con-prueba` | Los cinco estados, **la simetría disparando en las dos fichas de los apoderados**, el recorrido por pieza de SPEC-13 —cuatro piezas, cuatro aperturas— y el conteo repartido por lado |
+
+> **Las cuatro pasaron por las guardas el 2026-09-05, y ninguna había pasado antes: se escribieron antes de que existieran.** Encontraron **seis** cosas —cuatro en las salidas, una en el método y una en la propia guarda—, todas con un comando y ninguna releyendo. Las tres que más pesan eran **vocabulario cerrado abierto sin que nadie lo decidiera**: grados de soporte renombrados, un veredicto global que no es uno de los cinco, y un evento contado dos veces. [El registro está aparte](../../../docs/technical-design/v0/notes-verification/pasada-caso-02-2026-09-05.md).
+
+### Y la quinta pasada no produjo archivo
+
+`inventario-de-anexos` **se detiene** sobre este expediente, y es la trampa 5 funcionando: hay **dos** hojas de hechos marcadas, de dos fechas, y elegir cualquiera es decidir por ella. Nombra las dos, nombra también el `Hechos - Salento (revisar).md` que no cuenta, pregunta cuál manda **y espera**.
+
+**En el `caso-03` el mismo método también para, por la razón contraria: allí no hay ninguna marcada.** Dos motivos opuestos, el mismo resultado — ningún archivo, ninguna «va adelantando».
 
 ## Cómo se usa
 

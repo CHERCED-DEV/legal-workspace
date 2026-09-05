@@ -698,7 +698,7 @@ Y la conclusión que saca en §1.3, sobre el almacén del Core:
 ---
 ---
 
-## §14 · Lo que pasó al ejecutar el producto cinco veces seguidas
+## §14 · Lo que pasó al ejecutar el producto en los dos contextos
 
 **2026-09-05, después de cerrar el §0.3.** Once specs estaban «ejecutadas» y ninguna comprobada **corriendo el método**. Se corrieron cinco contra el `caso-03`, cuyo truth set estaba escrito antes de esta sesión. [El registro completo está aparte](technical-design/v0/notes-verification/pasada-caso-03-2026-09-05.md); aquí va lo que cambia el backlog.
 
@@ -749,8 +749,8 @@ Y la conclusión que saca en §1.3, sobre el almacén del Core:
 |---|---|---|
 | **§2 · 6** | Una prueba capaz de fallar | **Hecho en veracidad.** Instrumento, material y cinco pasadas. **Falta el coste** |
 | **§2 · 5** | `PM-M-1` (a) y (b) — instrumentar | **Sigue abierto y seguirá:** necesita una corrida con transcript, y una pasada de escritorio no lo es |
-| **P-1** | **Que una abogada abra una de estas cinco salidas.** Ninguna la ha visto nadie | **Del dueño.** Es la única medición que importa y la que no se ha hecho |
-| **P-2** | Correr las cinco contra el `caso-02`, que es **contexto B** — estas cinco son contexto A | Mío. Vivo |
+| **P-1** | **Que una abogada abra una de estas nueve salidas.** Ninguna la ha visto nadie | **Del dueño.** Es la única medición que importa y la que no se ha hecho |
+| ~~**P-2**~~ | ~~Correr las cinco contra el `caso-02`, contexto B~~ | **HECHO el 2026-09-05.** Cuatro salidas existían y **ninguna había pasado por las guardas**: encontraron seis cosas, tres de ellas **vocabulario cerrado abierto sin que nadie lo decidiera** —grados renombrados, un veredicto global que no es uno de los cinco, un evento contado dos veces—. Y la quinta pasada **tampoco produjo archivo**: aquí `inventario-de-anexos` para porque hay **dos** hojas marcadas, donde en el `caso-03` paraba porque no había **ninguna**. [Registro](technical-design/v0/notes-verification/pasada-caso-02-2026-09-05.md) |
 
 ---
 ---
