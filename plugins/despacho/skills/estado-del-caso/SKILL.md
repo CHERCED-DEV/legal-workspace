@@ -1,6 +1,6 @@
 ---
 name: estado-del-caso
-description: Método para reconstruir el estado de un caso leyendo su carpeta: qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta, y qué falta, quedó a medias o no tiene respuesta. Úsalo cuando pidan retomar un caso, ponerse al día, saber en qué va un asunto, inventariar la carpeta o preparar una revisión antes de trabajar. No lo uses para valorar la solidez del caso, pronosticar resultados, decidir estrategia, calcular plazos ni redactar escritos.
+description: "Método para reconstruir el estado de un caso leyendo su carpeta: qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta, y qué falta, quedó a medias o no tiene respuesta. Úsalo cuando pidan retomar un caso, ponerse al día, saber en qué va un asunto, inventariar la carpeta o preparar una revisión antes de trabajar. No lo uses para valorar la solidez del caso, pronosticar resultados, decidir estrategia, calcular plazos ni redactar escritos."
 version: 0.2.1
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/estado_del_caso.py *)
 ---

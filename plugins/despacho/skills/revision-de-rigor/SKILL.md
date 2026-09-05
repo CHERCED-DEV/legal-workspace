@@ -1,6 +1,6 @@
 ---
 name: revision-de-rigor
-description: Método para poner a prueba una conclusión, un escrito propio, un borrador o un expediente entero, con una sola pregunta — qué de esto no se sostiene con el material disponible. Produce hallazgos falsables, cada uno con su localizador, lo que lo refutaría y su grado de soporte. Úsalo cuando pidan revisar antes de presentar, buscar lo que no se sostiene, hacer de contradictor, encontrar lo que la contraparte podría alegar, o preparar la revisión de un expediente. No lo uses para leer una pieza recibida, valorar prueba, decidir estrategia ni responder preguntas de derecho.
+description: "Método para poner a prueba una conclusión, un escrito propio, un borrador o un expediente entero, con una sola pregunta — qué de esto no se sostiene con el material disponible. Produce hallazgos falsables, cada uno con su localizador, lo que lo refutaría y su grado de soporte. Úsalo cuando pidan revisar antes de presentar, buscar lo que no se sostiene, hacer de contradictor, encontrar lo que la contraparte podría alegar, o preparar la revisión de un expediente. No lo uses para leer una pieza recibida, valorar prueba, decidir estrategia ni responder preguntas de derecho."
 version: 0.1.3
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---

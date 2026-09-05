@@ -248,23 +248,45 @@ legal-workspace/
 │     │  └─ plugin.json         <- nombre, version, descripcion del plugin
 │     ├─ README.md              <- este archivo
 │     ├─ GUIA-PARA-LA-ABOGADA.md  <- lo que lee ella; viaja con el plugin
-│     └─ skills/
-│        ├─ cronologia/
-│        │  └─ SKILL.md
-│        ├─ estado-del-caso/
-│        │  └─ SKILL.md
-│        ├─ hechos-con-prueba/
-│        │  ├─ SKILL.md
-│        │  └─ FORMATO-DE-SALIDA.md          <- material de apoyo del metodo
-│        ├─ inventario-de-anexos/
-│        │  └─ SKILL.md
-│        ├─ redactar-escrito/
-│        │  └─ SKILL.md
-│        └─ revisar-documento/
-│           └─ SKILL.md
-└─ docs/                        <- arquitectura del proyecto; NO es parte del plugin
-   └─ discovery/                <- material de pruebas y guias de trabajo del dueno
+│     ├─ INSTALACION.md         <- la hoja de instalacion (SPEC-11)
+│     ├─ scripts/               <- la oficina de programas. Python es OPCIONAL:
+│     │  │                         sin el los once comandos funcionan igual,
+│     │  │                         mas lentos, y cada uno declara que no lo tuvo
+│     │  ├─ preparar_material.py      <- descomprime, ordena, extrae texto (OCR)
+│     │  ├─ segunda_opinion.py        <- el segundo motor: detecta la omision silenciosa
+│     │  ├─ medir_realce.py           <- instrumentacion de la extraccion
+│     │  ├─ buscar.py                 <- donde aparece algo, sin abrir los documentos
+│     │  ├─ md2docx.py                <- la entrega en Word, con tablas de verdad
+│     │  ├─ verificar_fidelidad.py    <- cuanto texto sobrevivio a la conversion
+│     │  ├─ estado_del_caso.py        <- reemplaza la cabecera del archivo de estado
+│     │  │                               sin tocar lo que ella escribio (SPEC-06)
+│     │  ├─ modelos/PROCEDENCIA.md    <- de donde salen los modelos y con que licencia
+│     │  └─ README-*.md               <- uno por programa que lo necesita
+│     └─ skills/                <- los ONCE metodos. La carpeta es el nombre del comando
+│        ├─ buscar-en-el-caso/        └─ SKILL.md
+│        ├─ cronologia/               └─ SKILL.md
+│        ├─ estado-del-caso/          └─ SKILL.md
+│        ├─ hechos-con-prueba/        ├─ SKILL.md
+│        │                            └─ FORMATO-DE-SALIDA.md  <- apoyo del metodo
+│        ├─ inventario-de-anexos/     └─ SKILL.md
+│        ├─ inventario-de-bienes/     └─ SKILL.md
+│        ├─ preguntas-de-derecho/     └─ SKILL.md
+│        ├─ preparar-material/        └─ SKILL.md
+│        ├─ redactar-escrito/         └─ SKILL.md
+│        ├─ revisar-documento/        └─ SKILL.md
+│        └─ revision-de-rigor/        └─ SKILL.md
+├─ docs/                        <- arquitectura del proyecto; NO es parte del plugin
+│  ├─ specs/                    <- que se va a construir y como se sabe que quedo
+│  ├─ architecture/adrs/        <- por que se decidio asi
+│  └─ discovery/                <- material de pruebas y guias de trabajo del dueno
+└─ evals/                       <- las pruebas. NO son parte del plugin
+   ├─ scripts/                  <- regresion de los programas (13, en verde)
+   ├─ knowledge-pack/           <- el contrato del knowledge pack (37, en verde)
+   └─ casos/                    <- el banco de medicion del metodo. Su unico caso
+                                   esta INVALIDADO y su material no esta aqui
 ```
+
+> **Este arbol se corrigio el 2026-09-05, y lo que ocultaba dice algo.** Listaba **seis skills de once** y **no mencionaba `scripts/` en absoluto** — es decir, escondia la mitad del producto, incluida justo la parte que ADR-018 declaro posible. Es el hueco `V-12` del backlog. **Un arbol de archivos escrito a mano envejece solo**, y este llevaba asi desde que se anadieron los cinco comandos que faltan.
 
 Dos archivos mandan: `marketplace.json` (raíz) dice qué plugins hay y dónde están;
 `plugin.json` (dentro del plugin) dice cómo se llama y qué versión es.

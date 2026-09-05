@@ -1,6 +1,6 @@
 ---
 name: preparar-material
-description: Método para recibir el material de un caso y dejarlo listo para trabajar sin gastar lectura del modelo en trabajo mecánico: descomprime, ordena, copia los originales sin tocarlos, calcula la huella de cada pieza, detecta duplicados, extrae texto de fotografías y escaneados con instrumentación de cobertura, arma un PDF consolidado y escribe el registro de ingesta. Úsalo cuando lleguen archivos comprimidos, fotografías de un expediente, escaneados o una carpeta suelta de documentos y haya que montar el caso. No lee el caso ni lo interpreta: prepara. Si el programa no está disponible, lo dice y no supone nada.
+description: "Método para recibir el material de un caso y dejarlo listo para trabajar sin gastar lectura del modelo en trabajo mecánico: descomprime, ordena, copia los originales sin tocarlos, calcula la huella de cada pieza, detecta duplicados, extrae texto de fotografías y escaneados con instrumentación de cobertura, arma un PDF consolidado y escribe el registro de ingesta. Úsalo cuando lleguen archivos comprimidos, fotografías de un expediente, escaneados o una carpeta suelta de documentos y haya que montar el caso. No lee el caso ni lo interpreta: prepara. Si el programa no está disponible, lo dice y no supone nada."
 version: 0.1.1
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/preparar_material.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/segunda_opinion.py *)
 ---

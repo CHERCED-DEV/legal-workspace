@@ -1,6 +1,6 @@
 ---
 name: buscar-en-el-caso
-description: Método para encontrar dónde aparece un nombre, una cifra, una fecha, una matrícula o cualquier texto dentro de la carpeta de un caso, sin abrir ni leer los documentos. Recorre el texto de referencia, los borradores y lo terminado, y devuelve archivo y renglón para que ella vaya directo. Úsalo cuando pregunten dónde aparece algo, si algo se menciona, en qué documento está una cifra o un nombre, o para localizar antes de citar. No cita: dice dónde mirar. Y no concluye ausencia: lo que no sale puede estar en el papel igual.
+description: "Método para encontrar dónde aparece un nombre, una cifra, una fecha, una matrícula o cualquier texto dentro de la carpeta de un caso, sin abrir ni leer los documentos. Recorre el texto de referencia, los borradores y lo terminado, y devuelve archivo y renglón para que ella vaya directo. Úsalo cuando pregunten dónde aparece algo, si algo se menciona, en qué documento está una cifra o un nombre, o para localizar antes de citar. No cita: dice dónde mirar. Y no concluye ausencia: lo que no sale puede estar en el papel igual."
 version: 0.1.1
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/buscar.py *)
 ---

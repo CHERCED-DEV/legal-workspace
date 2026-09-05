@@ -1,6 +1,6 @@
 ---
 name: inventario-de-anexos
-description: Método para recorrer los documentos de un caso y producir un inventario de anexos numerado —qué es cada documento, quién lo produjo, de qué fecha es y a qué afirmación sirve—, más un bloque separado con lo que falta. Úsalo cuando pidan armar la lista de anexos, ordenar los documentos que se acompañan a un escrito, o establecer qué documentos faltan, se mencionan y no están, o están pero no se pueden usar. No lo uses para valorar prueba, decidir qué se aporta, redactar el escrito ni responder preguntas de derecho.
+description: "Método para recorrer los documentos de un caso y producir un inventario de anexos numerado —qué es cada documento, quién lo produjo, de qué fecha es y a qué afirmación sirve—, más un bloque separado con lo que falta. Úsalo cuando pidan armar la lista de anexos, ordenar los documentos que se acompañan a un escrito, o establecer qué documentos faltan, se mencionan y no están, o están pero no se pueden usar. No lo uses para valorar prueba, decidir qué se aporta, redactar el escrito ni responder preguntas de derecho."
 version: 0.2.8
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---

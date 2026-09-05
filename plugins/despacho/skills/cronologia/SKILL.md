@@ -1,6 +1,6 @@
 ---
 name: cronologia
-description: Método para armar la línea de tiempo de un caso a partir del material recibido —contratos, correos, comprobantes, actas, entrevistas—, con la fuente exacta de cada fecha, su grado de certeza (documentada, referida, aproximada, deducida o en conflicto), los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. Úsalo cuando pidan una cronología, ordenar los hechos en el tiempo, reconstruir qué pasó cuándo, o revisar si las fechas del caso se contradicen. No lo uses para redactar escritos, contar plazos, valorar prueba, decidir qué fecha es la buena, ni establecer que una cosa causó otra.
+description: "Método para armar la línea de tiempo de un caso a partir del material recibido —contratos, correos, comprobantes, actas, entrevistas—, con la fuente exacta de cada fecha, su grado de certeza (documentada, referida, aproximada, deducida o en conflicto), los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. Úsalo cuando pidan una cronología, ordenar los hechos en el tiempo, reconstruir qué pasó cuándo, o revisar si las fechas del caso se contradicen. No lo uses para redactar escritos, contar plazos, valorar prueba, decidir qué fecha es la buena, ni establecer que una cosa causó otra."
 version: 0.1.8
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---

@@ -1,6 +1,6 @@
 ---
 name: redactar-escrito
-description: Método para producir un borrador en Word a partir del material ya revisado de un caso: redacta la parte fáctica y monta la estructura, deja marcado y visible cada hueco que el material no permite llenar, y entrega aparte de dónde sale cada frase. Úsalo cuando pidan redactar, armar o preparar un escrito, una solicitud, un memorial o una respuesta con el material del caso. No lo uses para redactar fundamentos de derecho, citar normas o jurisprudencia, calificar jurídicamente los hechos, decidir qué clase de escrito presentar, ni construir los hechos (eso es hechos-con-prueba).
+description: "Método para producir un borrador en Word a partir del material ya revisado de un caso: redacta la parte fáctica y monta la estructura, deja marcado y visible cada hueco que el material no permite llenar, y entrega aparte de dónde sale cada frase. Úsalo cuando pidan redactar, armar o preparar un escrito, una solicitud, un memorial o una respuesta con el material del caso. No lo uses para redactar fundamentos de derecho, citar normas o jurisprudencia, calificar jurídicamente los hechos, decidir qué clase de escrito presentar, ni construir los hechos (eso es hechos-con-prueba)."
 version: 0.1.8
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---

@@ -1,6 +1,6 @@
 ---
 name: revisar-documento
-description: Método para revisar un documento que llegó al caso —un escrito de la contraparte, una comunicación de una autoridad, un contrato, un requerimiento, una respuesta— y devolver en una sola pasada qué es, qué afirma, qué pide, qué decide, qué referencias temporales contiene textualmente y qué parece exigir una actuación. Úsalo cuando pidan revisar, leer, entender o resumir un documento recibido. No lo uses para redactar la respuesta, calcular plazos, decir si algo está vencido, calificar el documento ni responder preguntas de derecho.
+description: "Método para revisar un documento que llegó al caso —un escrito de la contraparte, una comunicación de una autoridad, un contrato, un requerimiento, una respuesta— y devolver en una sola pasada qué es, qué afirma, qué pide, qué decide, qué referencias temporales contiene textualmente y qué parece exigir una actuación. Úsalo cuando pidan revisar, leer, entender o resumir un documento recibido. No lo uses para redactar la respuesta, calcular plazos, decir si algo está vencido, calificar el documento ni responder preguntas de derecho."
 version: 0.1.5
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---

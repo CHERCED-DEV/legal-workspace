@@ -1,6 +1,6 @@
 ---
 name: inventario-de-bienes
-description: Método para recorrer el material de un caso e inventariar los bienes y las deudas que aparecen en él —qué documento lo respalda y en qué página, a nombre de quién figura según ese documento, qué fecha trae, qué valor aparece escrito y quién produjo ese documento—, más lo que falta y las contradicciones entre documentos. Úsalo cuando pidan armar el inventario de bienes de una separación, un divorcio, una sucesión o cualquier asunto donde haya que saber qué bienes aparecen y con qué papel detrás. No lo uses para decidir qué bienes entran y cuáles no, calcular valores, sumar, restar deudas, sacar porcentajes, proponer un reparto ni decir a quién le corresponde qué.
+description: "Método para recorrer el material de un caso e inventariar los bienes y las deudas que aparecen en él —qué documento lo respalda y en qué página, a nombre de quién figura según ese documento, qué fecha trae, qué valor aparece escrito y quién produjo ese documento—, más lo que falta y las contradicciones entre documentos. Úsalo cuando pidan armar el inventario de bienes de una separación, un divorcio, una sucesión o cualquier asunto donde haya que saber qué bienes aparecen y con qué papel detrás. No lo uses para decidir qué bienes entran y cuáles no, calcular valores, sumar, restar deudas, sacar porcentajes, proponer un reparto ni decir a quién le corresponde qué."
 version: 0.2.7
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---

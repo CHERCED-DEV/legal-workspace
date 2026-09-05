@@ -1,6 +1,6 @@
 ---
 name: preguntas-de-derecho
-description: Qué hacer cuando la pregunta es de derecho y no de material — qué dice la ley, qué norma aplica, si algo procede o caducó, cuánto es el término, qué dijo una sentencia, si una cláusula es válida, qué se necesita para presentar algo. Aplica también cuando la pregunta viene mezclada con una tarea del caso. No responde derecho de su propia memoria: explica por qué y ofrece lo que sí puede hacer con el material. Si la abogada aporta ella misma la norma, el plazo o el criterio, lo aplica atribuido a ella y sin ampliarlo.
+description: "Qué hacer cuando la pregunta es de derecho y no de material — qué dice la ley, qué norma aplica, si algo procede o caducó, cuánto es el término, qué dijo una sentencia, si una cláusula es válida, qué se necesita para presentar algo. Aplica también cuando la pregunta viene mezclada con una tarea del caso. No responde derecho de su propia memoria: explica por qué y ofrece lo que sí puede hacer con el material. Si la abogada aporta ella misma la norma, el plazo o el criterio, lo aplica atribuido a ella y sin ampliarlo."
 version: 0.2.1
 ---
 

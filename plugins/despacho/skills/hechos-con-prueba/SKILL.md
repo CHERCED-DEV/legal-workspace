@@ -1,6 +1,6 @@
 ---
 name: hechos-con-prueba
-description: Método para convertir el material de un caso (entrevistas, declaraciones, documentos, comprobantes) en hechos candidatos emparejados con la prueba que los apoya, los contradice o los sitúa. Úsalo cuando pidan construir, extraer u ordenar los hechos de un asunto, armar el relato fáctico, o establecer qué está apoyado y qué no. No lo uses para redactar escritos, valorar prueba, decidir estrategia ni responder preguntas de derecho.
+description: "Método para convertir el material de un caso (entrevistas, declaraciones, documentos, comprobantes) en hechos candidatos emparejados con la prueba que los apoya, los contradice o los sitúa. Úsalo cuando pidan construir, extraer u ordenar los hechos de un asunto, armar el relato fáctico, o establecer qué está apoyado y qué no. No lo uses para redactar escritos, valorar prueba, decidir estrategia ni responder preguntas de derecho."
 version: 0.1.9
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
