@@ -46,13 +46,38 @@ PATRONES = [
     # aviso que enciende siempre no se mira nunca.
     (u"transcurso", u"\\b(?:han? transcurrido|han pasado|llevan?|desde hace|hace ya)"
                     u"\\s+(?:mas de\\s+)?%s\\s+%s\\b" % (NUM, UNIDAD)),
-    (u"vencimiento", u"\\b(?:vencio|vence|venc[ei]|quedan?\\s+%s\\s+%s)\\b" % (NUM, UNIDAD)),
+    # `venc\\w*` y no una lista: «vencio», «vencieron», «vencido», «vencimiento»
+    # y «vence» son todos la misma afirmacion, y la primera version solo cazaba
+    # tres de ellos -- la prueba de «jamas dice si vencieron» no encendia nada.
+    (u"vencimiento", u"\\bvenc\\w*\\b|\\bquedan?\\s+%s\\s+%s\\b" % (NUM, UNIDAD)),
 ]
 
 
 def plano(t):
     t = unicodedata.normalize("NFD", t)
     return "".join(c for c in t if unicodedata.category(c) != "Mn").lower()
+
+
+# Estas salidas hablan de la regla tanto como la aplican: «no se dice si
+# alguna vencio», «jamas los calcula», «prohibido sumar dias». Decir que algo
+# NO se hace no es hacerlo, igual que citar no es afirmar.
+NEGACIONES = (u"no se dice", u"no dice", u"no se calcula", u"no calcula",
+              u"no se afirma", u"sin decir", u"jamas", u"jamás", u"nunca",
+              u"prohibido", u"no se escribe", u"no se puede decir",
+              u"tampoco", u"ni se dice", u"sin calcular")
+
+
+def negado(pos, bruto):
+    """¿La expresion viene detras de una negacion, en la misma frase?"""
+    inicio = max(0, pos - 90)
+    antes = plano(bruto[inicio:pos])
+    # Se corta en fin de frase o en salto de PARRAFO, nunca en un salto de
+    # linea suelto: la plantilla envuelve «No calcula plazos ni dice si algo /
+    # esta vencido» a dos renglones, y cortar ahi dejaba «esta» sin su negacion.
+    corte = max(antes.rfind(u"."), antes.rfind(u"\n\n"))
+    if corte >= 0:
+        antes = antes[corte + 1:]
+    return any(plano(neg) in antes for neg in NEGACIONES)
 
 
 def citado(pos, bruto):
@@ -129,7 +154,9 @@ def revisar(ruta, texto_material=None):
             en_material = None
             if texto_material is not None:
                 en_material = m.group(0) in texto_material
-            fuera.append((clase, m.group(0), citado(m.start(), bruto), en_material,
+            fuera.append((clase, m.group(0),
+                          citado(m.start(), bruto) or negado(m.start(), bruto),
+                          en_material,
                           " ".join(bruto[max(0, m.start() - 60):m.end() + 60].split())))
     return fuera
 
@@ -167,7 +194,7 @@ def main(args):
         # dice «aqui decia N dias y esa cifra salio de una resta» tiene que
         # poder escribirse sin dejar la guarda en rojo para siempre.
         if es_cita:
-            marca += " (entre comillas)"
+            marca += " (citada o negada)"
         elif en_material is not True:
             mirar += 1
         print("   %-11s «%s»  %s" % (clase, expr, marca))

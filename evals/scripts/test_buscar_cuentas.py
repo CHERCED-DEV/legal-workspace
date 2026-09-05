@@ -105,6 +105,53 @@ class ContrastarConElMaterial(unittest.TestCase):
         self.assertEqual([], afirmadas, "hay una cuenta afirmada sin comillas")
 
 
+class DecirQueNoSeHaceNoEsHacerlo(unittest.TestCase):
+    """El falso positivo que encontro `revisar-documento` sobre el DOC-04.
+
+    La salida escribia «No se dice si alguna vencio, ni cuantos dias hay entre
+    ellas» -- que es exactamente la regla, enunciada. El detector la leia como
+    una cuenta. Es la misma clase de fallo que el «que NO es la contratante» de
+    `puntuar_caso03.py`: una negacion leida como afirmacion.
+    """
+
+    def _no_cuenta(self, texto):
+        r = hallar(texto)
+        self.assertTrue(r, "no encontro la expresion: la prueba no prueba nada")
+        return all(cita for _, _, cita, _, _ in r)
+
+    def test_no_se_dice_si_vencio(self):
+        self.assertTrue(self._no_cuenta(
+            u"No se dice si alguna venció, ni cuántos días hay entre ellas."))
+
+    def test_jamas_los_calcula(self):
+        self.assertTrue(self._no_cuenta(
+            u"El método transcribe los plazos. Jamás dice si vencieron."))
+
+    def test_prohibido_sumar(self):
+        self.assertTrue(self._no_cuenta(
+            u"Prohibido decir que quedan tres días."))
+
+    def test_la_negacion_sobrevive_a_un_salto_de_linea(self):
+        """La plantilla de `revisar-documento` envuelve su descargo a dos
+        renglones, y cortar en el salto dejaba «esta vencido» sin su negacion.
+        Lo encontro la primera salida real que uso esa plantilla.
+        """
+        self.assertTrue(self._no_cuenta(
+            u"Lectura propuesta, no dictamen. No calcula plazos ni dice si algo\n"
+            u"  está vencido. Las citas hay que comprobarlas."))
+
+    def test_pero_si_cruza_un_parrafo_entero(self):
+        r = hallar(u"Aquí no se calcula nada.\n\nHan transcurrido más de seis meses.")
+        self.assertIn(u"han transcurrido mas de seis meses",
+                      [e for _, e, cita, _, _ in r if not cita])
+
+    def test_la_negacion_no_cruza_el_punto(self):
+        """Y el limite, declarado: una frase antes no protege a la siguiente."""
+        r = hallar(u"No se calcula nada. Han transcurrido más de seis meses.")
+        afirmadas = [e for _, e, cita, _, _ in r if not cita]
+        self.assertIn(u"han transcurrido mas de seis meses", afirmadas)
+
+
 class ImportesQueSalenDeUnaCuenta(unittest.TestCase):
     """El segundo defecto de la misma clase, en el mismo archivo.
 
