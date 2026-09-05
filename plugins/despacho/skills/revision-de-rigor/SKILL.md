@@ -1,7 +1,7 @@
 ---
 name: revision-de-rigor
 description: "Método para poner a prueba una conclusión, un escrito propio, un borrador o un expediente entero, con una sola pregunta — qué de esto no se sostiene con el material disponible. Produce hallazgos falsables, cada uno con su localizador, lo que lo refutaría y su grado de soporte. Úsalo cuando pidan revisar antes de presentar, buscar lo que no se sostiene, hacer de contradictor, encontrar lo que la contraparte podría alegar, o preparar la revisión de un expediente. No lo uses para leer una pieza recibida, valorar prueba, decidir estrategia ni responder preguntas de derecho."
-version: 0.3.0
+version: 0.3.1
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -146,11 +146,15 @@ Para cada afirmación que el objeto revisado sostiene, sepárala en cinco:
 Recorre el material buscando, en este orden:
 
 1. **Estado inflado.** Un hecho presentado como acreditado cuando el material solo tiene que alguien lo dijo. Es el hallazgo más frecuente y el más consecuente.
+
+   > **Y su otra mitad, que se pasa por alto porque va en dirección contraria: la ausencia inflada.** Una ausencia presentada como hecho del mundo cuando el material solo permite decir que no está: *«no existe título»*, *«no se presentó»*, *«no aportó prueba alguna»*, *«no respondieron»*. Es la misma inflación con el signo cambiado —**del papel al mundo**—, y la formulación honesta es la que los demás métodos ya usan: *«no está entre el material revisado»*. **Y en posición de autoridad pesa más**, porque una ausencia inflada en un acto que decide se lee como un hecho probado en contra de alguien.
 2. **Alcance excedido.** La prueba cubre menos que la afirmación: el comprobante muestra el monto y no la fecha, y la frase afirma las dos cosas.
 3. **Material contrario omitido.** Algo del propio expediente que juega en contra y no se menciona.
 4. **Vacío de prueba.** Una afirmación que ninguna pieza sostiene.
 5. **Contradicción.** Dos piezas incompatibles, o una pieza que se contradice a sí misma.
 6. **Salto lógico.** La conclusión no se sigue de las premisas aunque las premisas estén bien.
+
+   > **El salto lógico más frecuente tiene nombre propio y ya está descrito en otro sitio de este arnés: la secuencia leída como causa.** `cronologia` §5 lo desarrolla —*«La trampa del orden: secuencia no es causa»*— y **manda su redacción**; esto es la misma regla, aplicada a un texto ya escrito. Las palabras que la delatan son las que esa sección lista: *tras, a raíz de, como consecuencia, en respuesta a, por eso, entonces, finalmente*, y los verbos *respondió, reaccionó, se vio obligado a, ignoró*. Dos eventos ordenados no afirman que uno causara el otro; si una pieza sí lo afirma, **el vínculo es de esa pieza y viaja atribuido**, no del texto que se revisa.
 7. **Número o fecha que salió de una cuenta.** Una cifra que **no está escrita en ninguna pieza** y que solo se obtiene operando: *«han transcurrido más de seis meses»*, *«quedan tres días»*, *«el total asciende a»*, *«venció el»*, *«dos días después»*.
 
    > **Y aquí lo que se señala es que la cuenta existe, no si está bien.** Decir «esa resta da mal» sería calcular para comprobar, y este método tampoco calcula. Se escribe **de qué dos datos salió y que ninguna pieza la trae escrita**, y se devuelve: *«"más de seis meses" no está en ningún documento; sale de restar el 12/02 —que además está en conflicto, ver R-02— y la fecha de hoy»*.

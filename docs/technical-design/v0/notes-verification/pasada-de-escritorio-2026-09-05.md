@@ -8,7 +8,7 @@
 
 ## El resultado en una línea
 
-**Nueve defectos, los nueve míos, ocho de ellos de esta semana.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+**Diez defectos, los diez míos, ocho de ellos de esta semana.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -21,6 +21,7 @@
 | 7 | SPEC-03 | **Escribí una segunda regla de simetría, más débil, al lado de la que `revision-de-rigor` §2.3 ya tenía** |
 | 8 | SPEC-03 | **Mi barrido de contexto B buscó una sola palabra**: quedaban seis reglas con vocabulario de adversario |
 | 9 | — | **`revision-de-rigor` no sabía nombrar una cuenta ya hecha** — el error que los otros diez tienen prohibido, en el documento que se firma |
+| 10 | — | Y tampoco **la ausencia inflada** ni **la secuencia leída como causa**: dos invariantes duras de los diez, invisibles para el que revisa |
 
 ---
 
@@ -151,6 +152,30 @@ Barrido de verdad —`adversari`, `contraparte`, `el otro lado`, `a favor de`, `
 > **Y esa asimetría deja el producto protegido justo al revés.** La prohibición de calcular cubre los diez comandos que **producen** texto. **El único que se enfrenta a un texto donde la cuenta ya está hecha —el que se va a firmar— no la nombraba.**
 
 **Corregido:** son **siete** cosas, no seis. La séptima es *«número o fecha que salió de una cuenta»*, y con la disciplina del método: **se señala que la cuenta existe y de qué dos datos salió, no si está bien** —decir «esa resta da mal» sería calcular para comprobar—. La octava, la de peticiones sin respuesta, conserva su condición de aplicar solo a expedientes.
+
+---
+
+## Defecto 10 — Y el noveno abrió una pregunta que había que barrer entera
+
+El defecto 9 no era sobre el cálculo: era sobre **una asimetría de diseño**. Diez comandos tienen prohibiciones duras porque **producen** texto; uno solo se enfrenta a un texto **ya escrito**. La pregunta que sale de ahí es sistemática:
+
+> **¿Qué prohibiciones de los diez no sabe nombrar el que revisa?**
+
+Barrida contra las cuatro invariantes más duras del arnés. **Dos huecos más:**
+
+| Invariante de los diez | ¿La detecta `revision-de-rigor`? |
+|---|---|
+| **No calcular** fechas ni importes | **No la detectaba** — defecto 9, corregido |
+| **«No está en la carpeta» no es «no existe»** | **No la detectaba.** Sus únicas menciones a la ausencia eran sobre el texto extraído por OCR |
+| **Secuencia no es causa** (`cronologia` §5) | **No la detectaba.** Un *«tras el reclamo, canceló»* en el texto revisado pasaba entero |
+| **Cita fantasma** —coordenada real, contenido inexistente— | **Sí**, por la vía de «alcance excedido» y «vacío de prueba» |
+
+**Y aquí no se añadieron dos categorías más.** Con la lección del defecto 7 delante —**una regla con dos redacciones se parte**—, cada hueco se enganchó donde ya vive su forma, y **apuntando a su dueño**:
+
+- **La ausencia inflada** es *«estado inflado» con el signo cambiado* —del papel al mundo—, así que va como segunda mitad de esa categoría, con la formulación honesta que los demás métodos ya usan. Y con la nota de que **en posición de autoridad pesa más**: una ausencia inflada en un acto que decide se lee como hecho probado en contra de alguien.
+- **La secuencia leída como causa** es el salto lógico más frecuente, **ya descrito en `cronologia` §5**, que **manda su redacción**. Va como sub-caso del salto lógico, con la lista de conectores de esa sección y sin reescribirla.
+
+> **La lista pasa de seis a siete, no a nueve.** Un método cuyo procedimiento crece con cada hallazgo deja de ser un procedimiento.
 
 ---
 
