@@ -19,11 +19,13 @@
 > |---|---|---|
 > | De **leer documentos de diagnóstico** | 6 | **0 de 6** |
 > | De **ejecutar el producto en un caso real** | 4 | **4 de 4** |
-> | **De lo que yo escribí esta misma semana**, puesto a decidir sobre un expediente | 8 | **0 de 8** |
+> | **De lo que yo escribí esta misma semana**, puesto a decidir sobre un expediente | 15 | **0 de 15** |
 >
-> **Ocho defectos en las specs escritas estos días**, encontrados en una tarde de ejecutarlas contra un expediente sintético, **ninguno visible releyéndolas** — y uno de ellos **en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse**. Está todo en [la pasada de escritorio](technical-design/v0/notes-verification/pasada-de-escritorio-2026-09-05.md).
+> **Quince defectos en lo escrito estos días**, encontrados ejecutándolo contra un expediente sintético, **ninguno visible releyéndolo**. Dos merecen citarse aparte: uno estaba **en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse**, y **el último es uno de los otros, repetido por mí dos horas después de escribirlo**. Está todo en [la pasada de escritorio](technical-design/v0/notes-verification/pasada-de-escritorio-2026-09-05.md).
 >
-> **Lo que eso significa para este documento:** el problema nunca fue que el backlog fuera viejo. **Es que escribir una regla y releerla no dice si decide.** Un ítem cerrado por lectura —el mío incluido, el de ayer incluido— vale lo que vale un ítem del 28/08: hay que ponerlo delante de un caso.
+> **Lo que eso significa para este documento:** el problema nunca fue que el backlog fuera viejo. **Es que escribir una regla y releerla no dice si decide.** Un ítem cerrado por lectura —el mío incluido, el de hace dos horas incluido— vale lo que vale un ítem del 28/08: hay que ponerlo delante de un caso.
+>
+> **Y el corolario del defecto 15, que es el más incómodo:** saber la regla no basta para cumplirla. De los quince, **tres quedaron con prueba automática** —que los bloques repetidos digan lo mismo, que toda regla que mande preguntar mande esperar, y que la razón de `V-7` se escriba una sola vez— porque **una lección escrita en un documento la vuelve a romper quien la escribió**.
 >
 > **La regla que sale de ahí gobierna en qué orden se lee lo que queda:** *un ítem que nació ejecutando el producto describe un defecto real; uno que nació leyendo un documento sobre el producto, la mitad de las veces describe algo ya arreglado, o describe mal lo que está roto.* De los ~108 identificadores sin verificar, **los que tienen un pase real detrás van primero** — y los cuatro que se cerraron el 2026-09-05 son precisamente esos.
 

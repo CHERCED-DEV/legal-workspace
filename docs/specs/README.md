@@ -113,7 +113,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 
 ### Y una cuenta que importa más que esa
 
-**Once specs ejecutadas. Cero comprobadas en una pasada real.** Lo que sí hubo, el 2026-09-05, fue una **pasada de escritorio** sobre un expediente sintético construido para el caso — y **encontró ocho defectos, los ocho míos, los ocho escritos esa misma semana, ninguno visible releyendo la spec**:
+**Once specs ejecutadas. Cero comprobadas en una pasada real.** Lo que sí hubo, el 2026-09-05, fue una **pasada de escritorio** sobre un expediente sintético construido para el caso — y **encontró quince defectos, los quince míos**, ninguno visible releyendo la spec:
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -125,10 +125,19 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | 6 | SPEC-03 | La posición también se preguntaba sin esperar — en los once |
 | 7 | SPEC-03 | Una segunda regla de simetría, más débil, al lado de la que `revision-de-rigor` §2.3 ya tenía |
 | 8 | SPEC-03 | El barrido de contexto B buscó **una sola palabra**: quedaban seis reglas con vocabulario de adversario |
+| 9 | — | `revision-de-rigor` **no sabía nombrar una cuenta ya hecha** — el error que los otros diez tienen prohibido, en el documento que se firma |
+| 10 | — | Ni **la ausencia inflada** ni **la secuencia leída como causa**: dos invariantes duras, invisibles para el que revisa |
+| 11 | SPEC-03 | La regla exigía un número que **el formato de salida no tenía dónde poner** |
+| 12 | — | `buscar.py` devolvía **el trabajo del sistema como si fuera el expediente** — y el peor caso llevaba la marca ` - REVISADO` |
+| 13 | — | **«Vereda» contaba como identificador**: dos predios vecinos se habrían fundido en una fila |
+| 14 | — | **Ninguna negativa estaba hecha para quien decide.** Contestarle a una autoridad qué resolver no es opinar: es tomarle el acto |
+| 15 | — | **El defecto 7 otra vez, cometido por mí dos horas después de escribirlo** |
+
+> **Y el decimoquinto es el que hay que leer dos veces:** es el séptimo, **cometido otra vez, por mí, dos horas después de haberlo encontrado y escrito**. Los catorce primeros son cosas que no vi. Ese lo vi, lo nombré, escribí que *«una regla con dos redacciones se parte»*, y volví a partir una. **La conclusión no es tener más cuidado: es que el cuidado no basta y hace falta la guarda.**
 
 > **Y la conclusión, que gobierna cómo se lee esta tabla entera:** *«ejecutada» significa que el cambio está en el código y que pasan los observables que no dependen de nadie.* **No significa que funcione.** Ocho de ocho defectos aparecieron en la primera tarde de poner las reglas a decidir sobre un expediente concreto, y **el expediente lo construí yo, que escribí las reglas** — está sesgado hacia ellas por construcción. Lo que un caso real trae y ese no es lo que a nadie se le ocurrió poner.
 
-**Dos de los ocho eran clases, no casos, y las dos quedaron con guarda automática** (`evals/scripts/test_bloques_identicos.py`, 12 pruebas comprobadas con mutantes): que los bloques repetidos **digan lo mismo** y no solo estén, y que **toda regla que mande preguntar mande esperar**.
+**Tres de los quince quedaron con guarda automática** (`evals/scripts/test_bloques_identicos.py`, 12 pruebas comprobadas con mutantes): que los bloques repetidos **digan lo mismo** y no solo estén, y que **toda regla que mande preguntar mande esperar**.
 
 ### Lo que las dos primeras ejecuciones enseñaron sobre el backlog
 
