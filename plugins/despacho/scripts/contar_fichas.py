@@ -240,6 +240,69 @@ def main_rigor(ruta, texto):
     return 0
 
 
+def contar_documento(texto):
+    """Los apartados contables de una salida de `revisar-documento`.
+
+    Su CONTEO declara cinco cifras. Tres salen de estructuras que se pueden
+    contar -- las filas de las tablas de los apartados 2 y 5, y los puntos
+    numerados del 7 -- y dos, peticiones y decisiones, se escriben en prosa y
+    **este programa no las cuenta**. Se dice cuales cuenta y cuales no, en vez
+    de dar una cifra que parezca completa.
+    """
+    def seccion(n, siguiente):
+        m = re.search(r"(?im)^#+\s*%d\." % n, texto)
+        if not m:
+            return ""
+        j = re.search(r"(?im)^#+\s*%d\." % siguiente, texto[m.end():])
+        return texto[m.end():m.end() + j.start()] if j else texto[m.end():]
+
+    def filas(bloque):
+        return len([l for l in bloque.split("\n")
+                    if l.strip().startswith("|")
+                    and not re.match(r"^\|[\s:|-]+\|$", l.strip())
+                    and not re.search(r"(?i)cita literal|frase entera", l)])
+
+    return {
+        u"afirmaciones": filas(seccion(2, 3)),
+        u"referencias temporales": filas(seccion(5, 6)),
+        u"puntos no claros": len(re.findall(r"(?m)^\d+\.\s+\*\*", seccion(7, 8))),
+    }
+
+
+def conteo_documento_escrito(texto):
+    fuera = {}
+    for clave, patron in (
+            (u"afirmaciones", u"(\\d+) afirmaciones"),
+            (u"referencias temporales", u"(\\d+) referencias temporales"),
+            (u"puntos no claros", u"(\\d+) puntos no claros")):
+        m = re.search(patron, texto)
+        fuera[clave] = int(m.group(1)) if m else None
+    return fuera
+
+
+def main_documento(ruta, texto):
+    contado = contar_documento(texto)
+    d = conteo_documento_escrito(texto)
+    print("\n== %s   (revision de documento)" % ruta)
+    problemas = []
+    for k in (u"afirmaciones", u"referencias temporales", u"puntos no claros"):
+        print("   %-24s contadas %d · declaradas %s"
+              % (k, contado[k], d[k] if d[k] is not None else "(no declara)"))
+        if d[k] is None:
+            problemas.append(u"no declara «%s», y el metodo pide el conteo" % k)
+        elif d[k] != contado[k]:
+            problemas.append(u"declara %d «%s» y hay %d" % (d[k], k, contado[k]))
+    print("   peticiones y decisiones: NO las cuenta este programa (van en prosa)")
+    print("")
+    if problemas:
+        for x in problemas:
+            print("   NO COINCIDE: %s" % x)
+        print("\n   Una discrepancia pide RECONTAR, no explicarla.")
+        return 2
+    print("   lo contable coincide con lo declarado")
+    return 0
+
+
 def main(args):
     if len(args) != 1:
         sys.stderr.write(__doc__)
@@ -250,6 +313,8 @@ def main(args):
     texto = io.open(args[0], encoding="utf-8").read()
     if re.search(r"(?m)^#+\s+F-\d+\b", texto):
         return main_rigor(args[0], texto)
+    if re.search(r"(?im)^#+\s*1\.\s*QU[EÉ] ES", texto):
+        return main_documento(args[0], texto)
     if re.search(r"(?m)^\|\s*E-\d+\s*\|", texto) and not re.search(r"(?m)^##\s+H-", texto):
         return main_cronologia(args[0], texto)
     fichas, por_estado, sin_estado = contar(texto)

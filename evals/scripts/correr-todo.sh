@@ -13,5 +13,9 @@ done
 printf '\n=== evals/knowledge-pack\n'
 python3 evals/knowledge-pack/test_vias.py 2>&1 | tail -3
 python3 evals/knowledge-pack/test_vias.py >/dev/null 2>&1 || fallos=$((fallos+1))
+printf '\n=== las guardas sobre las salidas de los casos\n'
+sh evals/scripts/comprobar-salidas.sh 2>&1 | tail -2
+sh evals/scripts/comprobar-salidas.sh >/dev/null 2>&1 || fallos=$((fallos+1))
+
 printf '\n%s archivos de prueba con fallos\n' "$fallos"
 exit $fallos
