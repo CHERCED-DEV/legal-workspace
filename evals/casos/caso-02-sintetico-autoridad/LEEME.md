@@ -50,7 +50,9 @@ Una **querella civil de policía** ante una inspección. La usuaria del sistema 
 ## Cómo se usa
 
 ```bash
+sh evals/scripts/correr-todo.sh                       # todo
 python3 evals/scripts/test_marca_revisado.py          # trampas 3, 4 y 5
+python3 evals/scripts/test_bloques_identicos.py       # que las reglas no deriven
 python3 plugins/despacho/scripts/estado_del_caso.py \
         "evals/casos/caso-02-sintetico-autoridad" --comprobar   # trampa 6
 ```

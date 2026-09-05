@@ -1,5 +1,18 @@
 # Banco de medición del arnés Despacho
 
+> **Añadido el 2026-09-05: hay dos bancos aquí, y miden cosas distintas.** Conviene no confundirlos, porque uno está bloqueado y el otro no.
+>
+> | Carpeta | Qué mide | Estado |
+> |---|---|---|
+> | `casos/caso-01-familia.json` + `medir.py` | **Veracidad y coste sobre material real**: fabricaciones, páginas declaradas, turnos | **Bloqueado dos veces.** Su truth set está **invalidado por su propia nota** desde el 26/08, y **su material no está en este repositorio ni lo estará** — son documentos de una clienta real, con datos de una menor. Hacen falta los dos PDF originales |
+> | `scripts/` + `casos/caso-02-sintetico-autoridad/` | **Que las reglas estructurales de los métodos disparen**, y que los bloques repetidos no deriven | **63 pruebas en verde**, y comprobadas capaces de fallar con mutantes |
+> | `knowledge-pack/` | El contrato del knowledge pack | 37 en verde |
+>
+> **Todo de una vez:** `sh evals/scripts/correr-todo.sh`
+>
+> **Y lo que ninguno mide:** que un modelo aplique la prosa de los `SKILL.md`. Eso solo lo enseña una pasada real, que sigue sin ocurrir.
+
+
 > **Por qué existe.** Hasta hoy toda afirmación sobre si una versión del arnés es mejor o más barata que otra era una opinión. Este banco la convierte en una cifra. La primera vez que se corrió ya corrigió tres errores del plan de mejora que iban a dirigir el trabajo al sitio equivocado.
 
 **Esto no es producto.** Vive fuera del plugin, no se instala en la máquina de nadie y no viaja al Despacho de ella.
