@@ -355,7 +355,32 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 >
 > **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no tres reglas.** Queda registrado como **`V-14`**, y escrito como **[AC-05](architecture/adrs/AMENDMENT-CANDIDATES.md)** — candidato de enmienda a ADR-016, **abierto y esperando decisión**, con sus tres opciones y su recomendación. **No se resuelve unilateralmente**, que es la regla de ese documento; y la opción recomendada **le cambia una carpeta a ella**, lo que ADR-012 q7 manda validar con la profesional.
 
-**Cierre honesto del §0.3:** los ADR ya están leídos y triados. Lo que **sigue sin cubrir** de aquel párrafo es `docs/REFINADO-Y-FUENTES.md`, `docs/PENDIENTE-FORMA-DE-ENTREGA.md`, `docs/backlog/architecture-post-v0.md`, `docs/technical-design/` y los veinte dossiers de `docs/skills-support/`.
+**Cierre honesto del §0.3:** los ADR ya están leídos y triados, y **`PENDIENTE-FORMA-DE-ENTREGA.md` también** (§8). Lo que **sigue sin cubrir** es `docs/REFINADO-Y-FUENTES.md`, `docs/backlog/architecture-post-v0.md`, `docs/technical-design/` y los veinte dossiers de `docs/skills-support/`.
+
+---
+
+## §8 · `PENDIENTE-FORMA-DE-ENTREGA`, y lo que costó no haberlo leído
+
+**Leído el 2026-09-05.** Recoge feedback del dueño del 27 de agosto sobre **la forma de la entrega y la forma de la carpeta**, y llevaba sin indexar desde entonces.
+
+**Y no haberlo leído costó dos defectos el mismo día**, los dos míos:
+
+| Qué decía el documento | Qué pasó por no haberlo leído |
+|---|---|
+| *«Una convención de nombres única, que hoy son tres distintas (guion, raya, con y sin nombre de caso)»* | **La tabla de convenciones de SPEC-08 no listaba a `/redactar-escrito`**, cuyos nombres empiezan por el radicado. El índice habría dicho «no sé qué comando lo produjo» **en todos los borradores**, que es lo único que ella firma |
+| *«Una carpeta es una afirmación silenciosa, y este producto está construido para no hacer afirmaciones silenciosas»* · *«la profundidad no la paga ella»* | **AC-05 recomendaba una subcarpeta.** Corregido a la vía que el propio documento propone y que además ya estaba en el disco: **el archivo se declara en su primera línea** |
+
+> **De ahí la regla, que vale para los cuatro corpus que siguen sin cubrir:** un documento sin indexar no es deuda documental. **Es un defecto esperando**, y este cobró el mismo día en que se leyó.
+
+### Lo vivo de este documento
+
+| # | Qué | Estado |
+|---|---|---|
+| **E-1** | **Unificar el formato de salida en los siete, con una convención de nombres única.** El documento dice que *«no depende de ninguna decisión pendiente»* | **Vivo, y medido de nuevo el 2026-09-05:** siguen siendo tres formas, más la del radicado. Es la condición para que el índice de SPEC-08 deje de ser heurística |
+| **E-2** | **DECISIÓN: ¿un formato o dos** —uno de lectura y uno para pegar—? | Pendiente, del dueño. Dos duplica el trabajo del método; uno obliga a elegir cuál pierde |
+| **E-3** | **DECISIÓN: ¿la carpeta refleja qué ES un documento** (clasificación, opinable, hoy prohibida al sistema) **o de dónde viene y a dónde va** (procedencia, comprobable, que es lo que hay)? | Pendiente, del dueño. **Y el documento ya trae el argumento que la resuelve casi sola:** `Pruebas/` y `Evidencias/` son valoraciones, y ubicar un archivo ahí **afirma algo que nadie decidió** |
+| **E-4** | **Medirlo de verdad:** *«la prueba no es que el archivo se vea bien en el editor, sino que ella lo abra con doble clic, lo copie y lo pegue en su escrito sin tocar nada»* | **Bloque 0.** Es la misma pasada real que esperan las once specs |
+| **E-5** | Un `.md` en Windows **puede no abrir con doble clic** | **Vivo y barato de comprobar** en la instalación, que es la fila 3 de §2 |
 
 ---
 

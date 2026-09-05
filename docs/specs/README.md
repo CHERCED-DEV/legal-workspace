@@ -113,7 +113,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 
 ### Y una cuenta que importa más que esa
 
-**Once specs ejecutadas. Cero comprobadas en una pasada real.** Lo que sí hubo, el 2026-09-05, fue una **pasada de escritorio** sobre un expediente sintético construido para el caso — y **encontró quince defectos, los quince míos**, ninguno visible releyendo la spec:
+**Once specs ejecutadas. Cero comprobadas en una pasada real.** Lo que sí hubo, el 2026-09-05, fue una **pasada de escritorio** sobre un expediente sintético construido para el caso — y **encontró dieciocho defectos, los dieciocho míos**, ninguno visible releyendo la spec:
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -132,6 +132,9 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | 13 | — | **«Vereda» contaba como identificador**: dos predios vecinos se habrían fundido en una fila |
 | 14 | — | **Ninguna negativa estaba hecha para quien decide.** Contestarle a una autoridad qué resolver no es opinar: es tomarle el acto |
 | 15 | — | **El defecto 7 otra vez, cometido por mí dos horas después de escribirlo** |
+| 16 | — | El conteo de la búsqueda **mezclaba renglones con coincidencias** |
+| 17 | SPEC-08 | El índice **no reconocía los borradores de `/redactar-escrito`** — lo único que ella firma |
+| 18 | AC-05 | **Tres mecanismos adivinando lo que el archivo dice en su primera línea** |
 
 > **Y el decimoquinto es el que hay que leer dos veces:** es el séptimo, **cometido otra vez, por mí, dos horas después de haberlo encontrado y escrito**. Los catorce primeros son cosas que no vi. Ese lo vi, lo nombré, escribí que *«una regla con dos redacciones se parte»*, y volví a partir una. **La conclusión no es tener más cuidado: es que el cuidado no basta y hace falta la guarda.**
 
