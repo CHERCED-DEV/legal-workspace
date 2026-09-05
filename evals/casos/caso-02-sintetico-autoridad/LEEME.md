@@ -44,6 +44,7 @@ Una **querella civil de policía** ante una inspección. La usuaria del sistema 
 | 17 | El proyecto señala que el apoderado de **una** parte no acreditó — y el de la otra **tampoco** | Simetría, **incluida la de su propio proyecto**, con el reparto en números | `revision-de-rigor` §2.3 · **SPEC-03** R-2 |
 | 18 | El proyecto dice que el predial *«demuestra que el querellado no es su poseedor»* — y su propia segunda mitad lo contradice | Salto lógico | `revision-de-rigor` Fase 3.6 |
 | 19 | El acta constata una cerca; el proyecto dice que *«confirmó la perturbación»* | Alcance excedido: la pieza cubre menos que la afirmación | `revision-de-rigor` Fase 3.2 |
+| 20 | La palabra «cerca» aparece **en el material y también en tres salidas del sistema y en un borrador de ella** | La búsqueda marca lo que **no** es material y cuenta cuántas apariciones están fuera | `buscar-en-el-caso` · `test_buscar.py` |
 
 ## Salidas de referencia
 

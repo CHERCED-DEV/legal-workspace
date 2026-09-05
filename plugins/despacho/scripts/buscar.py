@@ -30,6 +30,21 @@ EXT_TEXTO = {'.md', '.txt'}
 EXT_IMAGEN = {'.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp', '.heic'}
 NO_CITABLE = ("Esto es el texto EXTRAIDO, no el documento. El reconocedor omite "
               "en silencio: cero resultados NO significa que no este en el papel.")
+# Una aparicion dentro de 2-Borradores o 3-Para presentar NO es material del
+# caso: es trabajo del sistema, o de ella. El §2 de seis SKILL.md dice que el
+# trabajo del sistema es pista y nunca origen, y una busqueda que devuelve las
+# tres cosas en una sola lista invita justo a citar la que no se puede citar.
+NO_ES_MATERIAL = ("De estas apariciones, %d estan FUERA de 1-Documentos recibidos: "
+                  "no son material del caso.\n"
+                  "  Lo que hay en 2-Borradores es trabajo del sistema o borradores "
+                  "de ella; lo de 3-Para presentar es lo que ella dio por terminado.\n"
+                  "  Sirven para saber donde mirar. La cita sale del documento "
+                  "original, siempre.")
+
+
+def origen(rel):
+    """Material recibido, o no. Es la unica distincion que cambia que se puede citar."""
+    return 'material' if str(rel).replace('\\', '/').startswith('1-Documentos recibidos') else 'otro'
 # Un expediente colombiano no contiene ideogramas: si salen, es basura del OCR.
 CJK = re.compile(r'[一-鿿぀-ヿ가-힯]')
 
@@ -150,8 +165,11 @@ def main():
     imgs = imagenes(caso, a.solo)
 
     if a.json:
+        for x in hall:
+            x['origen'] = origen(x['archivo'])
         print(json.dumps({'cadena': a.cadena, 'hallazgos': hall, 'leidos': leidos,
                           'ilegibles': ilegibles,
+                          'fuera_de_recibidos': len([x for x in hall if x['origen'] != 'material']),
                           'imagenes_no_miradas': [str(x.relative_to(caso)) for x in imgs],
                           'aviso': NO_CITABLE},
                          ensure_ascii=False, indent=1))
@@ -180,15 +198,19 @@ def main():
     for x in hall:
         if x['archivo'] != actual:
             actual = x['archivo']
-            print('### %s' % actual)
+            etiqueta = '' if origen(actual) == 'material' else '   <- NO es material del caso'
+            print('### %s%s' % (actual, etiqueta))
         marca = '  [renglon dudoso: basura probable del OCR]' if x['sospechoso'] else ''
         if x['sospechoso']:
             dudosos += 1
         print('  linea %-5d %s%s' % (x['linea'], x['texto'], marca))
     print()
+    fuera = len([x for x in hall if origen(x['archivo']) != 'material'])
     print('%d apariciones en %d archivos.%s'
           % (len(hall), len({x['archivo'] for x in hall}),
              ('  %d en renglones dudosos.' % dudosos) if dudosos else ''))
+    if fuera:
+        print(NO_ES_MATERIAL % fuera)
     print(NO_CITABLE)
 
 

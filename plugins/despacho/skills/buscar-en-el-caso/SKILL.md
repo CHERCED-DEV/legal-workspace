@@ -1,7 +1,7 @@
 ---
 name: buscar-en-el-caso
 description: "Método para encontrar dónde aparece un nombre, una cifra, una fecha, una matrícula o cualquier texto dentro de la carpeta de un caso, sin abrir ni leer los documentos. Recorre el texto de referencia, los borradores y lo terminado, y devuelve archivo y renglón para que ella vaya directo. Úsalo cuando pregunten dónde aparece algo, si algo se menciona, en qué documento está una cifra o un nombre, o para localizar antes de citar. No cita: dice dónde mirar. Y no concluye ausencia: lo que no sale puede estar en el papel igual."
-version: 0.2.3
+version: 0.3.0
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/buscar.py *)
 ---
 
@@ -53,6 +53,10 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/buscar.py *)
 **Por qué esto va antes que el procedimiento.** Lo que el programa recorre es **texto**: los `.md`, los `.txt`, los `.docx` y los `.pdf` que tengan capa de texto. Y en un expediente fotografiado, **el texto es lo que el reconocedor llegó a extraer** — y el reconocedor **falla callándose**: lo que su detector no encontró no salió, y nada avisó.
 
 **Entonces una búsqueda vacía sobre material fotografiado no es información sobre el expediente.** Escribir *«la matrícula no se menciona»* apoyándose en esto es el error que este método puede causar, y sería exactamente el que ADR-016 existe para impedir.
+
+> **Y la segunda cosa que hay que saber de esta búsqueda: recorre TODA la carpeta, y no todo lo que devuelve es material.** Un resultado en `2-Borradores/` es **trabajo del sistema o un borrador de ella**; uno en `3-Para presentar/`, algo que ella dio por terminado. **Ninguno de los dos es el expediente.**
+>
+> El programa los marca `<- NO es material del caso` y cuenta cuántos son. **Tú repites esa distinción en tu respuesta**, y nunca das una aparición de `2-Borradores/` como si fuera el papel: sirve para saber dónde mirar, y **la cita sale del documento original, siempre** (§2). El caso peligroso es concreto: una hoja de hechos marcada ` - REVISADO` aparece en los resultados **con aspecto de fuente autorizada**, y no lo es para esto — la marca dice que ella la miró, no que el dato salga de ahí.
 
 **Las tres cosas que la salida siempre declara, y que tú repites en tu respuesta:**
 

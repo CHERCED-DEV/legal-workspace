@@ -8,7 +8,7 @@
 
 ## El resultado en una línea
 
-**Once defectos, los once míos, nueve de ellos de esta semana.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+**Doce defectos, los doce míos.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
 
 | # | Spec | Qué estaba mal |
 |---|---|---|
@@ -23,6 +23,7 @@
 | 9 | — | **`revision-de-rigor` no sabía nombrar una cuenta ya hecha** — el error que los otros diez tienen prohibido, en el documento que se firma |
 | 10 | — | Y tampoco **la ausencia inflada** ni **la secuencia leída como causa**: dos invariantes duras de los diez, invisibles para el que revisa |
 | 11 | SPEC-03 | **La regla exigía un número que el formato de salida no tenía dónde poner** |
+| 12 | — | **`buscar.py` devolvía el trabajo del sistema como si fuera el expediente** — y el peor caso llevaba la marca ` - REVISADO` |
 
 ---
 
@@ -197,6 +198,30 @@ Al escribir el conteo de la salida hizo falta el reparto por lado —dos hechos 
 | **SPEC-13**, escrita ese día: barrer por pieza y comprobar en bloque | **Cuatro piezas, cuatro aperturas** en la captura y **cuatro reaperturas** en la comprobación — no once, que es lo que pedía el método anterior con once anclajes |
 | **El anclaje de la simetría** (defecto 5), puesto ese día en la fila «Sin apoyo» | **Disparó.** H-05 y H-06 —los dos apoderados— salieron juntas, con el reparto igual y con la distinción escrita: *no se dice que haga falta acreditar nada; se dice que una afirmación no tiene detrás ninguna pieza* |
 | El bloque anti-inyección | Atrapó el texto de la p. 2 y **dijo dónde quedó el punto que le pedían omitir** |
+
+---
+
+## Defecto 12 — La búsqueda devolvía el trabajo del sistema como si fuera el expediente
+
+**Y este no es de escritorio: `buscar.py` se corrió de verdad contra el expediente.** Es la primera pieza del día que se ejecuta como programa y no como lectura.
+
+Buscando «cerca», devolvió **ocho apariciones en siete archivos, en una sola lista**:
+
+| Dónde | Qué es |
+|---|---|
+| `1-Documentos recibidos/` — 3 archivos | **El material del caso** |
+| `2-Borradores/Cronologia…`, `Hechos…`, **`Hechos … - REVISADO.md.md`** | **Trabajo del sistema** |
+| `3-Para presentar/proyecto-resolucion.txt` | **Trabajo de ella** |
+
+**Cinco de las ocho no eran material, y nada lo decía.** Ni el programa ni el `SKILL.md`: `grep` de «trabajo del sistema» en los dos devolvía cero.
+
+**Por qué importa, y es la regla más repetida del arnés.** El §2 de seis `SKILL.md` dice que el trabajo del sistema es **pista, nunca origen**. Una búsqueda que contesta *««cerca» está en `Hechos - Salento…md` línea 3»* **invita exactamente al movimiento prohibido**. Y el caso peor está en la propia lista: la aparición dentro de `Hechos - Salento - 2026-04-10 - REVISADO.md.md` **tiene aspecto de fuente autorizada** — lleva la marca de ella —, y para esto no lo es: la marca dice que ella lo miró, **no que el dato salga de ahí**.
+
+**Corregido en el programa y en la skill.** Cada archivo fuera de `1-Documentos recibidos/` sale marcado `<- NO es material del caso`, el cierre cuenta cuántas apariciones están fuera y de qué son, y el `--json` lleva `origen` por hallazgo y `fuera_de_recibidos`. La skill añade la regla y nombra el caso peligroso.
+
+**Con 8 pruebas de regresión** (`evals/scripts/test_buscar.py`), comprobadas con dos mutantes: un clasificador que diga que **todo** es material cae con 4 fallos; uno que diga que **nada** lo es, con 3 — porque el control positivo exige que `1-Documentos recibidos/` **no** salga marcado.
+
+> **Y una nota sobre cómo se encontró, que corrige un reflejo mío.** Al ver la primera salida creí que el descargo *«cero resultados no significa que no esté en el papel»* solo aparecía en algunas búsquedas. **Era mi propio `head -20` cortándolo.** Lo comprobé antes de escribirlo. El defecto 4 de esta misma lista fue exactamente lo contrario: afirmar sin mirar.
 
 ---
 
