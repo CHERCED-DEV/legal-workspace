@@ -98,7 +98,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | [SPEC-04](SPEC-04-dicho-por-usted.md) | Bloque «dicho por usted, no documentado en la carpeta» | defecto | `P-05` · `P-06` · G6 | **Ejecutada** — falta una pasada real |
 | [SPEC-05](SPEC-05-la-marca-revisado.md) | Blindaje de la marca ` - REVISADO` | defecto | `PM-M-2` · G25 | **Ejecutada** — O-1, O-6 y O-7 pasan; O-2 a O-5 piden pasada real |
 | [SPEC-06](SPEC-06-escritura-dirigida-del-estado.md) | `0-Estado del caso`: reemplazo dirigido, no reescritura | defecto | `PM-M-8` · G19 | **Ejecutada** — **con banco de 13 pruebas en verde**; falta una pasada real |
-| SPEC-07 | Los doce hallazgos de `inventario-de-bienes` | defecto | `V-1` | Pendiente — no escrita |
+| ~~SPEC-07~~ | ~~Los doce hallazgos de `inventario-de-bienes`~~ | — | ~~`V-1`~~ | **RETIRADA — los doce ya estaban aplicados.** Auditados uno por uno el 2026-09-05 · [la auditoría](../technical-design/v0/notes-verification/auditoria-inventario-de-bienes-2026-09-05.md) |
 | [SPEC-08](SPEC-08-indice-de-las-salidas.md) | Índice de las salidas de una pasada | defecto | `P-07` · G37 | **Ejecutada** — falta una pasada real |
 | [SPEC-09](SPEC-09-preguntas-de-derecho.md) | `preguntas-de-derecho`: las dos puertas que le faltan | defecto | salvedad de `H-04` · `V-1` | **Ejecutada** — falta probar la inyección |
 | [SPEC-10](SPEC-10-limite-del-texto-extraido.md) | El límite del material extraído, dentro de los `SKILL.md` | defecto | `H-16` · `EP-1.1-COORDENADA` | **Ejecutada** — falta una pasada real |
@@ -120,9 +120,12 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | `H-10` | Abierto — «la guía publica `/cronologia` como fiable» | **La guía ya advertía de las dos formas.** El defecto real era que **no existía hoja de instalación** |
 | `H-11` | Abierto, dos mitades — «`inventario-de-anexos` sin regla de no sobrescritura; `estado-del-caso` reescribe sin copia previa» | **Las dos mitades cerradas.** La regla está en `inventario-de-anexos` §1 y la copia previa en `estado-del-caso` Fase 6.4. Lo vivo era otra cosa: `PM-M-8`, que no es la pérdida sino **la copia** |
 | `PM-M-2` | Abierto | **Vivo y entero.** Es el primero que resulta estar exactamente como decía |
+| `V-1` — los doce hallazgos de `inventario-de-bienes` | Abierto, «tres graves, sin aplicar», **primer puesto de mi lista** | **Los doce aplicados**, más las dos adiciones del Control 7 y los recortes del Control 5. La crítica se aplicó y **nadie cerró el ítem** |
 | `P-05` · `P-06` · `P-07` | Abiertos | **Vivos y enteros.** Salieron de un pase real, no de una lectura de diagnóstico |
 
-> **Cinco de cinco en el primer grupo, y el corte está donde se esperaba.** Ningún ítem **que salió de leer documentos de diagnóstico** resultó estar como decía. Los cuatro que **salieron de un pase real** —`PM-M-2`, `P-05`, `P-06`, `P-07`— estaban vivos y exactos, los cuatro.
+> **Seis de seis en el primer grupo, y el corte está donde se esperaba.** Ningún ítem **que salió de leer documentos de diagnóstico** resultó estar como decía. Los cuatro que **salieron de un pase real** —`PM-M-2`, `P-05`, `P-06`, `P-07`— estaban vivos y exactos, los cuatro.
+>
+> **Y `V-1` es el más caro de los seis**, porque no falló en un detalle: **puso en primer lugar de mi lista un trabajo ya hecho**, con el argumento más fuerte que tenía —«defectos graves en producto desplegado, y nadie los está contando»—. Su causa es distinta de las otras cinco: ahí la crítica **se aplicó** y nadie cerró el ítem. Eso no lo arregla releer más; lo arregla **cerrar el ítem en el mismo commit que aplica el arreglo**, que es lo que esta capa hace por construcción y lo que un documento de crítica suelto no hace.
 >
 > **Esa es la regla que sale de nueve verificaciones, y es más útil que la regla 4:** *un ítem que nació ejecutando el producto describe un defecto real; uno que nació leyendo un documento sobre el producto, la mitad de las veces no.* Los ~108 identificadores restantes se leen con esa lente: **primero los que tienen un pase detrás.**
 
@@ -151,9 +154,12 @@ Iba a especificar el arreglo de `H-05` —*«dos comandos consumen una hoja de h
 
 | # | Qué | Por qué en ese puesto |
 |---|---|---|
-| 1 | **SPEC-07** — los doce hallazgos de `inventario-de-bienes`, tres graves | Es lo único de la lista con **defectos graves conocidos en producto desplegado y nadie contándolos** (`V-1`) |
-| 2 | **Una pasada real** que cierre los observables pendientes de las seis | Seis specs dicen «ejecutada, falta pasada real». Seis declaraciones sin comprobar **es exactamente el estado que la capa de specs existe para no repetir** |
+| ~~1~~ | ~~**SPEC-07**~~ **RETIRADA el 2026-09-05:** los doce hallazgos ya estaban aplicados | — |
+| 1 | **Una pasada real** que cierre los observables pendientes de las siete | Siete specs dicen «ejecutada, falta pasada real». Siete declaraciones sin comprobar **es exactamente el estado que la capa de specs existe para no repetir** |
+| 2 | **`PM-M-1`, instrumentar** — lo que se pueda escribir sin una ejecución delante | Bloquea nueve ítems y las ~20 propuestas de recorte, y **la parte de código sí se puede adelantar**; validarla necesita una pasada |
 | 3 | **SPEC-03** — contexto B | La más valiosa y la más delicada. Ver abajo |
+
+> **Y una cosa que el plan daba por mía y no lo es.** `BACKLOG` §6 fila 1.3 pone *«correr el banco de evaluación que ya existe»* en «Puedo empezar ya». **No puedo:** `evals/casos/caso-01-familia.json` dice en su propio campo `_material` que **el material no está en este repositorio y no lo estará** —son documentos de una clienta real, con datos de una menor—, y que quien mida necesita los dos PDF originales, que custodia el dueño. Además el fixture **está invalidado por su propia nota desde el 2026-08-26**. Correr el banco es del bloque 0, no del 1.
 
 **SPEC-03 —contexto B— es la más valiosa y la más delicada:** cambia a quién le habla el producto en su único uso real. No es una corrección de redacción; toca qué puede y qué no puede proponerle un sistema a quien decide. Merece decidirse, no escribirse de una.
 

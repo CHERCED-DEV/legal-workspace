@@ -75,7 +75,7 @@ Deduplicados, ordenados por **cuánto desbloquean**, no por esfuerzo.
 
 | # | Ítem | Grupo | Bloquea a | Estado |
 |---|---|---|---|---|
-| **1** | **Publicar el plugin.** Sin remoto no hay URL de marketplace, y sin eso ninguna corrección llega a sus manos | G1 · `EP-ENTRADA-0` | Literalmente todo lo demás | Abierto tras tres fases. `git remote -v` sigue vacío |
+| **1** | **Publicar el plugin.** Sin remoto no hay URL de marketplace, y sin eso ninguna corrección llega a sus manos | G1 · `EP-ENTRADA-0` | Literalmente todo lo demás | ~~Abierto tras tres fases. `git remote -v` sigue vacío~~ **HECHO.** Comprobado el 2026-09-05: `origin` es `github.com/CHERCED-DEV/legal-workspace` y el `marketplace.json` existe. **Lo que sigue abierto es el ítem 3 —instalarlo—, que es otro trabajo** |
 | **2** | **Decidir y decirle dónde se procesa su material.** Toca secreto profesional, no interfaz | G30 · `EP-P10` | Imprimir la guía · entregar sin mentirle · licenciar a terceros | Abierto |
 | **3** | **Instalarlo una vez en una máquina que no sea la del dueño** | G34 · `PLAN §5.2-1` | La guía · cualquier medición de uso · la venta | Cero ejecuciones instaladas |
 | ~~4~~ | ~~**La hoja de hechos: dónde se escribe y su mecanismo de aprobación.**~~ **CERRADO — corregido el 2026-08-31.** La cadena está completa: `hechos-con-prueba` §4 escribe la ruta, `redactar-escrito` §3 e `inventario-de-anexos` §5 la consumen y se detienen sin la marca, y `discovery/primera-ejecucion-real.md` §4 lo verificó en ejecución real | G17 · `H-05` | ya no bloquea nada | **Cerrado.** Estaba mal contado aquí |
@@ -84,7 +84,7 @@ Deduplicados, ordenados por **cuánto desbloquean**, no por esfuerzo.
 | **7** | **Variante de contexto B.** La única usuaria real es autoridad y los `SKILL.md` le hablan de «su clienta» | G7 · `P-02` | Que ella ejecute sin traducir a mano cada salida | Abierto |
 | **8** | **Reindexar por pieza y la Fase 0 de preguntas.** Dos bucles anidados piden 76 barridas y 239 aperturas donde caben 14 y 14 | G24 · `PM-M-4` | Que el comando caro sea usable | Abierto |
 | **9** | **Cuánto puede costar un caso.** Cuesta nada: es una pregunta a una persona | G35 · `PLAN §5.2-5` | Todo el capítulo de economía | Abierto |
-| **10** | **Fichar `inventario-de-bienes` y `preguntas-de-derecho`, y aplicar los doce hallazgos de la crítica** | sin origen — ver §3 | Cualquier cuenta honesta de qué es el producto | **Nadie lo cubre** |
+| ~~10~~ | ~~**Fichar `inventario-de-bienes` y `preguntas-de-derecho`, y aplicar los doce hallazgos de la crítica**~~ | sin origen — ver §3 | ya no bloquea nada | **CERRADO el 2026-09-05.** `preguntas-de-derecho` la fichó SPEC-09. Y **los doce hallazgos ya estaban aplicados**, los doce, más las dos adiciones del Control 7: [la auditoría](technical-design/v0/notes-verification/auditoria-inventario-de-bienes-2026-09-05.md). **Estaba mal contado aquí** |
 
 ~~**Se quedaron a un paso:** `PM-M-2` … y `H-11`/`PM-M-8` …~~ **CERRADOS el 2026-09-05.** `PM-M-2` con SPEC-05 y `PM-M-8` con SPEC-06. Y `H-11` **no estaba abierto**: sus dos mitades llevaban tiempo cerradas en el código (ver §4). Lo que quedaba vivo del grupo `G19` no era la pérdida —la copia previa existe desde antes— sino **la copia**: que el modelo tuviera que volver a teclear un texto de ella para conservarlo. Eso es lo que cierra SPEC-06, y con banco de pruebas.
 
@@ -96,7 +96,7 @@ Esto es lo que apareció al mirar los cuatro juntos. **Ninguno de los 177 ítems
 
 | # | Hueco | Por qué importa |
 |---|---|---|
-| **V-1** | **Dos comandos existen y no tienen ni un ítem:** `inventario-de-bienes` y `preguntas-de-derecho`. Y hay una `critica-inventario-de-bienes.md` con **doce hallazgos, tres graves, sin aplicar** | Es un backlog entero fuera del backlog, en un comando desplegado |
+| ~~V-1~~ | ~~**Dos comandos existen y no tienen ni un ítem**… con **doce hallazgos, tres graves, sin aplicar**~~ **CERRADO el 2026-09-05, y era falso en su parte más fuerte.** Los doce estaban aplicados. `preguntas-de-derecho` la cerró SPEC-09 el 31/08 | **La lección no es sobre este comando.** Este ítem puso durante siete días, en primer lugar de la lista, **un trabajo ya hecho** — y con el argumento más fuerte del documento. Su causa es distinta de los otros cinco mal contados: aquí la crítica **se aplicó** y nadie cerró el ítem. Lo arregla **cerrar el ítem en el commit que aplica el arreglo**, no releer más |
 | **V-2** | **Nadie pregunta si esto se ha usado para algo real** — si alguna salida entró en un escrito firmado o en una decisión | Es la primera pregunta de cualquier comprador y **lo único que separa demo de producto** |
 | **V-3** | **Nadie mide el tiempo de ella.** Todo se mide en tokens y turnos; no hay una cifra de horas-persona antes y después | **Sin eso no hay caso de negocio, solo factura** |
 | **V-4** | **No hay reanudación ni punto de control.** Un comando de 97 turnos que se cae en el 60 no tiene ítem | — |
@@ -223,21 +223,22 @@ Y de la corrección del §0.2 sale una segunda: **ningún documento nuevo de pla
 
 | # | Qué | Cuesta | Desbloquea |
 |---|---|---|---|
-| **0.1** | **Crear el repositorio remoto y publicar el plugin** | Poco | Todo. Es la entrada 0 desde hace tres fases |
+| ~~0.1~~ | ~~**Crear el repositorio remoto y publicar el plugin**~~ **HECHO** — comprobado el 2026-09-05 | — | Lo que desbloqueaba sigue esperando a **0.3 bis: instalarlo una vez** (fila 3 de §2) |
 | **0.2** | **Decir cuánto puede costar un caso** | Nada — es una respuesta | Todo el capítulo de economía: cuánto abanicar, qué modelo enruta qué |
 | **0.3** | **Decidir dónde se procesa el material de ella, y decírselo** | Nada técnico, mucho criterio | Poder imprimir la guía sin mentirle · licenciar |
 | **0.4** | **Instalar Tesseract** — `winget install --id UB-Mannheim.TesseractOCR` | 30 segundos | La segunda opinión: lo único que detecta una omisión silenciosa |
 | **0.5** | **Conseguir un segundo caso**, de otra materia y otra persona | Bajo | Saber si esto es producto o traje a la medida |
 | **0.6** | **Diez minutos de audiencia real**, con transcripción manual de referencia | Una tarde | Todo el uso de audio |
 | **0.7** | **El formulario 11 de vuelta**, aunque sea a medias | — | La única señal externa que existe sobre si esto sirve |
+| **0.8** | **Los dos PDF del caso-01, para reconstruir el truth set del banco** — o decir que ese caso se retira y cuál lo sustituye | Sacarlos de donde estén | **Es lo que desbloquea la fila 1.3, que estaba mal puesta en mi bloque.** Sin material no hay banco, y sin banco ningún cambio del método es reversible con criterio (G22) |
 
 ### Bloque 1 — Puedo empezar ya, en este orden
 
 | # | Qué | Grupo | Por qué en este puesto |
 |---|---|---|---|
-| **1.1** | **Fichar `inventario-de-bienes` y `preguntas-de-derecho`** y aplicar los doce hallazgos de su crítica, tres graves | V-1 | **Hay defectos graves en un comando desplegado y nadie los está contando** |
+| ~~1.1~~ | ~~**Fichar `inventario-de-bienes` y `preguntas-de-derecho`** y aplicar los doce hallazgos~~ **CERRADO el 2026-09-05: ya estaban aplicados los doce** | V-1 | ~~Hay defectos graves en un comando desplegado y nadie los está contando~~ **No los había.** Ver la auditoría |
 | **1.2** | **Instrumentar** (`PM-M-1`): etiquetar filas de coste, separar `input`/`cache_read`, contar anclajes corregidos y qué pregunta de autoevaluación disparó | G23 | Bloquea nueve ítems y las ~20 propuestas de recorte. **Ninguna de sus cuatro medidas toca el producto** |
-| **1.3** | **Correr el banco de evaluación que ya existe** — 678 líneas, seis fixtures, con truth set | G22 | Hoy **no hay ninguna prueba capaz de fallar**. Sin esto ningún cambio es reversible con criterio |
+| **1.3** | ~~**Correr el banco de evaluación que ya existe** — 678 líneas, seis fixtures, con truth set~~ **NO ES DEL BLOQUE 1: PASA AL 0.** Comprobado el 2026-09-05 y hay dos cosas mal contadas aquí. **(a)** No son seis fixtures: **es uno**, `evals/casos/caso-01-familia.json`, y su propio campo `_material` dice que **el material no está en este repositorio y no lo estará** —documentos de una clienta real, con datos de una menor—: quien mida necesita los dos PDF originales, **que custodia el dueño**. **(b)** Ese único fixture **está invalidado por su propia nota desde el 2026-08-26**: el truth set supuso que 25 páginas sin capa de texto eran ilegibles y **es falso**, el modelo las lee como imagen. Mientras no se reconstruya, **la cifra de «fabricaciones» mide menos de lo que parece, y hay que decirlo cada vez que se cite** | G22 | Sigue siendo verdad que **no hay ninguna prueba capaz de fallar sobre una skill**. Las 37 verdes de `evals/knowledge-pack/` son del contrato del knowledge-pack, y las 13 de `evals/scripts/` son de un programa. **Ninguna mide un método** |
 | ~~1.4~~ | ~~**Blindar la marca ` - REVISADO`**~~ **HECHO el 2026-09-05 — SPEC-05.** Las seis skills que citan la marca la reconocen ahora en sus cinco formas, no la renombran, y declaran el nombre exacto del archivo que aceptaron | G25 | Cerrado salvo la pasada real |
 | ~~1.5~~ | ~~**`0-Estado del caso`: reemplazo dirigido**~~ **HECHO el 2026-09-05 — SPEC-06**, y no era lo que decía esta fila: la pérdida ya era recuperable. Lo que faltaba es que **un texto de ella dejara de pasar por el modelo** para volver al disco | G19 | Cerrado salvo la pasada real. **Único ítem del proyecto con banco de pruebas propio** |
 | ~~1.6~~ | ~~La hoja de hechos: dónde se escribe + mecanismo de aprobación~~ | G17 | **Retirado el 2026-08-31: el eslabón no estaba partido.** Se descubrió al ir a escribir su spec. Lo que queda del grupo es `PM-M-2` (fila 1.x de la marca) |
@@ -267,9 +268,17 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 
 ### Lo primero que haría mañana
 
-**Si solo hubiera tiempo para tres cosas:** publicar el plugin (0.1), responder cuánto puede costar un caso (0.2) y fichar los dos comandos huérfanos con sus doce hallazgos (1.1).
+~~**Si solo hubiera tiempo para tres cosas:** publicar el plugin (0.1), responder cuánto puede costar un caso (0.2) y fichar los dos comandos huérfanos con sus doce hallazgos (1.1).~~
 
-Las dos primeras son suyas y cuestan casi nada. La tercera es mía y es la única de la lista donde **hay defectos graves conocidos, en producto desplegado, que nadie está contando**.
+**REESCRITO EL 2026-09-05. De las tres, una estaba hecha y otra era falsa.** El plugin ya está publicado (0.1) y los doce hallazgos ya estaban aplicados (1.1). Quedaba una: preguntar cuánto puede costar un caso.
+
+**Si solo hubiera tiempo para tres cosas, hoy son estas, y las tres son suyas:**
+
+1. **Instalarlo una vez en una máquina que no sea la suya** (0.3 · §2 fila 3). Es la entrada 0 de verdad, ahora que el remoto existe, y **es lo único que dice si `V-13` deja cinco comandos sin cargar**.
+2. **Decir cuánto puede costar un caso** (0.2). Sigue costando una respuesta.
+3. **Los dos PDF del caso-01** (0.8), o decir qué caso lo sustituye. Sin eso no hay banco, y sin banco **ninguna de las ~20 propuestas de recorte se puede evaluar**.
+
+**Y una advertencia sobre este documento, que es la conclusión de nueve días:** de los diez ítems de §2, **dos estaban mal contados y uno era falso**. De los seis ítems nacidos de leer diagnósticos que se han verificado, **ninguno estaba como decía**. Antes de trabajar sobre cualquier fila de aquí, **léala contra el código** — y si la fila nació de un pase real, es la que probablemente sea cierta.
 
 ---
 
