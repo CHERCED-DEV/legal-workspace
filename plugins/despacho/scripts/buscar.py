@@ -93,9 +93,44 @@ def texto_pdf(ruta):
         return None
 
 
+def es_texto_sin_extension(ruta):
+    """Un archivo SIN extension que resulta ser texto.
+
+    Existe por un defecto real, y del peor tipo. Windows oculta las extensiones
+    conocidas, asi que cuando ella guarda su hoja revisada el archivo puede
+    quedar como `Hechos - <caso> - <fecha> - REVISADO`, **sin extension**. §2 de
+    seis SKILL.md dice que las cinco formas cuentan igual y que la marca se
+    reconoce por el nombre, no por la extension.
+
+    **Esta busqueda filtraba por extension**, asi que ese archivo -- el que
+    lleva la DECISION de ella -- era invisible, y buscar algo que solo estuviera
+    ahi devolvia «CERO APARICIONES en lo que se pudo leer». No decia que no
+    hubiera podido leerlo: decia que no estaba. Es la unica forma de cero que
+    este programa no puede permitirse.
+    """
+    if ruta.suffix:
+        return False
+    try:
+        with io.open(ruta, 'rb') as fh:
+            cabeza = fh.read(4096)
+    except Exception:
+        return False
+    if b'\x00' in cabeza:
+        return False
+    try:
+        cabeza.decode('utf-8')
+    except UnicodeDecodeError:
+        # Un corte a mitad de caracter multibyte no lo hace binario.
+        try:
+            cabeza[:-3].decode('utf-8')
+        except UnicodeDecodeError:
+            return False
+    return True
+
+
 def leer(ruta):
     e = ruta.suffix.lower()
-    if e in EXT_TEXTO:
+    if e in EXT_TEXTO or es_texto_sin_extension(ruta):
         try:
             return io.open(ruta, encoding='utf-8', errors='replace').read()
         except Exception:
@@ -119,7 +154,10 @@ def _carpetas(caso, ambito):
 def piezas(caso, ambito):
     for c in _carpetas(caso, ambito):
         for f in sorted(c.rglob('*')):
-            if f.is_file() and f.suffix.lower() in EXT_TEXTO | {'.docx', '.pdf'}:
+            if not f.is_file():
+                continue
+            if (f.suffix.lower() in EXT_TEXTO | {'.docx', '.pdf'}
+                    or es_texto_sin_extension(f)):
                 yield f
 
 

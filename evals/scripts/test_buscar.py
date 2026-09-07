@@ -171,5 +171,49 @@ class ElJsonDiceLoMismo(unittest.TestCase):
         self.assertEqual({"material", "otro", "derivado"}, {x["origen"] for x in d["hallazgos"]})
 
 
+class ElArchivoSinExtensionSeLee(unittest.TestCase):
+    """El defecto del peor tipo: un cero que no era un cero.
+
+    Windows oculta las extensiones conocidas, asi que la hoja revisada de ella
+    puede quedar en el disco como `... - REVISADO`, sin extension. §2 de seis
+    SKILL.md dice que las cinco formas cuentan igual. **Esta busqueda filtraba
+    por extension**, de modo que ese archivo -- el que lleva su decision -- era
+    invisible, y buscar algo que solo estuviera ahi devolvia «CERO APARICIONES
+    en lo que se pudo leer»: no decia que no hubiera podido leerlo, decia que
+    no estaba.
+    """
+
+    def test_encuentra_lo_que_solo_esta_en_el_archivo_sin_extension(self):
+        s = correr("pasada 2")
+        self.assertIn("Hechos - Salento - 2026-04-12 - REVISADO", s)
+        self.assertNotIn("CERO APARICIONES", s)
+
+    def test_antes_devolvia_un_cero_que_no_era_un_cero(self):
+        """Control de la frase exacta que hacia peligroso el defecto."""
+        s = correr("pasada 2")
+        self.assertIn("1 renglones en 1 archivos", s)
+
+    def test_el_archivo_sin_extension_cuenta_entre_los_leidos(self):
+        s = correr("cerca")
+        self.assertIn("Se miraron 12 archivos", s)
+
+    def test_un_binario_sin_extension_no_se_lee(self):
+        """Y el limite: sin extension no significa «leelo todo»."""
+        import shutil
+        import tempfile
+        d = Path(tempfile.mkdtemp())
+        try:
+            b = d / "1-Documentos recibidos"
+            b.mkdir(parents=True)
+            (b / "binario").write_bytes(b"\x00\x01\x02cerca\x00")
+            (b / "texto").write_text(u"aqui dice cerca\n", encoding="utf-8")
+            r = subprocess.run([sys.executable, str(PROGRAMA), str(d), "cerca"],
+                               capture_output=True, text=True)
+            self.assertIn("1-Documentos recibidos/texto", r.stdout)
+            self.assertNotIn("binario", r.stdout)
+        finally:
+            shutil.rmtree(str(d))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

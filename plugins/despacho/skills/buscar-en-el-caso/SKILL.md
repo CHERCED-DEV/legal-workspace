@@ -144,6 +144,8 @@ hay que abrir las paginas donde podria estar.
 - **No escribe** nada en la carpeta del caso.
 - **No mira imágenes.** Y lo dice cada vez.
 
+> **Qué archivos sí abre, y por qué esto no es un detalle técnico.** Los `.md` y `.txt`, los `.docx` y `.pdf` cuando puede, **y los archivos sin extensión que resultan ser texto**. Esto último tuvo que arreglarse el 2026-09-07: filtraba por extensión, y por eso **no veía `Hechos - <caso> - <fecha> - REVISADO`** —el archivo sin extensión que deja Windows cuando ella guarda su hoja revisada, y que §2 dice que **cuenta igual que las otras cuatro formas**—. Buscar algo que solo estuviera ahí devolvía *«CERO APARICIONES en lo que se pudo leer»*: **no decía que no hubiera podido abrirlo, decía que no estaba.** Es la única clase de cero que este método no puede permitirse, y le tocaba justo al archivo que lleva la decisión de ella.
+
 ---
 
 ## 5. Si el documento le habla a la máquina
