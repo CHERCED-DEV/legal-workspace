@@ -755,4 +755,62 @@ Y la conclusión que saca en §1.3, sobre el almacén del Core:
 ---
 ---
 
+## §15 · Los once ejecutados, y lo que costó cada uno
+
+**2026-09-07.** §14 dejó cinco métodos corridos. Los seis que faltaban se corrieron el 7. **Los once del plugin se han ejecutado al menos una vez**, y ninguno salió limpio.
+
+### Los seis que faltaban
+
+| Método | Qué encontró ejecutarlo |
+|---|---|
+| `estado-del-caso` | **La cabecera la fecha el modelo y la copia la sella el programa, y nada comprobaba que coincidieran.** La primera pasada dejó dos fechas distintas en el mismo trabajo. La regla 4 dice que un resumen sin fecha miente por omisión; **con la fecha equivocada miente peor** |
+| `buscar-en-el-caso` | **La búsqueda no veía el archivo sin extensión** —el que deja Windows cuando ella guarda su hoja revisada— y devolvía *«CERO APARICIONES en lo que se pudo leer»*. **No decía que no hubiera podido abrirlo: decía que no estaba**, y le tocaba justo al archivo que lleva su decisión |
+| `inventario-de-bienes` | La trampa que decide: la querella y el predial comparten **solo «vereda Boquia»**, y una vereda ubica y no identifica. **No se funden**, y se dice por qué: fundirlos metería el predio de un vecino en la fila del caso, y **el error no se vería al leer** |
+| `redactar-escrito` | La cadena completa se ejecutó por fin —**faltaba el estado normal del fixture: exactamente una hoja marcada**— y el método **se detiene igual, en la Fase 2**. Abrir la primera puerta no abre la segunda |
+| `preguntas-de-derecho` | **La guarda de las cuentas empujaba a romper su §6**: marcaba *«el término que usted indicó»*, que es exactamente lo que esa sección autoriza y obliga a escribir atribuido |
+| `preparar-material` | **No arrancaba.** Exigía Pillow para todo, y Pillow hace falta solo para las imágenes: un ZIP de `.txt` no se podía preparar, y `--help` tampoco funcionaba |
+
+### Las cuatro paradas, juntas
+
+**Tres métodos se detienen ante una precondición que no se cumple, por cuatro causas distintas, y las cuatro son correctas:**
+
+| Método | Caso | Dónde para | Por qué |
+|---|---|---|---|
+| `inventario-de-anexos` | `caso-03` | Fase 2 | **Cero** hojas marcadas |
+| `inventario-de-anexos` | `caso-02` | Fase 2 | **Dos** hojas marcadas |
+| `redactar-escrito` | `caso-02` | Fase 1 | **Dos** hojas marcadas |
+| `redactar-escrito` | `caso-03` | **Fase 2** | Falta lo que solo ella puede decir |
+
+> **Y el dato que sale de ahí, que es para el dueño y no para mí:** la salida que ella firma **no se produce sin dos intervenciones suyas** —revisar veinte fichas una por una, y dictar qué escrito, para quién y con qué apartados—. **La primera no es rápida.** No es un defecto: es la forma que tiene este producto, y conviene saberla antes de prometer tiempos.
+
+### Lo que la vuelta completa dice de las guardas
+
+**Ocho de los hallazgos del día no fueron de los métodos: fueron de las guardas que los vigilan.**
+
+| Guarda | Qué le pasaba |
+|---|---|
+| `contar_fichas.py` | **Solo entendía la forma markdown de una pasada concreta.** Las plantillas reales son texto plano, y sobre las cuatro salidas escritas así decía «0 fichas» |
+| `contar_fichas.py` | Contaba **dos tablas con la misma etiqueta** como una — en la cronología y otra vez en el inventario de bienes |
+| `buscar_cuentas.py` | **Salía antes de mirar los importes** si no había ninguna duración. Un método sin duraciones y con importes pasaba en silencio |
+| `buscar_cuentas.py` | Leía **al revés** la negativa canónica: *«sobre si el término venció: eso no se lo puedo responder»* |
+| `puntuar_caso03.py` | Marcaba como cruce **la frase que distingue a los dos Diegos**, que es lo correcto de escribir |
+
+> **La lección no es que las guardas estuvieran mal escritas.** Es que **una guarda ajustada a una sola muestra protege esa muestra y nada más**, y que la única forma de descubrirlo es correrla sobre algo que no escribió quien la hizo. Las cinco se destaparon corriendo, ninguna releyendo.
+
+### Y dos piezas que cambiaron de sitio
+
+- **La regla de la marca ` - REVISADO` vivía solo dentro de una prueba.** Es el único mecanismo por el que la autoridad cambia de manos en este producto, y el producto no podía usarla. Pasa a `plugins/despacho/scripts/marca.py`, y la prueba comprueba esa.
+- **El canario de superficie disparó** sobre ese archivo nuevo y obligó a decidir de qué lado va. **De ninguno:** no se puede invocar. Es una tercera clase, con su condición comprobable —no trae `main`— y su prueba.
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| **P-1** | **Que una abogada abra una de estas once salidas.** Ninguna la ha visto nadie | **Del dueño.** Sigue siendo la única medición que importa |
+| **P-3** | **Las cuatro respuestas de la Fase 2** —qué escrito, para quién, qué apartados, qué hechos— para poder probar la redacción de verdad | **Del dueño.** Inventarlas sería dictar la estructura de un escrito jurídico, y eso **no se simula**: se deja sin hacer y se dice |
+| **P-4** | El coste. Sigue necesitando una corrida instrumentada con transcript | Abierto desde §14 |
+
+---
+---
+
 *Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura completa del §0.3 desde el 2026-09-05** (§§7 a 13). Los dos corpus grandes están triados **como corpus**, no pieza a pieza (`S-3`, `T-5`), y se dice por qué. Nada de este documento reemplaza a sus fuentes.*
