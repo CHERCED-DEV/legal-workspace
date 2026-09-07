@@ -17,7 +17,7 @@ honestidad que se calcula a ojo mide sobre todo el cansancio de quien cuenta.
 
 Esto no juzga la salida. Cuenta lo que dice, y la persona compara.
 
-    python3 evals/scripts/contar_fichas.py <salida.md>
+    python3 evals/scripts/contar_fichas.py <salida.md> [--caso <carpeta>]
 
 Codigos:  0 el conteo escrito coincide · 2 no coincide o falta · 1 error de uso
 """
@@ -25,6 +25,7 @@ import io
 import os
 import re
 import sys
+from pathlib import Path
 
 ESTADOS = [u"Apoyado y contradicho", u"Apoyado", u"Contradicho",
            u"Sin apoyo", u"No verificable con este material"]
@@ -339,7 +340,54 @@ def main_documento(ruta, texto):
     return 0
 
 
+def contar_estado(texto, carpeta=None):
+    """Lo contable de una salida de `estado-del-caso`.
+
+    Su CONTEO declara ocho cifras. La primera -- «N archivos leidos» -- es la
+    unica que se puede comprobar contra el mundo y no contra el propio texto,
+    y es la que salio mal en la primera pasada real: declaraba 12 donde la
+    carpeta tiene 13. Por eso, si se pasa la carpeta, se cuenta de verdad.
+    """
+    fuera = {}
+    m = re.search(u"(\\d+) archivos le[ií]dos", texto)
+    fuera[u"declara archivos"] = int(m.group(1)) if m else None
+    if carpeta:
+        raiz = Path(carpeta)
+        saltar = {"LEEME.md", "NO-SON-SALIDAS.md"}
+        fuera[u"archivos en la carpeta"] = len([
+            f for f in raiz.rglob("*")
+            if f.is_file() and f.name not in saltar
+            and "salidas-de-referencia" not in f.parts])
+    return fuera
+
+
+def main_estado(ruta, texto, carpeta):
+    d = contar_estado(texto, carpeta)
+    print("\n== %s   (estado del caso)" % ruta)
+    dec, real = d.get(u"declara archivos"), d.get(u"archivos en la carpeta")
+    print("   archivos leidos          declarados %s%s"
+          % (dec if dec is not None else "(no declara)",
+             u" · en la carpeta %d" % real if real is not None else ""))
+    print("   las demas cifras del CONTEO van en prosa: NO las cuenta este programa")
+    problemas = []
+    if dec is None:
+        problemas.append(u"no declara «N archivos leidos», y el metodo lo pide")
+    elif real is not None and dec != real:
+        problemas.append(u"declara %d archivos y la carpeta tiene %d" % (dec, real))
+    print("")
+    if problemas:
+        for x in problemas:
+            print("   NO COINCIDE: %s" % x)
+        print("\n   Una discrepancia pide RECONTAR, no explicarla.")
+        return 2
+    print("   lo contable coincide con lo declarado")
+    return 0
+
+
 def main(args):
+    carpeta = None
+    if len(args) == 3 and args[1] == "--caso":
+        carpeta, args = args[2], args[:1]
     if len(args) != 1:
         sys.stderr.write(__doc__)
         return 1
@@ -349,6 +397,8 @@ def main(args):
     texto = io.open(args[0], encoding="utf-8").read()
     if re.search(r"(?m)^(?:#+\s+)?[FR]-\d+\s+[—·-]", texto):
         return main_rigor(args[0], texto)
+    if re.search(r"(?im)^#*\s*1\.\s*EN QU[EÉ] VA", texto):
+        return main_estado(args[0], texto, carpeta)
     if re.search(r"(?im)^#*\s*1\.\s*QU[EÉ] ES", texto):
         return main_documento(args[0], texto)
     if re.search(r"(?m)^\|\s*E-\d+\s*\|", texto) and not re.search(r"(?m)^##\s+H-", texto):

@@ -27,6 +27,7 @@ Lo que este programa NO hace:
   * NO decide que dice la cabecera. Esa la escribe el metodo.
 """
 import argparse
+import re
 import shutil
 import sys
 import unicodedata
@@ -162,6 +163,31 @@ def main():
         return 4
 
     cab = Path(a.cabecera).read_bytes()
+
+    # --- La fecha de la cabecera contra la del dia.
+    #
+    # La regla 4 del metodo dice que «un resumen sin fecha miente por omision».
+    # Uno con la fecha equivocada miente peor, y hasta hoy nada lo miraba: la
+    # cabecera la fecha el modelo y la copia la sella este programa, de modo
+    # que una pasada podia dejar «Revisado el 2026-04-13» al lado de una copia
+    # sellada con otro dia. Paso en la primera pasada real sobre el caso-02.
+    #
+    # No se corrige sola: escribir la fecha es del metodo, y este programa no
+    # decide que dice la cabecera. Se AVISA, que es lo que se puede hacer sin
+    # invadir esa frontera.
+    m = re.search(r"(?im)^\s*Revisado el\s+(\d{4}-\d{2}-\d{2})",
+                  cab.decode("utf-8", "replace"))
+    hoy = date.today().isoformat()
+    if m is None:
+        print("AVISO: la cabecera no trae una linea \"Revisado el AAAA-MM-DD\".")
+        print("       La regla 4 del metodo la pide. Se escribe igual.")
+    elif m.group(1) != hoy:
+        print("AVISO: la cabecera dice \"Revisado el %s\" y hoy es %s."
+              % (m.group(1), hoy))
+        print("       La copia previa se sella con la fecha de hoy, asi que la")
+        print("       pasada quedaria con dos fechas distintas. Se escribe")
+        print("       igual -este programa no decide que dice la cabecera-,")
+        print("       pero mirelo: una fecha equivocada no se ve al leer.")
     if not cab.endswith(b"\n"):
         cab += b"\n"
     if not cab.endswith(b"\n\n"):

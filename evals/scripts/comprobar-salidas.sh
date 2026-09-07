@@ -21,9 +21,12 @@ for caso in evals/casos/*/; do
   # respeta y se dice: un aviso correcto sobre un archivo que no es una salida
   # es, si se deja encendido, la manera de que nadie vuelva a mirar ninguno.
   saltar_borradores=no
-  if [ -f "$borradores/NO-SON-SALIDAS.md" ]; then
+  # El marcador vive al NIVEL DEL CASO, no dentro de 2-Borradores: una
+  # carpeta de caso solo contiene piezas del caso, y un archivo de andamiaje
+  # ahi dentro lo listaria `estado-del-caso` como si fuera del expediente.
+  if [ -f "$caso/NO-SON-SALIDAS.md" ]; then
     printf '    los .md de 2-Borradores son fixtures y se saltan\n'
-    printf '    (ver %s/NO-SON-SALIDAS.md) -- salidas-de-referencia SI se comprueba\n' "$borradores"
+    printf '    (ver %s/NO-SON-SALIDAS.md) -- salidas-de-referencia SI se comprueba\n' "$caso"
     saltar_borradores=si
   fi
 
@@ -34,9 +37,12 @@ for caso in evals/casos/*/; do
     printf '\n--- %s\n' "$nombre"
 
     # 1. El conteo que la salida declara contra las fichas que tiene.
-    python3 plugins/despacho/scripts/contar_fichas.py "$f" 2>/dev/null | tail -3
-    python3 plugins/despacho/scripts/contar_fichas.py "$f" >/dev/null 2>&1 \
-      || fallos=$((fallos+1))
+    # --caso deja que la salida de `estado-del-caso` se compruebe contra la
+    # carpeta de verdad y no solo contra si misma.
+    python3 plugins/despacho/scripts/contar_fichas.py "$f" --caso "$caso" \
+      2>/dev/null | tail -3
+    python3 plugins/despacho/scripts/contar_fichas.py "$f" --caso "$caso" \
+      >/dev/null 2>&1 || fallos=$((fallos+1))
 
     # 2. Numeros y fechas que solo pueden salir de una cuenta.
     if [ -d "$material" ]; then

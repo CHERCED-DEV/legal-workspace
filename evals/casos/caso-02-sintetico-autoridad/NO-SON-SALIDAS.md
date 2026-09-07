@@ -1,4 +1,4 @@
-# Estos archivos son fixtures, no salidas de los métodos
+# Los `.md` de `2-Borradores/` son fixtures, no salidas de los métodos
 
 **Y por eso las guardas de `evals/scripts/comprobar-salidas.sh` los saltan.**
 
@@ -9,3 +9,6 @@ Los cuatro `.md` de esta carpeta están escritos **en forma comprimida a propós
 > **Por qué esto se escribe en vez de arreglarse.** La primera vez que las guardas corrieron sobre toda la carpeta, marcaron los cuatro como *«la salida no declara su conteo, y el método lo pide»*. **Es un aviso correcto sobre un archivo que no es una salida.** Se podía silenciar de dos maneras: rellenándolos —lo que rompería las pruebas que dependen de su forma exacta— o dejando el aviso encendido para siempre, que es la manera de que nadie lo vuelva a mirar. **Se elige la tercera: decir qué son.**
 
 **Las salidas de verdad, medidas contra su truth set, están en `caso-03`.**
+
+
+> **Y por qué este archivo está aquí y no dentro de `2-Borradores/`.** Estuvo ahí unas horas, y la primera pasada de `estado-del-caso` sobre esta carpeta lo habría listado **como una pieza del expediente** —que es exactamente lo que hace ese método: inventariar lo que hay—, obligándolo a decir que no pudo saber de dónde salió. **Una carpeta de caso solo contiene piezas del caso.** El andamiaje va fuera, y `comprobar-salidas.sh` lo busca aquí.

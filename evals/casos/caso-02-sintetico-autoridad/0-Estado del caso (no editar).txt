@@ -1,10 +1,56 @@
-ESTADO DEL CASO — Salento 2026-014
-Revisado el 2026-04-09.
+ESTADO DEL CASO — caso-02-sintetico-autoridad
+Revisado el 2026-09-07.
+
+Este archivo es un resumen hecho leyendo los documentos de la carpeta.
+Si dice algo distinto de lo que dicen los documentos, mandan los
+documentos. Lo que no está en la carpeta no aparece aquí.
 
 EN QUÉ VA
-  Querella radicada y contestada. Inspección ocular hecha.
+  Querella radicada el 4 de marzo y contestada el 19 de marzo.
+  Inspección ocular practicada el 8 de abril. Hay un proyecto de
+  resolución en 3-Para presentar, y una revisión de rigor sobre él.
+
+LO ÚLTIMO QUE CONSTA
+  Acta de inspección ocular — 8 de abril de 2026 — 1-Documentos
+  recibidos — la produjo este despacho.
+
+QUÉ HAY
+  Recibidos: 4 piezas, de 4 de marzo de 2026 a 8 de abril de 2026
+  (el recibo de predial no trae fecha de expedición)
+  Borradores: 6   ·   Para presentar: 1
+  No se pudo leer: ninguno
+
+QUÉ NO ESTÁ EN LA CARPETA
+  · La querella anuncia «Se anexa el certificado de tradicion del
+    inmueble» (p. 1) y no está entre lo recibido.
+  · La querella y la contestación dicen las dos «NO SE ANEXA tarjeta
+    profesional ni poder» de sus respectivos apoderados. Las dos partes
+    están igual, y se dice de las dos.
+
+PARECE PENDIENTE
+  · Un documento pide algo expresamente: la querella anuncia el
+    certificado de tradición — sale de: querella, p. 1.
+  · Hay dos hojas de hechos marcadas como revisadas, de dos fechas
+    distintas — sale de: 2-Borradores. No se eligió ninguna.
+
+LO QUE ESTE SISTEMA HA PRODUCIDO AQUÍ
+  · Cronologia - Salento - 2026-04-09.md — /cronologia — 2026-04-09 —
+    sin revisar
+  · Hechos - Salento - 2026-04-10.md — /hechos-con-prueba —
+    2026-04-10 — sin revisar
+  · Hechos - Salento - 2026-04-10 - REVISADO.md.md —
+    /hechos-con-prueba — 2026-04-10 — revisado por usted
+  · Hechos - Salento - 2026-04-12 - REVISADO — /hechos-con-prueba —
+    2026-04-12 — revisado por usted
+  · Texto de referencia - 2026-04-08.txt — /preparar-material —
+    2026-04-08 — no es un documento del caso: es texto extraído
+  · Hechos - Salento (revisar).md — NO SE PUDO SABER de dónde salió:
+    el nombre se parece a la convención de /hechos-con-prueba pero no
+    trae fecha, y «(revisar)» no es la marca. No se le adivina comando.
+  Sin la marca REVISADO son propuestas, no decisiones suyas.
 
 Revisiones anteriores
+  2026-09-07 — segunda revisión; se añadió el índice de lo producido
   2026-04-09 — primera revisión
 
 NOTAS SUYAS (el sistema no toca esta parte)

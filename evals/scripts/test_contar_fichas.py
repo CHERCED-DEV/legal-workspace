@@ -234,5 +234,45 @@ class LaPlantillaDeTextoPlanoEsLaQueManda(unittest.TestCase):
             self.assertEqual(0, C.main([str(f)]), f.name)
 
 
+CASO2 = (Path(__file__).resolve().parents[1] / "casos"
+         / "caso-02-sintetico-autoridad")
+
+
+class ContarEstadoDelCaso(unittest.TestCase):
+    """La unica cifra que se comprueba contra el mundo, no contra el texto.
+
+    «N archivos leidos» salio mal en la primera pasada real -- declaraba 12
+    donde la carpeta tiene 13 -- y es la unica del CONTEO de ese metodo que
+    tiene una respuesta comprobable fuera del propio documento.
+    """
+
+    def test_cuenta_los_archivos_de_la_carpeta(self):
+        d = C.contar_estado(u"Revisión del x, hecha leyendo 13 archivos.\n"
+                            u"CONTEO: 13 archivos leídos · 4 recibidos",
+                            str(CASO2))
+        self.assertEqual(13, d[u"declara archivos"])
+        self.assertEqual(13, d[u"archivos en la carpeta"])
+
+    def test_detecta_el_conteo_mal_escrito(self):
+        """Reproduce el fallo real: declarar 12 donde hay 13."""
+        self.assertEqual(2, C.main_estado(
+            "x", u"1. EN QUÉ VA\nCONTEO: 12 archivos leídos", str(CASO2)))
+
+    def test_no_cuenta_el_andamiaje_ni_las_salidas_de_referencia(self):
+        """LEEME.md, NO-SON-SALIDAS.md y salidas-de-referencia/ no son del caso."""
+        d = C.contar_estado(u"CONTEO: 13 archivos leídos", str(CASO2))
+        reales = len([f for f in CASO2.rglob("*") if f.is_file()])
+        self.assertLess(d[u"archivos en la carpeta"], reales)
+
+    def test_sin_carpeta_no_inventa_una_cifra(self):
+        d = C.contar_estado(u"CONTEO: 13 archivos leídos", None)
+        self.assertNotIn(u"archivos en la carpeta", d)
+
+    def test_la_salida_real_cuadra(self):
+        f = CASO2 / "salidas-de-referencia" / "estado-del-caso-2026-09-07.txt"
+        self.assertTrue(f.exists(), f)
+        self.assertEqual(0, C.main([str(f), "--caso", str(CASO2)]))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
