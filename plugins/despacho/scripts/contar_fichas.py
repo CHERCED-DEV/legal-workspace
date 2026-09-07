@@ -472,6 +472,15 @@ def main(args):
     texto = io.open(args[0], encoding="utf-8").read()
     if re.search(r"(?m)^(?:#+\s+)?[FR]-\d+\s+[—·-]", texto):
         return main_rigor(args[0], texto)
+    # `preguntas-de-derecho` es el unico metodo que NO produce un documento con
+    # conteo: produce lo que ella lee en pantalla. Pedirselo seria inventarle
+    # una obligacion que su §5 no tiene, y dejar el aviso encendido para
+    # siempre es la manera de que nadie vuelva a mirar ninguno.
+    if re.search(r"(?im)^PREGUNTAS DE DERECHO\b", texto):
+        print("\n== %s   (preguntas de derecho)" % args[0])
+        print("   este metodo no produce un documento con conteo: produce lo")
+        print("   que ella lee en pantalla. No se le pide ninguna cifra.")
+        return 0
     if re.search(r"(?m)^\|\s*B-\d+\s*\|", texto):
         return main_bienes(args[0], texto)
     if re.search(r"(?im)^#*\s*1\.\s*EN QU[EÉ] VA", texto):

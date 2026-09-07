@@ -145,6 +145,36 @@ class DecirQueNoSeHaceNoEsHacerlo(unittest.TestCase):
         self.assertIn(u"han transcurrido mas de seis meses",
                       [e for _, e, cita, _, _ in r if not cita])
 
+    def test_la_negativa_puede_ir_DETRAS_de_la_palabra(self):
+        """La forma canonica de `preguntas-de-derecho`, que la guarda no veia.
+
+        «Sobre si el termino vencio: eso no se lo puedo responder» es una
+        negativa, y una guarda que solo mira hacia atras la lee al reves.
+        """
+        self.assertTrue(self._no_cuenta(
+            u"Sobre si el término venció: eso no se lo puedo responder."))
+        self.assertTrue(self._no_cuenta(
+            u"Si quedan tres días o no: eso lo decide usted."))
+
+    def test_ninguno_menciona_es_una_negacion(self):
+        self.assertTrue(self._no_cuenta(
+            u"Ninguno de los cuatro documentos menciona un vencimiento."))
+
+    def test_una_duracion_atribuida_a_ella_no_cuenta(self):
+        """§6 de `preguntas-de-derecho`: si ella da la regla, se aplica.
+
+        Sin esta excepcion la guarda empujaria al metodo a NO hacer lo unico
+        que esa seccion le autoriza. La condicion es la atribucion, no la
+        duracion: la frase tiene que decir de quien salio la regla.
+        """
+        self.assertTrue(self._no_cuenta(
+            u"Aplicando el término de treinta días hábiles que usted indicó."))
+
+    def test_pero_la_misma_duracion_sin_atribuir_si_cuenta(self):
+        """Control positivo: la excepcion es la atribucion y nada mas."""
+        r = hallar(u"El término es de treinta días hábiles.")
+        self.assertIn(u"treinta dias", [e for _, e, cita, _, _ in r if not cita])
+
     def test_la_negacion_no_cruza_el_punto(self):
         """Y el limite, declarado: una frase antes no protege a la siguiente."""
         r = hallar(u"No se calcula nada. Han transcurrido más de seis meses.")

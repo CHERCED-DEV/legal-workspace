@@ -64,11 +64,47 @@ def plano(t):
 NEGACIONES = (u"no se dice", u"no dice", u"no se calcula", u"no calcula",
               u"no se afirma", u"sin decir", u"jamas", u"jamás", u"nunca",
               u"prohibido", u"no se escribe", u"no se puede decir",
-              u"tampoco", u"ni se dice", u"sin calcular")
+              u"tampoco", u"ni se dice", u"sin calcular",
+              # «Ninguno de los cuatro documentos menciona un vencimiento»
+              # decia lo contrario de lo que la guarda entendia.
+              u"ninguno", u"ninguna", u"no hay ningun", u"no menciona")
+
+
+# La UNICA duracion legitima que no esta en el material: la que ELLA aporto.
+#
+# `preguntas-de-derecho` §6 lo permite con todas las letras -- si ella da la
+# regla de computo, se aplica **atribuida a ella** -- y es la misma logica de
+# la marca ` - REVISADO`: la autoridad cambio de manos. Sin esta excepcion, la
+# guarda empujaria al metodo a NO hacer lo unico que esa seccion le autoriza.
+#
+# La condicion es la atribucion, no la duracion: se exige que la frase diga de
+# quien salio la regla, que es exactamente lo que §6 obliga a escribir.
+ATRIBUIDA = (u"que usted indico", u"que usted dio", u"que usted me dio",
+             u"que usted señalo", u"que usted senalo", u"que usted aporto",
+             u"la regla que usted", u"el termino que usted",
+             u"el plazo que usted", u"segun usted", u"que usted indica")
+
+
+def atribuida_a_ella(pos, bruto):
+    """¿La frase dice de quien salio la regla? Entonces §6 la autoriza."""
+    ini = max(0, pos - 120)
+    fin = min(len(bruto), pos + 120)
+    ventana = plano(bruto[ini:fin])
+    return any(plano(a) in ventana for a in ATRIBUIDA)
+
+
+# Y las que van DESPUES. La negativa canonica de `preguntas-de-derecho` tiene
+# esta forma: «Sobre si el termino vencio: eso no se lo puedo responder». La
+# palabra prohibida enuncia la pregunta y la negacion viene detras, asi que una
+# guarda que solo mira hacia atras lee una negativa como una afirmacion.
+NEGACIONES_DESPUES = (u"no se lo puedo responder", u"no se lo puedo decir",
+                      u"eso no lo hago", u"no lo calculo", u"no se calcula",
+                      u"lo pone usted", u"lo decide usted", u"lo dice usted",
+                      u"no se lo digo", u"eso lo deja usted")
 
 
 def negado(pos, bruto):
-    """¿La expresion viene detras de una negacion, en la misma frase?"""
+    """¿La expresion viene detras de una negacion -- o delante de una?"""
     inicio = max(0, pos - 90)
     antes = plano(bruto[inicio:pos])
     # Se corta en fin de frase o en salto de PARRAFO, nunca en un salto de
@@ -77,7 +113,12 @@ def negado(pos, bruto):
     corte = max(antes.rfind(u"."), antes.rfind(u"\n\n"))
     if corte >= 0:
         antes = antes[corte + 1:]
-    return any(plano(neg) in antes for neg in NEGACIONES)
+    if any(plano(neg) in antes for neg in NEGACIONES):
+        return True
+    # Hacia delante, hasta el final de la frase.
+    fin = bruto.find(u".", pos)
+    despues = plano(bruto[pos:fin if fin > 0 else min(len(bruto), pos + 120)])
+    return any(plano(neg) in despues for neg in NEGACIONES_DESPUES)
 
 
 def citado(pos, bruto):
@@ -155,7 +196,8 @@ def revisar(ruta, texto_material=None):
             if texto_material is not None:
                 en_material = m.group(0) in texto_material
             fuera.append((clase, m.group(0),
-                          citado(m.start(), bruto) or negado(m.start(), bruto),
+                          citado(m.start(), bruto) or negado(m.start(), bruto)
+                          or atribuida_a_ella(m.start(), bruto),
                           en_material,
                           " ".join(bruto[max(0, m.start() - 60):m.end() + 60].split())))
     return fuera
@@ -197,7 +239,7 @@ def main(args):
         # dice «aqui decia N dias y esa cifra salio de una resta» tiene que
         # poder escribirse sin dejar la guarda en rojo para siempre.
         if es_cita:
-            marca += " (citada o negada)"
+            marca += " (citada, negada o atribuida a ella)"
         elif en_material is not True:
             mirar += 1
         print("   %-11s «%s»  %s" % (clase, expr, marca))

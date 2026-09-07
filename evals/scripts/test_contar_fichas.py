@@ -228,8 +228,12 @@ class LaPlantillaDeTextoPlanoEsLaQueManda(unittest.TestCase):
                  u"3. QUÉ PIDE\n   · nada\n")
         self.assertEqual(2, C.contar_documento(texto)[u"afirmaciones"])
 
-    def test_las_cuatro_salidas_de_referencia_cuadran(self):
-        """Control positivo sobre las cuatro, ya corregidas."""
+    def test_todas_las_salidas_de_referencia_cuadran(self):
+        """Control positivo sobre todas, ya corregidas.
+
+        Incluye la de `preguntas-de-derecho`, que no produce conteo y a la que
+        el contador no debe pedirle ninguno.
+        """
         for f in sorted(REF.glob("*.txt")):
             self.assertEqual(0, C.main([str(f)]), f.name)
 
