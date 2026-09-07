@@ -185,6 +185,29 @@ class ImportesQueSalenDeUnaCuenta(unittest.TestCase):
         r = self._importes(u"Total de bienes: $7.100.000.")
         self.assertEqual([u"7.100.000"], [c for c, _, _ in r])
 
+    def test_un_importe_solo_se_mira_aunque_no_haya_ninguna_duracion(self):
+        """El hueco de la guarda, encontrado por inventario-de-bienes.
+
+        `main()` salia antes de mirar los importes cuando no habia ninguna
+        expresion de duracion, y ese metodo no tiene una sola duracion y si
+        tiene importes: una cifra inventada habria pasado en silencio.
+        """
+        import subprocess
+        import sys
+        fd, ruta = tempfile.mkstemp(suffix=".md")
+        os.close(fd)
+        io.open(ruta, "w", encoding="utf-8").write(
+            u"Total de bienes: $9.999.999. Aquí no hay ninguna duración.")
+        try:
+            r = subprocess.run(
+                [sys.executable, str(Path(__file__).resolve().parent / "buscar_cuentas.py"),
+                 ruta, "--material", str(MATERIAL)],
+                capture_output=True, text=True)
+            self.assertIn("9.999.999", r.stdout)
+            self.assertEqual(2, r.returncode, "salio 0 con un importe inventado")
+        finally:
+            os.unlink(ruta)
+
     def test_las_dos_salidas_reales_no_afirman_ningun_importe_calculado(self):
         borradores = (Path(__file__).resolve().parents[1] / "casos"
                       / "caso-03-hidraulica-desde-el-diseno" / "2-Borradores")

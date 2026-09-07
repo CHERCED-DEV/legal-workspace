@@ -384,6 +384,68 @@ def main_estado(ruta, texto, carpeta):
     return 0
 
 
+def contar_bienes(texto):
+    """Bienes distintos y apariciones de una salida de `inventario-de-bienes`.
+
+    Su tabla 2 lleva **una fila por cada vez que algo aparece**, asi que el
+    mismo B-NN sale varias veces: los bienes distintos son los identificadores
+    unicos y las apariciones son las filas. Confundirlos es el error natural de
+    esa tabla, y es lo que este contador comprueba.
+    """
+    # Solo la tabla 2. La tabla 3 -- «que hay detras de cada bien» -- repite
+    # los mismos B-NN agrupados, y contarlas juntas daba 8 donde hay 5.
+    # Es el MISMO fallo que ya habia aparecido en la cronologia, tercera vez:
+    # cuando una salida tiene dos tablas con la misma etiqueta, el contador
+    # tiene que saber donde empieza y acaba cada una.
+    filas = re.findall(r"(?m)^\|\s*(B-\d+)\s*\|", solo_tabla_2(texto))
+    return sorted(set(filas)), len(filas)
+
+
+def solo_tabla_2(texto):
+    i = re.search(r"(?im)^#*\s*2\.\s*TABLA DE BIENES", texto)
+    if not i:
+        return texto
+    j = re.search(r"(?im)^#*\s*3\.\s*QU[EÉ] HAY DETR[AÁ]S", texto[i.end():])
+    return texto[i.end():i.end() + j.start()] if j else texto[i.end():]
+
+
+def conteo_bienes_escrito(texto):
+    fuera = {}
+    for clave, patron in ((u"bienes", u"(\\d+)\\s+bienes distintos"),
+                          (u"apariciones", u"(\\d+)\\s+apariciones")):
+        m = re.search(patron, texto)
+        fuera[clave] = int(m.group(1)) if m else None
+    return fuera
+
+
+def main_bienes(ruta, texto):
+    distintos, apariciones = contar_bienes(texto)
+    d = conteo_bienes_escrito(texto)
+    print("\n== %s   (inventario de bienes)" % ruta)
+    print("   bienes distintos   %d  (%s)" % (len(distintos), ", ".join(distintos)))
+    print("   apariciones        %d  (filas de la tabla 2)" % apariciones)
+    print("   el resto del CONTEO va en prosa: NO lo cuenta este programa")
+    problemas = []
+    if d[u"bienes"] is None:
+        problemas.append(u"no declara «N bienes distintos», y el metodo lo pide")
+    elif d[u"bienes"] != len(distintos):
+        problemas.append(u"declara %d bienes distintos y hay %d"
+                         % (d[u"bienes"], len(distintos)))
+    if d[u"apariciones"] is None:
+        problemas.append(u"no declara «N apariciones», y el metodo lo pide")
+    elif d[u"apariciones"] != apariciones:
+        problemas.append(u"declara %d apariciones y la tabla tiene %d filas"
+                         % (d[u"apariciones"], apariciones))
+    print("")
+    if problemas:
+        for x in problemas:
+            print("   NO COINCIDE: %s" % x)
+        print("\n   Una discrepancia pide RECONTAR, no explicarla.")
+        return 2
+    print("   el conteo escrito coincide con la tabla")
+    return 0
+
+
 def main(args):
     carpeta = None
     if len(args) == 3 and args[1] == "--caso":
@@ -397,6 +459,8 @@ def main(args):
     texto = io.open(args[0], encoding="utf-8").read()
     if re.search(r"(?m)^(?:#+\s+)?[FR]-\d+\s+[—·-]", texto):
         return main_rigor(args[0], texto)
+    if re.search(r"(?m)^\|\s*B-\d+\s*\|", texto):
+        return main_bienes(args[0], texto)
     if re.search(r"(?im)^#*\s*1\.\s*EN QU[EÉ] VA", texto):
         return main_estado(args[0], texto, carpeta)
     if re.search(r"(?im)^#*\s*1\.\s*QU[EÉ] ES", texto):

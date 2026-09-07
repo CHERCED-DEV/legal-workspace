@@ -274,5 +274,45 @@ class ContarEstadoDelCaso(unittest.TestCase):
         self.assertEqual(0, C.main([str(f), "--caso", str(CASO2)]))
 
 
+class ContarInventarioDeBienes(unittest.TestCase):
+    """Bienes distintos y apariciones NO son la misma cifra.
+
+    La tabla 2 lleva una fila por cada vez que algo aparece, asi que el mismo
+    B-NN sale varias veces. Y la tabla 3 los repite agrupados: contar las dos
+    juntas daba 8 donde hay 5. Es el mismo fallo que ya habia salido en la
+    cronologia -- **dos tablas con la misma etiqueta** -- por tercera vez.
+    """
+
+    def _doc(self, filas2, filas3=(), conteo=""):
+        t = ["2. TABLA DE BIENES", "| Bien | x |", "|---|---|"]
+        t += ["| %s | algo |" % b for b in filas2]
+        t += ["", "3. QUÉ HAY DETRÁS DE CADA BIEN", "| Bien | x |", "|---|---|"]
+        t += ["| %s | algo |" % b for b in filas3]
+        t += ["", "6. CONTEO", conteo]
+        return "\n".join(t)
+
+    def test_el_mismo_bien_dos_veces_es_una_aparicion_mas(self):
+        distintos, apariciones = C.contar_bienes(
+            self._doc(["B-01", "B-01", "B-02"]))
+        self.assertEqual(["B-01", "B-02"], distintos)
+        self.assertEqual(3, apariciones)
+
+    def test_la_tabla_3_no_se_cuenta(self):
+        _, apariciones = C.contar_bienes(
+            self._doc(["B-01", "B-02"], ["B-01", "B-02"]))
+        self.assertEqual(2, apariciones)
+
+    def test_detecta_el_conteo_mal_escrito(self):
+        doc = self._doc(["B-01", "B-01"], (),
+                        u"2 bienes distintos · 2 apariciones")
+        self.assertEqual(2, C.main_bienes("x", doc))
+
+    def test_el_inventario_real_cuadra(self):
+        f = (CASO2 / "salidas-de-referencia"
+             / "inventario-de-bienes-2026-09-07.txt")
+        self.assertTrue(f.exists(), f)
+        self.assertEqual(0, C.main([str(f)]))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

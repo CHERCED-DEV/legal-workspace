@@ -179,9 +179,12 @@ def main(args):
 
     hallazgos = revisar(ruta, texto_material)
     print("\n== %s" % ruta)
+    # Sin `return` aqui: la primera version salia en este punto y **se saltaba
+    # los importes**, de modo que una salida con una cifra inventada y ninguna
+    # duracion pasaba en silencio. Lo encontro la pasada de inventario-de-bienes
+    # sobre el caso-02, que no tiene una sola duracion y si tiene importes.
     if not hallazgos:
         print("   ninguna expresion de duracion o distancia temporal")
-        return 0
     mirar = 0
     for clase, expr, es_cita, en_material, trozo in hallazgos:
         if en_material is True:
