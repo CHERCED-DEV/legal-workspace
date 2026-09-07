@@ -62,10 +62,26 @@ import zipfile
 from datetime import date
 from pathlib import Path
 
+# Pillow hace falta para las IMAGENES y para nada mas. Cargarlo al arrancar
+# hacia que un material sin una sola fotografia -- un ZIP de .txt, una carpeta
+# de PDF con texto -- no se pudiera preparar, y que ni siquiera `--help`
+# funcionara: el programa no podia decir como se usa sin una libreria que ese
+# uso no necesita. Se comprueba cuando se va a abrir la primera imagen, y ahi
+# se dice con todas las letras, que es lo que el metodo manda.
+Image = None
+FALTA_PILLOW = None
 try:
     from PIL import Image
-except ImportError:
-    sys.exit("Falta Pillow.  pip install pillow")
+except ImportError as _e:
+    FALTA_PILLOW = str(_e)
+
+
+def exigir_pillow(para):
+    """Se llama justo antes de tocar una imagen, no al arrancar."""
+    if Image is None:
+        sys.exit("Falta Pillow, y hace falta para %s.  pip install pillow\n"
+                 "El resto del preparador funciona sin el: si el material no "
+                 "trae imagenes, no se necesita." % para)
 
 IMAGENES = {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp", ".webp"}
 OTROS = {".pdf", ".docx", ".doc", ".txt", ".md", ".rtf", ".odt"}
@@ -174,6 +190,7 @@ def atipicas(cobertura):
 
 def mejor_orientacion(ocr, ruta: Path):
     """Prueba las cuatro orientaciones y devuelve la que mas texto detecta."""
+    exigir_pillow("rotar y realzar una imagen")
     from PIL import Image as I
     import numpy as np
     mejor, giros = (-1, 0), {0: None, 90: I.ROTATE_270, 180: I.ROTATE_180, 270: I.ROTATE_90}
@@ -261,6 +278,7 @@ def main():
             print("  AVISO: rapidocr-onnxruntime no esta instalado. Se omite el OCR.")
     if ocr:
         print("Extrayendo texto (con instrumentacion de cobertura)...")
+        exigir_pillow("armar el PDF consolidado")
         from PIL import Image as I
         import numpy as np
         t0 = time.time()
@@ -300,6 +318,7 @@ def main():
     # --- PDF consolidado -----------------------------------------------------
     if not a.sin_pdf and cobertura:
         try:
+            exigir_pillow("dibujar la caratula del PDF")
             from PIL import Image as I, ImageDraw, ImageFont
             try:
                 f1 = ImageFont.truetype("arialbd.ttf", 28); f2 = ImageFont.truetype("arial.ttf", 22)
@@ -360,6 +379,20 @@ def escribir_registro(borradores: Path, caso: Path, piezas, cobertura, duplicado
         L += ["", f"> **{len(fotos)} de {len(piezas)} piezas parecen fotografías, no escaneos.** "
               "Eso multiplica el coste de leerlas y obliga a marcar como *por comprobar* todo dato "
               "numérico. Ver `docs/INSTRUCCION-DE-CAPTURA-DEL-MATERIAL.md`."]
+    if not cobertura:
+        # Una seccion vacia SE DICE, no se borra. Todos los demas metodos del
+        # arnes lo hacen -- «si alguna queda vacia, se dice que quedo vacia» --
+        # y este registro se saltaba la 2 en silencio cuando no habia imagenes,
+        # dejando un salto del 1 al 3 que no permite distinguir «no habia nada»
+        # de «se omitio algo». Lo destapo la primera corrida real del programa.
+        L += ["", "## 2. Cómo se leyó, y cuánto se leyó", "",
+              "**Vacía, y se dice: no hubo ninguna imagen que reconocer.** "
+              "El material llegó como archivos con texto, así que no se corrió "
+              "el reconocedor y no hay cobertura que medir.", "",
+              "Que esta sección esté vacía **no significa que todo se haya "
+              "leído bien**: significa que aquí no había nada que leer con un "
+              "reconocedor. Lo que traiga cada archivo por dentro no lo dice "
+              "este registro."]
     if cobertura:
         atip = atipicas(cobertura)
         L += ["", "## 2. Cómo se leyó, y cuánto se leyó", "",
