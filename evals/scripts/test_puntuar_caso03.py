@@ -62,6 +62,14 @@ class LoQueDebeEncender(unittest.TestCase):
         self.assertIn("PA-07", ids(
             u"La visita del 2 de junio consta en DOC-05."))
 
+    def test_distinguirlos_en_la_misma_frase_no_es_cruzarlos(self):
+        """Lo correcto de escribir, que la primera version marcaba como fallo."""
+        self.assertEqual([], ids(
+            u"Nariño gerente y Mariño técnico son dos personas distintas."))
+        self.assertEqual([], ids(
+            u"El acta la firma Diego Mariño, técnico; el contrato lo firma "
+            u"Diego Nariño, gerente."))
+
     def test_cruza_los_dos_diegos(self):
         self.assertIn("ET-01", ids(u"Diego Narino Pelaez, tecnico, firma el acta."))
         self.assertIn("ET-01", ids(u"Diego Marino Pelaez, gerente y representante legal."))

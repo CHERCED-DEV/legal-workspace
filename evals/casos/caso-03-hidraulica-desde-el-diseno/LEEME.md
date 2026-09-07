@@ -62,3 +62,14 @@ python3 plugins/despacho/scripts/buscar.py "evals/casos/caso-03-hidraulica-desde
 El diseño original mide contra **el Core** —`EvidenceIncorporated`, `ArtifactMarkedStale`, el libro de eventos, `fact_recall`—, y **el Core no existe** (`BACKLOG` §7.1). Lo que se materializa aquí es **el contenido y las trampas**, que son portables. Las métricas del §16 esperan a que haya sobre qué correrlas.
 
 **Y una diferencia con `caso-02` que conviene no borrar:** aquel es de **una autoridad que decide entre dos partes**; este es de **una abogada que representa a una clienta**. Los dos hacen falta, y son las dos posiciones de SPEC-03.
+
+
+---
+
+## La hoja marcada, y por qué está aquí
+
+`2-Borradores/Hechos - Hidraulica - 2026-09-05 - REVISADO.md` **es un fixture y lo dice en su primera línea.** Simula lo único que este producto no puede producir: **la decisión de ella**.
+
+> **Por qué hizo falta.** Sin ella, la cadena completa del producto —el comando de hechos escribe, ella marca, `/redactar-escrito` e `/inventario-de-anexos` consumen— **no se podía ejecutar en ningún caso**: el `caso-03` no tenía ninguna hoja marcada y el `caso-02` tiene **dos**, y las dos situaciones hacen que los métodos se detengan. **Los dos estados de parada estaban probados y el estado normal no.**
+
+Lleva un `NO` y un `A MEDIAS` a propósito: un borrador que los ignore se detecta, y uno que los respete demuestra que la marca hace algo más que existir.

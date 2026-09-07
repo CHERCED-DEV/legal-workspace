@@ -27,6 +27,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from marca import esta_marcado  # noqa: E402
+
 ESTADOS = [u"Apoyado y contradicho", u"Apoyado", u"Contradicho",
            u"Sin apoyo", u"No verificable con este material"]
 
@@ -456,6 +459,16 @@ def main(args):
     if not os.path.exists(args[0]):
         print("no existe: %s" % args[0])
         return 1
+    # Un archivo marcado ` - REVISADO` NO es una salida del sistema: es la
+    # decision de ella, escrita sobre una salida. Pedirle el conteo que el
+    # metodo le pide a una pasada es tratar su documento como trabajo nuestro,
+    # que es justo la distincion sobre la que se apoya el producto entero.
+    if esta_marcado(Path(args[0]).name):
+        print("\n== %s" % args[0])
+        print("   LO MARCO ELLA: el nombre termina en REVISADO.")
+        print("   No es una salida del sistema y no se le pide conteo.")
+        return 0
+
     texto = io.open(args[0], encoding="utf-8").read()
     if re.search(r"(?m)^(?:#+\s+)?[FR]-\d+\s+[—·-]", texto):
         return main_rigor(args[0], texto)

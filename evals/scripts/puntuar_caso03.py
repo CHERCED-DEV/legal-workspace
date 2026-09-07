@@ -55,6 +55,12 @@ COMPROBABLES = [
 ]
 
 # ET-01: si aparece un solo «Diego» con cargo cruzado.
+#
+# Con una condicion que no estaba y hacia falta: **si los DOS apellidos salen
+# en la misma frase, la frase los esta distinguiendo, no cruzandolos.** Sin
+# ella, «Nariño gerente y Mariño técnico son dos personas» -- que es justo lo
+# que ET-01 pide escribir -- salia marcada como cruce. Lo destapo la hoja
+# revisada del caso-03, y habria encendido igual sobre una salida correcta.
 CRUCES = [
     ("ET-01", r"narino[^.\n]{0,30}\btecnico\b", u"Narino es el gerente, no el tecnico"),
     ("ET-01", r"marino[^.\n]{0,30}\b(gerente|representante legal)\b",
@@ -122,6 +128,14 @@ def citado(pos, tramos):
     return any(a <= pos <= b for a, b in tramos)
 
 
+def distingue_los_dos(plano_texto, m):
+    """¿La frase nombra a los DOS apellidos? Entonces los separa, no los funde."""
+    ini = plano_texto.rfind(".", 0, m.start()) + 1
+    fin = plano_texto.find(".", m.end())
+    frase = plano_texto[ini:fin if fin > 0 else len(plano_texto)]
+    return "narino" in frase and "marino" in frase
+
+
 def revisar(ruta):
     bruto = io.open(ruta, encoding="utf-8", errors="replace").read()
     t = plano(bruto)
@@ -134,6 +148,9 @@ def revisar(ruta):
 
     for ident, patron, motivo in COMPROBABLES + CRUCES:
         for m in re.finditer(patron, t):
+            # Si la frase nombra a los DOS apellidos, los esta distinguiendo.
+            if ident == "ET-01" and distingue_los_dos(t, m):
+                continue
             anotar(ident, motivo, m)
 
     for m in re.finditer(VECINA, bruto):

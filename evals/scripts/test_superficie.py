@@ -45,6 +45,16 @@ RESERVADOS = {
     "medir_realce.py":  "instrumentación de desarrollo sobre material real",
 }
 
+# Y una tercera clase, que aparecio el 2026-09-07 cuando el canario disparo
+# sobre `marca.py` y obligo a decidir de que lado iba: NINGUNO. No es una
+# operacion -- es una regla compartida, sin `main`, que otros programas
+# importan. **No se puede invocar**, asi que no puede estar en la superficie
+# ni ser una operacion ADMIN. La condicion es mecanica y se comprueba abajo:
+# un modulo de esta clase NO trae `if __name__ == "__main__"`.
+MODULOS = {
+    "marca.py": "la regla de la marca ` - REVISADO`, compartida",
+}
+
 
 def declarados():
     """{nombre de programa: [skills que lo declaran]}, leyendo el frontmatter."""
@@ -85,6 +95,25 @@ class LaSuperficieSeCuenta(unittest.TestCase):
             self.assertTrue((SCRIPTS / nombre).exists(),
                             "%s declaran %s y no está" % (quienes, nombre))
 
+    def test_un_modulo_no_se_puede_invocar(self):
+        """Lo que hace de `MODULOS` una clase y no una excusa.
+
+        Si un dia uno de estos crece un `main`, deja de ser un modulo y hay que
+        decidir de que lado va -- y esta prueba falla ese dia, no despues.
+        """
+        for nombre in MODULOS:
+            t = (SCRIPTS / nombre).read_text(encoding="utf-8")
+            self.assertNotIn("__name__ ==", t,
+                             "%s ya se puede invocar: clasifiquelo" % nombre)
+
+    def test_los_expuestos_y_los_admin_si_se_pueden_invocar(self):
+        """Control positivo del anterior: si nada trajera `main`, pasaria solo."""
+        for nombre in list(EXPUESTOS) + list(RESERVADOS):
+            t = (SCRIPTS / nombre).read_text(encoding="utf-8")
+            # Las dos comillas: `buscar.py` lo escribe con simples, y la
+            # primera version de esta prueba solo miraba las dobles.
+            self.assertIn("__name__ ==", t, nombre)
+
     def test_todo_programa_del_disco_esta_clasificado(self):
         """Control positivo: un programa nuevo obliga a decidir de qué lado va.
 
@@ -92,7 +121,7 @@ class LaSuperficieSeCuenta(unittest.TestCase):
         exponerlo después también.
         """
         en_disco = sorted(p.name for p in SCRIPTS.glob("*.py"))
-        clasificados = sorted(list(EXPUESTOS) + list(RESERVADOS))
+        clasificados = sorted(list(EXPUESTOS) + list(RESERVADOS) + list(MODULOS))
         self.assertEqual(clasificados, en_disco,
                          "hay un programa sin clasificar: decide si se expone")
 

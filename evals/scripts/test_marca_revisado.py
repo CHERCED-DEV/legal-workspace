@@ -17,6 +17,7 @@ Lo que NO prueba: que el modelo aplique la regla. Eso solo lo dice una pasada.
     python3 evals/scripts/test_marca_revisado.py
 """
 import unicodedata
+import sys
 import unittest
 from pathlib import Path
 
@@ -29,39 +30,12 @@ CON_LA_REGLA = ["cronologia", "estado-del-caso", "hechos-con-prueba",
                 "inventario-de-anexos", "inventario-de-bienes", "redactar-escrito"]
 FRASE = "la marca se reconoce por el nombre, no por la extensión"
 
-EXTENSIONES = {".md", ".txt", ".docx", ".doc", ".rtf"}
-
-
-def plano(s):
-    d = unicodedata.normalize("NFD", s)
-    return "".join(c for c in d if unicodedata.category(c) != "Mn").upper()
-
-
-def sin_extensiones(nombre):
-    """«quitada la extensión, o las dos si quedaron dos, o ninguna si no tiene»."""
-    p = Path(nombre)
-    for _ in range(2):
-        if p.suffix.lower() in EXTENSIONES:
-            p = p.with_suffix("")
-        else:
-            break
-    return p.name
-
-
-def esta_marcado(nombre):
-    """«termina en REVISADO, en mayúsculas o minúsculas, con el guion o sin él»."""
-    return plano(sin_extensiones(nombre)).rstrip().endswith("REVISADO")
-
-
-def casi_marcado(nombre):
-    """«la raíz «revis»... sin cerrar el nombre: se nombra y se pregunta».
-
-    La raíz y no la palabra, y esto lo encontró esta prueba: la redacción
-    anterior decía «revisado» de cualquier otra forma y ponía `(revisar)` de
-    ejemplo -- pero «revisar» NO contiene «revisado». Quien buscara la palabra
-    pasaba por encima del ejemplo de la propia regla sin verlo.
-    """
-    return not esta_marcado(nombre) and "REVIS" in plano(nombre)
+# La implementacion NO vive aqui: vive en el producto, y esta prueba comprueba
+# esa. Tenerla en el test era tener la regla mas consecuente del producto en un
+# sitio donde el producto no podia usarla -- y en cuanto un segundo programa la
+# necesito, habrian sido dos copias.
+sys.path.insert(0, str(RAIZ / "plugins" / "despacho" / "scripts"))
+from marca import esta_marcado, casi_marcado, plano, sin_extensiones  # noqa: E402
 
 
 class LaReglaDecide(unittest.TestCase):
