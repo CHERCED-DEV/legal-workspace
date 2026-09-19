@@ -281,3 +281,37 @@ kbd {
 .ficha-hallazgo .texto { font-size: .95rem; }
 .ficha-hallazgo .motivos { color: var(--tinta); }
 .ficha-hallazgo .motivos::before { content: ""; }
+
+/* ======================================================== turnos de habla
+   Era el defecto que mas pesaba en la primera entrega: trescientas ochenta y
+   seis lineas sueltas no dejan ver quien habla ni que dice. Un turno se lee
+   como una intervencion. */
+.turno {
+  margin: 0 0 1.1rem; padding-left: .9rem;
+  border-left: 2px solid var(--linea);
+}
+.turno-cab {
+  margin: 0 0 .15rem; display: flex; align-items: baseline; gap: .6rem;
+  font-family: ui-sans-serif, system-ui, sans-serif; font-weight: 600; font-size: .82rem;
+}
+.turno-cab .quien { color: var(--tinta); }
+.turno-cab .desde { font-weight: 400; font-size: .74rem; color: var(--tinta-suave); }
+.turno .seg { margin-bottom: 0; padding-top: .2rem; padding-bottom: .2rem; }
+.turno .seg-cab { margin-bottom: 0; }
+.turno .seg .hora { font-weight: 400; font-size: .72rem; opacity: .75; }
+.turno .seg:hover .hora { opacity: 1; }
+
+/* La palabra concreta de la que el reconocedor dudo. NO es un anclaje —el
+   localizador sigue siendo el minuto del segmento (ADR-017 §5, ADR-019)—:
+   es senalar cual de las palabras de la frase es la floja. Subrayado punteado
+   para que se vea tambien en blanco y negro. */
+.dudosa {
+  text-decoration: underline dotted var(--duda);
+  text-underline-offset: 3px; text-decoration-thickness: 2px;
+  cursor: help;
+}
+@media print { .dudosa { text-decoration: underline dotted #000; } }
+.pausa {
+  margin: .4rem 0; font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: .72rem; color: var(--tinta-suave); font-style: italic;
+}

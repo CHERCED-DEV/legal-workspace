@@ -79,6 +79,8 @@ Todo lo de esta tabla se midió sobre material real (56 min 52 s de reunión, tr
 | **Umbral de voces 0,90** | 0,60 / 1,05 | Con 0,60 aparecen **12 hablantes** en 7 minutos, varios de menos de 3 s. Con 1,05 se funden en 2 personas distintas. Con 0,90: 4 voces, 97,8 % del habla en tres |
 | **Limpieza conservadora, suelo −12 dB** | Limpieza agresiva | Quitar ruido **borra habla**, y el reconocedor no avisa: simplemente no la escribe |
 | **Medir crudo contra limpio** | Suponer que limpiar ayuda | En **1 de cada 3** grabaciones ganó el audio **crudo**. Mejor señal/ruido no implica mejor transcripción |
+| **Los canales del estéreo se transcriben POR SEPARADO** | Mezclarlos a mono, como se hizo al principio | Los canales coinciden entre sí **menos** que dos decodificaciones del mismo mono —0,650 frente a 0,737 en la peor grabación—, y la mezcla **pierde 344 y 389 palabras** que cada canal sí produce. **Dos micrófonos no comparten punto ciego; dos cuantizaciones sí** |
+| **NO reparar el recorte de origen** | Interpolar las muestras recortadas | Son ~1.100 rachas de **1 ms** en 27 minutos: un segundo de daño. Repararlo es **inventar muestras**, y el beneficio esperado no lo justifica |
 | **Sin `initial_prompt` ni `hotwords` en el texto publicado** | Sugerir términos al modelo | Sugerir una palabra hace que el modelo **la escriba también donde no se dijo**, y ese acierto falso es indistinguible del verdadero |
 
 **El glosario existe, pero no toca el texto.** Se hace una pasada aparte sugiriendo los términos del caso, y **solo se usa para avisar**: «en el minuto tal, el glosario habría escrito *[el término del caso]* donde la versión publicada dice *[lo que se entendió]*». Quien decide es ella, oyendo.

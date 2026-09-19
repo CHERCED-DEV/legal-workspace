@@ -206,11 +206,76 @@ def _gravedad(seg, marcas, desacuerdo):
     return round(min(1.0, g), 3)
 
 
+def _norm(t):
+    return re.sub(r"[^a-z0-9ñ ]+", " ", t.lower()).split()
+
+
+# Palabras donde la baja confianza NO importa: aunque el reconocedor dude de
+# «de» o «su», la frase se entiende igual. Marcarlas manda el ojo a lo
+# irrelevante. Medido sobre el Audio 2: marcar todo por debajo de 0,55 daba 394
+# marcas (15 % de las palabras), casi todas asi.
+_FUNCION = set((
+    "de la el los las un una unos unas y o que en a al del se lo le les por con "
+    "para su sus mi tu es son era fue ha he han no si sí ya pero como mas más ni "
+    "ese esa eso este esta esto ahí allí aquí muy ya bien"
+).split())
+
+
+def texto_con_dudas(seg, umbral_importante=0.70, umbral_resto=0.35):
+    """Marca DENTRO de la frase la palabra concreta de la que el reconocedor dudo.
+
+    ADR-017 §5 prohibe que un ANCLAJE dependa de la marca de palabra, y se
+    respeta: el localizador que se publica sigue siendo el minuto del segmento.
+    Esto no es un anclaje: es senalar cual de las palabras de esa frase es la
+    floja, para no obligarla a adivinarlo. La distincion esta en ADR-019.
+
+    Y la salvaguarda de siempre: si rearmar la frase desde las palabras cambia
+    aunque sea una, se devuelve el texto original sin marcar.
+    """
+    pal = seg.get("palabras") or []
+    if not pal:
+        return _linea(seg["texto"])
+    partes = []
+    for k, w in enumerate(pal):
+        t = _linea(w["p"])
+        c = w.get("c", 1.0)
+        p = w["p"].strip(".,;:()[]¿?¡!\"'")
+        if not p or p.lower() in _FUNCION or len(p) <= 2:
+            partes.append(t); continue
+        previa = pal[k - 1]["p"].strip() if k else "."
+        importante = bool(re.search(r"\d", p)) or (
+            p[:1].isupper() and k and not previa.endswith((".", "?", "!")))
+        if c < (umbral_importante if importante else umbral_resto):
+            partes.append('<span class="dudosa" title="%s: el reconocedor dudó de esta palabra">%s</span>'
+                          % ("Cifra o nombre propio" if importante else "Palabra", t))
+        else:
+            partes.append(t)
+    armado = " ".join(partes)
+    llano = html.unescape(re.sub(r"<[^>]+>", "", armado))
+    if _norm(llano) != _norm(seg["texto"]):
+        return _linea(seg["texto"])
+    return armado
+
+
 def construir_bloques(doc, marcas, ventanas, gana):
     """Devuelve (html, bloques del contrato). El HTML se lee sin JavaScript;
-    el contrato lleva los metadatos que la pagina necesita para trabajar."""
+    el contrato lleva los metadatos que la pagina necesita para trabajar.
+
+    Los segmentos se agrupan en TURNOS de habla. Era el defecto que mas pesaba
+    en la primera entrega: trescientas ochenta y seis lineas sueltas no dejan
+    ver quien habla ni que dice. Un turno se lee como una intervencion.
+    """
     partes, bloques = [], []
     voz_previa = object()
+    fin_previo = -99.0
+    abierto = False
+
+    def cerrar():
+        nonlocal abierto
+        if abierto:
+            partes.append("</section>")
+            abierto = False
+
     for s in doc["segmentos"]:
         bid = "b%d" % s["i"]
         mk = marcas.get(str(s["i"])) or marcas.get(s["i"]) or []
@@ -218,15 +283,28 @@ def construir_bloques(doc, marcas, ventanas, gana):
         riesgo = _riesgo(mk, duro)
         voz = s.get("voz")
 
-        cab = ['<button type="button" class="hora" disabled>%s</button>' % hms(s["inicio"])]
-        if voz is not None and voz != voz_previa:
-            cab.append('<span class="voz">Hablante %s</span>' % html.escape(str(voz)))
-        voz_previa = voz
+        # Turno nuevo SOLO cuando cambia la voz. Una pausa larga dentro de la
+        # misma voz es una pausa, no otra intervencion: cortar ahi fragmentaba
+        # la lectura en turnos consecutivos del mismo hablante.
+        # Si hay un silencio muy largo se marca la pausa, sin abrir turno.
+        hueco = s["inicio"] - fin_previo
+        if voz != voz_previa:
+            cerrar()
+            quien = ("Hablante %s" % html.escape(str(voz))) if voz is not None else "Hablante ?"
+            partes.append(
+                '<section class="turno"><h3 class="turno-cab">'
+                '<span class="quien">%s</span>'
+                '<span class="desde">desde %s</span></h3>' % (quien, hms(s["inicio"])))
+            abierto = True
+        elif hueco > 10.0 and abierto:
+            partes.append('<p class="pausa">— %d segundos sin habla detectada —</p>' % round(hueco))
+        voz_previa, fin_previo = voz, s["fin"]
 
         cuerpo = [
             '<article class="seg%s" id="%s">' % (" dudoso" if mk else "", bid),
-            '<div class="seg-cab">%s</div>' % "".join(cab),
-            '<p class="texto">%s</p>' % _linea(s["texto"]),
+            '<div class="seg-cab">'
+            '<button type="button" class="hora" disabled>%s</button></div>' % hms(s["inicio"]),
+            '<p class="texto">%s</p>' % texto_con_dudas(s),
         ]
         if mk:
             cuerpo.append('<p class="motivos">%s</p>' % html.escape("; ".join(mk)))
@@ -243,6 +321,7 @@ def construir_bloques(doc, marcas, ventanas, gana):
             "etiqueta": ("Hablante %s" % voz) if voz is not None else None,
             "alternativas": alts,
         })
+    cerrar()
     return "\n".join(partes), bloques
 
 

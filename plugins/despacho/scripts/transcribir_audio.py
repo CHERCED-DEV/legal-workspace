@@ -27,8 +27,23 @@ UMBRAL_PALABRA, UMBRAL_NOVOZ, UMBRAL_COMPRESION, UMBRAL_LOGPROB = 0.45, 0.50, 2.
 UMBRAL_PUREZA_VOZ, UMBRAL_VOCES, MAX_SEGMENTO = 0.60, 0.90, 18.0
 EXT = (".mp3", ".mp4", ".m4a", ".wav", ".ogg", ".opus", ".aac", ".flac", ".wma", ".mkv", ".mov", ".webm")
 MODELOS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "modelos")
-PASADAS_POSIBLES = [("limpio_int8", "limpio", "int8_float16"), ("crudo_int8", "crudo", "int8_float16"),
-                    ("limpio_f16", "limpio", "float16"), ("crudo_f16", "crudo", "float16")]
+# Que decodificaciones se hacen, y sobre que pista. El orden es de mas valiosa
+# a menos: si se piden menos pasadas, se quedan las primeras.
+#
+# Con dos canales distintos se prefiere UN CANAL sobre otra cuantizacion, porque
+# dos microfonos no comparten punto ciego acustico y dos cuantizaciones si.
+PASADAS_ESTEREO = [
+    ("mezcla_f16",  "mezcla_limpio", "float16"),
+    ("der_int8",    "der_limpio",    "int8_float16"),
+    ("izq_int8",    "izq_limpio",    "int8_float16"),
+    ("crudo_int8",  "mezcla_crudo",  "int8_float16"),
+]
+PASADAS_MONO = [
+    ("limpio_f16",  "mezcla_limpio", "float16"),
+    ("crudo_int8",  "mezcla_crudo",  "int8_float16"),
+    ("limpio_int8", "mezcla_limpio", "int8_float16"),
+    ("crudo_f16",   "mezcla_crudo",  "float16"),
+]
 
 
 def aviso(*a):
@@ -61,7 +76,17 @@ def db(x):
 
 
 # ------------------------------------------------------------------ audio
-def decodificar(ruta):
+def decodificar(ruta, estereo=False):
+    """Devuelve mono, o (izquierdo, derecho) si se pide estereo y lo hay.
+
+    Por que importa el estereo: mezclar los dos canales a mono PROMEDIA dos
+    capturas distintas de la sala hasta convertirlas en una. Medido sobre
+    material real: los canales coinciden entre si menos que dos decodificaciones
+    del mismo mono (0,650 frente a 0,737 en la peor grabacion), y la mezcla
+    pierde cientos de palabras que un canal si produce. Dos microfonos son una
+    redundancia mas fuerte que dos cuantizaciones: no comparten punto ciego
+    acustico.
+    """
     import av
     import numpy as np
     cont = av.open(ruta)
@@ -70,15 +95,38 @@ def decodificar(ruta):
         cont.close()
         raise RuntimeError("el archivo no tiene pista de audio")
     st.thread_type = "AUTO"
-    res = av.audio.resampler.AudioResampler(format="fltp", layout="mono", rate=SR)
-    tr = []
-    for f in cont.decode(st):
+    layout = "stereo" if estereo else "mono"
+    res = av.audio.resampler.AudioResampler(format="fltp", layout=layout, rate=SR)
+    izq, der = [], []
+    for f in list(cont.decode(st)) + [None]:
         for g in res.resample(f):
-            tr.append(g.to_ndarray().reshape(-1).astype(np.float32))
-    for g in res.resample(None):
-        tr.append(g.to_ndarray().reshape(-1).astype(np.float32))
+            a = g.to_ndarray()
+            if estereo and a.shape[0] >= 2:
+                izq.append(a[0].copy().astype(np.float32))
+                der.append(a[1].copy().astype(np.float32))
+            else:
+                izq.append(a.reshape(-1).astype(np.float32))
     cont.close()
-    return np.concatenate(tr) if tr else np.zeros(0, np.float32)
+    if not izq:
+        return (np.zeros(0, np.float32), np.zeros(0, np.float32)) if estereo else np.zeros(0, np.float32)
+    l = np.concatenate(izq)
+    if not estereo:
+        return l
+    if not der:
+        return l, l
+    r = np.concatenate(der)
+    n = min(len(l), len(r))
+    return l[:n], r[:n]
+
+
+def canales_distintos(l, r, umbral=0.98):
+    """¿Vale la pena tratarlos por separado, o es mono duplicado?"""
+    import numpy as np
+    n = min(len(l), len(r), SR * 120)
+    if n < SR:
+        return False, 1.0
+    c = float(np.corrcoef(l[:n], r[:n])[0, 1])
+    return (c < umbral), round(c, 4)
 
 
 def diagnostico(x):
@@ -145,14 +193,31 @@ def leer_wav(ruta):
         return np.frombuffer(w.readframes(w.getnframes()), dtype="<i2").astype(np.float32) / 32768.0
 
 
-def preparar(ruta, dcrudo, dlimpio):
-    x = decodificar(ruta)
-    antes = diagnostico(x)
+def limpiar(x):
     y = x - float(x.mean())
-    y = normalizar(resta_espectral(pasa_altos(y)))
-    escribir_wav(dcrudo, normalizar(x - float(x.mean())))
-    escribir_wav(dlimpio, y)
-    return {"original": antes, "limpio": diagnostico(y)}
+    return normalizar(resta_espectral(pasa_altos(y)))
+
+
+def preparar(ruta, destinos):
+    """Escribe las pistas que pidan las pasadas. Si la grabacion trae dos canales
+    distintos, se conservan por separado: promediarlos pierde informacion."""
+    l, r = decodificar(ruta, estereo=True)
+    hay_dos, corr = canales_distintos(l, r)
+    mezcla = (l + r) / 2.0 if hay_dos else l
+    antes = diagnostico(mezcla)
+    pistas = {
+        "mezcla_limpio": limpiar(mezcla),
+        "mezcla_crudo": normalizar(mezcla - float(mezcla.mean())),
+    }
+    if hay_dos:
+        pistas["izq_limpio"] = limpiar(l)
+        pistas["der_limpio"] = limpiar(r)
+    for nombre, ruta_salida in destinos.items():
+        if nombre in pistas:
+            escribir_wav(ruta_salida, pistas[nombre])
+    return {"original": antes, "limpio": diagnostico(pistas["mezcla_limpio"]),
+            "estereo_util": hay_dos, "correlacion_canales": corr,
+            "pistas": [k for k in pistas]}
 
 
 # ------------------------------------------------------------------ reconocimiento
@@ -426,7 +491,7 @@ SOBRE LAS VOCES
 ```"""
 
 
-def escribir_registro(ruta, fichas, hoy, con_voces, con_glosario):
+def escribir_registro(ruta, fichas, hoy, con_voces, con_glosario, pasadas=None):
     L = []; w = L.append
     w("# REGISTRO DE TRANSCRIPCIÓN\n")
     w("Escrito el %s. **Lo produjo un programa, no una persona.** Este registro existe para que "
@@ -453,7 +518,10 @@ def escribir_registro(ruta, fichas, hoy, con_voces, con_glosario):
     w("modelo        Systran/faster-whisper-large-v3    (pesos locales, sin descarga)")
     if con_voces:
         w("modelo voces  pyannote-segmentation-3.0 + wespeaker VoxCeleb CAM++ (ONNX)")
-    w("audio         16 kHz, un canal, decodificado con PyAV")
+    w("audio         16 kHz, decodificado con PyAV")
+    if pasadas:
+        w("pistas        " + ", ".join(sorted({u[1] for u in pasadas})))
+        w("pasadas       " + ", ".join("%s (%s)" % (u[0], u[2]) for u in pasadas))
     w("limpieza      sin continua · pasa-altos 75 Hz fase lineal · resta espectral")
     w("              con suelo -12 dB · nivelado a -23 dBFS, tope -1 dBFS")
     w("idioma        es  (fijado a mano: NO se dejo detectar)")
@@ -633,7 +701,7 @@ def main():
     if not arch:
         aviso("No se encontro ningun archivo de audio en lo indicado."); return 2
     npas = max(2, min(4, a.pasadas))
-    usar = PASADAS_POSIBLES[:npas]
+    usar = None  # se decide tras preparar el audio
     dest = os.path.abspath(a.destino)
     trabajo = os.path.join(dest, ".trabajo")
     os.makedirs(os.path.join(dest, "datos"), exist_ok=True)
@@ -647,13 +715,21 @@ def main():
     fichas = []
     for i, r in enumerate(arch, 1):
         cod = "A%d" % i
-        dc, dl = os.path.join(trabajo, cod + "_crudo.wav"), os.path.join(trabajo, cod + "_limpio.wav")
-        d = preparar(r, dc, dl)
+        destinos = {n: os.path.join(trabajo, "%s_%s.wav" % (cod, n))
+                    for n in ("mezcla_limpio", "mezcla_crudo", "izq_limpio", "der_limpio")}
+        d = preparar(r, destinos)
         aviso("  %s  %s  senal/ruido %.1f -> %.1f dB%s" % (
             cod, os.path.basename(r), d["original"]["snr_estimada_db"], d["limpio"]["snr_estimada_db"],
             "  SATURADO EN ORIGEN" if d["original"]["muestras_saturadas"] else ""))
+        if d["estereo_util"]:
+            aviso("       dos canales distintos (correlacion %.2f): se transcriben aparte"
+                  % d["correlacion_canales"])
+        else:
+            aviso("       un solo canal util (correlacion %.2f): no hay estereo que aprovechar"
+                  % d["correlacion_canales"])
         fichas.append({"cod": cod, "origen": os.path.basename(r), "ruta": r, "diag": d,
-                       "titulo": "Audio %d" % i, "crudo": dc, "limpio": dl})
+                       "titulo": "Audio %d" % i, "pistas": destinos,
+                       "limpio": destinos["mezcla_limpio"]})
 
     if con_voces:
         aviso("\n== 2. separando voces ==")
@@ -667,6 +743,9 @@ def main():
                 aviso("  %s  SIN VOCES: %s" % (f["cod"], e)); f["dia"] = None
 
     aviso("\n== 3. transcribiendo ==")
+    hay_estereo = all(f["diag"]["estereo_util"] for f in fichas)
+    usar = (PASADAS_ESTEREO if hay_estereo else PASADAS_MONO)[:npas]
+    aviso("   pasadas: " + ", ".join(u[0] for u in usar))
     docs = {f["cod"]: {} for f in fichas}
     for etq, var, ct in usar:
         try:
@@ -680,7 +759,7 @@ def main():
             else:
                 return 2
         for f in fichas:
-            d = transcribir(mod, leer_wav(f[var]), "%s/%s" % (f["cod"], etq))
+            d = transcribir(mod, leer_wav(f["pistas"][var]), "%s/%s" % (f["cod"], etq))
             docs[f["cod"]][etq] = d
             aviso("  %s/%s  %d seg, %d pal, %.1f min" % (f["cod"], etq, len(d["segmentos"]),
                   sum(len(s["palabras"]) for s in d["segmentos"]), d["segundos_computo"] / 60))
@@ -725,7 +804,7 @@ def main():
             " · %d voces" % len(f["dia"]["hablantes"]) if con_voces and f.get("dia") else ""))
 
     escribir_registro(os.path.join(dest, "00 - REGISTRO DE TRANSCRIPCION - %s.md" % hoy),
-                      fichas, hoy, con_voces, con_glosario)
+                      fichas, hoy, con_voces, con_glosario, usar)
     escribir_pasajes(os.path.join(dest, "00 - PASAJES A VERIFICAR - %s.md" % hoy),
                      fichas, hoy, con_voces, con_glosario, [u[0] for u in usar])
     aviso("\nLISTO. Escrito en: %s" % dest)
