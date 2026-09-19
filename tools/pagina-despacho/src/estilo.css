@@ -59,7 +59,9 @@ body {
   padding: .8rem 1rem; border-radius: var(--radio);
   font-size: .92rem;
 }
-.propuesta strong { display: block; margin-bottom: .3rem; }
+/* Solo el primer resaltado hace de titulillo. Con el selector generico, cada
+   <strong> del parrafo partia la linea. */
+.propuesta > strong:first-child { display: block; margin-bottom: .3rem; }
 
 /* ------------------------------------------------------------------- barra */
 .barra {
@@ -262,3 +264,20 @@ kbd {
 }
 
 @media print { .franja { display: none !important; } }
+
+/* ===================================================== cola de comprobacion
+   Patron «check your answers»: una ficha por cosa que comprobar, ordenadas de
+   mas grave a menos. Reutiliza .seg entera, asi que hereda franja, teclado,
+   estados y copia con procedencia sin interfaz nueva. */
+.ficha-hallazgo { background: var(--papel-alto); margin-bottom: .5rem; }
+.ficha-hallazgo .clase {
+  font-family: ui-sans-serif, system-ui, sans-serif; font-size: .7rem;
+  letter-spacing: .04em; text-transform: uppercase; font-weight: 600;
+  padding: .1rem .45rem; border-radius: 3px; border: 1px solid currentColor;
+}
+.ficha-hallazgo .clase.r-alto  { color: var(--duda); }
+.ficha-hallazgo .clase.r-medio { color: var(--acento); }
+.ficha-hallazgo .clase.r-bajo  { color: var(--tinta-suave); }
+.ficha-hallazgo .texto { font-size: .95rem; }
+.ficha-hallazgo .motivos { color: var(--tinta); }
+.ficha-hallazgo .motivos::before { content: ""; }

@@ -51,6 +51,44 @@ distintas quedan como una sola. **0,90 es el punto donde deja de inventar sin em
 
 Velocidad medida: **5,7 × tiempo real** en la GPU de esta máquina.
 
+## Licencias — comprobado el 2026-09-19
+
+`ADR-017` §Preguntas nº 5 advertía que algunos modelos de voz están restringidos a uso personal
+sin ánimo de lucro y que **trabajo jurídico remunerado probablemente no cabría ahí**. Se
+comprobó contra las fichas de los modelos. **No se encontró ese impedimento.**
+
+| Pieza | Licencia | Qué implica |
+|---|---|---|
+| `sherpa-onnx` (el motor) | **Apache-2.0** | Sin restricción de uso |
+| `pyannote-segmentation-3.0` | **MIT** | Sin restricción. Su ficha dice que *«siempre seguirá siendo de código abierto»* |
+| `wespeaker` VoxCeleb CAM++ | **CC BY 4.0** | Permite uso comercial **y obliga a dar crédito** |
+
+**La obligación que sí existe y hay que cumplir.** CC BY 4.0 no prohíbe cobrar por el trabajo,
+pero **exige atribución**. Por eso toda transcripción que use separación de voces lleva el
+crédito en su registro de método:
+
+```text
+La separacion de voces usa el modelo wespeaker CAM++ entrenado sobre
+VoxCeleb (Nagrani, Chung y Zisserman; Visual Geometry Group, Universidad
+de Oxford), distribuido bajo Creative Commons Attribution 4.0, mas el
+modelo de segmentacion pyannote 3.0 (licencia MIT). Los pesos no se
+modificaron.
+```
+
+### Tres cosas que esto NO resuelve, y hay que decirlas
+
+1. **No se halló declaración de licencia del archivo exacto** `wespeaker_en_voxceleb_CAM++.onnx`.
+   Lo comprobado es la licencia de **la familia** de modelos WeSpeaker sobre VoxCeleb y la de una
+   redistribución hermana. La publicación de `sherpa-onnx` dice literalmente *«cada modelo tiene
+   su propia licencia, consulte el repositorio correspondiente»*. **Es una inferencia razonable,
+   no un dato del archivo.**
+2. **VoxCeleb se construyó con material de YouTube.** Que sobre eso pueda concederse válidamente
+   una licencia CC BY es una **pregunta jurídica**, y quien escribe esto no la responde ni debe.
+   Queda para la abogada.
+3. Dos búsquedas se contradijeron: una afirmaba CC BY-NC-SA **sin uso comercial**. Contra las
+   fichas de los modelos **esa afirmación no se sostuvo**, pero queda anotada por si aparece otra
+   vez: la diferencia importaba y la contradicción era real.
+
 ## Lo que sigue roto, y hay que saberlo
 
 **No hay verdad de referencia.** Nadie ha marcado a mano quién habla en estas grabaciones, así que

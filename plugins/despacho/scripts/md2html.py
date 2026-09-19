@@ -247,6 +247,103 @@ def construir_bloques(doc, marcas, ventanas, gana):
 
 
 # -------------------------------------------------------------------- pagina
+def construir_lista(d, doc, marcas):
+    """«Pasajes a verificar» como cola de trabajo, no como documento.
+
+    Patron «check your answers» de GOV.UK: una fila por cosa que comprobar, con
+    su sitio, lo que dice y una accion. Aqui cada hallazgo es un BLOQUE del mismo
+    contrato que usa la transcripcion, asi que hereda la franja, el teclado, los
+    estados y la copia con procedencia sin una sola linea nueva de interfaz.
+    """
+    segs = doc["segmentos"]
+
+    def seg_en(t):
+        for s in segs:
+            if s["inicio"] <= t <= s["fin"]:
+                return s
+        anteriores = [s for s in segs if s["inicio"] <= t]
+        return anteriores[-1] if anteriores else (segs[0] if segs else None)
+
+    hallazgos = []
+
+    for v in d.get("ventanas") or []:
+        if v.get("medio", 1) >= 0.80:
+            continue
+        otras = [(k, t) for k, t in (v.get("textos") or {}).items() if t.strip()]
+        hallazgos.append({
+            "clase": "Las decodificaciones no coinciden",
+            "t": v["t"], "riesgo": "alto", "gravedad": round(1 - v["medio"], 3),
+            "detalle": "Coinciden solo en un %d %%." % round(100 * v["medio"]),
+            "variantes": otras[:4],
+        })
+
+    for a in d.get("avisos_glosario") or []:
+        hallazgos.append({
+            "clase": "El glosario habría escrito otra cosa",
+            "t": a["t"], "riesgo": "alto", "gravedad": 0.75,
+            "detalle": "Sugiere «%s» donde la versión publicada dice: %s"
+                       % (a["sugiere"], a["dice_publicada"]),
+            "variantes": [],
+        })
+
+    for s in segs:
+        for k, w in enumerate(s.get("palabras") or []):
+            p = w["p"].strip(".,;:()[]¿?¡!\"'")
+            if not p or w.get("c", 1) >= 0.85:
+                continue
+            previa = s["palabras"][k - 1]["p"].strip() if k else "."
+            cifra = bool(re.search(r"\d", p))
+            propio = p[:1].isupper() and k and not previa.endswith((".", "?", "!"))
+            if not (cifra or propio):
+                continue
+            hallazgos.append({
+                "clase": "Cifra en duda" if cifra else "Nombre propio en duda",
+                "t": s["inicio"], "riesgo": "alto" if cifra else "medio",
+                "gravedad": round((1 - w["c"]) * (1.0 if cifra else 0.8), 3),
+                "detalle": "Escribió «%s»." % p, "variantes": [],
+            })
+        if s.get("voz") is not None and s.get("pureza", 1) < 0.60:
+            hallazgos.append({
+                "clase": "La voz asignada es dudosa", "t": s["inicio"], "riesgo": "bajo",
+                "gravedad": round(0.4 * (1 - s.get("pureza", 0)), 3),
+                "detalle": "La línea se reparte entre hablantes; ahí el número de hablante "
+                           "no significa gran cosa.",
+                "variantes": [],
+            })
+
+    hallazgos.sort(key=lambda h: -h["gravedad"])
+
+    partes, bloques = [], []
+    for i, h in enumerate(hallazgos):
+        bid = "h%d" % i
+        s = seg_en(h["t"])
+        texto = s["texto"] if s else ""
+        cuerpo = [
+            '<article class="seg ficha-hallazgo dudoso" id="%s">' % bid,
+            '<div class="seg-cab">',
+            '<button type="button" class="hora" disabled>%s</button>' % hms(h["t"]),
+            '<span class="clase r-%s">%s</span></div>' % (h["riesgo"], html.escape(h["clase"])),
+            '<p class="texto">%s</p>' % _linea(texto),
+            '<p class="motivos">%s</p>' % _linea(h["detalle"]),
+        ]
+        if h["variantes"]:
+            cuerpo.append('<details class="alternativas"><summary>Qué escribió cada pasada</summary>')
+            for k, t in h["variantes"]:
+                cuerpo.append('<p><span class="et">%s</span>%s</p>'
+                              % (html.escape(k), html.escape(t[:240])))
+            cuerpo.append("</details>")
+        cuerpo.append("</article>")
+        partes.append("".join(cuerpo))
+        bloques.append({
+            "id": bid,
+            "ancla": {"tipo": "tiempo", "inicio": round(h["t"], 3),
+                      "fin": round(h["t"] + 20, 3)},
+            "riesgo": h["riesgo"], "gravedad": h["gravedad"],
+            "marcas": [h["clase"]], "etiqueta": None, "alternativas": [],
+        })
+    return "\n".join(partes), bloques, len(hallazgos)
+
+
 def partir(md):
     """Encabezado (antes del primer ---) y cuerpo."""
     m = re.search(r"\n---+\n", md)
@@ -271,6 +368,8 @@ def main():
     ap.add_argument("salida")
     ap.add_argument("--datos", default=None)
     ap.add_argument("--audio", default=None)
+    ap.add_argument("--lista", action="store_true",
+                    help="produce la cola de comprobacion en vez del documento")
     a = ap.parse_args()
 
     if not os.path.exists(PLANTILLA):
@@ -310,10 +409,16 @@ def main():
             return 2
         marcas = d.get("marcas", {})
         gana = doc.get("etiqueta", "")
-        contenido, bloques = construir_bloques(doc, marcas, d.get("ventanas"), gana)
+        if a.lista:
+            contenido, bloques, n_hall = construir_lista(d, doc, marcas)
+            tipo = "Cola de comprobación"
+            titulo = "QUÉ COMPROBAR — " + re.sub(r"^TRANSCRIPCI[ÓO]N\s*[—-]\s*", "", titulo)
+        else:
+            contenido, bloques = construir_bloques(doc, marcas, d.get("ventanas"), gana)
+            n_hall = None
+            tipo = "Transcripción · superficie de trabajo"
         datos["bloques"] = bloques
         datos["vistas"] = ["lectura", "resumen", "comprobacion"]
-        tipo = "Transcripción · superficie de trabajo"
         datos["documento"]["tipo"] = tipo
         datos["documento"]["origen"] = titulo
         if a.audio:
@@ -330,14 +435,24 @@ def main():
                                  "La pagina se genera y dira que no puede comprobar.\n" % a.audio)
         alto = sum(1 for b in bloques if b["riesgo"] == "alto")
         n_dud = sum(1 for b in bloques if b["riesgo"] != "ninguno")
-        advertencia += (
+        if a.lista:
+            advertencia = (
+                "Esta no es la transcripción: es <strong>la lista de lo que conviene comprobar "
+                "oyendo</strong>, ordenada de más grave a menos. <strong>%d cosas</strong>, "
+                "de las que <strong>%d son de las que más daño hacen</strong>. Pulse una hora "
+                "y sonará ese punto. Márquelas a medida que las oiga; <strong>lo que marque es "
+                "constancia suya, no verificación de ningún sistema</strong>. "
+                "No es una lista de errores comprobados: es dónde mirar primero."
+                % (n_hall, alto))
+        else:
+            advertencia += (
             " De %d líneas, <strong>%d tienen algún motivo de duda</strong>, y de esas "
             "<strong>%d son de las que más daño hacen</strong>: una cifra o un nombre "
             "propio en duda, o un punto donde las decodificaciones no coinciden. "
             "La franja de arriba dice dónde están. Cada marca de tiempo reproduce ese "
             "punto de la grabación; lo que usted marque como comprobado es constancia "
             "suya, <strong>no verificación de ningún sistema</strong>."
-            % (len(bloques), n_dud, alto))
+                % (len(bloques), n_dud, alto))
     else:
         contenido = md_a_html(cuerpo if cuerpo else md)
 

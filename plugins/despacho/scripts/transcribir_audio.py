@@ -488,12 +488,20 @@ def escribir_registro(ruta, fichas, hoy, con_voces, con_glosario):
     w("**Y lo que nada de esto mide:** cuánto habla real quedó del lado descartado. Ese número **no "
       "existe y no puede existir** — para conocerlo habría que saber ya lo que se dijo. La confianza "
       "mide la calidad de lo que se reconoció; **jamás la completitud de lo que se debió reconocer**.\n")
-    w("## 4. Lo que esta transcripción no dice\n")
+    if con_voces:
+        # CC BY 4.0 obliga a dar credito. No es cortesia: es la condicion de la
+        # licencia del modelo de voz. Ver modelos/PROCEDENCIA.md.
+        w("## 4. Créditos de los modelos\n")
+        w("La separación de voces usa el modelo **wespeaker CAM++** entrenado sobre **VoxCeleb** "
+          "(Nagrani, Chung y Zisserman; Visual Geometry Group, Universidad de Oxford), distribuido "
+          "bajo **Creative Commons Attribution 4.0**, más el modelo de segmentación **pyannote 3.0** "
+          "(licencia MIT). **Los pesos no se modificaron.**\n")
+    w("## %d. Lo que esta transcripción no dice\n" % (5 if con_voces else 4))
     w(NO_DICE)
     if con_voces:
         w("")
         w(NO_DICE_VOCES)
-    w("\n## 5. Cómo repetir esto\n")
+    w("\n## %d. Cómo repetir esto\n" % (6 if con_voces else 5))
     w("Mismos archivos, mismo modelo y los parámetros de la sección 2. La búsqueda es por haces con "
       "temperatura inicial 0, que es determinista. Los datos completos —cada palabra con su tiempo y "
       "su probabilidad, en todas las pasadas— están en `datos/`.\n")
