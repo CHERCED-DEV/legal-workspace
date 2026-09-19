@@ -13,12 +13,12 @@ decisión tomada sin confirmación, que puede resultar falsa.
 
 ## 1. Qué es Despacho
 
-Un plugin de Claude que aporta **once métodos de trabajo jurídico**. No es un programa: es
+Un plugin de Claude que aporta **doce métodos de trabajo jurídico**. No es un programa: es
 texto. Cada método le dice a Claude cómo hacer una tarea concreta del despacho con un
 procedimiento fijo, qué **no** puede hacer nunca dentro de esa tarea, y cómo tiene que
 entregar el resultado.
 
-La regla que comparten los once: **todo sale del material del caso, y de dónde sale se
+La regla que comparten los doce: **todo sale del material del caso, y de dónde sale se
 dice**. Ninguno valora prueba, ninguno calcula plazos, ninguno pone derecho. Lo que el
 material no da, se marca como faltante en vez de rellenarse.
 
@@ -28,6 +28,7 @@ material no da, se marca como faltante en vez de rellenarse.
 |---|---|
 | `/preparar-material` | **Llama a un programa**, no lo hace a mano: descomprime, ordena, copia los originales sin tocarlos, calcula huellas, detecta duplicados, extrae texto de fotografías con instrumentación de cobertura, arma el PDF consolidado y escribe el registro de ingesta. **Con cero fichas de lectura.** No lee el caso: lo monta. |
 | `/buscar-en-el-caso` | **Llama a un programa:** dice en qué archivo y en qué renglón aparece un nombre, una cifra o una fecha, sin abrir ni leer nada. Marca los renglones que son basura del OCR. **No cita y no concluye ausencia**: cero resultados no significa que no esté en el papel. |
+| `/transcribir-audio` | **Llama a un programa:** convierte grabaciones —audiencias, reuniones, notas de voz— en texto con marca de tiempo, **sin que el audio salga del computador**. Decodifica varias veces con distintas condiciones y publica **la versión que más coincide con las demás**, no la que el modelo cree más segura; separa las voces **sin ponerles nombre**; y entrega la lista de minutos donde conviene oír antes de citar. No interpreta lo que se dijo. |
 | `/hechos-con-prueba` | Recorre el material del caso y devuelve **hechos candidatos**, cada uno emparejado con el fragmento concreto que lo apoya, lo contradice o lo sitúa; los que no tienen nada detrás quedan marcados como tales. No valora prueba ni decide estrategia. |
 | `/revisar-documento` | Lee **un** documento que llegó (escrito de contraparte, requerimiento, contrato, respuesta) y devuelve en una pasada qué es, qué afirma, qué pide, qué decide, qué referencias de tiempo trae **textualmente** y qué parece exigir actuación. No calcula plazos ni dice si algo está vencido. |
 | `/estado-del-caso` | Lee la carpeta del caso y reconstruye **solo con lo que dicen los archivos** qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta y qué quedó a medias o sin respuesta. No pronostica ni valora solidez. |
@@ -46,17 +47,27 @@ si no aparecen, lo primero que hay que revisar es que el plugin esté instalado 
 en el entorno de ella. El propio método contempla el fallo (si no puede, escribe el mismo
 contenido en texto y lo dice), pero conviene verlo funcionar una vez.
 
-**POR COMPROBAR — con material real de ella, antes de sentarse a trabajar.** Dos capacidades
-que los métodos dan por supuestas y que nadie ha visto funcionar aquí. No se comprueban leyendo
-documentación: se comprueban abriendo un archivo suyo.
+**HECHO VERIFICADO (2026-09-18) — la grabación con su minuto exacto ya funciona.** Esto estaba
+aquí como *POR COMPROBAR* y decía que, si no se podía oír el audio, «media promesa del método
+se cae». **Se comprobó sobre material real**: 56 min 52 s de una reunión en tres grabaciones de
+WhatsApp, transcritas **en esta máquina** —el audio no salió del computador— con marca de tiempo
+**por palabra**. De ahí salió `/transcribir-audio`.
 
-- **Que pueda transcribir o citar el minuto exacto de una grabación.** `/hechos-con-prueba`
-  promete citar la entrevista con su minuto (`entrevista, 00:08:12`), y el Ejemplo 2 de la guía
-  de ella lo imprime así. Si no puede oír el audio, o puede pero no sitúa el minuto, ese ejemplo
-  es falso y media promesa del método se cae: habría que decirle que la entrevista entra
-  transcrita por ella, no en audio.
+Lo que eso habilita y lo que no:
+
+- **Sí:** `/hechos-con-prueba` puede citar `entrevista, 00:08:12` porque **ese minuto existe y es
+  comprobable**. El Ejemplo 2 de la guía de ella deja de ser una promesa.
+- **No:** la transcripción **no es la grabación**, y una cita literal sigue exigiendo oír el punto.
+  El reconocedor **falla callándose** — en el pase real perdió 31 segundos seguidos sin avisar, y
+  dentro iba un compromiso con plazo.
+- **No:** las voces se separan pero **no se identifican**. «Hablante 1» es una voz estimada; ningún
+  nombre sale de ahí. En el pase real, tres decodificaciones dieron dos apellidos distintos para la
+  misma persona y ocho no dieron ninguno.
+
+**POR COMPROBAR — con material real de ella, antes de sentarse a trabajar.**
+
 - **Qué hace con un PDF escaneado sin capa de texto.** Es el formato en que llegan la mitad de
-  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los once parten de
+  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los doce parten de
   leer el material y citar página. Hay que saber si lo lee, si lo lee mal en silencio, o si avisa
   de que no puede — y las tres respuestas llevan a instrucciones distintas para ella.
 
@@ -227,7 +238,7 @@ Un Core local instalado bajo ese supuesto sin comprobarlo simplemente no aparece
    inexistente, hay que mirarlo en su cuenta. Lo que se encuentre se le dice a ella tal cual,
    incluido que no se encontró nada; y si no lo hay, el diseño del Core tiene que asumirlo,
    no desearlo.
-2. Verificar qué ve la sesión de la carpeta del caso en cada modo. Los once métodos leen y
+2. Verificar qué ve la sesión de la carpeta del caso en cada modo. Los doce métodos leen y
    escriben archivos de su carpeta; conviene saber con qué ruta trabaja realmente antes de
    apoyar nada encima.
 
@@ -248,23 +259,34 @@ legal-workspace/
 │     │  └─ plugin.json         <- nombre, version, descripcion del plugin
 │     ├─ README.md              <- este archivo
 │     ├─ GUIA-PARA-LA-ABOGADA.md  <- lo que lee ella; viaja con el plugin
-│     └─ skills/
-│        ├─ cronologia/
-│        │  └─ SKILL.md
-│        ├─ estado-del-caso/
-│        │  └─ SKILL.md
-│        ├─ hechos-con-prueba/
-│        │  ├─ SKILL.md
-│        │  └─ FORMATO-DE-SALIDA.md          <- material de apoyo del metodo
-│        ├─ inventario-de-anexos/
-│        │  └─ SKILL.md
-│        ├─ redactar-escrito/
-│        │  └─ SKILL.md
-│        └─ revisar-documento/
-│           └─ SKILL.md
+│     ├─ INSTALACION.md         <- la hoja de instalacion
+│     ├─ scripts/               <- la oficina de programas; los metodos los llaman
+│     │  ├─ preparar_material.py    <- montar el expediente, OCR, PDF consolidado
+│     │  ├─ buscar.py               <- buscar dentro del caso sin leerlo
+│     │  ├─ transcribir_audio.py    <- grabaciones a texto, con voces y marcas de tiempo
+│     │  ├─ md2docx.py              <- la salida en Word de verdad
+│     │  ├─ verificar_fidelidad.py  <- que el Word no perdio contenido
+│     │  ├─ verificar_citas.py      <- que cada cita este LITERAL en la fuente
+│     │  ├─ segunda_opinion.py      <- comparar dos reconocedores de imagen
+│     │  └─ modelos/                <- binarios de terceros; NO van en git
+│     │     └─ PROCEDENCIA.md       <- de donde salieron, sha256 y que se midio
+│     └─ skills/                <- un SKILL.md por metodo; el nombre de la carpeta
+│        │                         es el nombre del comando
+│        ├─ buscar-en-el-caso/       ├─ inventario-de-bienes/
+│        ├─ cronologia/              ├─ preguntas-de-derecho/
+│        ├─ estado-del-caso/         ├─ preparar-material/
+│        ├─ hechos-con-prueba/       ├─ redactar-escrito/
+│        │  └─ FORMATO-DE-SALIDA.md  ├─ revisar-documento/
+│        │     <- apoyo del metodo   ├─ revision-de-rigor/
+│        ├─ inventario-de-anexos/    └─ transcribir-audio/
 └─ docs/                        <- arquitectura del proyecto; NO es parte del plugin
    └─ discovery/                <- material de pruebas y guias de trabajo del dueno
 ```
+
+**Los modelos no se versionan.** `scripts/modelos/` está en `.gitignore`: son 52 MB de
+binarios de terceros —reconocimiento de texto en imágenes y separación de voces—. Lo que sí
+va en git es `PROCEDENCIA.md`, que dice de dónde salió cada uno, su `sha256`, qué se midió al
+elegirlo y cómo reponerlo.
 
 Dos archivos mandan: `marketplace.json` (raíz) dice qué plugins hay y dónde están;
 `plugin.json` (dentro del plugin) dice cómo se llama y qué versión es.
@@ -283,7 +305,7 @@ tener nada que hacer allí.
 
 1. Crear la carpeta `plugins/despacho/skills/<nombre-del-comando>/`. El nombre de la carpeta
    es el nombre del comando: `skills/contar-terminos/` -> `/contar-terminos`.
-2. Dentro, un `SKILL.md` que empiece por el bloque de metadatos, igual que los once que ya
+2. Dentro, un `SKILL.md` que empiece por el bloque de metadatos, igual que los doce que ya
    están:
    ```yaml
    ---
@@ -350,5 +372,5 @@ corrientes**, y así hay que presentarlo — a ella la primera.
 | Que **Update** traiga lo nuevo sin subir `version` (§5) | Al publicar el primer cambio. |
 | Que `/redactar-escrito` produzca `.docx` en su entorno (§1) | En el primer borrador real. |
 | Que pueda transcribir o citar minutos de una grabación (§1) | **Antes de sentarse a trabajar**, con un archivo real de ella. Bloquea el Ejemplo 2 de su guía y media promesa de `/hechos-con-prueba`. |
-| Qué hace con un PDF escaneado sin capa de texto (§1) | **Antes de sentarse a trabajar**, con un archivo real de ella. Si no lo lee, no funciona ninguno de los once. |
+| Qué hace con un PDF escaneado sin capa de texto (§1) | **Antes de sentarse a trabajar**, con un archivo real de ella. Si no lo lee, no funciona ninguno de los doce. |
 | Nube o local, y si en Pro hay control para elegirlo (§6) | **Antes de que abra material de una clienta.** Es secreto profesional hoy, no arquitectura de mañana. |

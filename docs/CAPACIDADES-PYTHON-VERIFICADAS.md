@@ -29,6 +29,17 @@
 
 > **La transcripción de audiencia no está a una compra de distancia: está a un script de distancia.** El motor y los tres modelos ya están en el disco. Lo que no existe es el programa que los llame con los valores correctos — y eso es justo lo que decide si sirve o hace daño.
 
+> **ACTUALIZACIÓN 2026-09-19 — ese programa ya existe y ya corrió sobre material real.**
+> `plugins/despacho/scripts/transcribir_audio.py`, y la skill `/transcribir-audio`. Se pasaron
+> **56 min 52 s** de una reunión en tres grabaciones. **Medido en esta máquina:** `float16`
+> secuencial a 1,8× tiempo real; **`int8_float16` a 5,7×, tres veces más rápido y sin perder
+> palabras** (955 frente a 949 en la prueba pareada). **La inferencia por lotes se probó y se
+> descartó:** 4,9× más rápida, **pierde el 8,4 % de las palabras y su confianza sube al
+> hacerlo**. Faltaba una pieza que ni este documento ni ADR-017 anticiparon: en Windows
+> CTranslate2 no encuentra `cublas64_12.dll` y la GPU no arranca; `os.add_dll_directory` **no
+> sirve**, tiene que ir en `PATH`. Ya quedó resuelto de forma permanente.
+> **Y dos decisiones de ADR-017 quedaron en conflicto con lo que se hizo: ver `ADR-019`.**
+
 Y la otra cara: **`segunda_opinion.py` sigue sin poder ejecutarse.** El único control capaz de detectar una omisión silenciosa del OCR necesita un segundo motor, y ese segundo motor nunca se instaló.
 
 ---
@@ -43,7 +54,7 @@ Y la otra cara: **`segunda_opinion.py` sigue sin poder ejecutarse.** El único c
 | `condition_on_previous_text` | **`True`** | Cada tramo se condiciona con el anterior | Un error se propaga hacia adelante y produce bucles. Con `False` cada tramo es independiente |
 | `hallucination_silence_threshold` | **`None`** | Desactivado | Existe una palanca específica contra esto **y viene apagada** |
 | `temperature` | lista con recaída hasta `1.0` | Si un tramo falla, reintenta con más azar | Más azar es más invención. Fijarla en `0.0` prefiere fallar a inventar |
-| `word_timestamps` | `False` | — | **Debe quedarse en `False`:** ADR-017 §5 lo prohíbe como base de cualquier regla |
+| `word_timestamps` | `False` | — | ADR-017 §5 prohíbe que **una regla del producto** dependa de la marca de palabra. **Se usó en `True`** para alinear pasadas entre sí y para la confianza por palabra, que son cálculos internos; **ningún anclaje publicado sale de ahí**. El detalle y el conflicto que sí hubo, en `ADR-019` |
 | `initial_prompt` | `None` | Sesga el vocabulario | Útil para nombres propios del caso, **y arriesgado**: sesgar hacia un nombre hace que aparezca |
 
 > **Los tres valores por defecto que más importan están puestos en el lado peligroso.** No es un defecto de la biblioteca: son los valores razonables para subtitular vídeo. Para una audiencia son exactamente los contrarios a los que hacen falta.
@@ -51,6 +62,21 @@ Y la otra cara: **`segunda_opinion.py` sigue sin poder ejecutarse.** El único c
 **La tensión que no se resuelve sola, y ADR-017 §3 ya la había señalado:** activar el filtro de voz es lo que contiene la alucinación, **y es justo lo que históricamente ha roto el mapeo de marcas de tiempo contra el original**. Como ADR-017 §2 exige que toda cita literal se coteje escuchando su minuto, **un minuto mal mapeado rompe el único control que hay**. Eso no se decide leyendo: se mide con audio real, y es el primer observable de la spec.
 
 **DESCARTADO — diarización.** `pyannote.audio` es MIT en el código, pero sus modelos están **restringidos** (hay que aceptar condiciones y usar credencial) y su versión de pago se anuncia al lado. Y sobre todo: ADR-017 §4 ya decidió que con un error de atribución del 17–20 % **no se atribuye ninguna frase a nadie**. Un servicio de pago con menos error no cambia la decisión, la encarece.
+
+> **ACTUALIZACIÓN 2026-09-19 — el obstáculo técnico cayó; la decisión de ADR-017 §4 NO.**
+> **La barrera de `pyannote` se esquiva:** `sherpa-onnx` (2,3 MB) corre segmentación y huella de
+> voz **en ONNX puro, sin PyTorch, sin cuenta y sin aceptar condiciones**, a 5,7× tiempo real.
+> Está implementado y funciona: umbral de agrupamiento **0,90** —con 0,60 inventa doce voces en
+> siete minutos, con 1,05 funde personas distintas—.
+>
+> **Pero que se pueda no levanta la decisión.** Las voces salen **anónimas y numeradas**, nunca
+> con nombre, y **ninguna salida derivada puede usarlas para afirmar quién dijo qué**. La
+> validación nº 3 de ADR-017 —medir el error de atribución con hablantes conocidos— **sigue sin
+> hacerse y no se puede hacer con este material**: no hay verdad de referencia.
+>
+> **Riesgo abierto que hay que resolver antes de usarlo en trabajo facturado:** la licencia de
+> los dos modelos (`pyannote-segmentation-3.0` y `wespeaker VoxCeleb CAM++`, redistribuidos por
+> `sherpa-onnx`) **no se ha revisado**, y es exactamente la pregunta nº 5 de ADR-017. Ver `ADR-019`.
 
 **Lo que sí se puede hacer sin atribuir, y es útil:** un **mapa de la audiencia** — dónde hay habla y dónde no, en minutos. No dice quién habla. Le dice a ella dónde saltar. `silero-vad` es **MIT VERIFICADO**, pesa unos 2 MB y corre en CPU.
 
