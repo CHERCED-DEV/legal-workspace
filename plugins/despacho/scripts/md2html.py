@@ -136,28 +136,114 @@ def hms(s):
     return "%02d:%02d:%02d" % (s // 3600, (s % 3600) // 60, s % 60)
 
 
-def segmentos_html(doc, marcas):
-    partes = []
+# El riesgo NO es un porcentaje. Un numero crudo como «37 %» no le dice a nadie
+# que hacer; y una cifra de dinero dudosa y una muletilla dudosa no son el mismo
+# problema aunque el modelo les de la misma confianza.
+_ALTO = ("las pasadas no coinciden", "las dos pasadas difieren", "posible repeticion")
+_BAJO = ("puede no ser habla", "voz dudosa", "sin voz asignada")
+
+
+def _riesgo(marcas, tiene_dato_duro):
+    if not marcas:
+        return "ninguno"
+    if tiene_dato_duro or any(m in _ALTO for m in marcas):
+        return "alto"
+    if all(m in _BAJO for m in marcas):
+        return "bajo"
+    return "medio"
+
+
+def _datos_duros(seg, umbral=0.85):
+    """Cifras y nombres propios con poca confianza: lo que peor sale y mas dano hace."""
+    for k, w in enumerate(seg.get("palabras") or []):
+        p = w["p"].strip(".,;:()[]¿?¡!\"'")
+        if not p or w.get("c", 1) >= umbral:
+            continue
+        previa = seg["palabras"][k - 1]["p"].strip() if k else "."
+        if re.search(r"\d", p) or (p[:1].isupper() and k and not previa.endswith((".", "?", "!"))):
+            return True
+    return False
+
+
+def _alternativas(ventanas, inicio, gana, limite=3):
+    """Que escribieron las OTRAS decodificaciones en este punto. Es un dato que ya
+    tenemos y que no estabamos usando: donde difieren, ahi hay algo.
+    Devuelve (lista, desacuerdo) donde desacuerdo va de 0 a 1."""
+    for v in ventanas or []:
+        if not (v["t"] <= inicio < v["t"] + 20.0):
+            continue
+        if v.get("medio", 1) >= 0.80:
+            return [], 0.0
+        out = []
+        for k, t in (v.get("textos") or {}).items():
+            if k == gana or not t.strip():
+                continue
+            out.append({"fuente": k, "texto": t[:260]})
+        return out[:limite], round(1.0 - v.get("medio", 1.0), 3)
+    return [], 0.0
+
+
+def _gravedad(seg, marcas, desacuerdo):
+    """Cuanto conviene mirar ESTE bloque antes que otro. Hace falta porque en una
+    grabacion mala la mitad de las lineas sale en riesgo alto, y entonces el
+    riesgo deja de ordenar nada. El riesgo dice QUE clase de problema es; la
+    gravedad dice A CUAL ir primero."""
+    g = desacuerdo
+    for k, w in enumerate(seg.get("palabras") or []):
+        p = w["p"].strip(".,;:()[]¿?¡!\"'")
+        c = w.get("c", 1.0)
+        if not p or c >= 0.85:
+            continue
+        previa = seg["palabras"][k - 1]["p"].strip() if k else "."
+        if re.search(r"\d", p):
+            g = max(g, 1.0 - c)                      # una cifra es lo que mas dano hace
+        elif p[:1].isupper() and k and not previa.endswith((".", "?", "!")):
+            g = max(g, (1.0 - c) * 0.8)              # un nombre propio, casi tanto
+        else:
+            g = max(g, (1.0 - c) * 0.5)
+    if not marcas:
+        g = 0.0
+    return round(min(1.0, g), 3)
+
+
+def construir_bloques(doc, marcas, ventanas, gana):
+    """Devuelve (html, bloques del contrato). El HTML se lee sin JavaScript;
+    el contrato lleva los metadatos que la pagina necesita para trabajar."""
+    partes, bloques = [], []
     voz_previa = object()
     for s in doc["segmentos"]:
-        i = s["i"]
-        mk = marcas.get(str(i)) or marcas.get(i) or []
+        bid = "b%d" % s["i"]
+        mk = marcas.get(str(s["i"])) or marcas.get(s["i"]) or []
+        duro = _datos_duros(s)
+        riesgo = _riesgo(mk, duro)
         voz = s.get("voz")
-        cab = [f'<button type="button" class="hora" disabled>{hms(s["inicio"])}</button>']
+
+        cab = ['<button type="button" class="hora" disabled>%s</button>' % hms(s["inicio"])]
         if voz is not None and voz != voz_previa:
-            cab.append(f'<span class="voz">Hablante {html.escape(str(voz))}</span>')
+            cab.append('<span class="voz">Hablante %s</span>' % html.escape(str(voz)))
         voz_previa = voz
+
         cuerpo = [
-            f'<article class="seg{" dudoso" if mk else ""}" id="s{i}" data-i="{i}"',
-            f' data-inicio="{s["inicio"]}" data-fin="{s["fin"]}" data-dudoso="{1 if mk else 0}">',
-            f'<div class="seg-cab">{"".join(cab)}</div>',
-            f'<p class="texto">{_linea(s["texto"])}</p>',
+            '<article class="seg%s" id="%s">' % (" dudoso" if mk else "", bid),
+            '<div class="seg-cab">%s</div>' % "".join(cab),
+            '<p class="texto">%s</p>' % _linea(s["texto"]),
         ]
         if mk:
-            cuerpo.append(f'<p class="motivos">{html.escape("; ".join(mk))}</p>')
+            cuerpo.append('<p class="motivos">%s</p>' % html.escape("; ".join(mk)))
         cuerpo.append("</article>")
         partes.append("".join(cuerpo))
-    return "\n".join(partes)
+
+        alts, desacuerdo = _alternativas(ventanas, s["inicio"], gana)
+        bloques.append({
+            "id": bid,
+            "ancla": {"tipo": "tiempo", "inicio": round(s["inicio"], 3), "fin": round(s["fin"], 3)},
+            "riesgo": riesgo,
+            "gravedad": _gravedad(s, mk, desacuerdo),
+            "marcas": mk,
+            "etiqueta": ("Hablante %s" % voz) if voz is not None else None,
+            "alternativas": alts,
+        })
+    return "\n".join(partes), bloques
 
 
 # -------------------------------------------------------------------- pagina
@@ -207,8 +293,14 @@ def main():
     advertencia = ("El original es la grabación o el documento del que salió esto. "
                    "Ninguna cita debería usarse sin comprobarla contra él.")
     tipo = "Superficie de trabajo"
-    datos = {"titulo": titulo, "origen": os.path.basename(a.entrada),
-             "tipoMaterial": "Material derivado", "version": VERSION}
+    # El contrato: lo unico que la pagina sabe del mundo. No menciona
+    # transcripciones en ninguna parte, a proposito.
+    datos = {
+        "documento": {"titulo": titulo, "tipo": tipo,
+                      "origen": os.path.basename(a.entrada),
+                      "tipoMaterial": "Material derivado"},
+        "fuentes": [], "bloques": [], "vistas": ["lectura"], "version": VERSION,
+    }
 
     if a.datos:
         d = json.load(io.open(a.datos, encoding="utf-8"))
@@ -217,9 +309,13 @@ def main():
             sys.stderr.write("El archivo de datos no trae la pasada publicada.\n")
             return 2
         marcas = d.get("marcas", {})
-        contenido = segmentos_html(doc, marcas)
+        gana = doc.get("etiqueta", "")
+        contenido, bloques = construir_bloques(doc, marcas, d.get("ventanas"), gana)
+        datos["bloques"] = bloques
+        datos["vistas"] = ["lectura", "resumen", "comprobacion"]
         tipo = "Transcripción · superficie de trabajo"
-        datos["origen"] = titulo
+        datos["documento"]["tipo"] = tipo
+        datos["documento"]["origen"] = titulo
         if a.audio:
             # Ruta RELATIVA desde la pagina hasta la grabacion: asi la carpeta se
             # puede mover entera. Si el audio no esta, la pagina lo dice (ADR-020 §5).
@@ -228,16 +324,20 @@ def main():
                                       os.path.dirname(os.path.abspath(a.salida)))
             except ValueError:
                 rel = os.path.basename(a.audio)
-            datos["audio"] = rel.replace("\\", "/")
+            datos["fuentes"].append({"tipo": "audio", "ruta": rel.replace("\\", "/")})
             if not os.path.exists(a.audio):
                 sys.stderr.write("AVISO: no se encontro la grabacion en %s. "
                                  "La pagina se genera y dira que no puede comprobar.\n" % a.audio)
-        n_dud = sum(1 for s in doc["segmentos"] if marcas.get(str(s["i"])))
-        advertencia += (" Hay <strong>%d líneas con motivo de duda</strong> de %d. "
-                        "Cada marca de tiempo reproduce ese punto de la grabación; "
-                        "lo que usted marque como comprobado es constancia suya, "
-                        "<strong>no verificación de ningún sistema</strong>."
-                        % (n_dud, len(doc["segmentos"])))
+        alto = sum(1 for b in bloques if b["riesgo"] == "alto")
+        n_dud = sum(1 for b in bloques if b["riesgo"] != "ninguno")
+        advertencia += (
+            " De %d líneas, <strong>%d tienen algún motivo de duda</strong>, y de esas "
+            "<strong>%d son de las que más daño hacen</strong>: una cifra o un nombre "
+            "propio en duda, o un punto donde las decodificaciones no coinciden. "
+            "La franja de arriba dice dónde están. Cada marca de tiempo reproduce ese "
+            "punto de la grabación; lo que usted marque como comprobado es constancia "
+            "suya, <strong>no verificación de ningún sistema</strong>."
+            % (len(bloques), n_dud, alto))
     else:
         contenido = md_a_html(cuerpo if cuerpo else md)
 

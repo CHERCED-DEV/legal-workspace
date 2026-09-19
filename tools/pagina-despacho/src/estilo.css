@@ -180,3 +180,85 @@ main blockquote { border-left: 4px solid var(--linea); margin: 1rem 0; padding: 
   .oculto { display: block !important; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .75em; }
 }
+
+/* ============================================================ franja de resumen
+   Un rectangulo por bloque; el color es el RIESGO, no la confianza. Debajo, una
+   marca por cada bloque comprobado: el avance se ve sobre el documento entero,
+   no como un numero. */
+.franja { padding-bottom: .5rem; }
+.franja-svg {
+  width: 100%; height: 34px; display: block; cursor: pointer;
+  border-radius: 3px; overflow: hidden;
+}
+.franja-fondo { fill: var(--linea); opacity: .35; }
+.franja-b { fill: transparent; }
+.franja-b.riesgo-bajo  { fill: var(--tinta-suave); opacity: .35; }
+.franja-b.riesgo-medio { fill: var(--duda); opacity: .55; }
+.franja-b.riesgo-alto  { fill: var(--duda); opacity: 1; }
+.franja-b.hecho        { opacity: .22; }
+.franja-b.enfocado     { stroke: var(--tinta); stroke-width: .6; }
+.franja-sello { fill: var(--hecho); }
+.franja-marca { fill: var(--tinta); }
+.franja-leyenda {
+  display: flex; flex-wrap: wrap; gap: .25rem .9rem; margin: .35rem 0 0;
+  font-family: ui-sans-serif, system-ui, sans-serif; font-size: .72rem; color: var(--tinta-suave);
+}
+.franja-leyenda .pt {
+  display: inline-block; width: .7rem; height: .7rem; border-radius: 2px;
+  margin-right: .25rem; vertical-align: -1px; background: var(--linea);
+}
+.franja-leyenda .riesgo-bajo  { background: var(--tinta-suave); opacity: .4; }
+.franja-leyenda .riesgo-medio { background: var(--duda); opacity: .6; }
+.franja-leyenda .riesgo-alto  { background: var(--duda); }
+.franja-leyenda .sello        { background: var(--hecho); }
+
+/* ------------------------------------------------------- foco y navegacion */
+.seg.enfocado { outline: 2px solid var(--acento); outline-offset: 2px; }
+.seg.enfocado .seg-cab { color: var(--tinta); }
+
+/* Una accion primaria a la vista; el resto detras de un gesto. Un panel con
+   cinco botones por bloque inunda al revisor. */
+.acciones .primaria { font-weight: 600; }
+.acciones .mas { display: inline-block; }
+.acciones .mas > summary {
+  cursor: pointer; list-style: none; font-size: .75rem; color: var(--tinta-suave);
+  border: 1px solid var(--linea); border-radius: var(--radio); padding: .18rem .5rem;
+}
+.acciones .mas > summary::-webkit-details-marker { display: none; }
+.acciones .mas[open] > summary { border-color: var(--tinta-suave); }
+.acciones .mas > button { margin: .3rem .2rem 0 0; }
+
+/* ------------------------------------------------------------- alternativas */
+.alternativas { margin: .4rem 0 0; font-size: .85rem; }
+.alternativas > summary {
+  cursor: pointer; color: var(--duda);
+  font-family: ui-sans-serif, system-ui, sans-serif; font-size: .75rem;
+}
+.alternativas p {
+  margin: .3rem 0 0; padding-left: .7rem; border-left: 2px solid var(--linea);
+}
+.alternativas .et {
+  display: block; font-family: ui-monospace, Consolas, monospace;
+  font-size: .68rem; color: var(--tinta-suave);
+}
+
+/* ------------------------------------------------------------------- ayuda */
+dialog.ayuda {
+  border: 1px solid var(--linea); border-radius: var(--radio);
+  background: var(--papel-alto); color: var(--tinta);
+  max-width: 30rem; padding: 1.25rem 1.5rem;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+dialog.ayuda::backdrop { background: rgba(0,0,0,.45); }
+dialog.ayuda h2 { margin: 0 0 .75rem; font-size: 1.1rem; }
+dialog.ayuda table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+dialog.ayuda td { padding: .2rem .4rem; border: 0; }
+dialog.ayuda td:first-child { width: 5.5rem; }
+dialog.ayuda .nota { font-size: .78rem; color: var(--tinta-suave); margin: .75rem 0; }
+kbd {
+  font: inherit; font-size: .8rem; border: 1px solid var(--linea);
+  border-bottom-width: 2px; border-radius: 4px; padding: .05rem .4rem;
+  background: var(--papel);
+}
+
+@media print { .franja { display: none !important; } }
