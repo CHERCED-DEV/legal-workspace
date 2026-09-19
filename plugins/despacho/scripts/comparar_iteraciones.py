@@ -2,7 +2,7 @@
 """
 comparar_iteraciones — poner dos o mas pasadas del mismo material una al lado de otra.
 
-    python comparar_iteraciones.py "<carpeta 1>" "<carpeta 2>" ["<carpeta 3>" ...]
+    python comparar_iteraciones.py "<carpeta 1>" "<carpeta 2>" ["<carpeta 3>" ...] [--umbral=0.80] [--tope=12]
 
 Cada carpeta es una salida de `transcribir_audio.py` (o equivalente) con su
 subcarpeta `datos/`.
@@ -19,10 +19,20 @@ Lo que este programa NO hace:
   · No elige una ganadora.
   · No junta las versiones en una sola: mezclarlas produciria un texto que
     ninguna decodificacion dijo.
+  · No rellena la lista de discrepancias hasta un numero fijo. Si una grabacion
+    no tiene tramos por debajo del umbral, lo dice y no lista ninguno: devolver
+    siempre los N peores hace pasar por dudoso lo que no lo es.
 """
 import difflib, glob, io, itertools, json, os, re, sys, unicodedata
 
 VENTANA = 20.0
+UMBRAL = 0.80   # por encima de esto las versiones no se contradicen de verdad
+TOPE = 12       # cuantos tramos se imprimen como mucho por grabacion
+
+
+def dur_legible(s):
+    s = int(round(s))
+    return ("%d min %02d s" % (s // 60, s % 60)) if s >= 60 else ("%d s" % s)
 
 
 def norm(t):
@@ -73,10 +83,17 @@ def acuerdo(a, b, dur):
 
 
 def main():
-    if len(sys.argv) < 3:
+    global UMBRAL, TOPE
+    argumentos = sys.argv[1:]
+    for a in list(argumentos):
+        if a.startswith("--umbral="):
+            UMBRAL = float(a.split("=", 1)[1]); argumentos.remove(a)
+        elif a.startswith("--tope="):
+            TOPE = int(a.split("=", 1)[1]); argumentos.remove(a)
+    carpetas = argumentos
+    if len(carpetas) < 2:
         sys.stderr.write(__doc__ + "\n")
         return 2
-    carpetas = sys.argv[1:]
     nombres = [os.path.basename(c.rstrip("\\/")) or c for c in carpetas]
     datos = [cargar(c) for c in carpetas]
     faltan = [n for n, d in zip(nombres, datos) if not d]
@@ -115,30 +132,41 @@ def main():
             print("  %-5s %-22s vs %-22s  %.3f" % (cod, na, nb, acuerdo(a, b, dur)))
         print()
 
-    print("=== donde TODAS discrepan a la vez (las 8 peores por grabacion) ===")
+    print("=== donde TODAS discrepan a la vez (acuerdo por debajo del %d %%) ===" % round(100 * UMBRAL))
     print("Que metodos distintos escriban cosas distintas en el mismo punto es la")
-    print("senal mas fuerte que hay aqui de que ahi hay un problema (ADR-017 §8).\n")
+    print("senal mas fuerte que hay aqui de que ahi hay un problema (ADR-017 §8).")
+    print("Los tramos POR ENCIMA del umbral NO se listan: no discrepan, y rellenar")
+    print("la lista con ellos hace pasar por dudoso lo que no lo es.\n")
     for cod in codigos:
         presentes = [(n, d[cod][1]) for n, d in zip(nombres, datos) if cod in d]
         if len(presentes) < 2:
             continue
         dur = presentes[0][1]["duracion_s"]
-        malas, t = [], 0.0
+        malas, total, t = [], 0, 0.0
         while t < dur:
             tx = {n: palabras_en(doc, t, t + VENTANA) for n, doc in presentes}
             nz = {n: norm(v) for n, v in tx.items()}
             if any(nz.values()):
+                total += 1
                 pares = [difflib.SequenceMatcher(None, nz[a], nz[b]).ratio()
                          for a, b in itertools.combinations(nz, 2)]
-                malas.append((sum(pares) / len(pares), t, tx))
+                m = sum(pares) / len(pares)
+                if m < UMBRAL:
+                    malas.append((m, t, tx))
             t += VENTANA
         malas.sort()
-        print("--- %s ---" % cod)
-        for m, t, tx in malas[:8]:
+        print("--- %s ---   %d de %d tramos por debajo del umbral" % (cod, len(malas), total))
+        if not malas:
+            print("      Ninguno: las versiones no se contradicen en esta grabacion.\n")
+            continue
+        print("      oirlos entero cuesta %s\n" % dur_legible(len(malas) * VENTANA))
+        for m, t, tx in malas[:TOPE]:
             print("  [%s] acuerdo medio %d %%" % (hms(t), round(100 * m)))
             for n, v in tx.items():
                 print("      %-24s %s" % (n + ":", (v or "—")[:140]))
             print()
+        if len(malas) > TOPE:
+            print("  (y %d tramos mas por debajo del umbral, no mostrados)\n" % (len(malas) - TOPE))
     print("Ninguna de estas carpetas sustituye a las otras: una version posterior")
     print("puede haber PERDIDO un dato que una anterior si tenia.")
     return 0
