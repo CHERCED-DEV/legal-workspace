@@ -6,6 +6,10 @@
 >
 > **Y esa es la lección, no la errata:** un backlog que se consolida leyendo diagnósticos y no el código **produce trabajo inventado**. La regla 4 de `docs/specs/README.md` sale de aquí — antes de escribir una spec de defecto, se comprueba que el defecto siga vivo. **El resto de este índice tiene el mismo origen y no ha sido reverificado contra el código.**
 
+
+> **LA COLA DE EJECUCIÓN ESTÁ EN GITHUB — 2026-09-19.** Los issues del repositorio son desde hoy la cola de trabajo, sembrada con `docs/backlog/crear-issues-github.sh`. **No crean un espacio de identificadores nuevo:** cada issue lleva en el título el identificador que ya existe —`ADR-NNN`, su número de validación o de pregunta pendiente— y apunta al documento que lo posee. **GitHub dice qué se está haciendo; el documento sigue diciendo qué es.**
+>
+> Se hizo así por la regla 3 de `docs/specs/README.md`, que sale de §0.2 de este mismo documento. Un backlog nuevo con identificadores propios habría sido la quinta cosa llamándose «lo mismo» de forma distinta.
 ---
 
 ## §0 · Qué es esto, y por qué existe
