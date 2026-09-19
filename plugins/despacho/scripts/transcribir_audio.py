@@ -201,10 +201,21 @@ def limpiar(x):
 def preparar(ruta, destinos):
     """Escribe las pistas que pidan las pasadas. Si la grabacion trae dos canales
     distintos, se conservan por separado: promediarlos pierde informacion."""
+    import numpy as np
     l, r = decodificar(ruta, estereo=True)
     hay_dos, corr = canales_distintos(l, r)
     mezcla = (l + r) / 2.0 if hay_dos else l
-    antes = diagnostico(mezcla)
+    # El diagnostico del ORIGEN se hace sobre los canales, no sobre la mezcla:
+    # promediar dos canales baja el pico y puede esconder un recorte que SI
+    # estaba en la grabacion. Un registro que oculta un defecto del origen no
+    # sirve para nada.
+    antes = diagnostico(l if not hay_dos else np.maximum(np.abs(l), np.abs(r)) * np.sign(l + r + 1e-12))
+    if hay_dos:
+        dl, dr = diagnostico(l), diagnostico(r)
+        antes["muestras_saturadas"] = dl["muestras_saturadas"] + dr["muestras_saturadas"]
+        antes["pico_dbfs"] = max(dl["pico_dbfs"], dr["pico_dbfs"])
+        antes["snr_estimada_db"] = min(dl["snr_estimada_db"], dr["snr_estimada_db"])
+        antes["por_canal"] = {"izq": dl, "der": dr}
     pistas = {
         "mezcla_limpio": limpiar(mezcla),
         "mezcla_crudo": normalizar(mezcla - float(mezcla.mean())),
