@@ -1,0 +1,182 @@
+/* Superficie de trabajo del despacho — ADR-020.
+   Tipografias del sistema: NI UNA peticion de red (ADR-020 §3).
+   La incertidumbre se ve sin color y sobrevive al blanco y negro (§6). */
+
+:root {
+  --tinta: #1a1a1a;
+  --tinta-suave: #5a5750;
+  --papel: #fbfaf7;
+  --papel-alto: #ffffff;
+  --linea: #ddd8ce;
+  --acento: #7a5c00;
+  --duda: #8a4b00;
+  --duda-fondo: #fdf5e8;
+  --hecho: #1f5c3d;
+  --hecho-fondo: #eef6f0;
+  --medida: 74ch;
+  --radio: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --tinta: #e9e6df; --tinta-suave: #a8a49a; --papel: #16171a; --papel-alto: #1e2025;
+    --linea: #33363d; --acento: #d8b25a; --duda: #e0a260; --duda-fondo: #2a221a;
+    --hecho: #7fc9a0; --hecho-fondo: #182620;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+/* `display` de una clase pisa al atributo `hidden`. Sin esto, el reproductor
+   y el aviso de «no hay grabacion» salen a la vez. */
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font: 16px/1.65 ui-serif, Georgia, "Times New Roman", serif;
+}
+.envoltura { max-width: var(--medida); margin: 0 auto; padding: 0 1rem; }
+
+/* ---------------------------------------------------------------- cabecera */
+.cabecera {
+  background: var(--papel-alto);
+  border-bottom: 1px solid var(--linea);
+  padding: 2rem 0 1.5rem;
+}
+.cabecera .tipo {
+  margin: 0 0 .25rem; font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: .75rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+.cabecera h1 { margin: 0 0 1rem; font-size: 1.75rem; line-height: 1.2; font-weight: 600; }
+.ficha { margin: 0 0 1.25rem; display: grid; grid-template-columns: max-content 1fr; gap: .2rem .9rem; font-size: .9rem; }
+.ficha dt { color: var(--tinta-suave); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .82rem; }
+.ficha dd { margin: 0; }
+.propuesta {
+  border: 1px solid var(--duda);
+  border-left-width: 5px;
+  background: var(--duda-fondo);
+  padding: .8rem 1rem; border-radius: var(--radio);
+  font-size: .92rem;
+}
+.propuesta strong { display: block; margin-bottom: .3rem; }
+
+/* ------------------------------------------------------------------- barra */
+.barra {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--papel-alto);
+  border-bottom: 1px solid var(--linea);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: .85rem;
+}
+.barra-fila { display: flex; flex-wrap: wrap; gap: .75rem 1rem; align-items: center; padding-top: .6rem; padding-bottom: .6rem; }
+.reproductor { display: flex; align-items: center; gap: .5rem; }
+.reloj { color: var(--tinta-suave); font-variant-numeric: tabular-nums; }
+.sin-audio { margin: 0; color: var(--duda); }
+.filtros { display: flex; flex-wrap: wrap; gap: .35rem; }
+.progreso { margin-left: auto; display: flex; align-items: center; gap: .5rem; color: var(--tinta-suave); }
+.aviso-persistencia { margin: 0 auto .6rem; color: var(--duda); font-size: .82rem; }
+
+.boton, .chip {
+  font: inherit; cursor: pointer;
+  border: 1px solid var(--linea); background: var(--papel);
+  color: var(--tinta); border-radius: var(--radio); padding: .3rem .7rem;
+}
+.boton:hover, .chip:hover { border-color: var(--tinta-suave); }
+.boton.tenue { color: var(--tinta-suave); }
+.chip.activo { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+#btn-play { min-width: 2.4rem; }
+
+/* --------------------------------------------------------------- segmentos */
+main { padding-top: 1.75rem; padding-bottom: 3rem; }
+.seg {
+  position: relative;
+  padding: .55rem .75rem .55rem 1rem;
+  border-left: 4px solid transparent;
+  margin-bottom: .2rem;
+  border-radius: 0 var(--radio) var(--radio) 0;
+}
+.seg:target, .seg.sonando { background: var(--papel-alto); border-left-color: var(--acento); }
+
+.seg-cab {
+  font-family: ui-sans-serif, system-ui, sans-serif; font-size: .78rem;
+  color: var(--tinta-suave); display: flex; flex-wrap: wrap; align-items: center; gap: .5rem;
+  margin-bottom: .15rem;
+}
+.hora {
+  font-variant-numeric: tabular-nums; font-weight: 600; color: var(--acento);
+  background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; font-size: inherit;
+}
+.hora:hover { text-decoration: underline; }
+.hora[disabled] { color: var(--tinta-suave); cursor: default; text-decoration: none; }
+.voz { }
+.texto { margin: 0; }
+
+/* La duda se ve por BORDE y por ETIQUETA, nunca solo por color: sobrevive al
+   blanco y negro y a quien no distingue colores. ADR-020 §6. */
+.seg.dudoso { border-left-color: var(--duda); border-left-style: dashed; background: var(--duda-fondo); }
+.motivos {
+  font-family: ui-sans-serif, system-ui, sans-serif; font-size: .74rem;
+  color: var(--duda); margin: .25rem 0 0;
+}
+.motivos::before { content: "⚠ "; }
+
+.seg.comprobado { border-left-color: var(--hecho); border-left-style: solid; background: var(--hecho-fondo); }
+.seg.comprobado.dudoso { border-left-style: double; }
+
+.acciones {
+  display: flex; gap: .3rem; flex-wrap: wrap; margin-top: .35rem;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+.acciones button { font-size: .75rem; padding: .18rem .5rem; }
+.acciones .marcado { background: var(--hecho); color: var(--papel-alto); border-color: var(--hecho); }
+.sello {
+  font-family: ui-sans-serif, system-ui, sans-serif; font-size: .72rem;
+  color: var(--hecho); margin: .3rem 0 0;
+}
+.correccion {
+  margin: .4rem 0 0; padding: .5rem .7rem; border-radius: var(--radio);
+  border: 1px dashed var(--hecho); background: var(--papel-alto); font-size: .92rem;
+}
+.correccion .et {
+  display: block; font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: .72rem; color: var(--tinta-suave); margin-bottom: .2rem;
+}
+.oculto { display: none !important; }
+
+/* ---------------------------------------------------------------- tablas y pie */
+main table { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 1rem 0; }
+main th, main td { border: 1px solid var(--linea); padding: .4rem .55rem; text-align: left; vertical-align: top; }
+main th { background: var(--papel-alto); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .8rem; }
+main h2 { font-size: 1.25rem; margin-top: 2rem; }
+main h3 { font-size: 1.05rem; }
+main code { font-family: ui-monospace, Consolas, monospace; font-size: .88em; background: var(--papel-alto); padding: .05em .3em; border-radius: 3px; }
+main blockquote { border-left: 4px solid var(--linea); margin: 1rem 0; padding: .2rem 0 .2rem 1rem; color: var(--tinta-suave); }
+
+.pie {
+  border-top: 1px solid var(--linea); margin-top: 2rem; padding-top: 1.25rem; padding-bottom: 3rem;
+  font-size: .88rem; color: var(--tinta-suave);
+}
+.pie pre { white-space: pre-wrap; font-family: ui-monospace, Consolas, monospace; font-size: .8rem; }
+
+/* ------------------------------------------------------------------ movil */
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  .barra-fila { gap: .5rem; }
+  .progreso { margin-left: 0; width: 100%; }
+  .cabecera h1 { font-size: 1.4rem; }
+  .ficha { grid-template-columns: 1fr; gap: 0 0; }
+  .ficha dt { margin-top: .4rem; }
+}
+
+/* ---------------------------------------------------------------- impresion */
+@media print {
+  :root { --papel: #fff; --papel-alto: #fff; --tinta: #000; --tinta-suave: #444; }
+  .barra, .acciones { display: none !important; }
+  .seg { break-inside: avoid; }
+  /* En papel la duda sigue distinguiendose: borde discontinuo y etiqueta. */
+  .seg.dudoso { border-left: 4px dashed #000; }
+  .seg.comprobado { border-left: 4px solid #000; }
+  .oculto { display: block !important; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .75em; }
+}
