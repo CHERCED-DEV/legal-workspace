@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Los titulares de §0 de ESTADO-DEL-PROYECTO, recomprobados contra el disco.
+"""Los documentos que afirman cosas sobre el PRESENTE, recomprobados contra el disco.
 
 **Este documento caduco en silencio durante veintiseis dias.** Su version del
 2026-08-26 declaraba su propia fecha de caducidad -- «caduca con el proximo
@@ -12,7 +12,13 @@ Una fecha de caducidad no es una guarda. Esto si.
 No comprueba los diez -- cuatro son juicios y se dice cuales. Comprueba los que
 tienen respuesta en el disco, que son los que envejecen sin avisar.
 
-    python3 evals/scripts/test_estado_del_proyecto.py
+Cubre dos, y son los dos que mas caro cuestan cuando envejecen:
+
+  * `docs/ESTADO-DEL-PROYECTO.md` -- contesta «¿en que vamos?»
+  * `evals/README.md` -- dice **que mide el instrumento y que no**, y esa
+    segunda mitad es la que hace util a un instrumento
+
+    python3 evals/scripts/test_documentos_vigentes.py
 """
 import re
 import subprocess
@@ -21,6 +27,7 @@ from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[2]
 DOC = RAIZ / "docs" / "ESTADO-DEL-PROYECTO.md"
+EVALS = RAIZ / "evals" / "README.md"
 SKILLS = RAIZ / "plugins" / "despacho" / "skills"
 SCRIPTS = RAIZ / "plugins" / "despacho" / "scripts"
 
@@ -112,6 +119,61 @@ class LoQueEsteArchivoNoComprueba(unittest.TestCase):
     def test_la_fecha_de_corte_esta_escrita(self):
         """Un estado sin fecha miente por omision -- la regla 4, aplicada aqui."""
         self.assertRegex(texto(), r"\*\*Fecha de corte:\*\* \d{4}-\d{2}-\d{2}")
+
+
+class ElREADMEdeEvalsDiceLoQueMideYLoQueNo(unittest.TestCase):
+    """La mitad que importa de un instrumento es la que declara sus limites.
+
+    Este archivo decia «sin puntuador todavia» cuando el puntuador llevaba dos
+    dias escrito, y «ninguno mide que un modelo aplique la prosa: eso solo lo
+    enseña una pasada real, que sigue sin ocurrir» cuando las once pasadas ya
+    estaban hechas. **Un instrumento que describe mal sus limites es peor que
+    uno sin descripcion**: se le cree.
+    """
+
+    def texto(self):
+        return EVALS.read_text(encoding="utf-8")
+
+    def test_nombra_las_guardas_que_existen(self):
+        guardas = ["contar_fichas.py", "buscar_cuentas.py",
+                   "puntuar_caso03.py", "contar_skills.py"]
+        t = self.texto()
+        faltan = [g for g in guardas if g not in t]
+        self.assertEqual([], faltan,
+                         "hay guardas que el README de evals no menciona")
+
+    def test_no_nombra_guardas_que_no_existen(self):
+        """Control positivo: mencionar un programa que no esta es peor."""
+        t = self.texto()
+        import re
+        for m in re.finditer(r"`(?:scripts/|plugins/[^`]*/)?(\w+\.py)`", t):
+            nombre = m.group(1)
+            if nombre in ("medir.py",):
+                continue
+            existe = (list(RAIZ.rglob(nombre)))
+            self.assertTrue(existe, "el README de evals nombra %s y no existe"
+                            % nombre)
+
+    def test_todas_las_guardas_cuelgan_del_corredor(self):
+        """Una guarda que hay que acordarse de correr no es una guarda."""
+        corredor = (RAIZ / "evals" / "scripts" / "comprobar-salidas.sh").read_text(
+            encoding="utf-8")
+        for g in ("contar_fichas.py", "buscar_cuentas.py", "puntuar_caso03.py"):
+            self.assertIn(g, corredor, g)
+        todo = (RAIZ / "evals" / "scripts" / "correr-todo.sh").read_text(
+            encoding="utf-8")
+        self.assertIn("comprobar-salidas.sh", todo)
+
+    def test_ya_no_dice_que_no_hubo_pasada_real(self):
+        """La afirmacion que este archivo mantuvo falsa mas tiempo."""
+        t = self.texto()
+        self.assertNotIn(u"que sigue sin ocurrir.", t.split(u"~~")[0])
+        self.assertIn(u"once", t)
+
+    def test_dice_lo_que_sigue_sin_medirse(self):
+        t = self.texto()
+        self.assertIn(u"coste", t)
+        self.assertIn(u"ninguna abogada", t.lower())
 
 
 if __name__ == "__main__":

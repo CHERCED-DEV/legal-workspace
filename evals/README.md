@@ -6,7 +6,7 @@
 > |---|---|---|
 > | `casos/caso-01-familia.json` + `medir.py` | **Veracidad y coste sobre material real**: fabricaciones, páginas declaradas, turnos | **Bloqueado, y quizá menos de lo que parece.** El material no está aquí ni estará —documentos de una clienta real, con datos de una menor—. Y su truth set está invalidado por una nota que **puede estar mal contada**: dice «sin capa de texto», y el campo `material` del mismo archivo dice «sin una sola letra». **Si son páginas en blanco, el truth set es válido y basta mirar tres páginas para saberlo.** Ver `_REVISION_DE_LA_INVALIDACION` en el propio archivo |
 > | `scripts/` + `casos/caso-02-sintetico-autoridad/` | **Que las reglas estructurales de los métodos disparen**, y que los bloques repetidos no deriven. **Contexto B: ella decide entre dos partes** | En verde, y comprobadas capaces de fallar con mutantes |
-> | `casos/caso-03-hidraulica-desde-el-diseno/` | **Los diez ingredientes y las ocho afirmaciones prohibidas** de `13-synthetic-benchmark.md`, materializados. **Contexto A: ella representa a una clienta** | El expediente y sus trampas, con 11 pruebas de integridad. **Sin puntuador todavía**: se lee la salida contra sus dos tablas |
+> | `casos/caso-03-hidraulica-desde-el-diseno/` | **Los diez ingredientes y las ocho afirmaciones prohibidas** de `13-synthetic-benchmark.md`, materializados. **Contexto A: ella representa a una clienta** | ~~«Sin puntuador todavía»~~ — **`scripts/puntuar_caso03.py` existe desde el 2026-09-05** y comprueba seis de las ocho prohibidas y dos de las cuatro trampas de entidad. **Las otras tres se leen a mano, y eso va escrito en el propio programa** |
 > | `knowledge-pack/` | El contrato del knowledge pack | 37 en verde |
 >
 > **Todo de una vez:** `sh evals/scripts/correr-todo.sh`
@@ -22,7 +22,22 @@
 >
 > **El defecto que cierra**, señalado en `REFINADO-Y-FUENTES` §0.5 el 27 de agosto: *«el banco no puede fallar… certifica "VERACIDAD ── intacta" sobre un run vacío»*. Era cierto en su parte grave — **un run vacío tiene cero fabricaciones por construcción** — y se quedaba corto en otra: **25 páginas sin declarar de 25 se imprimían debajo del veredicto sin tocarlo.**
 >
-> **Y lo que ninguno mide:** que un modelo aplique la prosa de los `SKILL.md`. Eso solo lo enseña una pasada real, que sigue sin ocurrir.
+> **Y lo que ninguno medía:** que un modelo aplique la prosa de los `SKILL.md`. ~~«Eso solo lo enseña una pasada real, que sigue sin ocurrir»~~ — **ocurrió**: los **once** métodos se ejecutaron contra los dos casos entre el 5 y el 7 de septiembre, y encontraron defectos en los once. Registro en `docs/technical-design/v0/notes-verification/pasada-*.md`.
+>
+> **Lo que sigue sin medirse, y ahora es lo único:** el **coste** —hace falta una corrida instrumentada con transcript, y las once pasadas son de escritorio— y **que le sirva a alguien**: ninguna abogada ha abierto una sola de las once salidas.
+
+### Las cuatro guardas que corren sobre las salidas
+
+Además de las pruebas, hay cuatro programas que miran **lo que los métodos producen**, no lo que los métodos dicen. Nacieron los días 5 y 7 de septiembre, **cada uno de un defecto concreto**, y todos cuelgan de `scripts/comprobar-salidas.sh`, que a su vez cuelga de `correr-todo.sh`.
+
+| Guarda | Qué mira | De qué defecto nació |
+|---|---|---|
+| `plugins/despacho/scripts/contar_fichas.py` | El conteo que la salida declara contra las fichas que tiene, en **seis formatos** | La Fase 6 pedía un conteo llamándolo *«instrumento de honestidad»* **y no daba con qué hacerlo**. Salió mal a la primera |
+| `scripts/buscar_cuentas.py` | Toda duración o importe que **no esté en el material** | La regla de fechas se unificó una mañana y **se rompió esa misma tarde**, en la primera salida producida bajo ella |
+| `scripts/puntuar_caso03.py` | Las afirmaciones prohibidas, **y cuáles no puede comprobar** | El `LEEME` decía *«se lee la salida contra las dos tablas»*, y leer tablas a ojo es lo que este repositorio demostró que falla |
+| `scripts/contar_skills.py` | Cuántos `SKILL.md` dicen algo, **antes de escribir «N de los M»** | **Seis conteos mal hechos en dos días**, todos de esa forma, ninguno encontrado releyendo |
+
+> **Y la advertencia que vale para las cuatro, porque se aprendió corriéndolas:** **una guarda ajustada a una sola muestra protege esa muestra y nada más.** El contador solo entendía la forma en que estaban escritas las salidas que lo estrenaron; sobre las escritas con la plantilla real de los métodos decía «0 fichas». **Ocho de los hallazgos de septiembre no fueron de los métodos: fueron de las guardas.**
 
 
 > **Por qué existe.** Hasta hoy toda afirmación sobre si una versión del arnés es mejor o más barata que otra era una opinión. Este banco la convierte en una cifra. La primera vez que se corrió ya corrigió tres errores del plan de mejora que iban a dirigir el trabajo al sitio equivocado.
