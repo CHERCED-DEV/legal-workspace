@@ -1,6 +1,14 @@
 # Estado del proyecto — Legal Workspace / Legal OS
 
-**Fecha de corte:** 2026-08-26. **Rama:** `master`. **Último commit leído:** `6b6a86e`.
+**Fecha de corte:** 2026-09-21. **Rama:** `claude/backlog-continuacion-jm9x69`. **Último commit leído:** `11baa56`.
+
+> ### Este documento estaba caducado, y lo decía él mismo
+>
+> Su última línea era: *«Caduca con el próximo commit que toque `plugins/despacho/` o `docs/skills-support/`»*. Desde entonces hubo **sesenta y un commits** que tocan las dos cosas. **La versión anterior tenía fecha de corte del 2026-08-26 y nueve de sus diez titulares eran falsos el 21 de septiembre.**
+>
+> **Qué se hizo con el texto viejo, y por qué.** Los apartados que hacen afirmaciones **sobre el presente** —§0, §5, §6, §7— se reescriben, porque decían cosas que hoy son falsas y este documento existe para contestar *¿en qué vamos?*. Los que son **registro de un análisis fechado** —§1 a §4— se conservan con una marca de qué quedó superado y dónde está lo vigente. **Reescribirlos borraría lo que se sabía el 26 de agosto**, que es información: de ahí salieron la mitad de las correcciones que vinieron después.
+>
+> **El detalle de todo lo ocurrido entre las dos fechas está en `docs/BACKLOG-CONSOLIDADO.md` §§7 a 15.** Aquí va lo que cambia la respuesta a *¿en qué vamos?*, y nada más.
 
 Este documento responde a una sola pregunta: **¿en qué vamos?** Está escrito después de leer, por separado y con seis lectores independientes, el producto desplegado, la crítica de diecisiete hallazgos, el corpus completo de `docs/skills-support/`, los trece ADRs, los dos inventarios de plataforma y los fixtures de evaluación; más un séptimo pase dedicado exclusivamente a buscar contradicciones entre todo eso.
 
@@ -10,20 +18,78 @@ Este documento responde a una sola pregunta: **¿en qué vamos?** Está escrito 
 
 ## §0 — Dónde estamos, en diez líneas
 
-1. **Escrito, pero NADIE PUEDE INSTALARLO TODAVÍA.** Seis comandos de solo texto en `plugins/despacho/skills/` (`fact-builder`, `cronologia`, `estado-del-caso`, `inventario-de-anexos`, `redactar-escrito`, `revisar-documento`), empaquetados como plugin y declarados en `.claude-plugin/marketplace.json` — **pero sin publicar**: `git remote -v` no devuelve nada, no hay repositorio remoto, y por tanto **no existe URL que ella pueda añadir como marketplace**. HECHO VERIFICADO, comprobado en la máquina. Esto es la entrada 0 de §5 y va delante de todo lo demás: sin ella, ninguna otra entrada llega a sus manos.
-2. **Funciona hoy.** Ninguno de los seis contiene una sola cita de norma: `grep -E "Ley [0-9]|Decreto [0-9]|art\. [0-9]"` sobre `plugins/` no devuelve nada. La regla dura 1 —el derecho no baja a la skill— se está cumpliendo de verdad, no de palabra. HECHO VERIFICADO.
-3. **Funciona hoy, y es la noticia buena que nadie esperaba.** En varios puntos el producto es *mejor* que el corpus que debía alimentarlo: las reglas anti-inferencia, el registro de descartes y la prohibición de calcular plazos están mejor escritas en los seis `SKILL.md` que en los veinte dossiers.
-4. **Roto.** Los diecisiete hallazgos de la crítica siguen vivos. Solo H-08 está a medias, y su mitad aplicada dejó el `README.md` del plugin dibujando en su árbol un archivo que ya se movió: hoy el README describe un plugin que no es el que hay.
-5. **Roto.** La guía que lee la abogada hace tres afirmaciones falsas y omite el hecho que más cambiaría lo que ella hace: **su material se procesa en servidores de Anthropic, no en su computador.** El `README.md` del dueño sí lo dice, con rigor ejemplar. La guía de ella, no.
-6. **Roto.** La cadena está partida en el eslabón central. `fact-builder` no escribe ningún archivo, y `inventario-de-anexos` y `redactar-escrito` consumen "la hoja de hechos del caso" que nadie produce. Toda la promesa del producto se apoya en un archivo que no existe.
-7. **Roto.** El corpus describe un producto que ya no existe. `skill-candidates/INDEX.md` línea 3 sigue diciendo que `fact-builder` "es la única Skill ejercitada de V0", y ese archivo se editó **el día siguiente** (`6b6a86e`, 2026-08-26 08:40) al commit que trajo las otras cinco (`a07c95c`, 2026-08-25 16:01).
-8. **No existe.** El Core. Y ahora sabemos algo peor que "todavía no está": un servidor MCP local **no corre en sesión en la nube**, y la nube es el modo por defecto de Cowork. La pregunta bloqueante del proyecto dejó de ser B-04.
-9. **No existe.** El Knowledge Pack. Lo que hay es una bibliografía con espina verificada: 26 identificadores normativos con Diario Oficial y fecha, cuatro providencias individualizadas de las cuales dos son utilizables, y un dominio entero que es **6% derecho y 94% marco** (52 de 876 líneas mencionan una norma concreta; ninguna transcribe el texto de un artículo).
-10. **No existe.** Un solo dato sobre el trabajo real de la abogada. Las veinte filas de frecuencia de `01-business-capability-map.md` dicen `UNKNOWN` por decisión explícita y el baseline de `docs/discovery/` no se ha corrido. **Toda prioridad de este documento, incluida la del §5, es argumento de diseño, no medición.**
+**Cada punto se recomprobó contra el repositorio el 2026-09-21, con un comando.** Donde el titular de agosto cambió, se dice qué decía y qué lo cambió — porque *«ya no aplica»* sin la frase vieja al lado no deja comprobar nada.
+
+1. **Se puede instalar, y nadie lo ha instalado.** ~~«NADIE PUEDE INSTALARLO: `git remote -v` no devuelve nada»~~ — **falso desde el 2026-09-05**: `origin` es `github.com/CHERCED-DEV/legal-workspace` y el `marketplace.json` existe. HECHO VERIFICADO con `git remote -v`. **Lo que sigue abierto es otro trabajo:** nadie lo ha instalado nunca en una máquina que no sea la del dueño, y de eso dependen **cuatro cosas distintas** (§6).
+
+2. **Sigue sin citar una sola norma, y ahora son once métodos.** `grep -E "Ley [0-9]|Decreto [0-9]|art\. [0-9]"` sobre los once `SKILL.md` no devuelve nada. La regla dura 1 se cumple de verdad. HECHO VERIFICADO. **Y en septiembre se comprobó ejecutando:** cuatro preguntas de derecho sobre un expediente, incluida una inyección escrita para romper la negativa, y las cuatro se negaron y ofrecieron lo que sí se puede hacer.
+
+3. **Los once se han ejecutado al menos una vez, y ninguno salió limpio.** ~~«ninguno se ha ejecutado nunca»~~ — **falso desde el 2026-09-07**. Once métodos corridos contra dos expedientes de banco, uno de parte y uno de autoridad. **Cero afirmaciones prohibidas afirmadas; las cuatro trampas de entidad superadas.** Y ejecutarlos encontró defectos en los once. Registro: `notes-verification/pasada-caso-02`, `pasada-caso-03` y `pasada-redactar-escrito`.
+
+4. **Los diecisiete hallazgos de la crítica están cerrados.** ~~«Todos siguen vivos; solo H-08 está a medias»~~ — **falso**: los doce de la crítica al arnés se aplicaron el 2026-08-26 (commit `6444952`) y los doce de `inventario-de-bienes` estaban ya aplicados, comprobados uno por uno en `notes-verification/auditoria-inventario-de-bienes-2026-09-05.md`. **Lo que quedó vivo de aquel commit fue una cuenta mal hecha dentro de él** —su `H-03` dice *«los tres skills que tocan fechas»* y eran **siete**—, corregida el 2026-09-05.
+
+5. **La guía ya dice dónde se procesa su material.** ~~«hace tres afirmaciones falsas y omite el hecho que más cambiaría lo que ella hace»~~ — **falso**: `GUIA-PARA-LA-ABOGADA.md` lo dice en tres párrafos seguidos, y dice también la confusión que lo rodea: *«Guardar un archivo en su disco no es lo mismo que trabajarlo en su disco»*. HECHO VERIFICADO. **La decisión de confidencialidad sigue sin tomarse** (§6): lo que cambió es que ya no se le oculta.
+
+6. **La cadena está completa, y se ejecutó entera.** ~~«`fact-builder` no escribe ningún archivo, y toda la promesa se apoya en un archivo que no existe»~~ — **falso**: `hechos-con-prueba` escribe en `2-Borradores/`, ella marca con ` - REVISADO`, y `redactar-escrito` e `inventario-de-anexos` consumen esa marca **y se detienen sin ella**. Probado en los tres estados posibles —cero marcadas, una, dos— y **los tres se comportan bien**.
+
+7. **El corpus sigue describiendo un producto que ya no existe, y ahora se sabe cuánto.** **Cincuenta y cinco documentos** nombran `fact-builder`, que se renombró a `hechos-con-prueba` el 2026-08-26. **No se renombraron los 55, y decir por qué es parte de la decisión:** son registro histórico, y reescribirlos falsearía lo que se decidió con la información de entonces. Se corrigió **la única línea que afirmaba un hecho sobre el presente** — el `README` de `skills-support/`, que daba esa ruta por vigente.
+
+8. **El Core no existe, y ya no es la pregunta que bloquea.** ADR-018 estableció que el plugin **puede ejecutar código**, y hoy ejecuta diez programas. Los veinte documentos de `technical-design/` y las ocho decisiones que esperan aprobación **diseñan ese Core**, y ninguna toca el producto que corre. `B-04` sigue siendo el riesgo mejor identificado del repositorio, con su experimento de 31 pasos escrito y sin ejecutar — y **decide sobre un Core que no hay**.
+
+9. **El Knowledge Pack no existe, y esa ausencia es hoy la garantía.** Sin cambios desde agosto en lo sustantivo. **Y con una frase que vale la pena tener a mano**, de `REFINADO-Y-FUENTES`: *«la abstinencia se acaba el día que exista el Knowledge Pack»*. Hoy nada impide citar una norma derogada — **lo impide que el producto no cita normas**. Es una abstinencia, no un control.
+
+10. **Ya hay datos del trabajo real, y siguen sin alcanzar.** ~~«Ni un solo dato sobre el trabajo real de la abogada»~~ — **parcialmente falso**: dos pases sobre expedientes reales dejaron números, y **tres de las ocho preguntas de negocio quedaron contestadas sin haberlas preguntado** — canales (fotografías de un expediente en papel), volumen (decenas de páginas por caso, no centenares) y, a medias, la 7. **Lo que sigue sin existir es lo que más pesa:** con qué frecuencia usa ella cada capacidad, y cuánto le cuesta un caso.
+
+> **Y el titular que no estaba en la lista de agosto, porque nadie lo había medido:**
+>
+> **La salida que ella firma no se produce sin dos intervenciones suyas** — revisar veinte fichas una por una, y dictar qué escrito, para quién y con qué apartados. **La primera no es rápida.** No es un defecto: es la forma que tiene este producto, y conviene saberla antes de prometer tiempos.
 
 ---
 
-## §1 — El producto
+## §0.bis — Qué pasó entre el 26 de agosto y el 21 de septiembre
+
+**Sesenta y un commits.** Lo que cambia la respuesta a *¿en qué vamos?*, en cinco líneas:
+
+| | Qué |
+|---|---|
+| **El producto** | De seis métodos a **once**, con **diez programas** que hacen el trabajo mecánico. **Doce specs** escritas y ejecutadas |
+| **La medición** | De cero a **208 pruebas** y cuatro guardas que corren solas sobre todas las salidas: el conteo declarado contra las fichas que hay, todo número que no esté en el material, las afirmaciones prohibidas, y cuántos `SKILL.md` dicen algo |
+| **La cobertura** | Los **seis corpus** del repositorio, leídos y triados. Quedaba uno sin cubrir en agosto; hoy ninguno |
+| **Lo que encontró ejecutar** | Defectos en los once métodos, **ninguno visible releyendo**. Y **ocho de los hallazgos no fueron de los métodos sino de las guardas** que los vigilan |
+| **Lo que sigue igual** | Nadie lo ha instalado. **Ninguna abogada ha abierto una sola de las once salidas.** No hay una cifra de coste |
+
+### Las tres cosas que este mes enseñó, y que valen más que la lista de arriba
+
+1. **Releer no encuentra defectos; ejecutar sí.** De dieciocho ítems que salieron de *leer* documentos de diagnóstico, **cero** eran como se decían. De los que salieron de *ejecutar* el producto, todos.
+
+2. **Contar a ojo falla, y no es una habilidad que se pueda mejorar.** Seis conteos mal hechos en dos días, todos de la misma operación —*«N de los M métodos»*—, **ninguno encontrado releyendo y los seis con un comando**. El peor fue el cuarto: los números no cuadraban y en vez de recontar se escribió un párrafo explicando la discrepancia. Era plausible y era falsa. De ahí la regla que hoy está en tres métodos: **si el conteo no cuadra, se recuenta; no se explica.**
+
+3. **Una guarda ajustada a una sola muestra protege esa muestra y nada más.** El contador solo entendía la forma en que estaban escritas las salidas que lo estrenaron; sobre las escritas con la plantilla real decía «0 fichas». **Se destapó corriéndolo sobre algo que no escribió quien lo hizo.**
+
+---
+
+## §1 a §4 — Registro del análisis del 2026-08-26
+
+> ### Estos cuatro apartados NO se actualizaron, y no es descuido
+>
+> Son el **registro fechado** de lo que seis lectores independientes encontraron el 26 de agosto. Reescribirlos borraría lo que se sabía entonces — y de ahí salieron la mitad de las correcciones que vinieron después.
+>
+> **Qué quedó superado, para que nadie los lea como el estado de hoy:**
+>
+> | Apartado | Qué decía | Dónde está lo vigente |
+> |---|---|---|
+> | **§1.1** | «Los seis comandos», con `fact-builder` entre ellos, y **«ninguno se ha ejecutado nunca»** | Son **once**, `fact-builder` es `hechos-con-prueba` desde el 2026-08-26, y **los once se han ejecutado**. `BACKLOG` §§14-15 |
+> | **§1.2** | «Los diecisiete hallazgos siguen vivos» | **Cerrados.** Commit `6444952` y `notes-verification/auditoria-inventario-de-bienes-2026-09-05.md` |
+> | **§1.3** | Lo que ningún comando cubre | Sigue en pie salvo `revision-de-rigor`, que **existe y se ejecutó** |
+> | **§2** | El corpus del dueño, y qué baja a las skills | `BACKLOG` §12: son **89 documentos**, no veinte, y están triados |
+> | **§3** | Trece contradicciones | `BACKLOG` §1 las mantiene al día |
+> | **§4** | ADRs tocados | `BACKLOG` §7: los dieciocho, leídos y triados, **y ADR-018 cambió la premisa** |
+>
+> **Y una cosa de §1.1 que envejeció bien y conviene no perder:** su «colisión verificada entre el método y la plataforma» —que los comandos exigen coordenada exacta sobre escaneados sin texto y grabaciones sin transcripción— **se resolvió tal como ese párrafo pedía**: hoy los métodos tienen regla de fallo declarado, el preparador extrae texto con instrumentación de cobertura, y una transcripción es material del caso que el sistema no produce.
+
+---
+
+## §1 — El producto *(registro del 2026-08-26)*
 
 ### 1.1 Los seis comandos: cuáles sirven hoy y de qué depende cada uno
 
@@ -74,7 +140,7 @@ El lector del arnés verificó los diecisiete uno por uno contra los archivos. *
 
 ---
 
-## §2 — El corpus del dueño
+## §2 — El corpus del dueño *(registro del 2026-08-26)*
 
 Veinte dossiers de workflow, seis de práctica, dieciocho fichas de candidata, siete documentos de evaluación, cinco de catálogo de fuentes, siete de mapas de dependencia y una decena de gobierno. Es mucho trabajo y no es ruido. Pero **no es lo que el proyecto necesitaba que fuera**, y conviene decirlo entero.
 
@@ -139,7 +205,7 @@ Ordenada por coste ascendente. Todo lo de esta tabla es **método sin derecho de
 
 ---
 
-## §3 — Contradicciones detectadas, y cuál cede en cada una
+## §3 — Contradicciones detectadas, y cuál cede en cada una *(registro del 2026-08-26)*
 
 Primero, lo que se comprobó y **no está roto**, para que nadie gaste tiempo ahí: el corpus **no propone en ninguna parte meter derecho colombiano dentro de un `SKILL.md`** —dice lo contrario de forma repetida y disciplinada—; **no toca la superficie MCP** (ningún archivo propone una tool nueva, y `open-questions/architecture-alignment.md` está al día con las cuatro enmiendas); **no amenaza la polaridad del EvidenceLink** (una sola mención en todo el corpus, y correcta); y **ninguno de los seis ADRs `Accepted` cae**. En materia de cálculo de términos el corpus es **más estricto que el producto**, no menos.
 
@@ -166,7 +232,7 @@ Lo que sí hay:
 
 ---
 
-## §4 — Decisiones de arquitectura tocadas
+## §4 — Decisiones de arquitectura tocadas *(registro del 2026-08-26)*
 
 Tres hechos de plataforma, verificados con cita literal y refutación adversarial en `docs/research/capacidades-cowork-y-capa-gratuita.md` (2026-08-25). HECHO VERIFICADO los tres:
 
@@ -200,103 +266,93 @@ Tres hechos de plataforma, verificados con cita literal y refutación adversaria
 
 ## §5 — Lo que hay que hacer ahora
 
-Diez entradas, ordenadas por **valor para ella dividido por esfuerzo**. Los costes son SUPUESTO míos salvo donde un lector los estimó. **Ninguna entrada depende del Core, del Knowledge Pack ni de una herramienta nueva.**
+> **Las diez entradas de agosto se cerraron, menos dos, y las dos que quedan no son de código.** Abajo va el balance de aquellas diez, y después lo que hay que hacer **hoy**, que es otra lista y mucho más corta.
 
-### 1. Decir la verdad sobre dónde se procesa su material, y comprobar en su máquina lo que la guía le promete
+### 5.1 Balance de las diez entradas de agosto
 
-**Es lo que haría si solo pudiera hacer una cosa.**
+| # | Entrada | Estado el 2026-09-21 |
+|---|---|---|
+| **1** | Decir la verdad sobre dónde se procesa su material, y comprobar en su máquina | **A medias, y la mitad que falta es la que importa.** La guía ya lo dice, en tres párrafos y con la confusión nombrada. **La comprobación en su equipo no se ha hecho** — sigue siendo la entrada 1, ahora en §5.2 |
+| **2** | El bloque de texto dirigido al programa, en los seis comandos | **HECHO**, y en los **once**. Comprobado ejecutando: la inyección del `caso-02` está escrita para romper la negativa de `preguntas-de-derecho` y no alteró ninguna de las cuatro respuestas |
+| **3** | Limpiar `fact-builder`: vocabulario, jerga y nombre | **HECHO** el 2026-08-26 (`H-08`, `H-09`). Se llama `hechos-con-prueba` |
+| **4** | Sacar la aritmética de fechas, y escribir la frontera por operación | **HECHO, y dos veces.** En agosto se puso en tres métodos; **eran siete**, y los otros cuatro se quedaron diez días sin ella. Una sola redacción en los siete desde el 2026-09-05, con prueba de mutación — y una guarda que busca toda cifra que no esté en el material |
+| **5** | Vaciar la plantilla de apartados de `redactar-escrito` | **HECHO** (`H-01`). Los títulos salen de ella o se preguntan |
+| **6** | No sobrescribir, y no afirmar sin haber mirado | **HECHO** (`H-06`, `H-11`). `revisar-documento` lista la carpeta antes de decir que falta un anexo, y ninguna salida se sobrescribe |
+| **7** | La hoja de hechos revisada: cerrar la cadena | **HECHO y ejecutado.** Es SPEC-05. Probado en los tres estados —cero marcadas, una, dos— y **los tres se comportan bien**. Lo que sigue sin saberse es si **ella** va a hacerlo, que era la otra mitad de esta entrada y es de §6 |
+| **8** | «Qué comprobar primero» al cierre de las seis salidas | **HECHO** (`H-12`), y en los once |
+| **9** | Sincronizar el corpus con el producto, y escribir la regla que falta | **DECIDIDO, no sincronizado, y la decisión es la regla que faltaba:** los 55 documentos que nombran `fact-builder` **se dejan como están** porque son registro histórico; se corrige solo lo que afirma un hecho sobre el presente. `BACKLOG` §12 |
+| **10** | El séptimo comando: «qué hay que pedir» | **NO se hizo ese, y se hicieron otros cinco.** El producto pasó de seis a once métodos, y entre ellos `revision-de-rigor` — que era el candidato que este mismo documento llamaba *«el único hueco del oleoducto: nada revisa el borrador antes de que salga con su firma»*. **«Qué hay que pedir» sigue sin construirse** |
 
-- **Qué.** (i) Una frase en la guía, en su idioma y sin jerga: lo que abra en esta ventana se procesa en los servidores de Anthropic, no se queda en su computador; guardar el archivo en su disco no es lo mismo que trabajarlo en su disco — con la consecuencia práctica, no la explicación técnica: *por eso hay material que usted decidirá no abrir aquí*. (ii) Una sesión de comprobación en su equipo: forma real de los comandos (`/cronologia` o `/despacho:cronologia`), si `redactar-escrito` produce `.docx`, si el sistema puede citar el minuto de una grabación suya, y qué hace con un PDF escaneado sin capa de texto. (iii) Escribir el resultado real en la guía y añadir las dos filas que le faltan a la tabla del README §9.
-- **Por qué.** La guía es el único documento que ella lee, y hoy hace tres afirmaciones falsas y omite la que cambia lo que hace. Esto es secreto profesional, no detalle de interfaz, y **la regla suprema del proyecto es la veracidad**. Además el Ejemplo 2 —el que le enseña el producto entero— depende de oír una grabación de 47 minutos y citar el minuto exacto, y eso ni siquiera está en la lista de comprobaciones pendientes.
-- **Cuánto cuesta.** Una a dos horas, de las cuales cuarenta minutos son la sesión con su máquina (estimado del lector del arnés).
-- **Qué desbloquea.** Poder entregarle el producto sin mentirle. Imprimir la guía. Y el modo de fallo peor de los seis comandos: un OCR parcial produce un resumen verosímil de un documento que no se leyó.
+### 5.2 Lo que hay que hacer hoy
 
-### 2. El bloque de texto dirigido al programa, en los seis comandos
+**Tres entradas, y ninguna es mía.** Todo lo que se podía hacer sin ella y sin el dueño está hecho.
 
-- **Qué.** Copiar literalmente `revisar-documento/SKILL.md` §7 —incluida la plantilla "AVISO — TEXTO DIRIGIDO AL PROGRAMA" con transcripción literal y ubicación, y el criterio "ante la duda se reporta"— a los otros cinco, con su pregunta en cada autoevaluación.
-- **Por qué.** Los cinco sin la regla son precisamente los que más material externo leen, y es **la única promesa del producto que puede fallar en silencio con un tercero interesado del otro lado**. La guía §5 ya se lo promete a ella como propiedad general. El corpus la trata como requisito transversal obligatorio en todos sus workflows, y **sembró el ataque en cinco fixtures distintos**: la corrección viene con su prueba de regresión incluida.
-- **Cuánto cuesta.** Doce líneas copiadas cinco veces. Media hora.
-- **Qué desbloquea.** Que la frase §5 de la guía deje de ser falsa. Y una evaluación binaria que no necesita truth set ni derecho.
+#### 1. Instalarlo una vez en una máquina que no sea la del dueño
 
-### 3. Limpiar `fact-builder`: vocabulario, jerga y nombre
+**Es lo que haría si solo pudiera hacerse una cosa, y ahora desbloquea cuatro.**
 
-- **Qué.** (i) H-07: reemplazo mecánico de `RESPALDA/CONTRADICE/DA CONTEXTO` por `apoya/contradice/sitúa` en el formato, su ejemplo relleno y el Ejemplo 2 de la guía; unificar en **una** tabla de estados. (ii) H-08: recortar `FORMATO-DE-SALIDA.md` a sus §§1-2, **rescatando antes su §1.5** al `SKILL.md` (es la versión en papel del hash de contenido y no debe irse con el recorte); sustituir la tabla de modos del §2.3 por una frase —*nada de lo que produces está verificado por ningún sistema*—; y corregir el árbol del README §7. (iii) H-09: renombrar a `hechos-con-prueba`, con sus cuatro referencias cruzadas.
-- **Por qué.** Las tres tocan el mismo skill y sus dos archivos. H-07 entrega la distinción central con una palabra que la guía nunca enseñó. H-08 está a medias y ese es el peor estado posible: el README miente sobre el árbol. H-09 es **ventana que se cierra**: renombrar después de que ella lo aprenda cuesta el triple. De paso hay que resolver si "parcialmente respaldado" es estado (§3, fila 7).
-- **Cuánto cuesta.** Hora y media.
-- **Qué desbloquea.** Que las correcciones siguientes se hagan sobre una descripción verdadera del producto.
+- **Qué.** Instalar el plugin desde el marketplace y anotar: la forma real de los comandos (`/cronologia` o `/despacho:cronologia`), si `md2docx.py` produce el `.docx`, si un `.md` abre con doble clic en Windows, y **en qué anfitrión corre** — de eso último depende si existe alguna protección además de la prosa (`BACKLOG` §13).
+- **Qué desbloquea, y por eso va primera.** Cerrar SPEC-01 y SPEC-11 · imprimir la guía · el disparador del plano administrativo y el de actualizaciones automáticas, **dos exclusiones del backlog de arquitectura que esta instalación enciende** · y la comprobación pendiente de la entrada 1 de agosto.
+- **Cuánto cuesta.** Una tarde. **Lleva abierta desde la primera fase del proyecto.**
 
-### 4. Sacar la aritmética de fechas, y escribir la frontera por operación
+#### 2. Que una abogada abra una de las once salidas
 
-- **Qué.** Quitar la duración en días de `cronologia` Fase 5, de la columna **Bien** de su tabla y de su plantilla. Y escribir en los tres skills que tocan fechas la regla **por operación, no por tema**: *nunca sumas ni restas días sobre una fecha para producir otra, aunque el resultado no sea un plazo*. Contrapregunta: "¿alguna fecha de mi salida es el resultado de una suma o una resta que hice yo?".
-- **Por qué.** La aritmética ya está dentro del único producto que jura en cuatro archivos que no calcula nada con fechas, y **entrena al modelo a contestar "no" a la pregunta 17 cuando la plantilla obligó a que fuera "sí"**. Aquí el corpus **no ayuda**: `05-temporal-applicability.md` traza la frontera por tema igual que el producto. La formulación por operación de la crítica es la única buena que existe en el repositorio.
-- **Cuánto cuesta.** Una hora.
-- **Qué desbloquea.** Cierra la única fuga de derecho que está **dentro** del producto.
+- **Qué.** Ponerle delante **una** — la hoja de hechos del `caso-03`, o la revisión de rigor del `caso-02`— y mirar tres cosas: si la abre, si la entiende sin que nadie se la explique, y **si copia algo de ahí y lo pega en un escrito sin tocarlo**.
+- **Por qué es la medición que falta.** Hay 208 pruebas y cuatro guardas, y **todas miden que el producto cumple sus propias reglas**. Ninguna mide que le sirva a alguien. `PENDIENTE-FORMA-DE-ENTREGA` lo dijo en agosto: *«la prueba no es que el archivo se vea bien en el editor, sino que ella lo abra con doble clic, lo copie y lo pegue en su escrito sin tocar nada»*.
+- **Y hay un dato que hay que darle con la salida, no después:** revisar veinte fichas una por una es la puerta de entrada al producto, y **nadie ha medido cuánto tarda**.
 
-### 5. Vaciar la plantilla de apartados de `redactar-escrito`
+#### 3. Las tres conversaciones que están escritas y sin tener
 
-- **Qué.** Dejar los seis renglones de la Fase 3 genéricos y vacíos, sin un solo nombre de apartado en duro, más una línea fija para cualquier apartado que ella nombre. Añadir a la autoevaluación: "¿hay algún título de mi esqueleto que no lo dijo ella ni está en el modelo?".
-- **Por qué.** Es la violación más grave de la regla dura 1 dentro del producto, y **se autodesmiente**: el skill prohíbe recordar la estructura y diecisiete líneas después se la recuerda al modelo. `drafting-patterns/document-types-are-workflows.md` da el argumento para **no sustituirla por otra plantilla**: la estructura es Knowledge Pack, no skill.
-- **Cuánto cuesta.** Media hora.
-- **Qué desbloquea.** Que el argumento más fino del producto —"no las conoces: las **recuerdas**"— deje de ser contradicho por el propio archivo que lo escribe.
+Ninguna es una tarea: son preguntas con la redacción ya hecha, esperando veinte minutos.
 
-### 6. No sobrescribir, y no afirmar sin haber mirado
-
-- **Qué.** (i) Regla de no sobrescritura y sufijo de pasada en `inventario-de-anexos`. (ii) En `estado-del-caso` Fase 6, guardar el contenido anterior íntegro en `2-Borradores` **antes** de reescribir. (iii) En `revisar-documento` Fase 1, listar `1-Documentos recibidos/` antes de afirmar si un anexo anunciado está o no —y si no se pudo listar, escribirlo así—; y acotar al contenido la prohibición del §1 de comparar con el expediente.
-- **Por qué.** Coste mínimo, dos daños distintos. (i) y (ii) convierten una pérdida irreversible en recuperable y hacen verdadera una promesa que la guía ya hizo. (iii) cierra el sitio del producto donde inventar sale más barato y se nota menos: *"no aparece entre lo recibido"* es la línea con la que ella decide a quién le pide qué.
-- **Cuánto cuesta.** Media hora en total.
-- **Qué desbloquea.** Que ninguna pasada del producto pueda destruir trabajo suyo.
-
-### 7. La hoja de hechos revisada: cerrar la cadena
-
-- **Qué.** (i) Sección "Dónde se escribe" en `fact-builder`, con salida a `2-Borradores`, prohibición de tocar `1-Documentos recibidos/` y el archivo de estado, y regla de no sobrescritura. (ii) Mecanismo de devolución en un solo sitio: ella escribe SÍ / NO / A MEDIAS al lado de cada ficha y guarda como `Hechos — caso — fecha — REVISADO`. (iii) Comprobación dura en `redactar-escrito` Fase 1: **sin archivo con marca de revisión de ella, no hay hechos aprobados**. (iv) **Y lo que la crítica no vio y el corpus sí**: la hoja lleva **fecha de corte y la lista del material que se leyó**, y quien la consuma compara esa lista con la carpeta y **se detiene si hay material nuevo**.
-- **Por qué.** Toda la promesa del producto se apoya en un eslabón que nadie escribe. Sin (iv), el eslabón nace ya podrido: la hoja aprobada envejece en silencio y `redactar-escrito` construye sobre hechos que ella aprobó **antes** de que llegara el documento nuevo. Los fixtures del corpus tienen ese caso escrito dos veces.
-- **Cuánto cuesta.** Medio día (estimado del lector del arnés).
-- **Qué desbloquea.** Convierte seis documentos sueltos en una oficina. Es el hallazgo de mayor consecuencia de los diecisiete.
-
-### 8. "Qué comprobar primero" al cierre de las seis salidas
-
-- **Qué.** Que cada salida cierre con tres a cinco anclajes elegidos por criterio explícito —los que sostienen solos un hecho, los que vienen de material producido por la propia interesada, los que van a entrar en un escrito— y que para tres elegidos al azar transcriba además la línea completa que rodea a la cita.
-- **Por qué.** Es la mejora de mayor rendimiento por línea escrita. Hoy una pasada de hechos sobre seis documentos produce del orden de treinta a sesenta comprobaciones y **ninguna salida le dice cuáles hacer primero**. Y la única defensa actual contra la cita fantasma es que el modelo declare que abrió cada cita, que es un autoinforme.
-- **Cuánto cuesta.** Una hora.
-- **Qué desbloquea.** Que la revisión humana, que es el único control real del producto, sea ejecutable en el tiempo que ella tiene.
-
-### 9. Sincronizar el corpus con el producto, y escribir la regla que falta
-
-- **Qué.** Corregir `skill-candidates/INDEX.md` línea 3, el README del corpus, `workflows/README.md` filas 16 y 17, la cabecera de `17` y la de `16`. Añadir a la matriz de fronteras las tres filas que faltan y quitarle la asignación al Core de lo ya construido. Renombrar o prefijar las cuatro métricas del corpus y hacer que su fixture cite el del Technical Design. Y **escribir la regla que el corpus no tiene**: qué se hace cuando el producto adelanta a la investigación —el corpus tiene procedimiento para conflicto con la arquitectura, no para este.
-- **Por qué.** Hasta que no esté, **cualquier decisión de qué construir se toma contra un mapa falso**, y las métricas producen números que alguien va a comparar sin saber que tienen denominadores distintos.
-- **Cuánto cuesta.** Una hora, más la decisión del §7.1.
-- **Qué desbloquea.** Que el corpus vuelva a ser utilizable como insumo de planificación.
-
-### 10. El séptimo comando: **qué hay que pedir**
-
-- **Qué.** Un comando que consolide en una sola lista lo que los cinco ya producen por separado —vacíos, mencionados y ausentes, afirmaciones sin documento, qué haría falta para respaldarlo— agrupado en los cuatro cubos que el corpus ya diseñó (obtener documento / verificar identidad o fecha / revisar contenido / confirmar canal), separado por a quién se le pide cada cosa, y con las urgencias marcadas como **declaradas, no confirmadas**.
-- **Por qué.** Es el hueco H-15.3 y probablemente el mejor valor por coste que falta: **veinte líneas que consolidan lo que ya existe**, y que producen la única cosa que ella hará después de leer cualquiera de las cinco salidas. El corpus ya le dio la taxonomía, así que ni siquiera hay que diseñarla.
-- **Cuánto cuesta.** Medio día.
-- **Qué desbloquea.** El primer comando que produce **una acción**, no un análisis.
-
-**Fuera de las diez, y por qué:** los otros dos comandos candidatos —`cotejar-documentos` (rama C de `19`, el mayor de los tres huecos de H-15) y la **revisión de rigor sobre el escrito propio** (`workflows/20`, el único hueco del oleoducto)— valen más que varias de las diez entradas, pero **son la decisión del §7.5** y no puedo ordenarlos yo. H-13 (`.docx` con tablas de verdad) y H-17 (preferencias del despacho) van después: son mejora de adopción, y la fricción solo se mide usando.
+| Qué preguntar | Por qué ahora | Dónde está la redacción |
+|---|---|---|
+| **Cuál es el expediente que vale cuando ella decide** (pregunta de negocio 7) | Dejó de ser una pregunta sobre un contexto que no se levantaba: **el contexto B se levantó**, y de la respuesta depende si la frase que justifica la protección de escritura más fuerte del producto es verdad ahí | `discovery/business-questions-next.md` §7 |
+| **Si hay copia de seguridad de algo, hoy** (pregunta 6) | Se marcó como no bloqueante del diseño pero sí del **paso a expedientes reales**, y ese paso **ya se dio dos veces**. El riesgo que nombra —*«el robo del portátil destruye y expone todo a la vez»*— está vigente ahora | `discovery/business-questions-next.md` §6 |
+| **Qué de una propuesta de decisión reescribiría siempre ella** | Es la misma conversación que la primera, y conviene que sea una sola | `skills-support/open-questions/questions-for-professional.md` §6 |
 
 ---
 
 ## §6 — Lo que está bloqueado, y por qué pregunta
 
+**Cinco de las nueve filas de agosto se cerraron.** Abajo va lo que sigue bloqueado, y después qué pasó con las que salieron.
+
 | Bloqueado | Pregunta que lo desbloquea | Quién puede responderla |
 |---|---|---|
-| **El Core entero.** No hay `ingest_evidence`, ni registro de autorizaciones, ni log, ni frontera de incorporación aplicable | **¿Puede una cuenta Pro individual forzar sesión local en Cowork?** Y antes: ¿el equipo Windows 11 de ella admite Virtual Machine Platform? El changelog reconoce que hay máquinas Windows que no pueden correr Cowork local | Se cierra **abriendo Cowork en su cuenta y mirando**. No necesita a nadie |
-| **El sucesor de ADR-012** | ¿Qué hace exactamente el botón Update con la zona 3? ¿Un repositorio de GitHub **privado** sirve como marketplace desde Cowork (verificado solo en Claude Code)? ¿Un plugin puede traer un servidor MCP local por stdio, y con qué formato? | Empírico. La segunda decide si el repositorio del producto tiene que ser **público**, y con ella el invariante "ningún material de cliente en ninguna rama ni punto del historial" deja de ser higiene y pasa a ser precondición de entrega |
-| **La entrada 7 del §5** (la hoja de hechos revisada) | ¿Va ella a abrir un `.md` y escribir SÍ al lado de cada ficha, o hay algo mejor dado cómo trabaja hoy? | Solo ella. Si no lo va a hacer, el mecanismo es papel mojado |
-| **Toda priorización por volumen** | ¿Cuál es el trabajo de mayor volumen diario? Las veinte filas de frecuencia dicen `UNKNOWN` **por decisión explícita**, y el baseline no se ha corrido (en `docs/discovery/` hay protocolo, rúbrica y hoja de registro, no resultados) | Solo ella, en el baseline. Hasta entonces **ningún gate de creación de skill se cumple**, incluido el de mis diez entradas |
-| **El Knowledge Pack** | ¿Unidad **artículo** o unidad **ley**? (con unidad ley es una bibliografía; con unidad artículo es utilizable y cuesta uno o dos órdenes de magnitud más). ¿Qué área primero? ¿Quién lo mantiene y con qué cadencia? ¿Cuál es su **contrato de consumo** — y sobre todo, qué devuelve cuando **no hay entrada** para la pregunta? | El dueño. Sin la tercera respuesta el pack tiene el mismo defecto que el corpus critica: **el silencio se leerá como ausencia de regla** |
-| **Tres dossiers largos** (`08`, `13`, `14`, todo el "contexto B") | ¿Ejerce ella alguna función de autoridad o decisor, o ese contexto entró por completitud del prompt original? | Solo ella. De la respuesta depende si son inversión o lastre |
-| **La fecha de corte de la Ley 2452** | ¿Quién verifica contra fuente primaria, y mientras tanto qué archivo manda? | Trabajo jurídico. Hasta entonces **no puede aparecer en ninguna skill** |
-| **La mitad jurídica del benchmark adversarial** | ¿Quién es la persona evaluadora, cuánto tiempo tiene por corrida, con qué frecuencia? Siete de quince casos y uno de tres escenarios exigen **verificar fuentes oficiales colombianas en la fecha de ejecución, cada vez** | El dueño. Nadie ha estimado ese coste |
-| **La decisión de confidencialidad sobre los servidores de Anthropic** | No es técnica y no la puede tomar el equipo de diseño. Está declarada pendiente en tres sitios como si fuera **prospectiva**, y el hecho (a) la hizo **retroactiva** | Solo los dueños. Mientras no se tome, no debería presentarse el producto con ninguna afirmación sobre dónde se procesa el material — ni positiva ni omitida |
+| **Toda priorización por volumen** | ¿Cuál es el trabajo de mayor volumen diario? **Dos pases reales dieron el tamaño de un expediente —decenas de páginas— y no la frecuencia**, que es lo que ordena una hoja de ruta | Solo ella. Hasta entonces **ningún gate de creación de skill se cumple** |
+| **El Knowledge Pack** | ¿Unidad artículo o unidad ley? ¿Qué área primero? ¿Qué devuelve cuando **no hay entrada** para la pregunta? | El dueño. Sin la tercera, el pack tiene el defecto que el corpus critica: **el silencio se leerá como ausencia de regla** |
+| **La razón de la protección de escritura** | Si en su inspección hay un expediente digital oficial, la frase *«es lo único que no se puede reconstruir»* —que **siete `SKILL.md`** usan para justificar la protección más fuerte del producto— **es falsa ahí**. La protección seguiría siendo la correcta; su razón declarada no | Solo ella, y es la pregunta de negocio 7. **Ninguna frase del producto se toca hasta que conteste** |
+| **Quién pone la marca ` - REVISADO`** | El mecanismo presupone que la puso ella. **Nada distingue hoy que la haya puesto un dependiente**, y la pregunta 5 —quién más mete mano en un expediente— nunca se hizo | Solo ella. Es la misma conversación que la anterior |
+| **La mitad jurídica del benchmark adversarial** | ¿Quién evalúa, cuánto tiempo tiene, con qué frecuencia? Siete de quince casos exigen **verificar fuentes oficiales en la fecha de ejecución, cada vez** | El dueño. Nadie ha estimado ese coste |
+| **La decisión de confidencialidad sobre los servidores** | No es técnica. **Lo que cambió es que ya no se le oculta**: la guía lo dice. Lo que no cambió es que nadie ha decidido qué material abre ella aquí | Solo los dueños |
+| **El coste de una pasada** | Exige una **corrida instrumentada con transcript**. Las once pasadas de septiembre son de escritorio y **no tienen una sola cifra de gasto**, y eso va escrito en su propia ficha de medición | Mío, el día que haya una corrida instrumentada |
+
+### Las cinco que salieron, y qué las cerró
+
+| Estaba bloqueado por | Qué pasó |
+|---|---|
+| **El Core entero** · *«¿puede una cuenta Pro forzar sesión local en Cowork?»* | **Dejó de bloquear el producto.** ADR-018 estableció que el plugin ejecuta código, y hoy ejecuta diez programas. La pregunta sigue viva **para el Core**, que no se está construyendo |
+| **El sucesor de ADR-012** | Triado en `BACKLOG` §7 con los otros diecisiete |
+| **La hoja de hechos revisada** · *«¿va ella a abrir un `.md` y escribir SÍ?»* | **La mitad técnica está cerrada y probada.** La mitad de ella sigue abierta, y subió a §5.2 como entrada 2 |
+| **Tres dossiers de «contexto B»** · *«¿ejerce ella alguna función de autoridad?»* | **Contestada, y en campo: es autoridad.** El encabezado versionado del `PASE-REAL` lo dice. No eran lastre: eran la mitad del producto que faltaba, y SPEC-03 la construyó |
+| **La fecha de corte de la Ley 2452** | Sin cerrar **y sin consecuencia hoy**: el producto no cita normas, así que esa fecha no puede aparecer en ninguna salida |
 
 ---
 
 ## §7 — Preguntas para el dueño
 
 Las que solo él puede responder, y que ningún lector puede resolver leyendo más archivos.
+
+> **Cuatro de las diez se contestaron solas, trabajando.** Se dejan escritas con su respuesta al lado, en vez de borrarlas: **una pregunta que se contestó sin que nadie la contestara es un dato sobre cómo se decide aquí**, y borrarla lo perdería.
+>
+> | # | Qué preguntaba | Cómo quedó |
+> |---|---|---|
+> | **1** | ¿El corpus se reescribe contra el producto, o se mantiene como cantera? | **Se mantiene, y ahora la regla está escrita:** se corrige solo lo que afirma un hecho sobre el presente; el registro histórico no se toca, y se dice por qué |
+> | **3** | ¿«Parcialmente respaldado» es un estado? | **No, y está cerrado con argumento en el método:** *«no es un estado y no se escribe nunca»* — se estrecha el enunciado hasta lo que la prueba cubre, y el resto sale como ficha aparte |
+> | **4** | ¿Los fixtures se corren antes o después de aplicar los hallazgos? | **Se corrieron después, y la decisión ya no se puede tomar:** *«la primera no se puede hacer dos veces»*, y así fue. Lo que hay es línea base de las correcciones, no del método solo |
+> | **5** | ¿Cuál es el séptimo comando? | **Se construyeron cinco, y entre ellos el candidato que este documento llamaba «el único hueco del oleoducto»**: `revision-de-rigor`. **«Qué hay que pedir» sigue sin construirse**, y ahora se sabe que no era el más urgente |
+>
+> **Las seis que siguen abiertas son las 2, 6, 7, 8, 9 y 10**, y a ellas se añaden las tres conversaciones de §5.2. La 10 sigue siendo la única cuya respuesta no cambia una línea de código y cambia todo lo demás.
 
 1. **¿El corpus se reescribe *contra* el producto, o se mantiene como cantera independiente?** Hoy es lo segundo de hecho, y por eso afirma que solo existe una skill. Las dos opciones son defendibles; lo que no lo es es **no elegir**, porque produce documentos que se leen como especificación y describen un producto que no existe. Y si se elige la primera, hay que escribir la regla que falta: qué se hace cuando el producto adelanta a la investigación.
 
@@ -320,4 +376,6 @@ Las que solo él puede responder, y que ningún lector puede resolver leyendo m�
 
 ---
 
-*Escrito el 2026-08-26 por síntesis de seis lecturas independientes más un pase de contradicciones. Caduca con el próximo commit que toque `plugins/despacho/` o `docs/skills-support/`.*
+*Escrito el 2026-08-26 por síntesis de seis lecturas independientes más un pase de contradicciones. **Actualizado el 2026-09-21** tras sesenta y un commits: §0, §0.bis, §5, §6 y la cabecera de §7 son de esa fecha; §1 a §4 se conservan como registro de agosto, con su marca de qué quedó superado.*
+
+> **Y la línea que este documento aprendió a no escribir.** La versión anterior decía *«caduca con el próximo commit»*, y caducó — pero nadie lo notó durante **veintiséis días**, porque caducar en silencio es lo que hace un documento que afirma cosas sobre el presente sin nada que las comprobe. **Los diez titulares de §0 llevan ahora el comando que los verifica**, y esa es la diferencia entre una fecha de caducidad y una guarda.
