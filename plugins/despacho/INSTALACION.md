@@ -18,7 +18,28 @@ Esta hoja **es para quien instala**, no para quien usa. Termina exactamente dond
 
 **No hace falta** Git ni saber programar. **Python es opcional y hace la diferencia:** sin él los once comandos funcionan igual —el modelo hace a mano el trabajo mecánico, más lento y gastando mucha más lectura—; con él, la oficina de programas del plugin prepara el material, busca dentro del expediente, produce los Word y **conserva intactas sus notas del archivo de estado**. **Ningún comando exige Python para arrancar, y todos declaran cuándo no lo tuvieron.**
 
-Si va a instalarlo: `python.org`, versión 3.9 o posterior, marcando «Add to PATH». Las bibliotecas las pide cada programa cuando le hacen falta, diciendo cuál.
+Si va a instalarlo: `python.org`, versión 3.9 o posterior, marcando «Add to PATH». Las bibliotecas las pide cada programa cuando le hacen falta, diciendo cuál — **y desde el 2026-09-21 eso es cierto en los diez**: dos reventaban con un error de Python en pantalla, y se comprobó uno por uno.
+
+### Las bibliotecas, y qué se pierde sin cada una
+
+**No hace falta instalarlas todas, y ninguna hace falta para que los once comandos arranquen.** La tabla está aquí para que quien instala pueda decidir, en vez de descubrirlo cuando un comando lo diga:
+
+| Si instala | Con qué | Qué gana | Qué pasa sin ella |
+|---|---|---|---|
+| **python-docx** | `pip install python-docx` | **Las entregas en Word** — y la comprobación de que el Word dice lo mismo que el `.md` | El comando entrega el contenido **en texto y lo declara**. La entrega existe, peor, y diciéndolo |
+| **pypdf** | `pip install pypdf` | Que la búsqueda mire **dentro de los PDF** | La búsqueda no ve esos PDF **y lo dice en su salida** |
+| **Pillow · numpy · rapidocr-onnxruntime** | `pip install pillow numpy rapidocr-onnxruntime` | **Sacar el texto de las fotografías y los escaneados** — es lo que convierte 23 fotos de un expediente en algo con lo que se puede trabajar | El preparador monta la carpeta y copia los originales igual, **sin extraer texto**. Los comandos leen las imágenes a mano: más lento y mucha más lectura |
+| **Tesseract** *(programa, no biblioteca)* | Ver lo que dice `segunda_opinion.py` al correrlo | Una **segunda opinión** sobre lo que el primer reconocedor leyó mal | Ese control no existe, y el programa lo dice con esas palabras |
+
+> **Lo que ninguna biblioteca cambia:** los once métodos, sus reglas y lo que se niegan a hacer. Python no añade criterio — **añade que el trabajo mecánico lo haga un programa** en vez de gastarse la lectura del modelo en él.
+
+**Y el orden si va a instalar solo una:** `python-docx`. Es la que produce el archivo que ella abre.
+
+**Todo de una vez, si quiere terminar:**
+
+```
+pip install python-docx pypdf pillow numpy rapidocr-onnxruntime
+```
 
 ---
 

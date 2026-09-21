@@ -159,6 +159,9 @@ def revisar(ruta):
 
 
 def main(args):
+    if args and args[0] in ("-h", "--help", "ayuda"):
+        sys.stdout.write(__doc__)
+        return 0
     if not args:
         sys.stderr.write(__doc__)
         return 1

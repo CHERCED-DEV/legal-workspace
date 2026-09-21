@@ -30,6 +30,9 @@ SKILLS = RAIZ / "plugins" / "despacho" / "skills"
 
 
 def main(args):
+    if args and args[0] in ("-h", "--help", "ayuda"):
+        sys.stdout.write(__doc__)
+        return 0
     como_regex = False
     if args and args[0] == "--regex":
         como_regex, args = True, args[1:]

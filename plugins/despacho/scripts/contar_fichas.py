@@ -450,6 +450,9 @@ def main_bienes(ruta, texto):
 
 
 def main(args):
+    if args and args[0] in ("-h", "--help", "ayuda"):
+        sys.stdout.write(__doc__)
+        return 0
     carpeta = None
     if len(args) == 3 and args[1] == "--caso":
         carpeta, args = args[2], args[:1]

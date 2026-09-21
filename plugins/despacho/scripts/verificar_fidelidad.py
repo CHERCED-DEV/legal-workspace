@@ -26,6 +26,7 @@ Requiere: python-docx
 """
 import re
 import sys
+from pathlib import Path
 
 
 def normaliza(texto: str) -> str:
@@ -35,7 +36,22 @@ def normaliza(texto: str) -> str:
 
 
 def texto_del_docx(ruta: str) -> str:
-    from docx import Document
+    # Declarar, no reventar. `INSTALACION.md` promete que «las bibliotecas las
+    # pide cada programa cuando le hacen falta, DICIENDO CUAL», y este las
+    # pedia con un traceback de Python en la pantalla de quien instala. Es el
+    # programa que comprueba que el Word diga lo mismo que el .md, y lo
+    # declaran nueve metodos: reventar aqui es reventar el control de la
+    # entrega, en el sitio donde menos se puede.
+    try:
+        from docx import Document
+    except ImportError:
+        sys.stderr.write(
+            "FALTA python-docx, y este control no existe sin el.\n"
+            "  El .docx se entrega igual -- lo produce md2docx.py -- pero NADIE\n"
+            "  habra comprobado que diga lo mismo que el .md. Digalo en la\n"
+            "  entrega: «no se pudo comprobar la fidelidad del Word».\n"
+            "  pip install python-docx\n")
+        raise SystemExit(3)
 
     doc = Document(ruta)
     partes = [p.text for p in doc.paragraphs]
@@ -44,6 +60,16 @@ def texto_del_docx(ruta: str) -> str:
 
 
 def compara(ruta_docx: str, ruta_md: str):
+    # Un archivo que no esta se DICE. Antes salia un traceback de Python con
+    # `FileNotFoundError`, que en la pantalla de quien instala no distingue
+    # «te equivocaste al teclear la ruta» de «este programa esta roto».
+    for ruta, que in ((ruta_md, "el .md de origen"), (ruta_docx, "el .docx")):
+        if not Path(ruta).exists():
+            sys.stderr.write("NO EXISTE %s: %s\n"
+                             "  Se comprueba un .docx contra el .md del que salio.\n"
+                             "  Uso: python verificar_fidelidad.py <salida.docx> <entrada.md>\n"
+                             % (que, ruta))
+            raise SystemExit(2)
     origen = normaliza(open(ruta_md, encoding="utf-8").read())
     destino = texto_del_docx(ruta_docx)
 
@@ -65,6 +91,9 @@ def veredicto(retencion: float) -> str:
 
 
 def main(argv):
+    if len(argv) < 2 or argv[1] in ("-h", "--help", "ayuda"):
+        sys.stdout.write(__doc__)
+        return 0
     if len(argv) == 3 and argv[1] == "--pares":
         pares = [
             linea.rstrip("\n").split("\t")
