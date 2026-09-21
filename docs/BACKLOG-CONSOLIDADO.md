@@ -813,4 +813,64 @@ Y la conclusión que saca en §1.3, sobre el almacén del Core:
 ---
 ---
 
+## §16 · Los documentos que caducan en silencio
+
+**2026-09-21.** Lo que quedaba por hacer del lado de la documentación, y lo que encontró hacerlo.
+
+### El hallazgo: un documento declaró su caducidad y caducó sin que nadie lo notara
+
+`ESTADO-DEL-PROYECTO.md` terminaba con esta línea:
+
+> *«Caduca con el próximo commit que toque `plugins/despacho/` o `docs/skills-support/`.»*
+
+**Caducó al día siguiente.** Hubo sesenta y un commits, y cuando se volvió a abrir **nueve de sus diez titulares eran falsos**: decía que nadie podía instalarlo, que ningún método se había ejecutado nunca, que los diecisiete hallazgos seguían vivos y que la cadena estaba partida. Las cuatro cosas dejaron de ser ciertas entre el 26 de agosto y el 7 de septiembre.
+
+> **Una fecha de caducidad no es una guarda.** Un documento que afirma cosas sobre el presente y no tiene nada que las compruebe **no avisa cuando envejece**: se queda ahí, con el mismo aspecto de verdad que tenía el primer día, y se le cree. Es el mismo argumento que este repositorio aplicó a los conteos —*el cuidado no basta y hace falta la guarda*— aplicado a la prosa.
+
+### Lo que se hizo, y la regla que salió
+
+| | |
+|---|---|
+| **Se reescribieron** | Los apartados que afirman cosas **sobre el presente**: `ESTADO-DEL-PROYECTO` §0, §5, §6 y la cabecera de §7, y las dos afirmaciones falsas de `evals/README.md` |
+| **Se conservaron** | Los que son **registro fechado** de un análisis —§1 a §4—, con una marca de qué quedó superado y dónde está lo vigente |
+| **Se tachó, no se borró** | Cada titular corregido lleva **la frase vieja al lado**: *«ya no aplica»* sin lo que decía antes no deja comprobar nada |
+
+> **Y por qué no se reescribe todo:** borrar §1–§4 quitaría lo que se sabía el 26 de agosto, **y de ahí salieron la mitad de las correcciones que vinieron después**. Un análisis fechado que resultó equivocado sigue siendo información sobre cómo se decidió.
+
+### El segundo, que pesa más
+
+`evals/README.md` es **el documento que dice qué mide el instrumento y qué no**, y esa segunda mitad es la que hace útil a un instrumento. Decía *«sin puntuador todavía»* con el puntuador escrito dos días antes, y *«lo que ninguno mide: que un modelo aplique la prosa; eso solo lo enseña una pasada real, que sigue sin ocurrir»* con **las once pasadas ya hechas**.
+
+> **Un instrumento que describe mal sus límites es peor que uno sin descripción: se le cree.**
+
+Se corrigieron las dos, y se añadió lo que no estaba: **las cuatro guardas que miran las salidas** —no lo que los métodos dicen— con el defecto concreto del que nació cada una.
+
+### Y lo que ahora lo vigila
+
+`evals/scripts/test_documentos_vigentes.py` — **dieciocho pruebas** sobre los dos documentos que más caro cuestan cuando envejecen:
+
+- Los titulares con respuesta en el disco: el remoto, que ningún método cite una norma, que sean **once**, que los once estén registrados como ejecutados, que la cadena esté completa, la cifra de **55** documentos que nombran `fact-builder`, los **diez** programas.
+- Que el `README` de evals **nombre todas las guardas que existen**, **no nombre ninguna que no exista**, y que **todas cuelguen del corredor** — *una guarda que hay que acordarse de correr no es una guarda*.
+- **Y cuáles NO comprueba**, declarado: cuatro de los diez titulares son juicios y no cifras. Un lector que vea la suite pasar no debe creer que se validaron los diez.
+
+Comprobadas por mutación **en las dos direcciones**: fallan si el documento miente, y fallan si el producto cambia sin que el documento lo diga.
+
+### AC-05, medida y sin decidir
+
+Sigue **ABIERTA**, y es del dueño. Lo que se añadió es la cuenta, porque abarata la decisión: su recomendación (d) pide que **los tres mecanismos lean la declaración** que el derivado ya trae en su primera línea. **Uno la lee; dos infieren. Y cero de los once `SKILL.md` la mencionan.**
+
+> **La asimetría importa más que el uno de tres:** lo aplicado es **el programa**, que es la mitad fácil —se arregla y se comprueba—. Lo que falta es **la prosa que sigue el modelo**, donde no hay forma de comprobar que la leyó. Y el riesgo concreto de quedarse así lo nombra la propia enmienda: con un mecanismo leyendo y dos infiriendo, **la misma pieza puede salir clasificada de dos maneras en la misma pasada** — peor que los tres infiriendo igual.
+
+**Cuatro pruebas fijan esa medición al disco y no deciden nada.** Si alguien implementa (d), fallan — y su mensaje dice qué hacer: *«actualice AC-05, no esta prueba»*.
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| **D-1** | **Decidir AC-05**: si la convención se lleva también a los `SKILL.md`, o se acepta que ahí la carpeta siga siendo la señal | **Del dueño.** Ya no hace falta preguntarle nada a ella: no cambia ni una carpeta ni un nombre |
+| **D-2** | Los demás documentos vivos —la guía, `INSTALACION.md`, los `README`— **se comprobaron y están al día**. `PLAN-DE-MEJORA` y `PASE-REAL` son registro fechado y se quedan como están | **Comprobado el 2026-09-21** |
+
+---
+---
+
 *Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura completa del §0.3 desde el 2026-09-05** (§§7 a 13). Los dos corpus grandes están triados **como corpus**, no pieza a pieza (`S-3`, `T-5`), y se dice por qué. Nada de este documento reemplaza a sus fuentes.*
