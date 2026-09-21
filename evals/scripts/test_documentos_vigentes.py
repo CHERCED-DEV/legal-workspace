@@ -176,5 +176,55 @@ class ElREADMEdeEvalsDiceLoQueMideYLoQueNo(unittest.TestCase):
         self.assertIn(u"ninguna abogada", t.lower())
 
 
+class LaCuentaDeAC05SigueSiendoLaMedida(unittest.TestCase):
+    """AC-05 esta ABIERTA, y su medida del 2026-09-21 es 1 de 3 y 0 de 11.
+
+    Esto no decide la enmienda: **fija su medicion al disco**. Si alguien
+    implementa la recomendacion (d) -- o la implementa a medias otra vez --
+    estas pruebas fallan, y lo que hay que hacer entonces NO es arreglarlas:
+    es actualizar AC-05, que es donde vive la decision.
+
+    El riesgo concreto que vigilan lo nombra la propia enmienda: con un
+    mecanismo leyendo y dos infiriendo, **la misma pieza puede salir
+    clasificada de dos maneras en la misma pasada**, y eso es peor que los
+    tres infiriendo igual.
+    """
+
+    AC05 = RAIZ / "docs" / "architecture" / "adrs" / "AMENDMENT-CANDIDATES.md"
+
+    def test_ac05_sigue_abierta(self):
+        t = self.AC05.read_text(encoding="utf-8")
+        self.assertIn(u"AC-05", t)
+        self.assertIn(u"Estado: ABIERTO", t)
+
+    def test_buscar_lee_la_declaracion(self):
+        """El unico de los tres que la lee. Si deja de leerla, se sabe."""
+        t = (SCRIPTS / "buscar.py").read_text(encoding="utf-8")
+        self.assertIn("se_declara_derivado", t)
+        self.assertIn("TEXTO DE REFERENCIA", t)
+
+    def test_ningun_skill_menciona_la_declaracion(self):
+        """0 de 11, la cifra que AC-05 mide.
+
+        El dia que deje de ser cero, esta prueba falla -- y eso es correcto:
+        significa que alguien llevo la recomendacion (d) a la prosa, y AC-05
+        tiene que dejar de decir que falta.
+        """
+        con = [p.parent.name for p in SKILLS.glob("*/SKILL.md")
+               if "TEXTO DE REFERENCIA" in p.read_text(encoding="utf-8")]
+        self.assertEqual([], con,
+                         "%s ya menciona la declaracion: actualice AC-05, no "
+                         "esta prueba" % con)
+
+    def test_el_derivado_del_banco_trae_su_declaracion(self):
+        """Y la pieza sobre la que todo esto se mide sigue declarandose."""
+        ref = (RAIZ / "evals" / "casos" / "caso-02-sintetico-autoridad"
+               / "2-Borradores" / "Texto de referencia - 2026-04-08.txt")
+        self.assertTrue(ref.exists(), ref)
+        primeras = ref.read_text(encoding="utf-8").split("\n")[:5]
+        self.assertTrue(any("TEXTO DE REFERENCIA" in l.upper() for l in primeras),
+                        "el derivado dejo de declararse en su primera linea")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

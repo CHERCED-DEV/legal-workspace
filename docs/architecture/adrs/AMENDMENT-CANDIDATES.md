@@ -160,6 +160,24 @@ LA AUSENCIA DE ALGO AQUI NO SIGNIFICA QUE NO ESTE EN EL DOCUMENTO.
 
 **Lo que sigue necesitando decisión de ustedes:** si la convención se fija así, y si `preparar_material.py` es el único derivado o vienen más —la transcripción de audio es el siguiente—. **Lo que ya no hace falta preguntarle a ella:** nada, porque **no le cambia ni una carpeta ni un nombre.**
 
+### MEDIDO EL 2026-09-21: la recomendación está aplicada en un sitio de tres, y falta justo el difícil
+
+**Sigue ABIERTA y no se decide aquí.** Lo que se añade es la cuenta, porque hace la decisión más barata de tomar.
+
+La recomendación (d) tiene dos piezas: escribir la convención, y **que los tres mecanismos lean la declaración en vez de inferir**. Se contaron los tres:
+
+| Mecanismo | ¿Lee la declaración? | Cómo lo resuelve hoy |
+|---|---|---|
+| **`buscar.py`** | **Sí**, desde el 2026-09-05 | `se_declara_derivado()` mira las cinco primeras líneas, y la salida dice *«lo produjo una MÁQUINA, y el archivo lo dice en su primera línea»* |
+| **El índice de salidas** (`estado-del-caso`, SPEC-08) | **No** | Por la convención de nombre: `Texto de referencia - <fecha>` ⇒ `/preparar-material`. **Infiere** |
+| **La regla del trabajo del sistema** (el §2 de seis `SKILL.md`) | **No** | Por la carpeta. **Y ninguno de los once `SKILL.md` menciona la declaración**: `contar_skills.py "TEXTO DE REFERENCIA"` da **0 de 11** |
+
+> **Y la asimetría es la que importa, no el uno de tres.** Lo aplicado es **el programa**, que es la mitad fácil: un programa se arregla y se comprueba. Lo que falta es **la prosa que sigue el modelo**, que es la mitad difícil — no hay forma de comprobar que la leyó, solo de escribirla bien y medir la salida.
+>
+> **Con lo cual la pregunta abierta se afina, y sigue siendo suya:** no es solo *«¿se fija la convención?»*, sino **¿se lleva también a los `SKILL.md`, o se acepta que ahí la carpeta siga siendo la señal?** Las dos son defendibles. Lo que no lo es es dejar que **un mecanismo lea y dos infieran**, porque entonces la misma pieza puede salir clasificada de dos maneras en la misma pasada — y eso es peor que los tres infiriendo igual.
+
+**Lo que esto NO cambia:** nada del disco, nada de las carpetas de ella, y ninguna salida. Es una cuenta sobre lo que ya hay.
+
 ### Lo que esta enmienda haría con ADR-016
 
 - **Cerrar la q3 tal como está** —zona 2 o zona 3— por **premisa inexistente**, igual que ADR-018 cerró la q2 de ADR-014.
