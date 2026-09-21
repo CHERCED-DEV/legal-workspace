@@ -112,5 +112,85 @@ class LoQueSeDejoRotoAProposito(unittest.TestCase):
         self.assertIn(u"no está en el repositorio ni puede estarlo", t)
 
 
+class LosIDENTIFICADORESCitadosExisten(unittest.TestCase):
+    """SPEC-NN, ADR-NNN y §N del backlog, contados contra los que hay.
+
+    Son 192 referencias a specs, 2.755 a ADR, 69 internas dentro de los propios
+    `SKILL.md` y 15 a secciones del backlog. **Ninguna se habia comprobado.**
+
+    Las internas de los `SKILL.md` son las que mas importan aunque hoy esten
+    todas bien: **las lee el modelo**, y una que quede colgando por una
+    renumeracion no falla, no avisa y no se ve -- degrada el metodo en silencio.
+    """
+
+    def _ids(self, carpeta, patron_archivo, grupo):
+        return {p.name.split("-")[grupo] for p in (RAIZ / carpeta).glob(patron_archivo)}
+
+    def test_las_spec_citadas_existen_o_se_citan_como_retiradas(self):
+        """SPEC-02 y SPEC-07 se retiraron, y las tres citas lo dicen.
+
+        Una spec retirada se sigue citando -- es historia -- pero **la cita
+        tiene que decir que se retiro**, o el lector la busca y no la halla.
+        """
+        hay = self._ids("docs/specs", "SPEC-*.md", 1)
+        retiradas = {"02", "07"}
+        faltan = {}
+        for f in sorted(RAIZ.rglob("*.md")):
+            if ".git" in f.parts:
+                continue
+            t = f.read_text(encoding="utf-8", errors="replace")
+            for m in re.finditer(r"\bSPEC-(\d{2})\b", t):
+                nn = m.group(1)
+                if nn in hay:
+                    continue
+                if nn in retiradas:
+                    # La cita tiene que explicarse en el mismo archivo.
+                    explicada = re.search(r"(?i)retirad|no hace falta|ya estaba", t)
+                    self.assertTrue(explicada,
+                                    "%s cita SPEC-%s sin decir que se retiro"
+                                    % (f.relative_to(RAIZ), nn))
+                    continue
+                faltan.setdefault(str(f.relative_to(RAIZ)), set()).add(nn)
+        self.assertEqual({}, faltan)
+
+    def test_todos_los_adr_citados_existen(self):
+        hay = self._ids("docs/architecture/adrs", "ADR-*.md", 1)
+        faltan = {}
+        for f in sorted(RAIZ.rglob("*.md")):
+            if ".git" in f.parts:
+                continue
+            for m in re.finditer(r"\bADR-(\d{3})\b",
+                                 f.read_text(encoding="utf-8", errors="replace")):
+                if m.group(1) not in hay:
+                    faltan.setdefault(str(f.relative_to(RAIZ)), set()).add(m.group(1))
+        self.assertEqual({}, faltan)
+
+    def test_las_secciones_del_backlog_citadas_existen(self):
+        bl = (RAIZ / "docs/BACKLOG-CONSOLIDADO.md").read_text(encoding="utf-8")
+        secciones = set(re.findall(r"(?m)^##\s+§(\d+(?:\.\d+)?)", bl))
+        self.assertGreater(len(secciones), 10)
+        faltan = {}
+        for f in sorted(RAIZ.rglob("*.md")):
+            if ".git" in f.parts:
+                continue
+            t = f.read_text(encoding="utf-8", errors="replace")
+            for m in re.finditer(r"(?:BACKLOG|backlog)[^.\n]{0,30}?§\s?(\d+(?:\.\d+)?)", t):
+                s = m.group(1)
+                if s not in secciones and s.split(".")[0] not in secciones:
+                    faltan.setdefault(str(f.relative_to(RAIZ)), set()).add(s)
+        self.assertEqual({}, faltan)
+
+    def test_las_referencias_internas_de_los_skill_resuelven(self):
+        """Las 69 que lee el modelo. Una colgando degrada el metodo en silencio."""
+        faltan = {}
+        for f in sorted((RAIZ / "plugins/despacho/skills").glob("*/SKILL.md")):
+            t = f.read_text(encoding="utf-8")
+            hay = set(re.findall(r"(?m)^#{2,4}\s+(\d+(?:\.\d+)*)\.?\s", t))
+            for c in set(re.findall(r"§\s?(\d+(?:\.\d+)*)", t)):
+                if c not in hay and c.split(".")[0] not in hay:
+                    faltan.setdefault(f.parent.name, set()).add(c)
+        self.assertEqual({}, faltan)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
