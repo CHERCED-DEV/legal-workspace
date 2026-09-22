@@ -108,15 +108,15 @@ class LosTitularesSiguenSiendoCiertos(unittest.TestCase):
                          "el §0.7 dice 55 y en el disco hay %d" % cuantos)
 
     def test_8_el_plugin_ejecuta_los_programas_que_dice(self):
-        """§0.8: «dieciséis programas, de los cuales diez se exponen».
+        """§0.8: «diecisiete programas, de los cuales diez se exponen».
 
         Dos numeros y no uno, porque decir solo «catorce» sugeriria que el
         modelo puede invocar catorce, y son ocho. Cual es cual lo decide
         `test_superficie.py`; aqui solo se fija que el documento no mienta.
         """
         programas = sorted(p.name for p in SCRIPTS.glob("*.py"))
-        self.assertEqual(16, len(programas), programas)
-        self.assertIn(u"dieciséis programas", seccion0())
+        self.assertEqual(17, len(programas), programas)
+        self.assertIn(u"diecisiete programas", seccion0())
         self.assertIn(u"diez se exponen al modelo", seccion0())
 
 

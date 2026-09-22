@@ -71,6 +71,10 @@ A_MANO = {
     "comparar_iteraciones.py": "compara pasadas del mismo audio; no dice cuál es mejor",
     "md2html.py":              "la superficie de trabajo (ADR-020); aún no la pide ningún método",
     "verificar_citas.py":      "comprueba citas contra transcripciones; aún no la pide ningún método",
+    # El 2026-09-22, con la validacion 3 de ADR-017 por fin en marcha: saca la
+    # hoja para que una PERSONA marque quien habla, y mide contra ella. No lo
+    # pide ningun metodo porque no produce nada para ella: mide lo que hacemos.
+    "verdad_de_referencia.py": "quién habla de verdad, marcado por una persona",
 }
 
 # Y una tercera clase, que aparecio el 2026-09-07 cuando el canario disparo
