@@ -29,9 +29,17 @@ RAIZ = Path(__file__).resolve().parents[2]
 SCRIPTS = RAIZ / "plugins" / "despacho" / "scripts"
 INSTALACION = RAIZ / "plugins" / "despacho" / "INSTALACION.md"
 
-# Las siete externas del plugin, con quien las usa. Ninguna esta instalada en
+# Las diez externas del plugin, con quien las usa. Ninguna esta instalada en
 # el entorno donde corre esta suite, y eso es lo que la hace util.
+#
+# Las tres ultimas entraron el 2026-09-22 con `transcribir_audio.py`, y traen
+# algo que las otras siete no tienen: **no hay camino degradado**. Sin
+# `python-docx` la entrega sale en texto; sin `faster-whisper` no hay
+# transcripcion ninguna. Por eso lo que se le exige a ese programa es lo
+# mismo que a los demas y no menos: que lo DIGA, nombrando la biblioteca.
 EXTERNAS = {
+    "av": "decodificar el audio de origen",
+    "faster_whisper": "reconocer el habla",
     "PIL": "imagenes (rotacion, realce)",
     "PyPDF2": "leer PDF, alternativa de pypdf",
     "cv2": "realce de imagen",
@@ -39,6 +47,7 @@ EXTERNAS = {
     "numpy": "imagenes",
     "pypdf": "leer PDF",
     "rapidocr_onnxruntime": "reconocer texto en fotografias",
+    "sherpa_onnx": "separar voces, sin ponerles nombre",
 }
 
 
@@ -101,6 +110,26 @@ class NingunProgramaRevientaPorUnaBiblioteca(unittest.TestCase):
         self.assertNotIn("Traceback", r.stderr + r.stdout)
         self.assertIn("NO EXISTE", r.stderr + r.stdout)
 
+    def test_transcribir_audio_declara(self):
+        """El unico sin camino degradado, y por eso el que mas obliga a decirlo.
+
+        Sin `faster-whisper` no hay transcripcion peor: no hay ninguna. Un
+        traceback aqui es, ademas, el primer contacto de quien instala con el
+        metodo mas nuevo del producto.
+        """
+        r = self._correr("transcribir_audio.py", str(self.tmp / "a.m4a"),
+                         "--destino", str(self.tmp))
+        salida = r.stderr + r.stdout
+        self.assertNotIn("Traceback", salida)
+        self.assertIn("falta una biblioteca", salida)
+        self.assertIn("faster-whisper", salida)
+
+    def test_los_tres_nuevos_que_no_dependen_de_nada_arrancan(self):
+        """Los otros tres que trajo la fusion: ninguno importa nada de fuera."""
+        for n in ("comparar_iteraciones.py", "md2html.py", "verificar_citas.py"):
+            r = self._correr(n)
+            self.assertNotIn("Traceback", r.stderr + r.stdout, n)
+
     def test_medir_realce_declara(self):
         r = self._correr("medir_realce.py")
         self.assertNotIn("Traceback", r.stderr + r.stdout)
@@ -130,10 +159,11 @@ class LaPromesaDeINSTALACIONEsCierta(unittest.TestCase):
     def test_y_ahora_dice_cuales_son(self):
         """La promesa sola no basta: quien instala quiere la lista antes."""
         t = INSTALACION.read_text(encoding="utf-8")
-        for paquete in ("python-docx", "pillow", "numpy", "rapidocr"):
+        for paquete in ("python-docx", "pillow", "numpy", "rapidocr",
+                        "faster-whisper", "av", "sherpa-onnx"):
             self.assertIn(paquete, t.lower(), paquete)
 
-    def test_no_hay_una_octava_dependencia_sin_declarar(self):
+    def test_no_hay_una_dependencia_mas_sin_declarar(self):
         """El canario: una biblioteca nueva obliga a decidir y a documentarla."""
         halladas = set()
         for f in sorted(SCRIPTS.glob("*.py")):

@@ -8,8 +8,8 @@ con identificadores que colisionan, seis archivos para una capacidad»— y ese
 mismo día se cometió otra vez: se escribió una segunda regla de simetría, más
 débil, al lado de la que `revision-de-rigor` §2.3 ya tenía.
 
-Un `grep -l` dice que la frase está en los once. **No dice que diga lo mismo en
-los once.** Eso es lo que comprueba este archivo, y es la diferencia entre
+Un `grep -l` dice que la frase está en los doce. **No dice que diga lo mismo en
+los doce.** Eso es lo que comprueba este archivo, y es la diferencia entre
 declarar una regla única y tenerla.
 
 Y la segunda familia: **toda regla que mande preguntar tiene que mandar
@@ -57,13 +57,13 @@ class UnaReglaUnaRedaccion(unittest.TestCase):
             self.fail("el bloque «%s» tiene %d redacciones distintas: %s"
                       % (nombre, len(trozos), grupos))
 
-    def test_el_bloque_de_posicion_es_el_mismo_en_los_once(self):
+    def test_el_bloque_de_posicion_es_el_mismo_en_todos(self):
         """SPEC-03 R-5: una sola redacción, no dos versiones del método."""
         self._identico(TODAS,
                        lambda t: entre(t, "### En qué posición está ella", "\n---\n"),
                        "posición (contexto B)")
 
-    def test_el_bloque_de_la_pasada_es_el_mismo_en_los_once(self):
+    def test_el_bloque_de_la_pasada_es_el_mismo_en_todos(self):
         """SPEC-12 R-7: para que dos pasadas de dos comandos se comparen."""
         self._identico(TODAS,
                        lambda t: entre(t, "**Al terminar esta lista, escribe este bloque",
@@ -76,6 +76,29 @@ class UnaReglaUnaRedaccion(unittest.TestCase):
                        lambda t: entre(t, "> **Y la marca se reconoce por el nombre",
                                        "\n\n> **Y el texto que extrajo una máquina"),
                        "reconocimiento de la marca")
+
+    def test_el_camino_de_la_transcripcion_tiene_una_sola_redaccion(self):
+        """La contradiccion que abrio la fusion del 2026-09-22, cerrada una vez.
+
+        Tres metodos decian **«este metodo no la produce»** de una transcripcion
+        y remataban con que, sin ella, la grabacion se declara y ahi termina.
+        Desde que existe `/transcribir-audio`, la primera mitad sigue siendo
+        cierta -- ninguno de los tres la produce -- y **la segunda dejo de
+        serlo**: hay un camino.
+
+        Lo que ese camino NO hace es convertir una grabacion en material. Lo
+        que sale de el es **trabajo del sistema**: pista, nunca origen, y entra
+        como material el dia que ella le pone ` - REVISADO`, igual que todo lo
+        demas que produce el sistema. Esa es la regla, y se escribe **una sola
+        vez**: es exactamente el tipo de regla que este archivo existe para
+        impedir que tenga tres redacciones que se separen.
+        """
+        con_camino = ["hechos-con-prueba", "inventario-de-anexos",
+                      "inventario-de-bienes"]
+        self._identico([SKILLS / s / "SKILL.md" for s in con_camino],
+                       lambda t: entre(t, "> **Y desde que existe `/transcribir-audio`",
+                                       "\n\n"),
+                       "el camino de la transcripción")
 
     def test_control_positivo_los_bloques_existen(self):
         """Sin esto, un extractor que devolviera siempre lo mismo pasaría."""
@@ -112,7 +135,7 @@ class LaSimetriaTieneUnDueno(unittest.TestCase):
         self.assertIn("La simetría es obligatoria, y no se negocia", t)
         self.assertIn("los defectos de sus propios actos se buscan igual", t)
 
-    def test_los_once_apuntan_a_ella_en_vez_de_competir(self):
+    def test_todos_apuntan_a_ella_en_vez_de_competir(self):
         faltan = [p.parent.name for p in TODAS
                   if "`revision-de-rigor` §2.3 la tiene desarrollada" not in texto(p)]
         self.assertEqual([], faltan)
@@ -125,7 +148,7 @@ class LaSimetriaTieneUnDueno(unittest.TestCase):
         y no la reescriben: si vuelven a explicarla por su cuenta, se parte.
         """
         motivo = "no está resuelto en ninguna parte de este proyecto"
-        # En el bloque de los once, sí. Fuera de él, en esos dos, no.
+        # En el bloque compartido, sí. Fuera de él, en esos dos, no.
         for skill in ("redactar-escrito", "preguntas-de-derecho"):
             t = texto(SKILLS / skill / "SKILL.md")
             bloque = entre(t, "### En qué posición está ella", "\n---\n")
@@ -174,7 +197,28 @@ class LaSimetriaTieneUnDueno(unittest.TestCase):
         tienen = [p.parent.name for p in TODAS if marca in texto(p)]
         self.assertEqual(["preguntas-de-derecho"], tienen)
 
-    def test_los_once_traen_las_tres_piezas_que_les_faltaban(self):
+    def test_los_tres_siguen_sin_producirla_ellos(self):
+        """Control negativo del anterior, y la mitad que NO cambio.
+
+        Si alguno de los tres se quitara el «este metodo no la produce» al
+        anadir el camino, el camino habria ensanchado lo que el metodo hace
+        -- que es justo lo contrario de lo que dice.
+        """
+        for s in ("hechos-con-prueba", "inventario-de-anexos",
+                  "inventario-de-bienes"):
+            self.assertIn("este método no la produce",
+                          texto(SKILLS / s / "SKILL.md"), s)
+
+    def test_transcribir_audio_no_se_declara_a_si_mismo_material(self):
+        """Y el duodecimo no se contradice con los tres.
+
+        Su §6 ya dice que NO pone la marca. Lo que esta prueba impide es que
+        alguna vez diga que lo que produce es material del caso.
+        """
+        t = texto(SKILLS / "transcribir-audio" / "SKILL.md")
+        self.assertIn("**No pone la marca ` - REVISADO`.** Esa la pone ella", t)
+
+    def test_todos_traen_las_tres_piezas_que_les_faltaban(self):
         for pieza in ("los defectos de lo que su propio despacho produjo",
                       "hay más superficie donde encontrar defectos",
                       "el conteo de la entrega reparte por lado"):
@@ -185,7 +229,7 @@ class LaSimetriaTieneUnDueno(unittest.TestCase):
 class ElFrontmatterCarga(unittest.TestCase):
     """V-13: un ':' sin comillas en description y un lector estricto no carga."""
 
-    def test_las_once_descripciones_van_entrecomilladas(self):
+    def test_todas_las_descripciones_van_entrecomilladas(self):
         malas = []
         for p in TODAS:
             m = re.search(r"^description: (.*)$", texto(p), re.M)

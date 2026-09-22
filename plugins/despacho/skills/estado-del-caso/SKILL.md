@@ -189,6 +189,9 @@ Recorres las tres carpetas y anotas, por cada archivo: **el nombre tal como est�
 | `Texto de referencia - <fecha>` | `/preparar-material` — **y no es el documento** (§2) |
 | `Registro de ingesta - <fecha>` **y** `ingesta-<fecha>.json` | `/preparar-material` — los escribe su programa **en cada ingesta**, así que están en casi todas las carpetas |
 | `Revisión de documento - <cuál> - <fecha>` | `/revisar-documento`, **solo si ella pidió el resultado como archivo** |
+| `Transcripcion - <grabación> - <fecha>` **con `.md`, `.txt`, `.srt` y `.vtt`** | `/transcribir-audio` — **cuatro archivos por grabación, y son el mismo texto**: cuéntalos como una salida y dilo |
+| `00 - REGISTRO DE TRANSCRIPCION - <fecha>` **y** `00 - PASAJES A VERIFICAR - <fecha>` | `/transcribir-audio` — el primero es la receta, el segundo los minutos donde conviene oír |
+| `datos/<código> - datos completos.json` | `/transcribir-audio` — cada palabra con su tiempo y su probabilidad. **No es una salida que se lea**: es de donde salen las demás |
 
 > **Y ojo con dos cosas de esta tabla, que si no se saben la vuelven inútil.**
 >
@@ -196,7 +199,9 @@ Recorres las tres carpetas y anotas, por cada archivo: **el nombre tal como est�
 >
 > **La segunda: el separador no es el mismo.** Unos usan guion corto `-` y otros raya larga `—`, y **a ojo se parecen**. Compara por el texto que hay a los lados, no por el signo.
 >
-> **Y una tercera, que se encontró barriendo el 2026-09-22 y es la misma de la primera:** faltaban **tres filas**. Dos las escribe `preparar_material.py` **en cada ingesta** —el registro y su `.json`—, de modo que **casi toda carpeta preparada por el programa tenía dos archivos que el índice daba por origen desconocido**; y la tercera es la de `/revisar-documento`, que no tenía convención de nombre porque solo escribe archivo si ella lo pide. **Es el mismo defecto que ya había tenido `/redactar-escrito`** (§8 del backlog), encontrado con la misma pregunta: *¿qué escribe en `2-Borradores/` y no está en esta tabla?*
+> **La tercera, y es de `/transcribir-audio`: un solo comando deja hasta siete archivos por grabación**, y cuatro de ellos son el mismo texto en cuatro formatos. **Listarlos como siete salidas distintas infla la cuenta de lo que el sistema produjo**, que es justamente lo que esta lista existe para no hacer. Se dice una vez, con sus formatos entre paréntesis.
+>
+> **Y una cuarta, que se encontró barriendo el 2026-09-22 y es la misma de la primera:** faltaban **tres filas**. Dos las escribe `preparar_material.py` **en cada ingesta** —el registro y su `.json`—, de modo que **casi toda carpeta preparada por el programa tenía dos archivos que el índice daba por origen desconocido**; y la tercera es la de `/revisar-documento`, que no tenía convención de nombre porque solo escribe archivo si ella lo pide. **Es el mismo defecto que ya había tenido `/redactar-escrito`** (§8 del backlog), encontrado con la misma pregunta: *¿qué escribe en `2-Borradores/` y no está en esta tabla?*
 
 > **Que las convenciones sean tres y no una es un defecto conocido y registrado** —`PENDIENTE-FORMA-DE-ENTREGA` §1 lo pide unificado— y **no se arregla aquí**: aquí se lee lo que hay.
 

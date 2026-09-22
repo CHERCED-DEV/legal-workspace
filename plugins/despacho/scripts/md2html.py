@@ -1,0 +1,560 @@
+# -*- coding: utf-8 -*-
+"""
+md2html — la superficie de trabajo (ADR-020).
+
+    python md2html.py entrada.md salida.html [--datos datos.json] [--audio audio.mp4]
+
+Produce una pagina HTML **autocontenida y sin una sola peticion de red**: el estilo
+y el comportamiento van dentro del archivo, asi que se puede mover, copiar o enviar
+a un colega y sigue funcionando.
+
+Con `--datos` (el JSON que deja transcribir_audio.py) la pagina es interactiva:
+cada marca de tiempo reproduce ese punto de la grabacion, y ella puede marcar lo
+que ya comprobo. Sin `--datos` produce una pagina legible sin reproductor.
+
+Lo que este programa NO hace:
+  · No edita el contenido. Todo sale del Markdown; si algo esta mal, esta mal alli.
+  · No sustituye al .docx, que sigue siendo el entregable externo (ADR-014).
+  · No es fuente de una cita: la coordenada sigue siendo la del original.
+
+La plantilla se compila aparte, en tools/pagina-despacho, y viaja YA COMPILADA.
+**Esta maquina no necesita Node para nada.**
+"""
+import argparse, hashlib, html, io, json, os, re, sys
+
+AQUI = os.path.dirname(os.path.abspath(__file__))
+PLANTILLA = os.path.join(AQUI, "plantilla", "pagina.html")
+VERSION = "0.1.0"
+
+
+# ----------------------------------------------------------------- markdown
+def _linea(t):
+    """Negrita, cursiva, codigo y enlaces. El texto se escapa siempre primero."""
+    t = html.escape(t, quote=False)
+    t = re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
+    t = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", t)
+    t = re.sub(r"(?<!\*)\*([^*\n]+)\*(?!\*)", r"<em>\1</em>", t)
+    t = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)",
+               r'<a href="\2" target="_blank" rel="noreferrer noopener">\1</a>', t)
+    return t
+
+
+def _fila(l):
+    return [c.strip() for c in l.strip().strip("|").split("|")]
+
+
+def md_a_html(md):
+    out, lineas, i = [], md.split("\n"), 0
+    lista = None
+
+    def cerrar():
+        nonlocal lista
+        if lista:
+            out.append(f"</{lista}>")
+            lista = None
+
+    while i < len(lineas):
+        l = lineas[i]
+        s = l.strip()
+
+        if s.startswith("```"):
+            cerrar()
+            i += 1
+            buf = []
+            while i < len(lineas) and not lineas[i].strip().startswith("```"):
+                buf.append(html.escape(lineas[i]))
+                i += 1
+            out.append("<pre>" + "\n".join(buf) + "</pre>")
+            i += 1
+            continue
+
+        if not s:
+            cerrar()
+            i += 1
+            continue
+
+        m = re.match(r"^(#{1,6})\s+(.*)$", s)
+        if m:
+            cerrar()
+            n = len(m.group(1))
+            out.append(f"<h{n}>{_linea(m.group(2))}</h{n}>")
+            i += 1
+            continue
+
+        if re.match(r"^(\*{3,}|-{3,}|_{3,})$", s):
+            cerrar(); out.append("<hr>"); i += 1; continue
+
+        if s.startswith("|") and i + 1 < len(lineas) and re.match(r"^\|[\s:|-]+\|$", lineas[i + 1].strip()):
+            cerrar()
+            cab = _fila(s)
+            i += 2
+            filas = []
+            while i < len(lineas) and lineas[i].strip().startswith("|"):
+                filas.append(_fila(lineas[i]))
+                i += 1
+            th = "".join(f"<th>{_linea(c)}</th>" for c in cab)
+            cuerpo = "".join("<tr>" + "".join(f"<td>{_linea(c)}</td>" for c in f) + "</tr>" for f in filas)
+            out.append(f"<table><thead><tr>{th}</tr></thead><tbody>{cuerpo}</tbody></table>")
+            continue
+
+        if s.startswith("> "):
+            cerrar()
+            buf = []
+            while i < len(lineas) and lineas[i].strip().startswith(">"):
+                buf.append(lineas[i].strip().lstrip(">").strip())
+                i += 1
+            out.append("<blockquote>" + " ".join(_linea(b) for b in buf if b) + "</blockquote>")
+            continue
+
+        m = re.match(r"^[-*·]\s+(.*)$", s)
+        if m:
+            if lista != "ul":
+                cerrar(); out.append("<ul>"); lista = "ul"
+            out.append(f"<li>{_linea(m.group(1))}</li>")
+            i += 1
+            continue
+
+        m = re.match(r"^\d+\.\s+(.*)$", s)
+        if m:
+            if lista != "ol":
+                cerrar(); out.append("<ol>"); lista = "ol"
+            out.append(f"<li>{_linea(m.group(1))}</li>")
+            i += 1
+            continue
+
+        cerrar()
+        out.append(f"<p>{_linea(s)}</p>")
+        i += 1
+
+    cerrar()
+    return "\n".join(out)
+
+
+# ---------------------------------------------------------------- segmentos
+def hms(s):
+    s = max(0, int(float(s or 0)))
+    return "%02d:%02d:%02d" % (s // 3600, (s % 3600) // 60, s % 60)
+
+
+# El riesgo NO es un porcentaje. Un numero crudo como «37 %» no le dice a nadie
+# que hacer; y una cifra de dinero dudosa y una muletilla dudosa no son el mismo
+# problema aunque el modelo les de la misma confianza.
+_ALTO = ("las pasadas no coinciden", "las dos pasadas difieren", "posible repeticion")
+_BAJO = ("puede no ser habla", "voz dudosa", "sin voz asignada")
+
+
+def _riesgo(marcas, tiene_dato_duro):
+    if not marcas:
+        return "ninguno"
+    if tiene_dato_duro or any(m in _ALTO for m in marcas):
+        return "alto"
+    if all(m in _BAJO for m in marcas):
+        return "bajo"
+    return "medio"
+
+
+def _datos_duros(seg, umbral=0.85):
+    """Cifras y nombres propios con poca confianza: lo que peor sale y mas dano hace."""
+    for k, w in enumerate(seg.get("palabras") or []):
+        p = w["p"].strip(".,;:()[]¿?¡!\"'")
+        if not p or w.get("c", 1) >= umbral:
+            continue
+        previa = seg["palabras"][k - 1]["p"].strip() if k else "."
+        if re.search(r"\d", p) or (p[:1].isupper() and k and not previa.endswith((".", "?", "!"))):
+            return True
+    return False
+
+
+def _alternativas(ventanas, inicio, gana, limite=3):
+    """Que escribieron las OTRAS decodificaciones en este punto. Es un dato que ya
+    tenemos y que no estabamos usando: donde difieren, ahi hay algo.
+    Devuelve (lista, desacuerdo) donde desacuerdo va de 0 a 1."""
+    for v in ventanas or []:
+        if not (v["t"] <= inicio < v["t"] + 20.0):
+            continue
+        if v.get("medio", 1) >= 0.80:
+            return [], 0.0
+        out = []
+        for k, t in (v.get("textos") or {}).items():
+            if k == gana or not t.strip():
+                continue
+            out.append({"fuente": k, "texto": t[:260]})
+        return out[:limite], round(1.0 - v.get("medio", 1.0), 3)
+    return [], 0.0
+
+
+def _gravedad(seg, marcas, desacuerdo):
+    """Cuanto conviene mirar ESTE bloque antes que otro. Hace falta porque en una
+    grabacion mala la mitad de las lineas sale en riesgo alto, y entonces el
+    riesgo deja de ordenar nada. El riesgo dice QUE clase de problema es; la
+    gravedad dice A CUAL ir primero."""
+    g = desacuerdo
+    for k, w in enumerate(seg.get("palabras") or []):
+        p = w["p"].strip(".,;:()[]¿?¡!\"'")
+        c = w.get("c", 1.0)
+        if not p or c >= 0.85:
+            continue
+        previa = seg["palabras"][k - 1]["p"].strip() if k else "."
+        if re.search(r"\d", p):
+            g = max(g, 1.0 - c)                      # una cifra es lo que mas dano hace
+        elif p[:1].isupper() and k and not previa.endswith((".", "?", "!")):
+            g = max(g, (1.0 - c) * 0.8)              # un nombre propio, casi tanto
+        else:
+            g = max(g, (1.0 - c) * 0.5)
+    if not marcas:
+        g = 0.0
+    return round(min(1.0, g), 3)
+
+
+def _norm(t):
+    return re.sub(r"[^a-z0-9ñ ]+", " ", t.lower()).split()
+
+
+# Palabras donde la baja confianza NO importa: aunque el reconocedor dude de
+# «de» o «su», la frase se entiende igual. Marcarlas manda el ojo a lo
+# irrelevante. Medido sobre el Audio 2: marcar todo por debajo de 0,55 daba 394
+# marcas (15 % de las palabras), casi todas asi.
+_FUNCION = set((
+    "de la el los las un una unos unas y o que en a al del se lo le les por con "
+    "para su sus mi tu es son era fue ha he han no si sí ya pero como mas más ni "
+    "ese esa eso este esta esto ahí allí aquí muy ya bien"
+).split())
+
+
+def texto_con_dudas(seg, umbral_importante=0.70, umbral_resto=0.35):
+    """Marca DENTRO de la frase la palabra concreta de la que el reconocedor dudo.
+
+    ADR-017 §5 prohibe que un ANCLAJE dependa de la marca de palabra, y se
+    respeta: el localizador que se publica sigue siendo el minuto del segmento.
+    Esto no es un anclaje: es senalar cual de las palabras de esa frase es la
+    floja, para no obligarla a adivinarlo. La distincion esta en ADR-019.
+
+    Y la salvaguarda de siempre: si rearmar la frase desde las palabras cambia
+    aunque sea una, se devuelve el texto original sin marcar.
+    """
+    pal = seg.get("palabras") or []
+    if not pal:
+        return _linea(seg["texto"])
+    partes = []
+    for k, w in enumerate(pal):
+        t = _linea(w["p"])
+        c = w.get("c", 1.0)
+        p = w["p"].strip(".,;:()[]¿?¡!\"'")
+        if not p or p.lower() in _FUNCION or len(p) <= 2:
+            partes.append(t); continue
+        previa = pal[k - 1]["p"].strip() if k else "."
+        importante = bool(re.search(r"\d", p)) or (
+            p[:1].isupper() and k and not previa.endswith((".", "?", "!")))
+        if c < (umbral_importante if importante else umbral_resto):
+            partes.append('<span class="dudosa" title="%s: el reconocedor dudó de esta palabra">%s</span>'
+                          % ("Cifra o nombre propio" if importante else "Palabra", t))
+        else:
+            partes.append(t)
+    armado = " ".join(partes)
+    llano = html.unescape(re.sub(r"<[^>]+>", "", armado))
+    if _norm(llano) != _norm(seg["texto"]):
+        return _linea(seg["texto"])
+    return armado
+
+
+def construir_bloques(doc, marcas, ventanas, gana):
+    """Devuelve (html, bloques del contrato). El HTML se lee sin JavaScript;
+    el contrato lleva los metadatos que la pagina necesita para trabajar.
+
+    Los segmentos se agrupan en TURNOS de habla. Era el defecto que mas pesaba
+    en la primera entrega: trescientas ochenta y seis lineas sueltas no dejan
+    ver quien habla ni que dice. Un turno se lee como una intervencion.
+    """
+    partes, bloques = [], []
+    voz_previa = object()
+    fin_previo = -99.0
+    abierto = False
+
+    def cerrar():
+        nonlocal abierto
+        if abierto:
+            partes.append("</section>")
+            abierto = False
+
+    for s in doc["segmentos"]:
+        bid = "b%d" % s["i"]
+        mk = marcas.get(str(s["i"])) or marcas.get(s["i"]) or []
+        duro = _datos_duros(s)
+        riesgo = _riesgo(mk, duro)
+        voz = s.get("voz")
+
+        # Turno nuevo SOLO cuando cambia la voz. Una pausa larga dentro de la
+        # misma voz es una pausa, no otra intervencion: cortar ahi fragmentaba
+        # la lectura en turnos consecutivos del mismo hablante.
+        # Si hay un silencio muy largo se marca la pausa, sin abrir turno.
+        hueco = s["inicio"] - fin_previo
+        if voz != voz_previa:
+            cerrar()
+            quien = ("Hablante %s" % html.escape(str(voz))) if voz is not None else "Hablante ?"
+            partes.append(
+                '<section class="turno"><h3 class="turno-cab">'
+                '<span class="quien">%s</span>'
+                '<span class="desde">desde %s</span></h3>' % (quien, hms(s["inicio"])))
+            abierto = True
+        elif hueco > 10.0 and abierto:
+            partes.append('<p class="pausa">— %d segundos sin habla detectada —</p>' % round(hueco))
+        voz_previa, fin_previo = voz, s["fin"]
+
+        cuerpo = [
+            '<article class="seg%s" id="%s">' % (" dudoso" if mk else "", bid),
+            '<div class="seg-cab">'
+            '<button type="button" class="hora" disabled>%s</button></div>' % hms(s["inicio"]),
+            '<p class="texto">%s</p>' % texto_con_dudas(s),
+        ]
+        if mk:
+            cuerpo.append('<p class="motivos">%s</p>' % html.escape("; ".join(mk)))
+        cuerpo.append("</article>")
+        partes.append("".join(cuerpo))
+
+        alts, desacuerdo = _alternativas(ventanas, s["inicio"], gana)
+        bloques.append({
+            "id": bid,
+            "ancla": {"tipo": "tiempo", "inicio": round(s["inicio"], 3), "fin": round(s["fin"], 3)},
+            "riesgo": riesgo,
+            "gravedad": _gravedad(s, mk, desacuerdo),
+            "marcas": mk,
+            "etiqueta": ("Hablante %s" % voz) if voz is not None else None,
+            "alternativas": alts,
+        })
+    cerrar()
+    return "\n".join(partes), bloques
+
+
+# -------------------------------------------------------------------- pagina
+def construir_lista(d, doc, marcas):
+    """«Pasajes a verificar» como cola de trabajo, no como documento.
+
+    Patron «check your answers» de GOV.UK: una fila por cosa que comprobar, con
+    su sitio, lo que dice y una accion. Aqui cada hallazgo es un BLOQUE del mismo
+    contrato que usa la transcripcion, asi que hereda la franja, el teclado, los
+    estados y la copia con procedencia sin una sola linea nueva de interfaz.
+    """
+    segs = doc["segmentos"]
+
+    def seg_en(t):
+        for s in segs:
+            if s["inicio"] <= t <= s["fin"]:
+                return s
+        anteriores = [s for s in segs if s["inicio"] <= t]
+        return anteriores[-1] if anteriores else (segs[0] if segs else None)
+
+    hallazgos = []
+
+    for v in d.get("ventanas") or []:
+        if v.get("medio", 1) >= 0.80:
+            continue
+        otras = [(k, t) for k, t in (v.get("textos") or {}).items() if t.strip()]
+        hallazgos.append({
+            "clase": "Las decodificaciones no coinciden",
+            "t": v["t"], "riesgo": "alto", "gravedad": round(1 - v["medio"], 3),
+            "detalle": "Coinciden solo en un %d %%." % round(100 * v["medio"]),
+            "variantes": otras[:4],
+        })
+
+    for a in d.get("avisos_glosario") or []:
+        hallazgos.append({
+            "clase": "El glosario habría escrito otra cosa",
+            "t": a["t"], "riesgo": "alto", "gravedad": 0.75,
+            "detalle": "Sugiere «%s» donde la versión publicada dice: %s"
+                       % (a["sugiere"], a["dice_publicada"]),
+            "variantes": [],
+        })
+
+    for s in segs:
+        for k, w in enumerate(s.get("palabras") or []):
+            p = w["p"].strip(".,;:()[]¿?¡!\"'")
+            if not p or w.get("c", 1) >= 0.85:
+                continue
+            previa = s["palabras"][k - 1]["p"].strip() if k else "."
+            cifra = bool(re.search(r"\d", p))
+            propio = p[:1].isupper() and k and not previa.endswith((".", "?", "!"))
+            if not (cifra or propio):
+                continue
+            hallazgos.append({
+                "clase": "Cifra en duda" if cifra else "Nombre propio en duda",
+                "t": s["inicio"], "riesgo": "alto" if cifra else "medio",
+                "gravedad": round((1 - w["c"]) * (1.0 if cifra else 0.8), 3),
+                "detalle": "Escribió «%s»." % p, "variantes": [],
+            })
+        if s.get("voz") is not None and s.get("pureza", 1) < 0.60:
+            hallazgos.append({
+                "clase": "La voz asignada es dudosa", "t": s["inicio"], "riesgo": "bajo",
+                "gravedad": round(0.4 * (1 - s.get("pureza", 0)), 3),
+                "detalle": "La línea se reparte entre hablantes; ahí el número de hablante "
+                           "no significa gran cosa.",
+                "variantes": [],
+            })
+
+    hallazgos.sort(key=lambda h: -h["gravedad"])
+
+    partes, bloques = [], []
+    for i, h in enumerate(hallazgos):
+        bid = "h%d" % i
+        s = seg_en(h["t"])
+        texto = s["texto"] if s else ""
+        cuerpo = [
+            '<article class="seg ficha-hallazgo dudoso" id="%s">' % bid,
+            '<div class="seg-cab">',
+            '<button type="button" class="hora" disabled>%s</button>' % hms(h["t"]),
+            '<span class="clase r-%s">%s</span></div>' % (h["riesgo"], html.escape(h["clase"])),
+            '<p class="texto">%s</p>' % _linea(texto),
+            '<p class="motivos">%s</p>' % _linea(h["detalle"]),
+        ]
+        if h["variantes"]:
+            cuerpo.append('<details class="alternativas"><summary>Qué escribió cada pasada</summary>')
+            for k, t in h["variantes"]:
+                cuerpo.append('<p><span class="et">%s</span>%s</p>'
+                              % (html.escape(k), html.escape(t[:240])))
+            cuerpo.append("</details>")
+        cuerpo.append("</article>")
+        partes.append("".join(cuerpo))
+        bloques.append({
+            "id": bid,
+            "ancla": {"tipo": "tiempo", "inicio": round(h["t"], 3),
+                      "fin": round(h["t"] + 20, 3)},
+            "riesgo": h["riesgo"], "gravedad": h["gravedad"],
+            "marcas": [h["clase"]], "etiqueta": None, "alternativas": [],
+        })
+    return "\n".join(partes), bloques, len(hallazgos)
+
+
+def partir(md):
+    """Encabezado (antes del primer ---) y cuerpo."""
+    m = re.search(r"\n---+\n", md)
+    return (md[:m.start()], md[m.end():]) if m else (md, "")
+
+
+def ficha_desde(cabecera):
+    """Las lineas «**Campo:** valor» del encabezado se convierten en lista de definicion."""
+    filas, resto = [], []
+    for l in cabecera.split("\n"):
+        m = re.match(r"^\*\*(.+?):\*\*\s*(.*?)\s*$", l.strip())
+        if m and not l.strip().startswith("# "):
+            filas.append(f"<dt>{_linea(m.group(1))}</dt><dd>{_linea(m.group(2).rstrip())}</dd>")
+        else:
+            resto.append(l)
+    return "".join(filas), "\n".join(resto)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("entrada")
+    ap.add_argument("salida")
+    ap.add_argument("--datos", default=None)
+    ap.add_argument("--audio", default=None)
+    ap.add_argument("--lista", action="store_true",
+                    help="produce la cola de comprobacion en vez del documento")
+    a = ap.parse_args()
+
+    if not os.path.exists(PLANTILLA):
+        sys.stderr.write(
+            "NO SE PUDO GENERAR: falta la plantilla compilada en\n  %s\n"
+            "Se compila con: cd tools/pagina-despacho && npm run publicar\n"
+            "No se escribio ningun archivo.\n" % PLANTILLA)
+        return 2
+
+    md = io.open(a.entrada, encoding="utf-8").read()
+    plantilla = io.open(PLANTILLA, encoding="utf-8").read()
+    cabecera, cuerpo = partir(md)
+
+    titulo = "Documento"
+    m = re.search(r"^#\s+(.*)$", cabecera, re.M)
+    if m:
+        titulo = re.sub(r"[*`]", "", m.group(1)).strip()
+    ficha, _ = ficha_desde(cabecera)
+
+    advertencia = ("El original es la grabación o el documento del que salió esto. "
+                   "Ninguna cita debería usarse sin comprobarla contra él.")
+    tipo = "Superficie de trabajo"
+    # El contrato: lo unico que la pagina sabe del mundo. No menciona
+    # transcripciones en ninguna parte, a proposito.
+    datos = {
+        "documento": {"titulo": titulo, "tipo": tipo,
+                      "origen": os.path.basename(a.entrada),
+                      "tipoMaterial": "Material derivado"},
+        "fuentes": [], "bloques": [], "vistas": ["lectura"], "version": VERSION,
+    }
+
+    if a.datos:
+        d = json.load(io.open(a.datos, encoding="utf-8"))
+        doc = d.get("publicada") or d.get("principal")
+        if not doc:
+            sys.stderr.write("El archivo de datos no trae la pasada publicada.\n")
+            return 2
+        marcas = d.get("marcas", {})
+        gana = doc.get("etiqueta", "")
+        if a.lista:
+            contenido, bloques, n_hall = construir_lista(d, doc, marcas)
+            tipo = "Cola de comprobación"
+            titulo = "QUÉ COMPROBAR — " + re.sub(r"^TRANSCRIPCI[ÓO]N\s*[—-]\s*", "", titulo)
+        else:
+            contenido, bloques = construir_bloques(doc, marcas, d.get("ventanas"), gana)
+            n_hall = None
+            tipo = "Transcripción · superficie de trabajo"
+        datos["bloques"] = bloques
+        datos["vistas"] = ["lectura", "resumen", "comprobacion"]
+        datos["documento"]["tipo"] = tipo
+        datos["documento"]["origen"] = titulo
+        if a.audio:
+            # Ruta RELATIVA desde la pagina hasta la grabacion: asi la carpeta se
+            # puede mover entera. Si el audio no esta, la pagina lo dice (ADR-020 §5).
+            try:
+                rel = os.path.relpath(os.path.abspath(a.audio),
+                                      os.path.dirname(os.path.abspath(a.salida)))
+            except ValueError:
+                rel = os.path.basename(a.audio)
+            datos["fuentes"].append({"tipo": "audio", "ruta": rel.replace("\\", "/")})
+            if not os.path.exists(a.audio):
+                sys.stderr.write("AVISO: no se encontro la grabacion en %s. "
+                                 "La pagina se genera y dira que no puede comprobar.\n" % a.audio)
+        alto = sum(1 for b in bloques if b["riesgo"] == "alto")
+        n_dud = sum(1 for b in bloques if b["riesgo"] != "ninguno")
+        if a.lista:
+            advertencia = (
+                "Esta no es la transcripción: es <strong>la lista de lo que conviene comprobar "
+                "oyendo</strong>, ordenada de más grave a menos. <strong>%d cosas</strong>, "
+                "de las que <strong>%d son de las que más daño hacen</strong>. Pulse una hora "
+                "y sonará ese punto. Márquelas a medida que las oiga; <strong>lo que marque es "
+                "constancia suya, no verificación de ningún sistema</strong>. "
+                "No es una lista de errores comprobados: es dónde mirar primero."
+                % (n_hall, alto))
+        else:
+            advertencia += (
+            " De %d líneas, <strong>%d tienen algún motivo de duda</strong>, y de esas "
+            "<strong>%d son de las que más daño hacen</strong>: una cifra o un nombre "
+            "propio en duda, o un punto donde las decodificaciones no coinciden. "
+            "La franja de arriba dice dónde están. Cada marca de tiempo reproduce ese "
+            "punto de la grabación; lo que usted marque como comprobado es constancia "
+            "suya, <strong>no verificación de ningún sistema</strong>."
+                % (len(bloques), n_dud, alto))
+    else:
+        contenido = md_a_html(cuerpo if cuerpo else md)
+
+    datos["clave"] = hashlib.sha256(md.encode("utf-8")).hexdigest()[:16]
+
+    pie = ("<p>Página generada por <code>md2html %s</code> a partir de "
+           "<code>%s</code>. No es el original y no sustituye al documento de Word. "
+           "Lo que usted marque aquí vive en este navegador: <strong>use «Guardar lo "
+           "comprobado» antes de cerrar</strong>.</p>"
+           % (VERSION, html.escape(os.path.basename(a.entrada))))
+
+    out = plantilla
+    for k, v in (("{{TITULO}}", html.escape(titulo)), ("{{TIPO}}", html.escape(tipo)),
+                 ("{{FICHA}}", ficha), ("{{ADVERTENCIA}}", advertencia),
+                 ("{{CONTENIDO}}", contenido), ("{{PIE}}", pie),
+                 ("{{DATOS}}", json.dumps(datos, ensure_ascii=False))):
+        out = out.replace(k, v)
+
+    io.open(a.salida, "w", encoding="utf-8").write(out)
+    print("OK  %s  -  %.1f KB%s" % (os.path.basename(a.salida), len(out) / 1024,
+                                    "  (interactiva)" if a.datos else ""))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

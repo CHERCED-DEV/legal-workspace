@@ -94,5 +94,5 @@ En el archivo de estado, bajo `NOTAS SUYAS`, la inspectora había escrito: *«Ll
 
 - **`hechos-con-prueba`.** `G6` junta expresamente `estado-del-caso` y `cronologia` — *«los dos `SKILL.md`, que cambian a la vez»*—, y ahí la figura ya está resuelta por otra vía: una ficha cuyo único respaldo es el dicho de alguien **ya se marca como tal**. Meterle esta sección sería un segundo mecanismo para lo mismo.
 - **Un archivo que acumule lo dicho a lo largo del caso.** Sería la lista única de «lo que falta» (`PM-M-11`, grupo `G4`), que es otro ítem y tiene su propio diseño. Cuando exista, este bloque es una de sus entradas.
-- **Preguntarle activamente.** Un método que entrevista es otro producto, y ninguno de los once comandos lo hace.
+- **Preguntarle activamente.** Un método que entrevista es otro producto, y ninguno de los doce comandos lo hace. **Y `/transcribir-audio` no es la excepción:** pasa a texto una entrevista que ya ocurrió; no la hace.
 - **Distinguir si lo que ella dice lo sabe de primera mano o se lo contaron.** Es una distinción real y valiosa; también es una pregunta que habría que hacerle. Queda para cuando se decida si el producto pregunta.

@@ -6,7 +6,7 @@
 
 ## Por qué existe esta carpeta
 
-Este proyecto **ya hacía desarrollo dirigido por especificación sin llamarlo así**: los once `SKILL.md` no son documentación de un programa, **son el programa** — especificaciones en prosa que un modelo ejecuta. Esa es la arquitectura, y es correcta.
+Este proyecto **ya hacía desarrollo dirigido por especificación sin llamarlo así**: los doce `SKILL.md` no son documentación de un programa, **son el programa** — especificaciones en prosa que un modelo ejecuta. Esa es la arquitectura, y es correcta.
 
 Lo que faltaba es la capa intermedia. Hoy hay:
 
@@ -60,8 +60,8 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | Capacidad | Estado real hoy | Decisión | Spec |
 |---|---|---|---|
 | **Instalar y actualizar el plugin** | Remoto publicado y **con hoja de instalación**. **Cero instalaciones fuera de esta máquina** | ADR-012 | **SPEC-01** + **SPEC-11** — lo que falta ocurre en su máquina |
-| **Los once métodos** | Desplegados; nueve ejecutados en dos casos reales, los dos de la oficina de programas todavía no | los `SKILL.md` son la spec | SPEC-04 · 05 · 06 · 08 **ejecutadas**; SPEC-07 pendiente |
-| **Hablarle a una autoridad, no a una parte** | **Construido el 2026-09-05:** los once preguntan la posición **y esperan la respuesta**, ninguna regla presupone bando —siete reescritas, no dos—, y la **simetría obligatoria** es método, reconciliada con la que `revision-de-rigor` §2.3 ya tenía. **Lo que no existe es la decisión de `V-7`** | ninguna todavía — hace falta **un ADR** | **SPEC-03**, con el valor conservador puesto mientras tanto |
+| **Los doce métodos** | Desplegados; nueve ejecutados en dos casos reales, los dos de la oficina de programas todavía no, y **`transcribir-audio` entró por fusión el 2026-09-22 sin correrse aquí** —sus bibliotecas no están en este entorno— | los `SKILL.md` son la spec | SPEC-04 · 05 · 06 · 08 **ejecutadas**; SPEC-07 pendiente |
+| **Hablarle a una autoridad, no a una parte** | **Construido el 2026-09-05:** los doce preguntan la posición **y esperan la respuesta** —los once de entonces, y el duodécimo el día que entró—, ninguna regla presupone bando —siete reescritas, no dos—, y la **simetría obligatoria** es método, reconciliada con la que `revision-de-rigor` §2.3 ya tenía. **Lo que no existe es la decisión de `V-7`** | ninguna todavía — hace falta **un ADR** | **SPEC-03**, con el valor conservador puesto mientras tanto |
 | **Que dos pasadas del mismo caso se puedan comparar** | **Construido el 2026-09-05.** Cada pasada dice qué se corrigió a sí misma y qué pregunta lo atrapó | `PM-M-1` (c) y (d) | **SPEC-12** — y **sin una sola cifra todavía** |
 | **Que abrir el material no cueste veintiuna lecturas por página** | **Construido el 2026-09-05** en los dos comandos que lo tenían vivo; los dos inventarios ya lo tenían | `PM-M-4` | **SPEC-13** — el ahorro sigue sin medirse |
 | **Que las reglas repetidas no deriven** | **Construido el 2026-09-05.** 12 pruebas que exigen que los bloques repetidos **digan lo mismo**, no solo que estén | ninguna | `evals/scripts/test_bloques_identicos.py` |

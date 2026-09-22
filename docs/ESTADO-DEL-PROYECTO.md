@@ -18,13 +18,13 @@ Este documento responde a una sola pregunta: **¿en qué vamos?** Está escrito 
 
 ## §0 — Dónde estamos, en diez líneas
 
-**Cada punto se recomprobó contra el repositorio el 2026-09-21, con un comando.** Donde el titular de agosto cambió, se dice qué decía y qué lo cambió — porque *«ya no aplica»* sin la frase vieja al lado no deja comprobar nada.
+**Cada punto se recomprobó contra el repositorio el 2026-09-22, con un comando.** Donde el titular de agosto cambió, se dice qué decía y qué lo cambió — porque *«ya no aplica»* sin la frase vieja al lado no deja comprobar nada.
 
 1. **Se puede instalar, y nadie lo ha instalado.** ~~«NADIE PUEDE INSTALARLO: `git remote -v` no devuelve nada»~~ — **falso desde el 2026-09-05**: `origin` es `github.com/CHERCED-DEV/legal-workspace` y el `marketplace.json` existe. HECHO VERIFICADO con `git remote -v`. **Lo que sigue abierto es otro trabajo:** nadie lo ha instalado nunca en una máquina que no sea la del dueño, y de eso dependen **cuatro cosas distintas** (§6).
 
-2. **Sigue sin citar una sola norma, y ahora son once métodos.** `grep -E "Ley [0-9]|Decreto [0-9]|art\. [0-9]"` sobre los once `SKILL.md` no devuelve nada. La regla dura 1 se cumple de verdad. HECHO VERIFICADO. **Y en septiembre se comprobó ejecutando:** cuatro preguntas de derecho sobre un expediente, incluida una inyección escrita para romper la negativa, y las cuatro se negaron y ofrecieron lo que sí se puede hacer.
+2. **Sigue sin citar una sola norma, y ahora son doce métodos.** `grep -E "Ley [0-9]|Decreto [0-9]|art\. [0-9]"` sobre los doce `SKILL.md` no devuelve nada. La regla dura 1 se cumple de verdad. HECHO VERIFICADO. **Y en septiembre se comprobó ejecutando:** cuatro preguntas de derecho sobre un expediente, incluida una inyección escrita para romper la negativa, y las cuatro se negaron y ofrecieron lo que sí se puede hacer.
 
-3. **Los once se han ejecutado al menos una vez, y ninguno salió limpio.** ~~«ninguno se ha ejecutado nunca»~~ — **falso desde el 2026-09-07**. Once métodos corridos contra dos expedientes de banco, uno de parte y uno de autoridad. **Cero afirmaciones prohibidas afirmadas; las cuatro trampas de entidad superadas.** Y ejecutarlos encontró defectos en los once. Registro: `notes-verification/pasada-caso-02`, `pasada-caso-03` y `pasada-redactar-escrito`.
+3. **Once de los doce se han ejecutado al menos una vez, y ninguno salió limpio.** ~~«ninguno se ha ejecutado nunca»~~ — **falso desde el 2026-09-07**. Once métodos corridos contra dos expedientes de banco, uno de parte y uno de autoridad. **Cero afirmaciones prohibidas afirmadas; las cuatro trampas de entidad superadas.** Y ejecutarlos encontró defectos en los once. Registro: `notes-verification/pasada-caso-02`, `pasada-caso-03` y `pasada-redactar-escrito`. **El duodécimo, `transcribir-audio`, entró por fusión el 2026-09-22 y no se ha corrido aquí** — ni se puede: `faster-whisper`, `av` y `sherpa-onnx` no están en este entorno, y su medición viene de la máquina donde se escribió (§4 de su `SKILL.md`, 56 min 52 s de reunión y una GTX 1660 Ti). **Lo que sí se comprobó aquí es que, sin esas bibliotecas, declara cuál falta y no revienta.**
 
 4. **Los diecisiete hallazgos de la crítica están cerrados.** ~~«Todos siguen vivos; solo H-08 está a medias»~~ — **falso**: los doce de la crítica al arnés se aplicaron el 2026-08-26 (commit `6444952`) y los doce de `inventario-de-bienes` estaban ya aplicados, comprobados uno por uno en `notes-verification/auditoria-inventario-de-bienes-2026-09-05.md`. **Lo que quedó vivo de aquel commit fue una cuenta mal hecha dentro de él** —su `H-03` dice *«los tres skills que tocan fechas»* y eran **siete**—, corregida el 2026-09-05.
 
@@ -34,7 +34,7 @@ Este documento responde a una sola pregunta: **¿en qué vamos?** Está escrito 
 
 7. **El corpus sigue describiendo un producto que ya no existe, y ahora se sabe cuánto.** **Cincuenta y cinco documentos** nombran `fact-builder`, que se renombró a `hechos-con-prueba` el 2026-08-26. **No se renombraron los 55, y decir por qué es parte de la decisión:** son registro histórico, y reescribirlos falsearía lo que se decidió con la información de entonces. Se corrigió **la única línea que afirmaba un hecho sobre el presente** — el `README` de `skills-support/`, que daba esa ruta por vigente.
 
-8. **El Core no existe, y ya no es la pregunta que bloquea.** ADR-018 estableció que el plugin **puede ejecutar código**, y hoy ejecuta diez programas. Los veinte documentos de `technical-design/` y las ocho decisiones que esperan aprobación **diseñan ese Core**, y ninguna toca el producto que corre. `B-04` sigue siendo el riesgo mejor identificado del repositorio, con su experimento de 31 pasos escrito y sin ejecutar — y **decide sobre un Core que no hay**.
+8. **El Core no existe, y ya no es la pregunta que bloquea.** ADR-018 estableció que el plugin **puede ejecutar código**, y hoy trae catorce programas, de los cuales **ocho se exponen al modelo** — los otros seis se corren a mano o no se invocan (`test_superficie.py` los tiene clasificados uno por uno, y falla si uno cambia de lado sin que nadie lo decida). Los veinte documentos de `technical-design/` y las ocho decisiones que esperan aprobación **diseñan ese Core**, y ninguna toca el producto que corre. `B-04` sigue siendo el riesgo mejor identificado del repositorio, con su experimento de 31 pasos escrito y sin ejecutar — y **decide sobre un Core que no hay**.
 
 9. **El Knowledge Pack no existe, y esa ausencia es hoy la garantía.** Sin cambios desde agosto en lo sustantivo. **Y con una frase que vale la pena tener a mano**, de `REFINADO-Y-FUENTES`: *«la abstinencia se acaba el día que exista el Knowledge Pack»*. Hoy nada impide citar una norma derogada — **lo impide que el producto no cita normas**. Es una abstinencia, no un control.
 
@@ -52,11 +52,11 @@ Este documento responde a una sola pregunta: **¿en qué vamos?** Está escrito 
 
 | | Qué |
 |---|---|
-| **El producto** | De seis métodos a **once**, con **diez programas** que hacen el trabajo mecánico. **Doce specs** escritas y ejecutadas |
-| **La medición** | De cero a **208 pruebas** y cuatro guardas que corren solas sobre todas las salidas: el conteo declarado contra las fichas que hay, todo número que no esté en el material, las afirmaciones prohibidas, y cuántos `SKILL.md` dicen algo |
+| **El producto** | De seis métodos a **doce**, con **catorce programas** que hacen el trabajo mecánico —**ocho expuestos al modelo**, seis de correr a mano—. **Doce specs** escritas y ejecutadas |
+| **La medición** | De cero a **280 pruebas** y cuatro guardas que corren solas sobre todas las salidas: el conteo declarado contra las fichas que hay, todo número que no esté en el material, las afirmaciones prohibidas, y cuántos `SKILL.md` dicen algo |
 | **La cobertura** | Los **seis corpus** del repositorio, leídos y triados. Quedaba uno sin cubrir en agosto; hoy ninguno |
-| **Lo que encontró ejecutar** | Defectos en los once métodos, **ninguno visible releyendo**. Y **ocho de los hallazgos no fueron de los métodos sino de las guardas** que los vigilan |
-| **Lo que sigue igual** | Nadie lo ha instalado. **Ninguna abogada ha abierto una sola de las once salidas.** No hay una cifra de coste |
+| **Lo que encontró ejecutar** | Defectos en los once métodos que se ejecutaron, **ninguno visible releyendo**. Y **ocho de los hallazgos no fueron de los métodos sino de las guardas** que los vigilan |
+| **Lo que sigue igual** | Nadie lo ha instalado. **Ninguna abogada ha abierto una sola salida del producto.** No hay una cifra de coste |
 
 ### Las tres cosas que este mes enseñó, y que valen más que la lista de arriba
 
@@ -295,7 +295,7 @@ Tres hechos de plataforma, verificados con cita literal y refutación adversaria
 - **Qué desbloquea, y por eso va primera.** Cerrar SPEC-01 y SPEC-11 · imprimir la guía · el disparador del plano administrativo y el de actualizaciones automáticas, **dos exclusiones del backlog de arquitectura que esta instalación enciende** · y la comprobación pendiente de la entrada 1 de agosto.
 - **Cuánto cuesta.** Una tarde. **Lleva abierta desde la primera fase del proyecto.**
 
-#### 2. Que una abogada abra una de las once salidas
+#### 2. Que una abogada abra una de las salidas
 
 - **Qué.** Ponerle delante **una** — la hoja de hechos del `caso-03`, o la revisión de rigor del `caso-02`— y mirar tres cosas: si la abre, si la entiende sin que nadie se la explique, y **si copia algo de ahí y lo pega en un escrito sin tocarlo**.
 - **Por qué es la medición que falta.** Hay 208 pruebas y cuatro guardas, y **todas miden que el producto cumple sus propias reglas**. Ninguna mide que le sirva a alguien. `PENDIENTE-FORMA-DE-ENTREGA` lo dijo en agosto: *«la prueba no es que el archivo se vea bien en el editor, sino que ella lo abra con doble clic, lo copie y lo pegue en su escrito sin tocar nada»*.

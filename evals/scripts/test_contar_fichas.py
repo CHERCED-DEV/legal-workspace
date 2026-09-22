@@ -318,5 +318,59 @@ class ContarInventarioDeBienes(unittest.TestCase):
         self.assertEqual(0, C.main([str(f)]))
 
 
+class LoQueNoSeCuentaSeDiceQueNoSeCuenta(unittest.TestCase):
+    """La tercera familia de salidas sin conteo, y la que mas facil se olvida.
+
+    `contar_fichas.py` nacio sabiendo contar fichas. Cuando llego una salida
+    que no las tiene, dijo «0 fichas» y «NO COINCIDE» -- que es una acusacion
+    falsa contra una salida correcta, y ademas la forma de fallo que apaga el
+    instrumento: un aviso encendido para siempre es un aviso que nadie mira.
+
+    Ya paso con `preguntas-de-derecho`. Volvio a pasar el 2026-09-22 con lo
+    que deja `/transcribir-audio`, y la razon es distinta y hay que decirla:
+    alli **no hay nada que contar que signifique algo**. Una transcripcion
+    tiene los segmentos que tiene el audio.
+    """
+
+    ENCABEZADOS = (u"# TRANSCRIPCIÓN — reunión del 5",
+                   u"# REGISTRO DE TRANSCRIPCIÓN",
+                   u"# PASAJES A VERIFICAR — dónde conviene oír el audio")
+
+    def _archivo(self, encabezado, cuerpo=u"\ntexto cualquiera\n"):
+        import tempfile, io, os
+        d = tempfile.mkdtemp()
+        f = os.path.join(d, "x.md")
+        io.open(f, "w", encoding="utf-8").write(encabezado + u"\n" + cuerpo)
+        return f
+
+    def test_los_tres_se_reconocen_y_no_se_les_pide_cifra(self):
+        for e in self.ENCABEZADOS:
+            self.assertEqual(0, C.main([self._archivo(e)]), e)
+
+    def test_control_negativo_una_hoja_de_hechos_sigue_contandose(self):
+        """Sin esto, un reconocedor demasiado ancho apagaria el contador entero."""
+        f = self._archivo(u"# Hechos — caso", doc(("H-01", "APOYADO")))
+        self.assertEqual(2, C.main([f]))
+
+    def test_los_encabezados_son_los_que_el_programa_escribe(self):
+        """Y aqui esta el amarre que impide que esta guarda envejezca sola.
+
+        Si `transcribir_audio.py` cambia el titulo que escribe, el reconocedor
+        de arriba deja de reconocer nada **y nada falla**: vuelve el «0 fichas,
+        NO COINCIDE» contra una salida correcta. Esta prueba lee el codigo del
+        otro programa y exige que los tres titulos sigan siendo los mismos.
+        """
+        cod = (Path(C.__file__).parent / "transcribir_audio.py").read_text(
+            encoding="utf-8")
+        for titulo in (u'"# TRANSCRIPCIÓN — %s',
+                       u'"# REGISTRO DE TRANSCRIPCIÓN',
+                       u'"# PASAJES A VERIFICAR — dónde conviene oír el audio'):
+            self.assertIn(titulo, cod,
+                          u"transcribir_audio.py ya no escribe «%s»: "
+                          u"el reconocedor de contar_fichas.py quedo ciego"
+                          % titulo)
+
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

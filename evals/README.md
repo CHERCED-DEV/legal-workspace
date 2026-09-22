@@ -24,7 +24,9 @@
 >
 > **Y lo que ninguno medía:** que un modelo aplique la prosa de los `SKILL.md`. ~~«Eso solo lo enseña una pasada real, que sigue sin ocurrir»~~ — **ocurrió**: los **once** métodos se ejecutaron contra los dos casos entre el 5 y el 7 de septiembre, y encontraron defectos en los once. Registro en `docs/technical-design/v0/notes-verification/pasada-*.md`.
 >
-> **Lo que sigue sin medirse, y ahora es lo único:** el **coste** —hace falta una corrida instrumentada con transcript, y las once pasadas son de escritorio— y **que le sirva a alguien**: ninguna abogada ha abierto una sola de las once salidas.
+> **Lo que sigue sin medirse, y ahora es lo único:** el **coste** —hace falta una corrida instrumentada con transcript, y las once pasadas son de escritorio— y **que le sirva a alguien**: ninguna abogada ha abierto una sola salida del producto.
+>
+> **Y desde el 2026-09-22 hay un duodécimo método, `/transcribir-audio`, que no se ejecutó aquí y no se puede:** sus tres bibliotecas no están en este entorno. Lo que sí se comprobó es que, sin ellas, **declara cuál falta y no revienta** — que es lo único que esta suite puede decir de él. Su medición viene de la máquina donde se escribió, y está en su `SKILL.md` §4.
 
 ### Las cuatro guardas que corren sobre las salidas
 

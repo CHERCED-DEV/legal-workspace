@@ -29,6 +29,10 @@
 >
 > **La regla que sale de ahí gobierna en qué orden se lee lo que queda:** *un ítem que nació ejecutando el producto describe un defecto real; uno que nació leyendo un documento sobre el producto, la mitad de las veces describe algo ya arreglado, o describe mal lo que está roto.* De los ~108 identificadores sin verificar, **los que tienen un pase real detrás van primero** — y los cuatro que se cerraron el 2026-09-05 son precisamente esos.
 
+
+> **LA COLA DE EJECUCIÓN ESTÁ EN GITHUB — 2026-09-19.** Los issues del repositorio son desde hoy la cola de trabajo, sembrada con `docs/backlog/crear-issues-github.sh`. **No crean un espacio de identificadores nuevo:** cada issue lleva en el título el identificador que ya existe —`ADR-NNN`, su número de validación o de pregunta pendiente— y apunta al documento que lo posee. **GitHub dice qué se está haciendo; el documento sigue diciendo qué es.**
+>
+> Se hizo así por la regla 3 de `docs/specs/README.md`, que sale de §0.2 de este mismo documento. Un backlog nuevo con identificadores propios habría sido la quinta cosa llamándose «lo mismo» de forma distinta.
 ---
 
 ## §0 · Qué es esto, y por qué existe
@@ -757,7 +761,7 @@ Y la conclusión que saca en §1.3, sobre el almacén del Core:
 
 ## §15 · Los once ejecutados, y lo que costó cada uno
 
-**2026-09-07.** §14 dejó cinco métodos corridos. Los seis que faltaban se corrieron el 7. **Los once del plugin se han ejecutado al menos una vez**, y ninguno salió limpio.
+**2026-09-07.** §14 dejó cinco métodos corridos. Los seis que faltaban se corrieron el 7. **Los once del plugin se han ejecutado al menos una vez**, y ninguno salió limpio. *(El duodécimo, `transcribir-audio`, entró por fusión el 2026-09-22 y no se ha corrido: §17.)*
 
 ### Los seis que faltaban
 
@@ -849,7 +853,7 @@ Se corrigieron las dos, y se añadió lo que no estaba: **las cuatro guardas que
 
 `evals/scripts/test_documentos_vigentes.py` — **dieciocho pruebas** sobre los dos documentos que más caro cuestan cuando envejecen:
 
-- Los titulares con respuesta en el disco: el remoto, que ningún método cite una norma, que sean **once**, que los once estén registrados como ejecutados, que la cadena esté completa, la cifra de **55** documentos que nombran `fact-builder`, los **diez** programas.
+- Los titulares con respuesta en el disco: el remoto, que ningún método cite una norma, que sean **doce**, que **once de los doce** estén registrados como ejecutados —y que el que falta sea exactamente `transcribir-audio`, declarado en el §0—, que la cadena esté completa, la cifra de **55** documentos que nombran `fact-builder`, los **catorce** programas y los **ocho** expuestos.
 - Que el `README` de evals **nombre todas las guardas que existen**, **no nombre ninguna que no exista**, y que **todas cuelguen del corredor** — *una guarda que hay que acordarse de correr no es una guarda*.
 - **Y cuáles NO comprueba**, declarado: cuatro de los diez titulares son juicios y no cifras. Un lector que vea la suite pasar no debe creer que se validaron los diez.
 
@@ -870,6 +874,46 @@ Sigue **ABIERTA**, y es del dueño. Lo que se añadió es la cuenta, porque abar
 | **D-1** | **Decidir AC-05**: si la convención se lleva también a los `SKILL.md`, o se acepta que ahí la carpeta siga siendo la señal | **Del dueño.** Ya no hace falta preguntarle nada a ella: no cambia ni una carpeta ni un nombre |
 | **D-2** | Los demás documentos vivos —la guía, `INSTALACION.md`, los `README`— **se comprobaron y están al día**. `PLAN-DE-MEJORA` y `PASE-REAL` son registro fechado y se quedan como están | **Comprobado el 2026-09-21** |
 
+## §17 · La fusión de `master`, y las cuatro guardas que la recibieron
+
+**Registro completo:** `docs/technical-design/v0/notes-verification/fusion-transcribir-audio-2026-09-22.md`
+
+`master` traía **un método nuevo, cuatro programas, cuatro ADR y una página local**; esta rama traía las guardas. **Al juntarlos, dieciséis pruebas fallaron en cuatro archivos, y ninguna por un error de la fusión: todas porque el producto cambió de tamaño.** Es exactamente lo que estas guardas dicen de sí mismas en la rama — *«fallan si el documento miente, y fallan si el producto cambia sin que el documento lo diga»*.
+
+### Lo que dijeron, y lo que era
+
+| Guarda | Qué dijo | Cerrado con |
+|---|---|---|
+| `test_bloques_identicos` | el método nuevo no trae **ninguno** de los bloques compartidos | los dos que le tocan, copiados **byte a byte** de los once |
+| `test_superficie` | cuatro programas **sin clasificar** y un método que nombra `1-Documentos recibidos/` fuera de la cuenta | una **cuarta clase** (abajo) y la fila del método nuevo |
+| `test_dependencias` | **tres** bibliotecas externas desconocidas | declaradas, con su fila en `INSTALACION.md` y una prueba que corre el programa de verdad |
+| `test_documentos_vigentes` | el `ESTADO-DEL-PROYECTO` dice **once y diez**; en el disco hay **doce y catorce** | §0 reescrito, y la excepción **nombrada en vez de escondida** |
+
+### La contradicción de fondo, que no era de conteo
+
+Tres métodos decían de una transcripción **«este método no la produce»** y remataban con que, sin ella, la grabación se declara y **ahí termina**. La primera mitad sigue siendo cierta; **la segunda dejó de serlo**. Lo que se escribió —una vez, idéntico en los tres, con guarda que falla si alguno lo reescribe— es que lo que sale del método nuevo **es trabajo del sistema**: pista, nunca origen, y material solo el día que ella le pone ` - REVISADO`. **Que ahora se pueda transcribir no es que ahora se pueda oír.**
+
+### La clase que hubo que inventar, y por qué no se llamó `ADMIN`
+
+Tres de los cuatro programas nuevos no son administrativos y ningún método los pide. Meterlos en `ADMIN` habría diluido la clase **justo por donde `architecture-post-v0` avisa**: *«la presión llega como una tool pequeña y razonable»*. Se abrió `A_MANO`, con esto escrito dentro: **que no estén expuestos no es una regla de seguridad, es una decisión que nadie ha tomado.** La guarda que los cubre es la misma.
+
+### Y otra vez lo mismo: tres defectos **de las guardas**, no de los métodos
+
+Por tercera vez el hallazgo grande sale de **correr una guarda sobre algo que no escribió su autor**:
+
+1. `test_integridad_del_metodo` solo conocía `f"Nombre - {date...`, y el programa nuevo usa `%s`. **Los siete archivos que deja por grabación pasaron por delante sin que los viera.**
+2. `contar_fichas.py` decía «0 fichas · NO COINCIDE» sobre una transcripción — **una acusación falsa contra una salida correcta**, y la forma de apagar el instrumento. Ahora la reconoce por el título que escribe el otro programa, con una prueba que lee ese código y falla si el título cambia.
+3. **`V-12` se cerró «con un grep» y sin dejar guarda**, y el árbol del `README` del plugin volvió a quedar mal en esta misma fusión. Ahora tiene cuatro pruebas, incluida la mitad que se olvida: **que no nombre nada que no exista**.
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| **F-1** | **Ejecutar `/transcribir-audio` una vez de verdad.** No se puede aquí: sus tres bibliotecas no están en este entorno. Su medición viene de otra máquina y **no se reprodujo** | **Del dueño**, donde estén las bibliotecas |
+| **F-2** | **Decidir si `md2html.py` y `verificar_citas.py` se exponen.** Hoy están en `A_MANO` porque nadie lo decidió, no porque se decidiera que no | **Del dueño.** La guarda los sujeta mientras tanto |
+| **F-3** | Poner una transcripción de este producto **al lado de su audio**. Que el método diga bien lo que no sabe no prueba que lo que escribe sea correcto | **Abierto** |
+
+---
 ---
 ---
 

@@ -36,13 +36,32 @@ EXPUESTOS = {
     "md2docx.py":             "entregar en el formato que ella abre",
     "preparar_material.py":   "el trabajo mecánico de la ingesta",
     "segunda_opinion.py":     "segunda pasada de OCR sobre lo dudoso",
+    # Octavo, con la fusion del 2026-09-22: `transcribir-audio` lo declara y es
+    # el unico camino del producto para pasar una grabacion a texto. Lo que
+    # produce NO es material: es trabajo del sistema, y lo dicen los tres
+    # metodos que antes decian que el sistema no producia transcripciones.
+    "transcribir_audio.py":   "pasar una grabación a texto, en esta máquina",
     "verificar_fidelidad.py": "comprobar que el .docx dice lo que el .md",
 }
 
-# Los dos de clase ADMIN: existen en el disco y NO se exponen.
+# El de clase ADMIN: existe en el disco y NO se expone.
 RESERVADOS = {
     "traer_modelos.py": "instala modelos de terceros = instalar un pack",
-    "medir_realce.py":  "instrumentación de desarrollo sobre material real",
+}
+
+# Cuarta clase, del 2026-09-22, cuando la fusion trajo tres programas que no
+# son ADMIN y que ningun metodo declara. Llamarlos ADMIN habria sido comodo y
+# habria diluido la clase justo por donde el documento avisa que se dilata:
+# «la presion llega como una tool pequena y razonable». Estos se corren A MANO.
+# Que no esten expuestos NO es una regla de seguridad como la de `ADMIN`: es
+# una decision que nadie ha tomado todavia, y se escribe aqui para que exista.
+# Mientras esten en esta lista, la regla que los cubre es la misma: no pueden
+# estar declarados en ningun `allowed-tools`.
+A_MANO = {
+    "medir_realce.py":         "instrumentación de desarrollo sobre material real",
+    "comparar_iteraciones.py": "compara pasadas del mismo audio; no dice cuál es mejor",
+    "md2html.py":              "la superficie de trabajo (ADR-020); aún no la pide ningún método",
+    "verificar_citas.py":      "comprueba citas contra transcripciones; aún no la pide ningún método",
 }
 
 # Y una tercera clase, que aparecio el 2026-09-07 cuando el canario disparo
@@ -69,7 +88,7 @@ def declarados():
 class LaSuperficieSeCuenta(unittest.TestCase):
 
     def test_la_superficie_es_exactamente_la_declarada(self):
-        """Si aparece un octavo programa expuesto, esta prueba falla.
+        """Si aparece un noveno programa expuesto, esta prueba falla.
 
         Fueron seis hasta el 2026-09-05, y el septimo entro con su medicion
         delante y esta linea escrita. Que crezca no esta prohibido; que crezca
@@ -85,6 +104,16 @@ class LaSuperficieSeCuenta(unittest.TestCase):
         expuestos_admin = [n for n in RESERVADOS if n in declarados()]
         self.assertEqual([], expuestos_admin,
                          "un programa administrativo quedó expuesto al modelo")
+
+    def test_lo_que_se_corre_a_mano_no_esta_declarado(self):
+        """La misma cuenta para la clase nueva, y por la misma razón.
+
+        Si un día uno de estos se expone, que sea porque alguien lo decidió y
+        lo movió de lista -- no porque una línea de `allowed-tools` creció.
+        """
+        expuestos = [n for n in A_MANO if n in declarados()]
+        self.assertEqual([], expuestos,
+                         "un programa de correr a mano quedó expuesto sin decidirlo")
 
     def test_todo_lo_declarado_existe_en_el_disco(self):
         """Una skill que declara un programa que no está no falla al instalar:
@@ -108,7 +137,7 @@ class LaSuperficieSeCuenta(unittest.TestCase):
 
     def test_los_expuestos_y_los_admin_si_se_pueden_invocar(self):
         """Control positivo del anterior: si nada trajera `main`, pasaria solo."""
-        for nombre in list(EXPUESTOS) + list(RESERVADOS):
+        for nombre in list(EXPUESTOS) + list(RESERVADOS) + list(A_MANO):
             t = (SCRIPTS / nombre).read_text(encoding="utf-8")
             # Las dos comillas: `buscar.py` lo escribe con simples, y la
             # primera version de esta prueba solo miraba las dobles.
@@ -121,7 +150,8 @@ class LaSuperficieSeCuenta(unittest.TestCase):
         exponerlo después también.
         """
         en_disco = sorted(p.name for p in SCRIPTS.glob("*.py"))
-        clasificados = sorted(list(EXPUESTOS) + list(RESERVADOS) + list(MODULOS))
+        clasificados = sorted(list(EXPUESTOS) + list(RESERVADOS)
+                              + list(A_MANO) + list(MODULOS))
         self.assertEqual(clasificados, en_disco,
                          "hay un programa sin clasificar: decide si se expone")
 
@@ -143,14 +173,14 @@ class LaCarpetaDeLoRecibidoNoSeToca(unittest.TestCase):
 
     Para `1-Documentos recibidos/` **el remedio posicional no está disponible**:
     los métodos tienen que leer esa carpeta, así que no puede estar fuera. Hoy
-    la protección es prosa, y descansa en que el modelo obedezca -- nueve veces.
+    la protección es prosa, y descansa en que el modelo obedezca -- diez veces.
 
     Esta prueba no la convierte en perímetro. Hace lo único que se puede hacer
     desde aquí: **fijar la cuenta**. Si un método nuevo nombra la carpeta y no
     trae prohibición, falla; si un método deja de traerla, falla.
     """
 
-    # Los nueve que nombran la carpeta, y qué prohibición trae cada uno.
+    # Los diez que nombran la carpeta, y qué prohibición trae cada uno.
     CON_REGLA = {
         "cronologia":           "Nunca escribes en `1-Documentos recibidos/`",
         "estado-del-caso":      "Nunca escribe dentro de `1-Documentos recibidos/`",
@@ -160,6 +190,7 @@ class LaCarpetaDeLoRecibidoNoSeToca(unittest.TestCase):
         "redactar-escrito":     "En `1-Documentos recibidos/` **no se escribe nunca**",
         "revisar-documento":    "Nunca se escribe en `1-Documentos recibidos/`",
         "revision-de-rigor":    "**Nunca en `1-Documentos recibidos/`**",
+        "transcribir-audio":    "**No escribe en `1-Documentos recibidos/`**",
         # El único que escribe ahí, y una sola vez: copia los originales.
         "preparar-material":    "**No escribe en `1-Documentos recibidos/`** después de copiar los originales",
     }
@@ -174,7 +205,7 @@ class LaCarpetaDeLoRecibidoNoSeToca(unittest.TestCase):
             self.assertIn(regla, t,
                           "%s perdió su prohibición de escritura" % skill)
 
-    def test_no_hay_un_decimo_que_la_nombre_sin_regla(self):
+    def test_no_hay_uno_mas_que_la_nombre_sin_regla(self):
         """El modo de fallo real: un método nuevo que lee ahí y no lo dice."""
         self.assertEqual(sorted(self.CON_REGLA), sorted(self._nombran()))
 

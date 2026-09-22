@@ -56,7 +56,7 @@ El pase del 27/08 anotó, entre lo que funcionó:
 
 ## 4. Qué NO hace
 
-- **No crea una segunda versión de ninguna skill.** Un bloque, idéntico en los once (R-5).
+- **No crea una segunda versión de ninguna skill.** Un bloque, idéntico en todos los métodos (R-5).
 - **No reescribe los ejemplos** a vocabulario de autoridad: eso solo invertiría el sesgo y duplicaría el trabajo de mantenerlos.
 - **No cambia ninguna garantía epistémica** (R-4). Las endurece en un solo eje: la orientación.
 - **No decide si una inspectora puede apoyar un acto administrativo en una salida de IA.** Eso es `V-7`, necesita criterio jurídico y necesita un ADR **antes** que una spec (regla 2 de esta capa). Ver §7.

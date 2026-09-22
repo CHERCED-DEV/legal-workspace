@@ -1,0 +1,16 @@
+{
+  "name": "pagina-despacho",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Plantilla de la superficie de trabajo (ADR-020). Se compila AQUI; el resultado viaja compilado. La maquina de la abogada NO necesita Node.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --emptyOutDir",
+    "publicar": "vite build --emptyOutDir && node publicar.mjs"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11",
+    "vite-plugin-singlefile": "^2.0.3"
+  }
+}

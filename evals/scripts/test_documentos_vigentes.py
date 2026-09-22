@@ -59,22 +59,33 @@ class LosTitularesSiguenSiendoCiertos(unittest.TestCase):
                      if patron.search(p.read_text(encoding="utf-8"))]
         self.assertEqual([], culpables)
 
-    def test_2bis_son_once_metodos(self):
+    def test_2bis_son_doce_metodos(self):
         """El numero que mas veces se ha escrito mal en este repositorio."""
         metodos = sorted(p.parent.name for p in SKILLS.glob("*/SKILL.md"))
-        self.assertEqual(11, len(metodos), metodos)
-        self.assertIn(u"once métodos", seccion0())
+        self.assertEqual(12, len(metodos), metodos)
+        self.assertIn(u"doce métodos", seccion0())
 
-    def test_3_los_once_estan_registrados_como_ejecutados(self):
-        """§0.3: «los once se han ejecutado al menos una vez»."""
+    def test_3_once_de_los_doce_estan_registrados_como_ejecutados(self):
+        """§0.3, y la excepcion se nombra en vez de esconderse.
+
+        Once tienen pasada escrita. El duodecimo, `transcribir-audio`, entro
+        por fusion el 2026-09-22 y NO se ha corrido aqui: sus bibliotecas no
+        estan en este entorno. Esta prueba fija las dos cosas -- que los once
+        siguen registrados, y que el que falta es exactamente ese y esta
+        declarado en el §0. **Si un dia se corre, esta prueba falla**, y eso
+        es lo que se quiere: obliga a escribir su registro y a borrar de aqui
+        la excepcion, en vez de dejarla envejecer.
+        """
         notas = (RAIZ / "docs" / "technical-design" / "v0" / "notes-verification")
         registro = "\n".join(f.read_text(encoding="utf-8")
                              for f in notas.glob("pasada-*.md"))
-        sin_registrar = [p.parent.name for p in SKILLS.glob("*/SKILL.md")
-                         if p.parent.name not in registro]
-        self.assertEqual([], sin_registrar,
-                         "el §0.3 dice que los once se ejecutaron, y estos no "
-                         "aparecen en ningun registro de pasada")
+        sin_registrar = sorted(p.parent.name for p in SKILLS.glob("*/SKILL.md")
+                               if p.parent.name not in registro)
+        self.assertEqual(["transcribir-audio"], sin_registrar,
+                         "el §0.3 dice que once de los doce se ejecutaron, y "
+                         "la cuenta del disco ya no es esa")
+        self.assertIn(u"Once de los doce se han ejecutado", seccion0())
+        self.assertIn(u"no se ha corrido aquí", seccion0())
 
     def test_6_la_cadena_esta_completa(self):
         """§0.6: quien escribe la hoja, y quien se detiene sin la marca."""
@@ -97,10 +108,16 @@ class LosTitularesSiguenSiendoCiertos(unittest.TestCase):
                          "el §0.7 dice 55 y en el disco hay %d" % cuantos)
 
     def test_8_el_plugin_ejecuta_los_programas_que_dice(self):
-        """§0.8: «hoy ejecuta diez programas»."""
+        """§0.8: «catorce programas, de los cuales ocho se exponen».
+
+        Dos numeros y no uno, porque decir solo «catorce» sugeriria que el
+        modelo puede invocar catorce, y son ocho. Cual es cual lo decide
+        `test_superficie.py`; aqui solo se fija que el documento no mienta.
+        """
         programas = sorted(p.name for p in SCRIPTS.glob("*.py"))
-        self.assertEqual(10, len(programas), programas)
-        self.assertIn(u"diez programas", seccion0())
+        self.assertEqual(14, len(programas), programas)
+        self.assertIn(u"catorce programas", seccion0())
+        self.assertIn(u"ocho se exponen al modelo", seccion0())
 
 
 class LoQueEsteArchivoNoComprueba(unittest.TestCase):
@@ -224,6 +241,54 @@ class LaCuentaDeAC05SigueSiendoLaMedida(unittest.TestCase):
         primeras = ref.read_text(encoding="utf-8").split("\n")[:5]
         self.assertTrue(any("TEXTO DE REFERENCIA" in l.upper() for l in primeras),
                         "el derivado dejo de declararse en su primera linea")
+
+
+class ElArbolDelREADMEDiceLoQueHay(unittest.TestCase):
+    """`V-12` se cerro el 2026-09-05 «con un grep» y sin dejar la guarda puesta.
+
+    El arbol de `plugins/despacho/README.md` es lo primero que lee quien va a
+    instalar o a publicar: dice que metodos trae el plugin y que programas hay
+    en la oficina. **Un arbol desactualizado no falla, no avisa y se cree.**
+
+    Se comprobo a mano aquel dia, y a mano volvio a quedar mal el 2026-09-22
+    cuando la fusion trajo un metodo y cuatro programas. Esto es esa misma
+    comprobacion, puesta donde no se olvide: falla si el disco crece y el
+    arbol no, y falla si el arbol nombra algo que ya no existe.
+    """
+
+    ARBOL = RAIZ / "plugins" / "despacho" / "README.md"
+
+    def _arbol(self):
+        t = self.ARBOL.read_text(encoding="utf-8")
+        i = t.index(u"├─ .claude-plugin/")
+        return t[i:t.index(u"└─ docs/", i)]
+
+    def test_estan_todos_los_metodos_del_disco(self):
+        arbol = self._arbol()
+        faltan = [p.parent.name for p in sorted(SKILLS.glob("*/SKILL.md"))
+                  if (p.parent.name + "/") not in arbol]
+        self.assertEqual([], faltan, "el árbol del README no los lista")
+
+    def test_estan_todos_los_programas_del_disco(self):
+        arbol = self._arbol()
+        faltan = [f.name for f in sorted(SCRIPTS.glob("*.py"))
+                  if f.name not in arbol]
+        self.assertEqual([], faltan, "el árbol del README no los lista")
+
+    def test_no_nombra_nada_que_no_exista(self):
+        """La mitad que se olvida: quitar un programa y dejarlo escrito."""
+        import re as _re
+        arbol = self._arbol()
+        en_disco = {f.name for f in SCRIPTS.glob("*.py")}
+        sobran = [n for n in _re.findall(r"\b([a-z_]+\.py)\b", arbol)
+                  if n not in en_disco]
+        self.assertEqual([], sobran, "el árbol nombra programas que no están")
+
+    def test_el_arbol_dice_cuantos_son_y_es_verdad(self):
+        t = self.ARBOL.read_text(encoding="utf-8")
+        self.assertEqual(12, len(list(SKILLS.glob("*/SKILL.md"))))
+        self.assertIn(u"los DOCE metodos", t)
+        self.assertIn(u"sin el los doce comandos funcionan igual", t)
 
 
 if __name__ == "__main__":

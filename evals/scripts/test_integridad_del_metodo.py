@@ -143,6 +143,14 @@ class LasLineasDeComandoEscritasFuncionan(unittest.TestCase):
         self._acepta("preparar_material.py", str(self.tmp / "a.md"),
                      "--caso", "k", "--destino", str(self.tmp / "d"))
 
+    def test_transcribir_audio(self):
+        """La linea de su Fase 2, con las tres opciones de su tabla."""
+        self._acepta("transcribir_audio.py", str(self.tmp / "a.md"),
+                     "--destino", str(self.tmp / "d"))
+        self._acepta("transcribir_audio.py", str(self.tmp / "a.md"),
+                     "--destino", str(self.tmp / "d"),
+                     "--sin-voces", "--sin-glosario", "--pasadas", "3")
+
 
 class ElOrdenInvertidoEstaBienYNoSeIguala(unittest.TestCase):
     """Los dos programas se usan seguidos y toman los argumentos al reves.
@@ -203,6 +211,16 @@ class TodoLoQueSeEscribeEstaEnLaTablaDeConvenciones(unittest.TestCase):
         j = t.index(u"> **Y ojo con dos cosas", i)
         return t[i:j]
 
+    # Dos formas de escribir la fecha en un nombre de archivo, y el 2026-09-22
+    # se descubrio que esta prueba solo conocia una. `transcribir_audio.py`
+    # usa `%s` con el viejo operador y deja SIETE archivos por grabacion: los
+    # siete pasaban por delante de esta guarda sin que los viera. Una guarda
+    # ajustada a la forma que usaba su autor protege esa forma y nada mas.
+    NOMBRA_UN_ARCHIVO = (
+        r'f?"([A-Z][^"]{5,40}) - \{?[a-z_.()]*date',   # f"Hechos - {date...
+        r'"([A-Z0-9][^"]{4,40}?) - %s',                # "Transcripcion - %s...
+    )
+
     def test_los_programas_que_escriben_estan_en_la_tabla(self):
         """Lo que un PROGRAMA deja en 2-Borradores, buscado en su codigo."""
         import re as _re
@@ -210,10 +228,24 @@ class TodoLoQueSeEscribeEstaEnLaTablaDeConvenciones(unittest.TestCase):
         faltan = []
         for f in sorted(SCRIPTS.glob("*.py")):
             cod = f.read_text(encoding="utf-8")
-            for m in _re.finditer(r'f?"([A-Z][^"]{5,40}) - \{?[a-z_.()]*date', cod):
-                if m.group(1) not in tabla:
-                    faltan.append("%s escribe «%s»" % (f.name, m.group(1)))
-        self.assertEqual([], faltan)
+            for patron in self.NOMBRA_UN_ARCHIVO:
+                for m in _re.finditer(patron, cod):
+                    if m.group(1) not in tabla:
+                        faltan.append("%s escribe «%s»" % (f.name, m.group(1)))
+        self.assertEqual([], sorted(set(faltan)))
+
+    def test_el_segundo_patron_encuentra_algo(self):
+        """Control positivo: un patron que no casara con nada pasaria solo.
+
+        Es el modo de fallo del que sale esta prueba entera, asi que se fija:
+        el patron nuevo tiene que estar viendo los archivos de la transcripcion.
+        """
+        import re as _re
+        cod = (SCRIPTS / "transcribir_audio.py").read_text(encoding="utf-8")
+        hallados = {m.group(1) for m in _re.finditer(self.NOMBRA_UN_ARCHIVO[1], cod)}
+        self.assertIn("Transcripcion", hallados)
+        self.assertIn("00 - REGISTRO DE TRANSCRIPCION", hallados)
+        self.assertIn("00 - PASAJES A VERIFICAR", hallados)
 
     def test_los_metodos_que_nombran_su_salida_estan_en_la_tabla(self):
         import re as _re

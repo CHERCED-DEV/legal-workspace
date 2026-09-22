@@ -54,7 +54,7 @@ No es medición por medición. Cada una desbloquea una decisión concreta que ho
 | R-4 | **Ni se infla ni se esconde.** Un número alto es buena noticia —la comprobación funciona—; cero con muchas comprobaciones también es información. **Lo único que destruye la medida es un número que no sea verdad** | `H-12` |
 | R-5 | **Se cita siempre con su salvedad:** es un autoinforme y no prueba que la salida sea correcta | `H-12` · `G22` |
 | R-6 | **No mide nada de ella.** Ni su tiempo, ni sus decisiones, ni cuántas veces cambió de opinión. Mide la pasada | `V-3` mide horas-persona y es otro ítem, con su propio consentimiento |
-| R-7 | **La redacción del bloque es idéntica en los once**, para que dos pasadas de dos comandos se puedan comparar | `EP-C06` — métricas homónimas con denominadores distintos |
+| R-7 | **La redacción del bloque es idéntica en todos los métodos**, para que dos pasadas de dos comandos se puedan comparar | `EP-C06` — métricas homónimas con denominadores distintos |
 
 ## 4. Qué NO hace
 

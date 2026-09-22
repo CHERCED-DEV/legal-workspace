@@ -4,7 +4,7 @@
 __pycache__/
 *.pyc
 
-# Modelos de OCR: binarios de terceros, 16 MB. Ver plugins/despacho/scripts/modelos/PROCEDENCIA.md
+# Modelos de OCR y de voz: binarios de terceros, 52 MB. Ver plugins/despacho/scripts/modelos/PROCEDENCIA.md
 plugins/despacho/scripts/modelos/*.onnx
 plugins/despacho/scripts/modelos/*.txt
 plugins/despacho/scripts/modelos/*.yml

@@ -484,6 +484,23 @@ def main(args):
         print("   este metodo no produce un documento con conteo: produce lo")
         print("   que ella lee en pantalla. No se le pide ninguna cifra.")
         return 0
+    # Lo que deja `/transcribir-audio` tampoco lleva conteo, y por una razon
+    # distinta de la de `preguntas-de-derecho`: **no hay nada que contar que
+    # signifique algo.** Una transcripcion tiene los segmentos que tiene el
+    # audio; declarar «247 lineas» no es un instrumento de honestidad, es un
+    # numero. Lo que ese metodo si declara -- acuerdo entre pasadas, habla
+    # descartada, pureza de voz -- va en su registro y no es una ficha.
+    #
+    # Se reconoce por el titulo, que lo escribe su propio programa, y NO por
+    # el nombre del archivo: un nombre se cambia al guardarlo en otro sitio.
+    if re.search(u"(?m)^#\\s*(TRANSCRIPCI[OÓ]N|REGISTRO DE TRANSCRIPCI[OÓ]N|"
+                 u"PASAJES A VERIFICAR)\\b", texto):
+        print(u"\n== %s   (transcripci\u00f3n)" % args[0])
+        print(u"   este metodo no produce fichas: produce el texto que tiene el")
+        print(u"   audio. No se le pide ninguna cifra, y lo que si declara")
+        print(u"   --acuerdo entre pasadas, habla descartada, pureza de voz--")
+        print(u"   va en su REGISTRO DE TRANSCRIPCION.")
+        return 0
     if re.search(r"(?m)^\|\s*B-\d+\s*\|", texto):
         return main_bienes(args[0], texto)
     if re.search(r"(?im)^#*\s*1\.\s*EN QU[EÉ] VA", texto):

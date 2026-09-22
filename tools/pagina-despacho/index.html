@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITULO}}</title>
+<meta name="generator" content="despacho/pagina 0.1.0">
+</head>
+<body>
+
+<!-- ADR-020 §6: la incertidumbre es estructural. Esta barra es lo primero que se ve
+     y lo primero que se imprime. No es un descargo al pie. -->
+<header class="cabecera">
+  <div class="envoltura">
+    <p class="tipo">{{TIPO}}</p>
+    <h1>{{TITULO}}</h1>
+    <dl class="ficha">{{FICHA}}</dl>
+    <div class="propuesta" role="note">
+      <strong>Esto es material derivado, no es el original.</strong>
+      {{ADVERTENCIA}}
+    </div>
+  </div>
+</header>
+
+<div class="barra" id="barra" hidden>
+  <div class="envoltura barra-fila">
+    <div class="reproductor" id="reproductor" hidden>
+      <audio id="audio" preload="metadata"></audio>
+      <button type="button" id="btn-play" class="boton" aria-label="Reproducir o pausar">▶</button>
+      <span class="reloj"><span id="reloj-actual">00:00:00</span> / <span id="reloj-total">—</span></span>
+    </div>
+    <p class="sin-audio" id="sin-audio" hidden>
+      <strong>No se encontró la grabación</strong> junto a esta página, así que no se puede comprobar oyendo.
+    </p>
+    <div class="filtros" role="group" aria-label="Filtrar">
+      <button type="button" class="chip activo" data-filtro="todo">Todo</button>
+      <button type="button" class="chip" data-filtro="dudoso">Con motivo de duda</button>
+      <button type="button" class="chip" data-filtro="pendiente">Sin comprobar</button>
+      <button type="button" class="chip" data-filtro="hecho">Ya comprobadas</button>
+    </div>
+    <div class="progreso">
+      <span id="progreso-texto">—</span>
+      <button type="button" class="boton tenue" id="btn-exportar">Guardar lo comprobado</button>
+      <button type="button" class="boton tenue" id="btn-importar">Cargar</button>
+      <button type="button" class="boton tenue" id="btn-ayuda" title="Atajos de teclado">⌨ atajos</button>
+      <input type="file" id="archivo-estado" accept="application/json" hidden>
+    </div>
+  </div>
+  <!-- La franja responde de un vistazo «donde invierto el tiempo», que una lista
+       de trescientos elementos no responde. -->
+  <div class="franja envoltura" id="franja"></div>
+  <p class="aviso-persistencia envoltura" id="aviso-persistencia" hidden></p>
+</div>
+
+<main class="envoltura" id="contenido">
+{{CONTENIDO}}
+</main>
+
+<footer class="envoltura pie">
+{{PIE}}
+</footer>
+
+<script type="application/json" id="datos">{{DATOS}}</script>
+<script type="module" src="/src/pagina.js"></script>
+</body>
+</html>
