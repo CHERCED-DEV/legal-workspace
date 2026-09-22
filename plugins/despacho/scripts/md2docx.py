@@ -164,9 +164,36 @@ def caja(doc, lineas, relleno=CREMA):
     return t
 
 
+def _minimos(cabeceras, filas):
+    """Ancho minimo de cada columna: el de su palabra mas larga. Con el reparto
+    solo proporcional, una columna de textos cortos quedaba mas estrecha que
+    una hora como «00:25:30», y Word la partia a mitad de numero."""
+    m = [0] * len(cabeceras)
+    for r in [cabeceras] + filas:
+        for i in range(len(m)):
+            s = re.sub(r'\[([^\]]+)\]\([^)]*\)', r'\1', r[i] or '').replace('**', '')
+            for p in s.split():
+                m[i] = max(m[i], len(p))
+    return [115 * k + 260 for k in m]
+
+
 def tabla(doc, cabeceras, filas, pesos):
     total = sum(pesos) or 1
     cols = [int(round(CONTENIDO * w / total)) for w in pesos]
+    minimos = _minimos(cabeceras, filas)
+    if sum(minimos) < CONTENIDO:
+        for i in range(len(cols)):
+            falta = minimos[i] - cols[i]
+            if falta <= 0:
+                continue
+            holgura = [(cols[j] - minimos[j], j) for j in range(len(cols))
+                       if j != i and cols[j] > minimos[j]]
+            libre = sum(h for h, _ in holgura)
+            if libre < falta:
+                continue
+            cols[i] += falta
+            for h, j in holgura:
+                cols[j] -= int(round(falta * h / libre))
     cols[-1] += CONTENIDO - sum(cols)          # el redondeo se paga en la ultima
 
     t = doc.add_table(rows=1 + len(filas), cols=len(cabeceras))

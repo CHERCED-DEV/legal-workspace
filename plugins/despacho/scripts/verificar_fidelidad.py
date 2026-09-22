@@ -29,7 +29,11 @@ import sys
 
 
 def normaliza(texto: str) -> str:
-    """Quita la puntuacion propia de Markdown y colapsa espacios."""
+    """Quita la puntuacion propia de Markdown y colapsa espacios.
+
+    Un enlace se reduce a su texto, igual que hace md2docx: la ruta de destino no
+    se imprime en el Word, y contarla como perdida daba falsas alarmas."""
+    texto = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", texto)
     texto = re.sub(r"[*`|>#_-]", " ", texto)
     return re.sub(r"\s+", " ", texto).strip().lower()
 
