@@ -16,6 +16,18 @@ Este documento responde a una sola pregunta: **¿en qué vamos?** Está escrito 
 
 ---
 
+> ## CERRADO EL 2026-09-22
+>
+> **El trabajo se para aquí para llevar los recursos a otra cosa.** Lo que hace falta para
+> retomarlo en frío está en **[`CIERRE-2026-09-22.md`](CIERRE-2026-09-22.md)**: qué es esto,
+> qué hacer lo primero, lo que el proyecto aprendió, lo que queda abierto **y de quién es**,
+> y lo que este proyecto **no sabe de sí mismo**.
+>
+> **Lo primero al volver:** `sh evals/scripts/correr-todo.sh`. Si sale verde, el producto
+> sigue siendo el que estos documentos describen.
+
+---
+
 ## §0 — Dónde estamos, en diez líneas
 
 **Cada punto se recomprobó contra el repositorio el 2026-09-22, con un comando.** Donde el titular de agosto cambió, se dice qué decía y qué lo cambió — porque *«ya no aplica»* sin la frase vieja al lado no deja comprobar nada.
@@ -53,7 +65,7 @@ Este documento responde a una sola pregunta: **¿en qué vamos?** Está escrito 
 | | Qué |
 |---|---|
 | **El producto** | De seis métodos a **doce**, con **catorce programas** que hacen el trabajo mecánico —**ocho expuestos al modelo**, seis de correr a mano—. **Doce specs** escritas y ejecutadas |
-| **La medición** | De cero a **313 pruebas** y cuatro guardas que corren solas sobre todas las salidas: el conteo declarado contra las fichas que hay, todo número que no esté en el material, las afirmaciones prohibidas, y cuántos `SKILL.md` dicen algo |
+| **La medición** | De cero a **316 pruebas** y cuatro guardas que corren solas sobre todas las salidas: el conteo declarado contra las fichas que hay, todo número que no esté en el material, las afirmaciones prohibidas, y cuántos `SKILL.md` dicen algo |
 | **La cobertura** | Los **seis corpus** del repositorio, leídos y triados. Quedaba uno sin cubrir en agosto; hoy ninguno |
 | **Lo que encontró ejecutar** | Defectos en los once métodos que se ejecutaron, **ninguno visible releyendo**. Y **ocho de los hallazgos no fueron de los métodos sino de las guardas** que los vigilan |
 | **Lo que sigue igual** | Nadie lo ha instalado. **Ninguna abogada ha abierto una sola salida del producto.** No hay una cifra de coste |

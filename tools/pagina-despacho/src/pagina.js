@@ -56,17 +56,31 @@ async function copiar(texto) {
 
 function procedencia(b) {
   const e = estado.de(b.id)
-  const donde = b.ancla.tipo === 'tiempo' ? hms(b.ancla.inicio)
+  const donde = b.ancla.tipo === 'tiempo' ? `minuto ${hms(b.ancla.inicio)}`
     : b.ancla.tipo === 'pagina' ? `p. ${b.ancla.n}` : ''
   const base = `— ${C.documento.origen || C.documento.titulo}${donde ? ', ' + donde : ''}. `
              + `${C.documento.tipoMaterial || 'Material derivado'}`
-  return (e?.estado === 'confirmado' || e?.estado === 'corregido')
-    ? `${base}, cotejado con el original el ${e.fecha}.`
-    : `${base}, NO cotejado con el original.`
+  // Una linea CORREGIDA se copia con la correccion, no con el texto de la maquina:
+  // antes salia el texto equivocado con la etiqueta «cotejado con el original».
+  if (e?.estado === 'corregido') {
+    return e.correccion
+      ? `${base}. Texto corregido por usted tras oír el original el ${e.fecha}; la transcripción automática decía otra cosa.`
+      : `${base}, marcado por usted como incorrecto el ${e.fecha}, sin escribir la corrección.`
+  }
+  if (e?.estado === 'confirmado') return `${base}, cotejado con el original el ${e.fecha}.`
+  if (e?.estado === 'oido') return `${base}, oído en el original el ${e.fecha} sin poder confirmar el texto.`
+  return `${base}, NO cotejado con el original.`
+}
+
+function textoDe(b) {
+  const e = estado.de(b.id)
+  if (e?.estado === 'corregido' && e.correccion) return e.correccion
+  return $('.texto', nodoDe(b)).textContent.trim()
 }
 
 /* -------------------------------------------------------------------- estado */
-const estado = crearEstado(C.clave, () => {
+const estado = crearEstado(C.clave, (id) => {
+  if (id === null) { C.bloques.forEach(pintarBloque); aplicarFiltro() }
   pintarProgreso(); pintarAviso(); franja?.refrescar()
 })
 
@@ -141,14 +155,19 @@ function aplicarFiltro() {
   pintarProgreso()
 }
 
+function hechas() {
+  const n = estado.cuantos()
+  return n === 1 ? '1 comprobada' : `${n} comprobadas`
+}
+
 function pintarProgreso() {
   const el = $('#progreso-texto')
   if (!el) return
   const pend = C.dudosos.filter((b) => !estado.de(b.id)).length
   el.textContent = pend
-    ? `${estado.cuantos()} comprobadas · quedan ${pend} con motivo de duda`
-    : C.dudosos.length ? `${estado.cuantos()} comprobadas · ninguna pendiente`
-                       : `${estado.cuantos()} comprobadas`
+    ? `${hechas()} · ${pend === 1 ? 'queda 1' : `quedan ${pend}`} con motivo de duda`
+    : C.dudosos.length ? `${hechas()} · ninguna pendiente`
+                       : hechas()
 }
 
 function pintarAviso() {
@@ -156,7 +175,7 @@ function pintarAviso() {
   if (!el) return
   const p = []
   if (!estado.almacenOK) p.push('Este navegador no conserva lo marcado al cerrar la página.')
-  if (estado.sucio) p.push('Tiene trabajo sin guardar: use «Guardar lo comprobado».')
+  if (estado.sucio) p.push('Tiene marcas que aún no ha guardado en un archivo: use «Guardar lo comprobado».')
   el.textContent = p.join(' ')
   el.hidden = !p.length
 }
@@ -184,6 +203,47 @@ const medios = crearMedios($('#audio'), C.audio, {
   },
 })
 let sonando = null
+
+/* ------------------------------------------------------------ enlace directo */
+// «pagina.html#t=1140» o «#t=00:19:00» llega a ese punto y lo enfoca. NO lo hace
+// sonar: el navegador no deja reproducir hasta que ella pulse algo, y fingir que
+// va a sonar seria peor que decirle que pulse.
+function segundosDe(v) {
+  if (!v) return null
+  if (/^\d+(\.\d+)?$/.test(v)) return parseFloat(v)
+  const p = v.split(':').map(Number)
+  return p.some(Number.isNaN) ? null : p.reduce((a, x) => a * 60 + x, 0)
+}
+
+let relojAviso = null
+function irAlEnlace() {
+  const m = /(?:^#|&)t=([^&]+)/.exec(location.hash)
+  const t = segundosDe(m && decodeURIComponent(m[1]))
+  if (t === null) return
+  const conTiempo = C.bloques.filter((b) => b.ancla.tipo === 'tiempo')
+  // Primero la linea cuya hora VISIBLE es la del enlace: las horas se muestran
+  // truncadas al segundo, y una linea que empieza en 355,2 s se ve como 00:05:55.
+  // Sin esto, el enlace a 00:05:55 caia en la linea anterior.
+  let b = conTiempo.find((x) => x.ancla.inicio >= t && x.ancla.inicio < t + 1)
+       || conTiempo.find((x) => t >= x.ancla.inicio && t < x.ancla.fin)
+  // Si el minuto cae donde la transcripcion no tiene texto, se va a la linea
+  // ANTERIOR: al oir desde ahi se pasa por el hueco. Ir a la siguiente hacia
+  // saltarse justo lo que habia que oir — a veces un nombre que otras lecturas
+  // si recogieron.
+  const hueco = !b
+  if (hueco) b = [...conTiempo].reverse().find((x) => x.ancla.inicio < t) || conTiempo[0]
+  if (!b) return
+  if (filtro !== 'todo') $('[data-filtro="todo"]')?.click()
+  enfocar(b.id)
+  const el = $('#aviso-enlace')
+  if (!el) return
+  el.textContent = hueco
+    ? `El minuto ${hms(t)} cae en un hueco de la transcripción: ahí no hay texto. Pulse ↵ (Enter) y lo oirá desde la línea anterior.`
+    : `Está en el minuto ${hms(t)}. Pulse ↵ (Enter) o la hora del bloque para oírlo.`
+  el.hidden = false
+  clearTimeout(relojAviso)
+  relojAviso = setTimeout(() => { el.hidden = true }, 9000)
+}
 
 /* ------------------------------------------------------------------- montaje */
 function montarBloque(b) {
@@ -214,7 +274,7 @@ function montarBloque(b) {
     ev.stopPropagation()
     const a = x.dataset.a
     if (a === 'copiar' || a === 'copiar-solo') {
-      const txt = $('.texto', n).textContent.trim()
+      const txt = textoDe(b)
       const ok = await copiar(a === 'copiar' ? `«${txt}»\n${procedencia(b)}` : txt)
       const antes = x.textContent
       x.textContent = ok ? 'Copiado' : 'No se pudo copiar'
@@ -228,7 +288,7 @@ function montarBloque(b) {
   if (b.alternativas.length) {
     const d = document.createElement('details')
     d.className = 'alternativas'
-    d.innerHTML = `<summary>Las otras decodificaciones escribieron algo distinto</summary>`
+    d.innerHTML = `<summary>Otras lecturas automáticas escribieron algo distinto</summary>`
     b.alternativas.forEach((alt) => {
       const p = document.createElement('p')
       p.innerHTML = `<span class="et">${alt.fuente}</span>`
@@ -242,6 +302,9 @@ function montarBloque(b) {
 }
 
 function iniciar() {
+  // Sin bloques es un documento para leer: ni filtros, ni contador, ni «Guardar
+  // lo comprobado» sobre algo que no tiene nada que comprobar.
+  if (!C.bloques.length) return
   $('#barra').hidden = false
   C.bloques.forEach(montarBloque)
 
@@ -278,7 +341,7 @@ function iniciar() {
     s: { desc: 'Copiar con procedencia', fn: async () => {
       if (!foco) return
       const b = C.porId.get(foco)
-      await copiar(`«${$('.texto', nodoDe(b)).textContent.trim()}»\n${procedencia(b)}`)
+      await copiar(`«${textoDe(b)}»\n${procedencia(b)}`)
     } },
     n: { desc: 'Ir a lo más grave que queda sin comprobar', fn: () => {
       const sig = C.porGravedad.find((b) => !estado.de(b.id))
@@ -297,6 +360,8 @@ function iniciar() {
   })
 
   pintarProgreso(); pintarAviso(); aplicarFiltro()
+  irAlEnlace()
+  window.addEventListener('hashchange', irAlEnlace)
 }
 
 document.readyState === 'loading'

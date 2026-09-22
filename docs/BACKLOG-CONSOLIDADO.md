@@ -948,6 +948,26 @@ Por tercera vez el hallazgo grande sale de **correr una guarda sobre algo que no
 
 **Comprobado con mutantes en las tres averías**, y editar el compilado dispara **dos guardas independientes**. Se verificó además que compilar de nuevo da la plantilla que viaja **byte a byte**: la que está en el repositorio es de verdad una compilación de estas fuentes.
 
+### 17.3 Y la guarda encontró algo el primer día que se expuso a código ajeno
+
+**2026-09-22, segunda fusión.** `master` avanzó cuatro commits mientras esta rama cerraba. Al traerlos, `test_pagina_publicada.py` —escrita horas antes— se puso roja, y **no por lo que se esperaba**:
+
+> `plugins/despacho/scripts/plantilla/pagina.html` llegó con **68 retornos de carro** metidos por un checkout de Windows. Los introdujo `fae6bc3`; el blob anterior era LF puro.
+
+**El síntoma no es visual.** La página se ve igual de bien en el navegador, y por eso nadie lo iba a ver. Lo que rompe es otra cosa: **el artefacto deja de poder cuadrar nunca con su compilación**, y la guarda se queda roja por algo que quien la encuentre no sabrá arreglar. **Una guarda roja sin remedio se aprende a ignorar**, y a partir de ahí deja de proteger también lo que sí importa.
+
+**Y no era la primera vez.** El `.gitattributes` de este repositorio existe desde hace días porque **un `.sh` con finales de Windows no arranca** —`\r: command not found`—. Aquello se arregló para `*.sh`, **y solo para `*.sh`**. Es literalmente el patrón que el §17 apunta tres veces: *una regla ajustada al caso que la estrenó protege ese caso y nada más*.
+
+**Cerrado entero, no solo el archivo:**
+
+| | Qué se hizo |
+|---|---|
+| **El archivo** | republicado desde la compilación: 0 retornos de carro |
+| **La regla** | `.gitattributes` fija ahora `*.html` y `tools/pagina-despacho/src/*`, no solo `*.sh` |
+| **La guarda** | barre **todo lo versionado**, no la plantilla: 316 archivos, ninguno con `\r`. Comprobada con un mutante |
+
+> **Arreglar el archivo sin fijar la regla es arreglarlo hasta el próximo commit.** Por eso hay una tercera prueba que comprueba que `.gitattributes` siga teniendo las tres reglas: si alguien quita una, falla ahí y no tres semanas después.
+
 ### Lo vivo
 
 | # | Qué | Estado |

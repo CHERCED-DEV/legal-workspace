@@ -164,5 +164,58 @@ class LaCompilacionDeVerdad(unittest.TestCase):
                          u"compilar de nuevo NO da la plantilla que viaja")
 
 
+class NingunArchivoDeTextoTraeRetornosDeCarro(unittest.TestCase):
+    """El hallazgo del 2026-09-22, y la guarda que impide que vuelva.
+
+    `master` trajo la plantilla compilada **con 68 retornos de carro** metidos
+    por un checkout de Windows. La pagina se ve igual de bien en el navegador,
+    asi que el sintoma no es visual: **el artefacto deja de poder cuadrar con
+    su compilacion para siempre**, y la guarda de arriba se queda roja por algo
+    que nadie sabe arreglar. **Una guarda roja sin remedio se aprende a
+    ignorar**, y entonces deja de proteger tambien lo que si importa.
+
+    No es la primera vez en este repositorio: el `.gitattributes` existe desde
+    hace dias porque **un `.sh` con finales de Windows no arranca** --falla con
+    `\r: command not found`--. Aquello se arreglo para `*.sh` y solo para
+    `*.sh`. Es el mismo patron que este arnes lleva documentado: **una regla
+    ajustada al caso que la estreno protege ese caso y nada mas.**
+
+    Esta prueba barre TODO lo versionado, no solo la plantilla.
+    """
+
+    # Binarios y lo que legitimamente puede traerlos.
+    EXENTOS = (".png", ".jpg", ".jpeg", ".gif", ".pdf", ".docx", ".xlsx",
+               ".zip", ".onnx", ".ico", ".woff", ".woff2")
+
+    def _versionados(self):
+        r = subprocess.run(["git", "ls-files", "-z"], cwd=str(RAIZ),
+                           capture_output=True)
+        for nombre in r.stdout.decode("utf-8").split("\0"):
+            if nombre and not nombre.lower().endswith(self.EXENTOS):
+                yield RAIZ / nombre
+
+    def test_ninguno(self):
+        con_cr = []
+        for f in self._versionados():
+            try:
+                if b"\r" in f.read_bytes():
+                    con_cr.append(str(f.relative_to(RAIZ)))
+            except (OSError, ValueError):
+                continue
+        self.assertEqual([], sorted(con_cr),
+                         u"traen retornos de carro. Si es un artefacto, vuelva "
+                         u"a publicarlo; y fije su extensión en .gitattributes "
+                         u"para que el próximo commit no lo repita")
+
+    def test_la_prueba_mira_el_repositorio_entero(self):
+        """Control positivo: si `git ls-files` fallara, lo de arriba pasaria solo."""
+        self.assertGreater(len(list(self._versionados())), 100)
+
+    def test_gitattributes_fija_lo_que_se_arreglo(self):
+        """Arreglar el archivo sin fijar la regla es arreglarlo hasta el proximo commit."""
+        t = (RAIZ / ".gitattributes").read_text(encoding="utf-8")
+        for regla in ("*.sh", "*.html", "tools/pagina-despacho/src/*"):
+            self.assertIn(regla, t, regla)
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

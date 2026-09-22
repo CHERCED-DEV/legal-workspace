@@ -20,7 +20,7 @@ Lo que este programa NO hace:
 La plantilla se compila aparte, en tools/pagina-despacho, y viaja YA COMPILADA.
 **Esta maquina no necesita Node para nada.**
 """
-import argparse, hashlib, html, io, json, os, re, sys
+import argparse, hashlib, html, io, json, os, re, sys, urllib.parse
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 PLANTILLA = os.path.join(AQUI, "plantilla", "pagina.html")
@@ -36,7 +36,23 @@ def _linea(t):
     t = re.sub(r"(?<!\*)\*([^*\n]+)\*(?!\*)", r"<em>\1</em>", t)
     t = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)",
                r'<a href="\2" target="_blank" rel="noreferrer noopener">\1</a>', t)
+    t = re.sub(r"\[([^\]]+)\]\(&lt;([^&]+)&gt;\)", _enlace_local, t)
     return t
+
+
+def _enlace_local(m):
+    """Enlace a otro archivo del mismo paquete: [texto](<ruta relativa>).
+
+    Los que llevan #t= abren la pagina de esa grabacion en una pestana CON
+    NOMBRE, la misma para todos los enlaces a esa grabacion: pulsar diez minutos
+    distintos no abre diez pestanas que se pisarian las marcas unas a otras."""
+    texto, ruta = m.group(1), html.unescape(m.group(2))
+    href = urllib.parse.quote(ruta, safe="/#=:.-_~()")
+    destino = ""
+    if "#t=" in ruta:
+        base = ruta.split("#", 1)[0]
+        destino = ' target="%s"' % ("rec-" + re.sub(r"[^A-Za-z0-9]+", "-", base).strip("-"))
+    return '<a href="%s"%s>%s</a>' % (html.escape(href, quote=True), destino, texto)
 
 
 def _fila(l):
@@ -142,6 +158,28 @@ def hms(s):
 _ALTO = ("las pasadas no coinciden", "las dos pasadas difieren", "posible repeticion")
 _BAJO = ("puede no ser habla", "voz dudosa", "sin voz asignada")
 
+# Lo que ella LEE. La clasificacion de arriba sigue usando los nombres internos.
+_VISIBLE = {
+    "las pasadas no coinciden": "las lecturas automáticas no coinciden",
+    "las dos pasadas difieren": "las lecturas automáticas no coinciden",
+    "decodificacion forzada": "lectura forzada: la máquina pudo inventar texto aquí",
+    "posible repeticion": "posible repetición",
+}
+_FUENTE = {
+    "mezcla_f16": "Lectura de los dos canales mezclados",
+    "der_int8": "Lectura del canal derecho",
+    "izq_int8": "Lectura del canal izquierdo",
+    "crudo_int8": "Lectura del audio sin limpiar",
+}
+
+
+def visible(motivo):
+    return _VISIBLE.get(motivo, motivo)
+
+
+def fuente_visible(k):
+    return _FUENTE.get(k.split("/")[-1], "Otra lectura automática")
+
 
 def _riesgo(marcas, tiene_dato_duro):
     if not marcas:
@@ -178,7 +216,7 @@ def _alternativas(ventanas, inicio, gana, limite=3):
         for k, t in (v.get("textos") or {}).items():
             if k == gana or not t.strip():
                 continue
-            out.append({"fuente": k, "texto": t[:260]})
+            out.append({"fuente": fuente_visible(k), "texto": t[:260]})
         return out[:limite], round(1.0 - v.get("medio", 1.0), 3)
     return [], 0.0
 
@@ -307,7 +345,7 @@ def construir_bloques(doc, marcas, ventanas, gana):
             '<p class="texto">%s</p>' % texto_con_dudas(s),
         ]
         if mk:
-            cuerpo.append('<p class="motivos">%s</p>' % html.escape("; ".join(mk)))
+            cuerpo.append('<p class="motivos">%s</p>' % html.escape("; ".join(visible(x) for x in mk)))
         cuerpo.append("</article>")
         partes.append("".join(cuerpo))
 
@@ -350,7 +388,7 @@ def construir_lista(d, doc, marcas):
             continue
         otras = [(k, t) for k, t in (v.get("textos") or {}).items() if t.strip()]
         hallazgos.append({
-            "clase": "Las decodificaciones no coinciden",
+            "clase": "Las lecturas automáticas no coinciden",
             "t": v["t"], "riesgo": "alto", "gravedad": round(1 - v["medio"], 3),
             "detalle": "Coinciden solo en un %d %%." % round(100 * v["medio"]),
             "variantes": otras[:4],
@@ -406,10 +444,10 @@ def construir_lista(d, doc, marcas):
             '<p class="motivos">%s</p>' % _linea(h["detalle"]),
         ]
         if h["variantes"]:
-            cuerpo.append('<details class="alternativas"><summary>Qué escribió cada pasada</summary>')
+            cuerpo.append('<details class="alternativas"><summary>Qué escribió cada lectura automática</summary>')
             for k, t in h["variantes"]:
                 cuerpo.append('<p><span class="et">%s</span>%s</p>'
-                              % (html.escape(k), html.escape(t[:240])))
+                              % (html.escape(fuente_visible(k)), html.escape(t[:240])))
             cuerpo.append("</details>")
         cuerpo.append("</article>")
         partes.append("".join(cuerpo))
@@ -447,6 +485,12 @@ def main():
     ap.add_argument("salida")
     ap.add_argument("--datos", default=None)
     ap.add_argument("--audio", default=None)
+    ap.add_argument("--origen", default=None,
+                    help="como se nombra el documento al copiar una cita con su procedencia")
+    ap.add_argument("--tipo", default=None,
+                    help="etiqueta de la cabecera en paginas sin grabacion")
+    ap.add_argument("--advertencia", default=None,
+                    help="aviso de cabecera en paginas sin grabacion (admite **negrita**)")
     ap.add_argument("--lista", action="store_true",
                     help="produce la cola de comprobacion en vez del documento")
     a = ap.parse_args()
@@ -499,7 +543,7 @@ def main():
         datos["bloques"] = bloques
         datos["vistas"] = ["lectura", "resumen", "comprobacion"]
         datos["documento"]["tipo"] = tipo
-        datos["documento"]["origen"] = titulo
+        datos["documento"]["origen"] = a.origen or titulo
         if a.audio:
             # Ruta RELATIVA desde la pagina hasta la grabacion: asi la carpeta se
             # puede mover entera. Si el audio no esta, la pagina lo dice (ADR-020 §5).
@@ -527,21 +571,31 @@ def main():
             advertencia += (
             " De %d líneas, <strong>%d tienen algún motivo de duda</strong>, y de esas "
             "<strong>%d son de las que más daño hacen</strong>: una cifra o un nombre "
-            "propio en duda, o un punto donde las decodificaciones no coinciden. "
+            "propio en duda, o un punto donde las lecturas automáticas no coinciden. "
             "La franja de arriba dice dónde están. Cada marca de tiempo reproduce ese "
             "punto de la grabación; lo que usted marque como comprobado es constancia "
             "suya, <strong>no verificación de ningún sistema</strong>."
                 % (len(bloques), n_dud, alto))
     else:
         contenido = md_a_html(cuerpo if cuerpo else md)
+        if a.tipo:
+            tipo = datos["documento"]["tipo"] = a.tipo
+        if a.advertencia:
+            advertencia = _linea(a.advertencia)
 
-    datos["clave"] = hashlib.sha256(md.encode("utf-8")).hexdigest()[:16]
+    # La lista y la transcripcion salen del MISMO Markdown pero numeran sus bloques
+    # distinto (h0.. frente a b0..). Con la misma clave, el contador de una contaba
+    # las marcas de la otra, y con las dos abiertas cada marca borraba las ajenas.
+    datos["clave"] = hashlib.sha256(
+        (md + ("\x00lista" if a.lista else "")).encode("utf-8")).hexdigest()[:16]
 
     pie = ("<p>Página generada por <code>md2html %s</code> a partir de "
-           "<code>%s</code>. No es el original y no sustituye al documento de Word. "
-           "Lo que usted marque aquí vive en este navegador: <strong>use «Guardar lo "
-           "comprobado» antes de cerrar</strong>.</p>"
+           "<code>%s</code>. Es material derivado: no es el original."
            % (VERSION, html.escape(os.path.basename(a.entrada))))
+    if a.datos:
+        pie += (" Lo que usted marque aquí vive en este navegador: <strong>use «Guardar "
+                "lo comprobado» antes de cerrar</strong>.")
+    pie += "</p>"
 
     out = plantilla
     for k, v in (("{{TITULO}}", html.escape(titulo)), ("{{TIPO}}", html.escape(tipo)),
