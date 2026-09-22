@@ -173,12 +173,66 @@ _FUENTE = {
 }
 
 
+# De mas a menos grave. Es una ELECCION, no una medida, y por eso se declara
+# aqui en vez de quedar repartida por el codigo.
+_ORDEN_MOTIVOS = (
+    "decodificacion forzada",      # la maquina pudo inventar texto: lo peor
+    "posible repeticion",
+    "sin voz asignada",            # no se sabe quien habla
+    "voz dudosa",
+    "puede no ser habla",
+    "confianza baja",
+    "las pasadas no coinciden",    # casi siempre ya dicho por el desplegable
+    "palabra dudosa",              # casi siempre ya dicho por el subrayado
+)
+
+
 def visible(motivo):
     return _VISIBLE.get(motivo, motivo)
 
 
 def fuente_visible(k):
     return _FUENTE.get(k.split("/")[-1], "Otra lectura automática")
+
+
+def _ya_dicho(motivo, seg, hay_alternativas, hay_subrayado):
+    """¿Otro elemento de ESTA MISMA linea ya dice lo que dice el motivo?
+
+    Medido el 2026-09-22 sobre las tres grabaciones: «las pasadas no coinciden»
+    sale en 362 lineas y las 362 llevan ya el desplegable de otras lecturas --
+    escribirlo ademas es duplicarlo. Y «palabra dudosa» sale en 353, de las que
+    254 no senalaban ninguna palabra porque la dudosa era «y», «a» o «que»: un
+    aviso sobre una conjuncion no es un aviso.
+
+    Lo que NO se puede senalar sigue escribiendose. Nada se oculta: lo dicho
+    dos veces se dice una, y todo sigue a un clic."""
+    if motivo == "las pasadas no coinciden":
+        return hay_alternativas
+    if motivo == "palabra dudosa":
+        if hay_subrayado:
+            return True
+        # Sin subrayado solo queda callarlo si lo dudoso eran palabras de
+        # funcion; si hubiera una palabra con contenido sin senalar, se dice.
+        for w in seg.get("palabras") or []:
+            p = w["p"].strip(".,;:()[]¿?¡!\"'")
+            if p and len(p) > 2 and p.lower() not in _FUNCION and w.get("c", 1.0) < 0.45:
+                return False
+        return True
+    return False
+
+
+def jerarquia(seg, marcas, hay_alternativas, hay_subrayado):
+    """(el motivo que se escribe en claro, los que quedan plegados).
+
+    Existe porque un aviso en el 71 % de las lineas no es un aviso. En el
+    Audio 2 cada linea llevaba hasta seis motivos a la vez y el unico raro y
+    grave -- la maquina repitiendose -- quedaba sepultado entre los comunes."""
+    resto = sorted(marcas, key=lambda m: _ORDEN_MOTIVOS.index(m)
+                   if m in _ORDEN_MOTIVOS else 99)
+    for k, m in enumerate(resto):
+        if not _ya_dicho(m, seg, hay_alternativas, hay_subrayado):
+            return m, resto[:k] + resto[k + 1:]
+    return None, resto
 
 
 def _riesgo(marcas, tiene_dato_duro):
@@ -259,7 +313,7 @@ _FUNCION = set((
 ).split())
 
 
-def texto_con_dudas(seg, umbral_importante=0.70, umbral_resto=0.35):
+def texto_con_dudas(seg, umbral_importante=0.70, umbral_resto=0.45):
     """Marca DENTRO de la frase la palabra concreta de la que el reconocedor dudo.
 
     ADR-017 §5 prohibe que un ANCLAJE dependa de la marca de palabra, y se
@@ -352,6 +406,7 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None):
         mk = marcas.get(str(s["i"])) or marcas.get(s["i"]) or []
         duro = _datos_duros(s)
         riesgo = _riesgo(mk, duro)
+        alts_previas, _desac_previo = _alternativas(ventanas, s["inicio"], gana)
         voz = s.get("voz")
 
         # Turno nuevo SOLO cuando cambia la voz. Una pausa larga dentro de la
@@ -391,13 +446,31 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None):
             '<p class="texto">%s</p>' % texto_con_dudas(s),
         ]
         if mk:
-            cuerpo.append('<p class="motivos">%s</p>' % html.escape("; ".join(visible(x) for x in mk)))
+            texto_seg = texto_con_dudas(s)
+            principal, plegados = jerarquia(
+                s, mk, bool(alts_previas), 'class="dudosa"' in texto_seg)
+            partes_m = []
+            if principal:
+                partes_m.append('<span class="principal">%s</span>'
+                                % html.escape(visible(principal)))
+            if plegados:
+                partes_m.append(
+                    '<details class="motivos-mas"><summary>%s</summary>%s</details>'
+                    % ("y %d motivo%s más" % (len(plegados), "" if len(plegados) == 1 else "s")
+                       if principal else
+                       # Sin principal, todos los motivos de esta linea ya los
+                       # dice otro elemento o no pueden senalar nada. Decir
+                       # «1 motivo» no informa; decir que es menor, si.
+                       "%d motivo%s menor%s" % (len(plegados), "" if len(plegados) == 1 else "s",
+                                                "" if len(plegados) == 1 else "es"),
+                       html.escape("; ".join(visible(x) for x in plegados))))
+            cuerpo.append('<div class="motivos">%s</div>' % "".join(partes_m))
         cuerpo.append("</article>")
         partes.append("".join(cuerpo))
         if s['i'] in cierra_bucle:
             partes.append(cierra_bucle[s['i']])
 
-        alts, desacuerdo = _alternativas(ventanas, s["inicio"], gana)
+        alts, desacuerdo = alts_previas, _desac_previo
         bloques.append({
             "id": bid,
             "ancla": {"tipo": "tiempo", "inicio": round(s["inicio"], 3), "fin": round(s["fin"], 3)},

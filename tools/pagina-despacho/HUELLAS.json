@@ -2,11 +2,11 @@
   "_que_es": "Huellas de las fuentes y de la plantilla publicada. Las comprueba evals/scripts/test_pagina_publicada.py, sin Node. Si no cuadran, la plantilla del plugin no corresponde a estas fuentes: publique.",
   "publicado": "2026-09-22",
   "artefacto": "plugins/despacho/scripts/plantilla/pagina.html",
-  "huella_del_artefacto": "fbe3b88dfd6625dcd576688688ea8db78b9d4a7cf222afb80636a542f5cff75f",
+  "huella_del_artefacto": "de197569950416d12da98f3e86b3fd7aff0f53cb4870090cccb1f2937741eb5a",
   "fuentes": {
     "src/contrato.js": "da02d0d05ba84091c8c009ee55d67e2165295e7bab20e23c2db6b4e05ff2c89e",
     "src/estado.js": "2ae416ce8c99b94d8c800d8b5d7d5e3cee0615ebc2dc1e989b5714330f58277d",
-    "src/estilo.css": "935818b52b13fa861efce9b8655c8794954932764648434279aab0452eeb41fb",
+    "src/estilo.css": "b83619c0e654dbe58fa8948f8d71eaff8e5d0e7bb3c5080a3196b59c798154e3",
     "src/franja.js": "9cd01d917ec329b2617e1a0afb1a0de426305b351008a84a4aa19c5d1d7c16f9",
     "src/medios.js": "8de9ac8bdd4d95f57e9e5f6920064e99b77db9c6880476296aa67904161bedab",
     "src/pagina.js": "c845d475649f5b38b8e3e5dde2fc08111851d97e333ad7317a91a37dff2f10f3",

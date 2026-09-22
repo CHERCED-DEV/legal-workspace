@@ -163,7 +163,20 @@ main { padding-top: 1.75rem; padding-bottom: 3rem; }
   font-family: ui-sans-serif, system-ui, sans-serif; font-size: .74rem;
   color: var(--duda); margin: .25rem 0 0;
 }
-.motivos::before { content: "⚠ "; }
+.motivos .principal::before { content: "⚠ "; }
+
+/* Uno en claro, el resto a un clic. Un aviso que sale en el 71 % de las lineas
+   no avisa: en el Audio 2 cada linea traia hasta seis motivos y el unico raro
+   y grave quedaba sepultado. Nada se oculta: el pliegue lo tiene todo, y el
+   Word -- que es lo que se imprime -- los lleva todos en linea. */
+.motivos-mas { display: inline; margin-left: .4rem; }
+.motivos-mas > summary {
+  display: inline; cursor: pointer; color: var(--tinta-suave);
+  text-decoration: underline dotted; list-style: none;
+}
+.motivos-mas > summary::-webkit-details-marker { display: none; }
+.motivos-mas[open] > summary::after { content: ":"; }
+@media print { .motivos-mas > summary { text-decoration: none; } }
 
 .seg.comprobado { border-left-color: var(--hecho); border-left-style: solid; background: var(--hecho-fondo); }
 .seg.comprobado.dudoso { border-left-style: double; }
