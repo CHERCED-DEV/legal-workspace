@@ -45,6 +45,8 @@ export function leerContrato(nodo) {
     bloques,
     vistas: crudo.vistas || ['lectura'],
     clave: crudo.clave || 'sin-clave',
+    /** Un archivo que deberia estar junto a la pagina: si no carga, esta sola. */
+    sonda: crudo.sonda || null,
     porId: new Map(bloques.map((b) => [b.id, b])),
     /** La fuente navegable principal, si la hay. */
     audio: (crudo.fuentes || []).find((f) => f.tipo === 'audio') || null,

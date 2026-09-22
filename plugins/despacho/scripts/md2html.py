@@ -485,6 +485,9 @@ def main():
     ap.add_argument("salida")
     ap.add_argument("--datos", default=None)
     ap.add_argument("--audio", default=None)
+    ap.add_argument("--sonda", default=None,
+                    help="archivo que deberia estar junto a la pagina; si no carga, "
+                         "la pagina avisa de que esta sola (abierta desde el .zip)")
     ap.add_argument("--origen", default=None,
                     help="como se nombra el documento al copiar una cita con su procedencia")
     ap.add_argument("--tipo", default=None,
@@ -582,6 +585,14 @@ def main():
             tipo = datos["documento"]["tipo"] = a.tipo
         if a.advertencia:
             advertencia = _linea(a.advertencia)
+
+    if a.sonda:
+        try:
+            rel = os.path.relpath(os.path.abspath(a.sonda),
+                                  os.path.dirname(os.path.abspath(a.salida)))
+        except ValueError:
+            rel = os.path.basename(a.sonda)
+        datos["sonda"] = rel.replace("\\", "/")
 
     # La lista y la transcripcion salen del MISMO Markdown pero numeran sus bloques
     # distinto (h0.. frente a b0..). Con la misma clave, el contador de una contaba

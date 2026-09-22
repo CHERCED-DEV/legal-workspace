@@ -196,6 +196,7 @@ const medios = crearMedios($('#audio'), C.audio, {
   alEstado(s) {
     if (s.sonando !== undefined) $('#btn-play').textContent = s.sonando ? '❚❚' : '▶'
     if (s.listo === undefined) return
+    if (s.motivo === 'no-encontrada') avisarSola()
     $('#reproductor').hidden = !s.listo
     $('#sin-audio').hidden = s.listo
     if (s.texto) $('#reloj-total').textContent = s.texto
@@ -301,7 +302,26 @@ function montarBloque(b) {
   pintarBloque(b)
 }
 
+/* ------------------------------------------------------------- pagina sola */
+// Abierta desde dentro del .zip, Windows extrae SOLO esta pagina a una carpeta
+// temporal: ni enlaces ni audio funcionan, y el aviso de «extraiga primero»
+// estaba dentro de la pagina que ya se abrio mal. Se prueba si un archivo que
+// deberia estar al lado carga; si no, se dice arriba y en grande.
+function avisarSola() {
+  const el = $('#aviso-sola')
+  if (el) el.hidden = false
+}
+
+function comprobarCompania() {
+  if (C.audio || !C.sonda) return   // las paginas con grabacion avisan al fallar el audio
+  const a = document.createElement('audio')
+  a.preload = 'metadata'
+  a.addEventListener('error', avisarSola)
+  a.src = encodeURI(C.sonda)
+}
+
 function iniciar() {
+  comprobarCompania()
   // Sin bloques es un documento para leer: ni filtros, ni contador, ni «Guardar
   // lo comprobado» sobre algo que no tiene nada que comprobar.
   if (!C.bloques.length) return
