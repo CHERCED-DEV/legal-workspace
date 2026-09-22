@@ -21,7 +21,7 @@ CASO = RAIZ / "evals" / "casos" / "caso-02-sintetico-autoridad"
 
 def correr(*args):
     r = subprocess.run([sys.executable, str(PROGRAMA), str(CASO)] + list(args),
-                       capture_output=True, text=True)
+                       capture_output=True, text=True, encoding="utf-8", errors="replace")
     return r.stdout
 
 
@@ -142,7 +142,7 @@ class LaBusquedaSalvaLaEnneRota(unittest.TestCase):
 
     def _correr(self, *args):
         r = subprocess.run([sys.executable, str(PROGRAMA), str(self.tmp)] + list(args),
-                           capture_output=True, text=True)
+                           capture_output=True, text=True, encoding="utf-8", errors="replace")
         return r.stdout
 
     def test_buscar_con_enne_encuentra_lo_que_el_ocr_escribio_sin_ella(self):
@@ -208,7 +208,7 @@ class ElArchivoSinExtensionSeLee(unittest.TestCase):
             (b / "binario").write_bytes(b"\x00\x01\x02cerca\x00")
             (b / "texto").write_text(u"aqui dice cerca\n", encoding="utf-8")
             r = subprocess.run([sys.executable, str(PROGRAMA), str(d), "cerca"],
-                               capture_output=True, text=True)
+                               capture_output=True, text=True, encoding="utf-8", errors="replace")
             self.assertIn("1-Documentos recibidos/texto", r.stdout)
             self.assertNotIn("binario", r.stdout)
         finally:

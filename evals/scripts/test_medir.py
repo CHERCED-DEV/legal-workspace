@@ -76,7 +76,7 @@ class ElCodigoDeSalidaEsElVeredicto(unittest.TestCase):
             [sys.executable, str(RAIZ / "evals" / "medir.py"), str(run),
              "--caso", str(RAIZ / "evals" / "casos" / "caso-01-familia.json"),
              "--salidas", str(salidas)],
-            capture_output=True, text=True)
+            capture_output=True, text=True, encoding="utf-8", errors="replace")
         return r.returncode, r.stdout
 
     def test_run_inexistente_sale_distinto_de_cero(self):

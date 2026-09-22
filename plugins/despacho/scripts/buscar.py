@@ -26,6 +26,17 @@ import unicodedata
 import zipfile
 from pathlib import Path
 
+# La consola de Windows llega en cp1252 y no admite los ideogramas que el
+# reconocedor mete como basura. Sin esto el programa REVIENTA a media salida
+# -- justo en el renglon que iba a marcar como dudoso -- y lo que queda en
+# pantalla parece un resultado completo. `evals/medir.py` ya lo hacia asi.
+for _flujo in (sys.stdout, sys.stderr):
+    try:
+        if (_flujo.encoding or "").lower().replace("-", "") != "utf8":
+            _flujo.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 EXT_TEXTO = {'.md', '.txt'}
 EXT_IMAGEN = {'.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp', '.heic'}
 NO_CITABLE = ("Esto es el texto EXTRAIDO, no el documento. El reconocedor omite "
@@ -178,9 +189,9 @@ def buscar(caso, aguja, exacto=False, contexto=90, ambito=None):
     for f in piezas(caso, ambito):
         t = leer(f)
         if t is None:
-            ilegibles.append(str(f.relative_to(caso)))
+            ilegibles.append(f.relative_to(caso).as_posix())
             continue
-        leidos.append(str(f.relative_to(caso)))
+        leidos.append(f.relative_to(caso).as_posix())
         derivado = se_declara_derivado(t)
         lineas = t.split('\n')
         for n, linea in enumerate(lineas, 1):
@@ -195,7 +206,7 @@ def buscar(caso, aguja, exacto=False, contexto=90, ambito=None):
             ini = max(0, m.start() - contexto)
             fin = min(len(linea), m.end() + contexto)
             hallazgos.append({
-                'archivo': str(f.relative_to(caso)),
+                'archivo': f.relative_to(caso).as_posix(),
                 'linea': n,
                 'veces': veces,
                 'derivado': derivado,
@@ -230,7 +241,7 @@ def main():
         print(json.dumps({'cadena': a.cadena, 'hallazgos': hall, 'leidos': leidos,
                           'ilegibles': ilegibles,
                           'fuera_de_recibidos': len([x for x in hall if x['origen'] != 'material']),
-                          'imagenes_no_miradas': [str(x.relative_to(caso)) for x in imgs],
+                          'imagenes_no_miradas': [x.relative_to(caso).as_posix() for x in imgs],
                           'aviso': NO_CITABLE},
                          ensure_ascii=False, indent=1))
         return
