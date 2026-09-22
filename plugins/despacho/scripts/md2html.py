@@ -295,6 +295,38 @@ def texto_con_dudas(seg, umbral_importante=0.70, umbral_resto=0.35):
     return armado
 
 
+def _avisos_de_bucle(doc):
+    """{indice de segmento: cartel} para abrir y cerrar cada tramo repetido.
+
+    El criterio vive en `estado_transcripcion`, que es la puerta, y se importa
+    en vez de copiarse: si un dia cambia lo que cuenta como repeticion, cambia
+    en un sitio.
+
+    Va como bloque y no como un motivo mas de la linea porque el motivo por
+    linea ya existe -- «posible repeticion» -- y llega ahogado entre otros
+    cuatro. Un tramo repetido se ve sin oir; los demas motivos, no.
+    """
+    try:
+        from estado_transcripcion import bucles as detectar
+    except Exception:
+        return {}, {}
+    abre, cierra = {}, {}
+    for b in detectar(doc):
+        n = b['veces']
+        abre[b['lineas'][0]] = (
+            '<div class="aviso-bucle"><strong>&#9888; Aquí la máquina se repitió: '
+            'las %d líneas siguientes dicen lo mismo.</strong> De %s a %s. '
+            'Lo más probable es que <strong>%d de estas %d no las dijera nadie</strong>; '
+            'se sabe sin oír, porque el reconocedor se engancha y repite la última frase '
+            'mientras la grabación sigue. Nadie lo ha comprobado oyendo: son %d segundos. '
+            'No se ha borrado nada.</div>'
+            % (n, hms(b['desde']), hms(b['hasta']), n - 1, n,
+               round(b['hasta'] - b['desde'])))
+        cierra[b['lineas'][-1]] = ('<div class="aviso-bucle cierre">'
+                                   '<strong>&#9888; Fin del tramo repetido.</strong></div>')
+    return abre, cierra
+
+
 def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None):
     """Devuelve (html, bloques del contrato). El HTML se lee sin JavaScript;
     el contrato lleva los metadatos que la pagina necesita para trabajar.
@@ -304,6 +336,7 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None):
     ver quien habla ni que dice. Un turno se lee como una intervencion.
     """
     partes, bloques = [], []
+    abre_bucle, cierra_bucle = _avisos_de_bucle(doc)
     voz_previa = object()
     fin_previo = -99.0
     abierto = False
@@ -348,6 +381,9 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None):
             partes.append('<p class="pausa">— %d segundos sin habla detectada —</p>' % round(hueco))
         voz_previa, fin_previo = voz, s["fin"]
 
+        if s['i'] in abre_bucle:
+            partes.append(abre_bucle[s['i']])
+
         cuerpo = [
             '<article class="seg%s" id="%s">' % (" dudoso" if mk else "", bid),
             '<div class="seg-cab">'
@@ -358,6 +394,8 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None):
             cuerpo.append('<p class="motivos">%s</p>' % html.escape("; ".join(visible(x) for x in mk)))
         cuerpo.append("</article>")
         partes.append("".join(cuerpo))
+        if s['i'] in cierra_bucle:
+            partes.append(cierra_bucle[s['i']])
 
         alts, desacuerdo = _alternativas(ventanas, s["inicio"], gana)
         bloques.append({

@@ -108,6 +108,19 @@ body {
 .aviso-sola strong { display: block; font-size: 1.08rem; margin-bottom: .25rem; }
 @media print { .aviso-sola { display: none !important; } }
 
+/* Un tramo donde el reconocedor se engancho y repitio la misma frase. NO es una
+   duda mas: el aviso por linea ya existia y llegaba ahogado -- esas lineas
+   llevan cuatro motivos cada una --, asi que este va como bloque, delimitando
+   el tramo entero, y SI se imprime: en papel es donde mas falta hace. */
+.aviso-bucle {
+  background: var(--duda-fondo); border-left: 4px solid var(--duda);
+  color: var(--tinta); padding: .8rem 1rem; margin: 1.2rem 0;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: .95rem; line-height: 1.5; border-radius: var(--radio);
+}
+.aviso-bucle strong { color: var(--duda); }
+.aviso-bucle.cierre { padding: .5rem 1rem; }
+
 .boton, .chip {
   font: inherit; cursor: pointer;
   border: 1px solid var(--linea); background: var(--papel);
