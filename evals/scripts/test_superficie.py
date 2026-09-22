@@ -75,6 +75,11 @@ A_MANO = {
     # hoja para que una PERSONA marque quien habla, y mide contra ella. No lo
     # pide ningun metodo porque no produce nada para ella: mide lo que hacemos.
     "verdad_de_referencia.py": "quién habla de verdad, marcado por una persona",
+    # El 2026-09-22: mide si la marca de tiempo cae donde empieza la voz, y
+    # corrige lo que un detector de voz puede juzgar sin oír a nadie. No lo
+    # pide ningún método porque reescribe datos ya publicados: eso lo decide
+    # una persona, mirando los números que imprime.
+    "alinear_tiempos.py":      "que el minuto suene donde dice la línea",
 }
 
 # Y una tercera clase, que aparecio el 2026-09-07 cuando el canario disparo
@@ -85,6 +90,12 @@ A_MANO = {
 # un modulo de esta clase NO trae `if __name__ == "__main__"`.
 MODULOS = {
     "marca.py": "la regla de la marca ` - REVISADO`, compartida",
+    # Alineación forzada por CTC. Vive aquí y no en la superficie porque
+    # está MEDIDO que sobre este material no sirve (CER mediana 0,60): se
+    # niega justo en los tramos difíciles, que son los que harían falta.
+    # Se conserva como evidencia y como punto de partida si algún día hay
+    # un modelo español permisivo más robusto.
+    "alineacion_forzada.py": "alinear texto conocido con el audio, con guarda",
 }
 
 

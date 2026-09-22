@@ -28,13 +28,14 @@ Lo que este programa NO hace:
     contestarlo, que siempre es una persona.
   · No da por comprobado nada que ella no haya marcado.
 """
-import argparse, hashlib, io, json, os, sys
+import argparse, hashlib, io, json, os, re, sys, unicodedata
 
 # Criterios ELEGIDOS, no medidos. Se declaran para poder discutirlos.
 DOMINANTE_MALA = 0.80      # una voz con mas del 80 % del habla: separacion nominal
 DOMINANTE_DUDOSA = 0.60
 MINIMO_VOZ_S = 15.0
 PUREZA_BAJA = 0.70
+BUCLE_MINIMO = 3          # lineas seguidas identicas para llamarlo bucle
 
 
 def hms(s):
@@ -61,6 +62,35 @@ def documento(d):
     if not doc:
         falla("ese archivo de datos no trae la pasada publicada")
     return doc
+
+
+def _llano(s):
+    s = unicodedata.normalize("NFD", (s or "").lower())
+    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+    return re.sub(r"[^a-z0-9n ]", "", s).strip()
+
+
+def bucles(doc):
+    """Lineas seguidas que dicen exactamente lo mismo.
+
+    Es el fallo conocido del reconocedor: se engancha y repite la ultima frase
+    mientras el audio sigue. NO es una duda como las demas -- una duda se
+    resuelve oyendo y puede confirmarse; esto es texto que nadie dijo. Se
+    detecta sin oir y sin modelos, y por eso tenia que estar en la puerta.
+
+    Ojo: repetir de verdad existe. Por eso se senala, no se borra."""
+    fuera, racha = [], []
+    for s in list(doc["segmentos"]) + [{"texto": "\x00", "inicio": 0, "fin": 0, "i": -1}]:
+        v = _llano(s.get("texto"))
+        if racha and len(v) > 4 and v == _llano(racha[-1].get("texto")):
+            racha.append(s)
+            continue
+        if len(racha) >= BUCLE_MINIMO:
+            fuera.append({"desde": racha[0]["inicio"], "hasta": racha[-1]["fin"],
+                          "veces": len(racha), "texto": (racha[0].get("texto") or "").strip(),
+                          "lineas": [x["i"] for x in racha]})
+        racha = [s]
+    return fuera
 
 
 def perfil(doc):
@@ -148,6 +178,7 @@ def reunir(args):
     doc = documento(d)
     voces = perfil(doc)
     dg = diagnostico(voces, doc) if voces else None
+    bu = bucles(doc)
     marcas = d.get("marcas") or {}
     dudosas = sum(1 for s in doc["segmentos"]
                   if marcas.get(str(s["i"])) or marcas.get(s["i"]))
@@ -159,6 +190,7 @@ def reunir(args):
         "clave": clave,
         "duracion_s": doc.get("duracion_s"),
         "lineas": len(doc["segmentos"]),
+        "bucles": bu,
         "lineas_con_duda": dudosas,
         "voces": {str(v): {"segundos": round(p["segundos"], 1), "lineas": p["lineas"]}
                   for v, p in voces.items()},
@@ -174,6 +206,13 @@ def reunir(args):
 def que_preguntarle(e):
     """Lo unico accionable: que falta, y para que producto hace falta."""
     faltas = []
+    for b in e.get("bucles") or []:
+        faltas.append(
+            "**El reconocedor se repitió entre %s y %s**: %d líneas seguidas dicen lo mismo "
+            "(«%s»). Eso no es una duda, es texto que probablemente nadie dijo. **Hay que oír "
+            "ese tramo antes de usar la transcripción**, y no debe ir a ningún documento sin "
+            "comprobarlo."
+            % (hms(b["desde"]), hms(b["hasta"]), b["veces"], b["texto"][:60]))
     if not e["comprobado"]["archivos"]:
         faltas.append(
             "**Nadie ha comprobado nada oyendo**, o el archivo de «Guardar lo comprobado» no "
@@ -213,6 +252,11 @@ def informe(e):
     w.append("| Líneas | %d |\n" % e["lineas"])
     w.append("| Con algún motivo de duda | **%d** (%d %%) |\n"
              % (e["lineas_con_duda"], round(100 * e["lineas_con_duda"] / max(e["lineas"], 1))))
+    if e.get("bucles"):
+        w.append("| Repeticiones del reconocedor | **%d** (%s) |\n"
+                 % (len(e["bucles"]),
+                    ", ".join("%s, %d veces" % (hms(b["desde"]), b["veces"])
+                              for b in e["bucles"])))
 
     w.append("\n## 2. Quién habla\n\n")
     if not e["separacion"]:

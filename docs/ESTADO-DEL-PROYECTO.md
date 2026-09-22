@@ -46,7 +46,7 @@ Este documento responde a una sola pregunta: **¿en qué vamos?** Está escrito 
 
 7. **El corpus sigue describiendo un producto que ya no existe, y ahora se sabe cuánto.** **Cincuenta y cinco documentos** nombran `fact-builder`, que se renombró a `hechos-con-prueba` el 2026-08-26. **No se renombraron los 55, y decir por qué es parte de la decisión:** son registro histórico, y reescribirlos falsearía lo que se decidió con la información de entonces. Se corrigió **la única línea que afirmaba un hecho sobre el presente** — el `README` de `skills-support/`, que daba esa ruta por vigente.
 
-8. **El Core no existe, y ya no es la pregunta que bloquea.** ADR-018 estableció que el plugin **puede ejecutar código**, y hoy trae diecisiete programas, de los cuales **diez se exponen al modelo** — los otros seis se corren a mano o no se invocan (`test_superficie.py` los tiene clasificados uno por uno, y falla si uno cambia de lado sin que nadie lo decida). Los veinte documentos de `technical-design/` y las ocho decisiones que esperan aprobación **diseñan ese Core**, y ninguna toca el producto que corre. `B-04` sigue siendo el riesgo mejor identificado del repositorio, con su experimento de 31 pasos escrito y sin ejecutar — y **decide sobre un Core que no hay**.
+8. **El Core no existe, y ya no es la pregunta que bloquea.** ADR-018 estableció que el plugin **puede ejecutar código**, y hoy trae diecinueve programas, de los cuales **diez se exponen al modelo** — los otros nueve se corren a mano o no se invocan (`test_superficie.py` los tiene clasificados uno por uno, y falla si uno cambia de lado sin que nadie lo decida). Los veinte documentos de `technical-design/` y las ocho decisiones que esperan aprobación **diseñan ese Core**, y ninguna toca el producto que corre. `B-04` sigue siendo el riesgo mejor identificado del repositorio, con su experimento de 31 pasos escrito y sin ejecutar — y **decide sobre un Core que no hay**.
 
 9. **El Knowledge Pack no existe, y esa ausencia es hoy la garantía.** Sin cambios desde agosto en lo sustantivo. **Y con una frase que vale la pena tener a mano**, de `REFINADO-Y-FUENTES`: *«la abstinencia se acaba el día que exista el Knowledge Pack»*. Hoy nada impide citar una norma derogada — **lo impide que el producto no cita normas**. Es una abstinencia, no un control.
 
@@ -64,7 +64,7 @@ Este documento responde a una sola pregunta: **¿en qué vamos?** Está escrito 
 
 | | Qué |
 |---|---|
-| **El producto** | De seis métodos a **trece**, con **diecisiete programas** que hacen el trabajo mecánico —**diez expuestos al modelo**, seis de correr a mano—. **Doce specs** escritas y ejecutadas |
+| **El producto** | De seis métodos a **trece**, con **diecinueve programas** que hacen el trabajo mecánico —**diez expuestos al modelo**, nueve de correr a mano—. **Doce specs** escritas y ejecutadas |
 | **La medición** | De cero a **316 pruebas** y cuatro guardas que corren solas sobre todas las salidas: el conteo declarado contra las fichas que hay, todo número que no esté en el material, las afirmaciones prohibidas, y cuántos `SKILL.md` dicen algo |
 | **La cobertura** | Los **seis corpus** del repositorio, leídos y triados. Quedaba uno sin cubrir en agosto; hoy ninguno |
 | **Lo que encontró ejecutar** | Defectos en los once métodos que se ejecutaron, **ninguno visible releyendo**. Y **ocho de los hallazgos no fueron de los métodos sino de las guardas** que los vigilan |
