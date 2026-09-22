@@ -293,5 +293,31 @@ Es la misma forma de fallo que `ADR-014` invariante 6 describe para las dos capa
 
 Nota de contexto: esto vive en `tools/` y no en `plugins/` a proposito — la abogada **no tiene Node**, y el arnes no puede depender de el. Cualquier salida tiene que respetar eso.'
 
+nuevo "[instrumentacion] verificar_citas no comprueba las citas de menos de 18 caracteres" \
+"instrumentacion" \
+'`verificar_citas.py` solo recoge lo que va entre « » cuando tiene **18 caracteres o mas** (`«([^»]{18,})»`). Las citas cortas — una cifra, un plazo como «por ahi un mes», un nombre — **no se miran**, y el recuento final no lo dice: «40 de 40 textuales» significa 40 de las largas.
+
+Es el mismo tipo de fallo que el arreglado en `cfd6d16` (el aprobado en blanco), un nivel mas arriba: aquel dejaba pasar partes cortas de una cita; este deja fuera citas cortas enteras.
+
+**Por que existe el umbral:** las comillas angulares tambien se usan para nombrar terminos — «Hablante N», «En discordia» —, que no son citas y darian falsos «no textual». Bajarlo sin mas llena el informe de ruido.
+
+**Salida propuesta:** comprobar tambien las cortas, pero **informarlas aparte** («N citas cortas: M encontradas; no encontradas: …»), para que una persona distinga el termino de la cita. En la entrega del 2026-09-22 se hizo a mano: 24 citas cortas, todas en la transcripcion salvo tres usos tipograficos.'
+
+nuevo "[producto] md2docx convierte en tabla cualquier lista cuyas vinetas empiecen en negrita" \
+"producto" \
+'En `md2docx.py`, tres o mas vinetas seguidas que empiezan en negrita se convierten en una tabla **«Campo / Contenido»**. La regla esta pensada para las fichas — `- **Campo:** valor` —, pero la expresion (`RE_CAMPO_NEGRITA`) **no exige los dos puntos**: una lista enfatica como
+
+```text
+- **No dice quien dijo cada cosa.** «Hablante N» es una voz...
+- **No fija la fecha.**
+- **No se ha comprobado nada oyendo el audio.**
+```
+
+sale en Word como una tabla con cabecera «Campo / Contenido» y celdas vacias. Paso en la entrega del 2026-09-22; se esquivo numerando esas listas en las fuentes.
+
+**Por que no se arreglo en el momento:** las instrucciones de las skills usan mucho ese estilo de vineta, y afinar la regla puede cambiar la salida de documentos que ya se estan produciendo. Hay que mirar antes que salidas reales dependen de la version laxa.
+
+**Arreglo probable:** exigir los dos puntos dentro o justo detras de la negrita, que es lo que dice el comentario de la propia regla. Y una prueba con los dos casos.'
+
 echo
 echo "Hecho. Revisa: https://github.com/$REPO/issues"
