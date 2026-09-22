@@ -42,6 +42,20 @@ Además de las pruebas, hay cuatro programas que miran **lo que los métodos pro
 > **Y la advertencia que vale para las cuatro, porque se aprendió corriéndolas:** **una guarda ajustada a una sola muestra protege esa muestra y nada más.** El contador solo entendía la forma en que estaban escritas las salidas que lo estrenaron; sobre las escritas con la plantilla real de los métodos decía «0 fichas». **Ocho de los hallazgos de septiembre no fueron de los métodos: fueron de las guardas.**
 
 
+### Los tres programas que llegaron sin una sola prueba
+
+**Añadido el 2026-09-22.** La fusión trajo cuatro programas. Uno —`transcribir_audio.py`— **no se puede probar aquí**: sus bibliotecas no están en este entorno, y de él solo se comprueba que declare cuál le falta. Los otros tres no dependen de nada y llevaban **cero pruebas**, teniendo cada uno **un defecto ya corregido y sin nada que lo sujete** — y una corrección sin prueba es una corrección que se puede deshacer sin que nadie se entere.
+
+`scripts/test_programas_de_la_fusion.py` — **veintiuna pruebas**:
+
+| Programa | Lo que sujeta | El defecto del que sale |
+|---|---|---|
+| `verificar_citas.py` | Que una cita corta **que no está** puntúe bajo, y que una partida con `[…]` valga lo que su **mitad peor** | *«aprobaba en blanco toda cita de menos de cuatro palabras»*. En un programa cuyo único trabajo es cazar citas inventadas, **un aprobado en blanco es peor que no tenerlo** |
+| `comparar_iteraciones.py` | Que dos carpetas idénticas **no listen ni un tramo**, y que dos distintas sí | *«rellenaba la lista hasta N»*, **haciendo pasar por dudoso lo que no lo era** |
+| `md2html.py` | **Cero peticiones de red** — ni direcciones, ni `src`/`href` a otro origen, ni tipografías remotas | `ADR-020` §3, y la razón no es de rendimiento: **una página que pide algo a un servidor cuenta lo que ella está leyendo.** Es la clase de invariante que se cumple el día que se escribe y se rompe callando el día que alguien añade una tipografía bonita |
+
+> **Y una cosa que esta tanda NO encontró, y conviene decirlo:** el elemento de audio **sí** viaja siempre en la página, vacío y oculto. Parecía un defecto y no lo es: la página **declara la ausencia con todas las letras** —*«no se encontró la grabación… no se puede comprobar oyendo»*—, que es lo que `ADR-020` §5 pide. Una página que simplemente no trajera nada dejaría sin saber si falta el audio o si ese material no lo tiene. **La prueba que estaba mal era la mía.**
+
 > **Por qué existe.** Hasta hoy toda afirmación sobre si una versión del arnés es mejor o más barata que otra era una opinión. Este banco la convierte en una cifra. La primera vez que se corrió ya corrigió tres errores del plan de mejora que iban a dirigir el trabajo al sitio equivocado.
 
 **Esto no es producto.** Vive fuera del plugin, no se instala en la máquina de nadie y no viaja al Despacho de ella.

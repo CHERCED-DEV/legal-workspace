@@ -305,7 +305,7 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 
 ---
 
-## §7 · Los dieciocho ADR, leídos por fin
+## §7 · Los ADR, leídos por fin — dieciocho entonces, veintidós hoy
 
 **Añadido el 2026-09-05.** El §0.3 de este documento declara, desde el 28 de agosto, que **los ADR no se leyeron** —*«el lector asignado cayó por un error de conexión a mitad de trabajo»*— y que sus preguntas pendientes *«son de los ítems mejor formulados del repositorio»*. Aquí están.
 
@@ -315,8 +315,9 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 
 | ADR | De qué tratan | ¿Gobiernan el producto construido? |
 |---|---|---|
-| **001 a 011** | La frontera de confianza, el modelo epistémico tipado, la memoria del caso, el log de eventos con hash-chain, las propuestas y autorizaciones, la superficie MCP, SQLite, el anclaje de fragmentos | **No.** Diseñan **el Core**, que no existe. Lo construido son once `SKILL.md` y siete programas |
+| **001 a 011** | La frontera de confianza, el modelo epistémico tipado, la memoria del caso, el log de eventos con hash-chain, las propuestas y autorizaciones, la superficie MCP, SQLite, el anclaje de fragmentos | **No.** Diseñan **el Core**, que no existe. Lo construido son doce `SKILL.md` y catorce programas |
 | **012 a 018** | Distribución y actualización, respaldo, entrega en Word, revisión de rigor, límite del OCR, límite del audio, la oficina de programas | **Sí.** Cada uno describe algo que hoy está en el disco |
+| **019 a 022** | El audio transcrito de verdad, la superficie de trabajo, los enlaces normativos, la comprobación barata | **Todavía no, y a propósito: los cuatro son `CANDIDATO`.** Ver 7.5 |
 
 > **El corte no es una opinión mía: lo hace ADR-018**, cuya decisión 1 dice con todas las letras: *«**El Core deja de ser dependencia de nada que ya funcione.** Si algún día existe, será para otra cosa; **ninguna capacidad construida vuelve a esperarlo.»*
 >
@@ -358,6 +359,21 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 > **`2-Borradores/` guarda tres cosas distintas y ninguna marca cuál es cuál:** lo que produjo el sistema, lo que escribió ella, y **los derivados de máquina** —el texto de referencia del OCR—. Y en un solo día, **tres mecanismos distintos han tenido que aprender a distinguirlas por su cuenta**: el índice de salidas de SPEC-08, el clasificador de `buscar.py`, y la regla de la marca ` - REVISADO`.
 >
 > **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no tres reglas.** Queda registrado como **`V-14`**, y escrito como **[AC-05](architecture/adrs/AMENDMENT-CANDIDATES.md)** — candidato de enmienda a ADR-016, **abierto y esperando decisión**, con sus tres opciones y su recomendación. **No se resuelve unilateralmente**, que es la regla de ese documento; y la opción recomendada **le cambia una carpeta a ella**, lo que ADR-012 q7 manda validar con la profesional.
+
+### 7.5 Los cuatro ADR que trajo la fusión, y por qué ninguno gobierna todavía
+
+**Añadido el 2026-09-22.** `origin/master` trajo cuatro ADR fechados el 19 de septiembre. **Los cuatro están en `CANDIDATO`, los cuatro dicen por escrito que no se aplican hasta que el dueño decida, y eso es exactamente lo que el corte de 7.1 tiene que registrar en vez de darlos por vigentes.** Un ADR candidato leído como decisión es la avería que este §7 existe para no repetir.
+
+| ADR | Qué decide | Estado, y qué lo sujeta |
+|---|---|---|
+| **019** — *el audio se transcribió, y dos decisiones de ADR-017 no resistieron* | Modifica `ADR-017` con lo que el contacto con material real desmintió | **CANDIDATO.** Modifica un ADR que sigue en `Proposed`. Lo ya producido bajo el método viejo **se declara, no se borra** |
+| **020** — *la superficie de trabajo* | Una tercera capa `.html`, local, **sin una sola petición de red**, derivada del Markdown y nunca editable a mano | **CANDIDATO.** Extiende `ADR-014`, no lo sustituye. `md2html.py` existe en el disco y **ningún método lo declara** — es la clase `A_MANO` de §17 |
+| **021** — *enlaces normativos* | Se enlaza **solo el identificador que el material cita, literal**, sin afirmar vigencia ni contenido, con fecha de consulta | **CANDIDATO, y con una dependencia que puede matarlo:** depende de una comprobación que nadie ha hecho. Si falla, *«la decisión correcta es no enlazar nada»* |
+| **022** — *la comprobación es el camino más fácil* | Un clic reproduce el minuto; copiar **arrastra la procedencia**; cuatro estados de comprobación **y los pone ella** | **CANDIDATO.** Depende de `ADR-020` |
+
+> **Y el que más cerca pasa de una regla dura del producto es el 021.** Su propia §4 nombra la trampa: los repositorios oficiales sirven el **texto compilado**, y en un caso suele importar el que regía cuando ocurrieron los hechos. *«Un enlace a la versión de hoy sobre hechos de hace cinco años es peor que ningún enlace, porque parece comprobado.»* Hoy el producto **no cita normas**, y esa abstinencia es lo que hace que el problema no exista todavía — la misma abstinencia del §0.9. **Decidir el 021 es decidir gastarla.**
+
+**Lo vivo de 7.5:** `F-4` — **los cuatro ADR esperan decisión del dueño**, y tres de ellos (020, 021, 022) describen una capa que **no está construida**. `md2html.py` es lo único de esa capa que existe, y existe sin método que lo pida.
 
 **Cierre honesto del §0.3, al cierre del 2026-09-05:** leídos y triados los ADR (§7), `PENDIENTE-FORMA-DE-ENTREGA` (§8), `REFINADO-Y-FUENTES` (§9), **`architecture-post-v0` (§10)**, **las ocho preguntas de negocio (§11)** y **`skills-support` como corpus (§12)**. **Y con §13 no queda ninguno: los seis corpus del §0.3 están cubiertos.** Lo que falta ahora no es leer — es ejecutar el producto otra vez y hablar con ella.
 
@@ -904,6 +920,18 @@ Por tercera vez el hallazgo grande sale de **correr una guarda sobre algo que no
 1. `test_integridad_del_metodo` solo conocía `f"Nombre - {date...`, y el programa nuevo usa `%s`. **Los siete archivos que deja por grabación pasaron por delante sin que los viera.**
 2. `contar_fichas.py` decía «0 fichas · NO COINCIDE» sobre una transcripción — **una acusación falsa contra una salida correcta**, y la forma de apagar el instrumento. Ahora la reconoce por el título que escribe el otro programa, con una prueba que lee ese código y falla si el título cambia.
 3. **`V-12` se cerró «con un grep» y sin dejar guarda**, y el árbol del `README` del plugin volvió a quedar mal en esta misma fusión. Ahora tiene cuatro pruebas, incluida la mitad que se olvida: **que no nombre nada que no exista**.
+
+### 17.1 Los tres programas que llegaron sin una sola prueba
+
+**De los catorce programas, cuatro entraron por la fusión y ninguno traía prueba.** Uno —`transcribir_audio.py`— no se puede probar aquí. Los otros tres no dependen de nada, y **cada uno cargaba un defecto ya corregido y sin nada que lo sujetara**. Una corrección sin prueba es una corrección que se puede deshacer sin que nadie se entere.
+
+`evals/scripts/test_programas_de_la_fusion.py`, **veintiuna pruebas**, las tres familias comprobadas capaces de fallar con mutantes:
+
+- **`verificar_citas.py`** — *«aprobaba en blanco toda cita de menos de cuatro palabras»*. En un programa cuyo único trabajo es cazar citas inventadas, un aprobado en blanco es peor que no tenerlo. Ahora está fijado que una cita corta que **no** está puntúa bajo, y que una partida con `[…]` vale lo que su **mitad peor**.
+- **`comparar_iteraciones.py`** — *«rellenaba la lista hasta N»*, haciendo pasar por dudoso lo que no lo era. Fijado: dos carpetas idénticas **no listan ni un tramo**; dos distintas sí.
+- **`md2html.py`** — **cero peticiones de red** (`ADR-020` §3). La razón no es de rendimiento: **una página que pide algo a un servidor cuenta lo que ella está leyendo.** Tres guardas independientes, y las tres disparan al meter una tipografía de Google en la plantilla.
+
+> **Y lo que esta tanda NO encontró, dicho porque el instrumento también se equivoca:** una de mis pruebas afirmaba que la página no debía traer elemento de audio. **Lo trae siempre, vacío y oculto, y declara la ausencia con todas las letras** — que es exactamente lo que `ADR-020` §5 pide. La prueba que estaba mal era la mía, no el programa.
 
 ### Lo vivo
 

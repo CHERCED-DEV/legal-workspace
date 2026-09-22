@@ -96,6 +96,37 @@ una guarda por encima de algo que no escribió su autor.**
 
 ---
 
+## 4.bis Y los tres programas que llegaron sin una sola prueba
+
+De los catorce programas, **cuatro entraron por la fusión y ninguno traía prueba**. Uno
+—`transcribir_audio.py`— no se puede probar aquí. Los otros tres no dependen de nada, y
+**cada uno cargaba un defecto ya corregido en `master` y sin nada que lo sujetara**.
+
+| Programa | Lo que ahora se sujeta | El defecto del que sale |
+|---|---|---|
+| `verificar_citas.py` | una cita corta que **no** está puntúa bajo; una partida con `[…]` vale lo que su **mitad peor** | *«aprobaba en blanco toda cita de menos de cuatro palabras»* |
+| `comparar_iteraciones.py` | dos carpetas idénticas **no listan ni un tramo**; dos distintas sí | *«rellenaba la lista hasta N»*, haciendo pasar por dudoso lo que no lo era |
+| `md2html.py` | **cero peticiones de red**: ni direcciones, ni `src`/`href` a otro origen, ni tipografías remotas | `ADR-020` §3 — **una página que pide algo a un servidor cuenta lo que ella está leyendo** |
+
+Veintiuna pruebas, en `evals/scripts/test_programas_de_la_fusion.py`. Las tres familias se
+comprobaron con mutantes; meter una tipografía de Google en la plantilla hace fallar **tres
+guardas independientes**.
+
+> **Y lo que esta tanda NO encontró, dicho porque el instrumento también se equivoca.** Una
+> de mis pruebas afirmaba que la página no debía traer elemento de audio cuando no hay
+> grabación. **Lo trae siempre, vacío y oculto, y declara la ausencia con todas las letras**
+> —*«no se encontró la grabación… no se puede comprobar oyendo»*—, que es lo que `ADR-020` §5
+> pide, y es mejor que no traer nada: sin esa frase, quien lee no sabe si falta el audio o si
+> ese material no lo tiene. **La prueba que estaba mal era la mía.**
+
+**Un defecto pequeño y real, corregido de paso:** `verificar_citas.py` abría los archivos sin
+cerrarlos. En CPython el contador de referencias los cierra enseguida y no se nota; se arregló
+porque era el archivo que se estaba probando. **El mismo patrón está en otros ocho sitios del
+plugin y NO se tocó**: cambiarlo sería reescribir programas ajenos sin una prueba que pudiera
+demostrar la diferencia, y en este repositorio eso no cuenta como corrección.
+
+---
+
 ## 5. Lo que este documento NO puede decir
 
 - **`/transcribir-audio` no se ha ejecutado aquí, y no se puede.** `faster-whisper`,

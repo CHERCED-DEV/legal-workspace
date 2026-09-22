@@ -192,5 +192,57 @@ class LosIDENTIFICADORESCitadosExisten(unittest.TestCase):
         self.assertEqual({}, faltan)
 
 
+class ElCorteDelBacklogCubreTodosLosADR(unittest.TestCase):
+    """§7.1 parte los ADR en «gobiernan lo construido» y «no». Falta uno y se cree.
+
+    El corte se hizo el 2026-09-05 sobre dieciocho ADR, **por rangos**: «001 a
+    011», «012 a 018». Un rango envejece de la peor manera que hay: sigue
+    leyendose bien cuando ya no cubre todo. El 2026-09-22 llegaron cuatro ADR
+    mas y el corte siguio diciendo dieciocho **sin que nada fallara**.
+
+    Esta prueba lee los rangos del propio §7 y comprueba que entre todos cubran
+    cada ADR del disco. Si aparece un ADR-023 y nadie lo clasifica, falla.
+    """
+
+    ADRS = RAIZ / "docs" / "architecture" / "adrs"
+    BACKLOG = RAIZ / "docs" / "BACKLOG-CONSOLIDADO.md"
+
+    def _numeros_en_disco(self):
+        return sorted(int(p.name[4:7]) for p in self.ADRS.glob("ADR-*.md"))
+
+    def _cubiertos_por_el_corte(self):
+        """Los rangos «| **001 a 011** |» de la tabla de §7.1, expandidos."""
+        t = self.BACKLOG.read_text(encoding="utf-8")
+        i = t.index(u"### 7.1 El corte")
+        j = t.index(u"### 7.2", i)
+        cubiertos = set()
+        for a, b in re.findall(r"\|\s*\*\*(\d{3}) a (\d{3})\*\*\s*\|", t[i:j]):
+            cubiertos |= set(range(int(a), int(b) + 1))
+        return cubiertos
+
+    def test_el_corte_cubre_todos_los_adr_del_disco(self):
+        cubiertos = self._cubiertos_por_el_corte()
+        sin_clasificar = [n for n in self._numeros_en_disco() if n not in cubiertos]
+        self.assertEqual([], sin_clasificar,
+                         u"§7.1 no dice si estos ADR gobiernan lo construido: %s"
+                         % sin_clasificar)
+
+    def test_el_corte_no_clasifica_lo_que_no_existe(self):
+        """La mitad que se olvida: un rango que sigue nombrando un ADR retirado."""
+        en_disco = set(self._numeros_en_disco())
+        sobran = sorted(n for n in self._cubiertos_por_el_corte() if n not in en_disco)
+        self.assertEqual([], sobran, u"§7.1 clasifica ADR que no están en el disco")
+
+    def test_los_rangos_se_leyeron_de_verdad(self):
+        """Control positivo: un patron que no casara con nada pasaria solo."""
+        self.assertGreater(len(self._cubiertos_por_el_corte()), 15)
+
+    def test_el_titulo_del_7_dice_cuantos_hay(self):
+        """Y que el numero escrito sea el del disco, no el de septiembre."""
+        t = self.BACKLOG.read_text(encoding="utf-8")
+        self.assertEqual(22, len(self._numeros_en_disco()),
+                         u"cambió el número de ADR: actualice el título de §7")
+        self.assertIn(u"dieciocho entonces, veintidós hoy", t)
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
