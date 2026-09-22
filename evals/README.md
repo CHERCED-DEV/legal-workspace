@@ -56,6 +56,26 @@ Además de las pruebas, hay cuatro programas que miran **lo que los métodos pro
 
 > **Y una cosa que esta tanda NO encontró, y conviene decirlo:** el elemento de audio **sí** viaja siempre en la página, vacío y oculto. Parecía un defecto y no lo es: la página **declara la ausencia con todas las letras** —*«no se encontró la grabación… no se puede comprobar oyendo»*—, que es lo que `ADR-020` §5 pide. Una página que simplemente no trajera nada dejaría sin saber si falta el audio o si ese material no lo tiene. **La prueba que estaba mal era la mía.**
 
+### La plantilla de la página es un artefacto compilado, y nada lo vigilaba
+
+**Añadido el 2026-09-22.** `plugins/despacho/scripts/plantilla/pagina.html` **no se escribe: se compila** desde `tools/pagina-despacho/src/`. Eso abre dos averías que se ven igual de bien en el editor:
+
+1. **La plantilla envejece.** Alguien toca `src/`, no vuelve a publicar, y el plugin sigue entregando la página vieja. **No hay error, no hay aviso**, y lo que ella abre no es lo que dice el código.
+2. **Alguien edita el `.html` compilado a mano.** `ADR-020` §2 lo prohíbe con todas las letras y **esa prohibición no tenía nada que la hiciera cumplir**. Una corrección a mano se pierde en la siguiente compilación **sin dejar rastro de que existió** — que es peor que no haberla hecho, porque alguien la dio por hecha.
+
+`scripts/test_pagina_publicada.py` — **ocho pruebas**, y están partidas en dos a propósito:
+
+| Cuándo corre | Qué comprueba |
+|---|---|
+| **Siempre**, sin red y sin Node | `HUELLAS.json` —que escribe `publicar.mjs`— contra el disco: ninguna fuente cambió, el artefacto no se editó a mano, y **el registro cubre todas las fuentes que existen** |
+| **Si hay Node y `node_modules`** | La compilación de verdad, y que dé **el mismo archivo byte a byte** |
+
+> **La segunda se salta casi siempre, y se salta diciéndolo** (`OK (skipped=1)`). **Una prueba que se salta en silencio es una prueba que no existe.**
+>
+> **Y la tercera fila de la primera mitad es la que hace de esto una guarda y no un gesto:** un registro de huellas que solo cubra la mitad de las fuentes protege esa mitad y nada más. Si mañana aparece `src/nuevo.js`, la prueba falla **hasta que `publicar.mjs` lo incluya** — no cuando ya haya derivado.
+
+Las tres averías se comprobaron con mutantes: tocar una fuente, editar el compilado —que dispara **dos** guardas independientes— y añadir una fuente sin registrar.
+
 > **Por qué existe.** Hasta hoy toda afirmación sobre si una versión del arnés es mejor o más barata que otra era una opinión. Este banco la convierte en una cifra. La primera vez que se corrió ya corrigió tres errores del plan de mejora que iban a dirigir el trabajo al sitio equivocado.
 
 **Esto no es producto.** Vive fuera del plugin, no se instala en la máquina de nadie y no viaja al Despacho de ella.

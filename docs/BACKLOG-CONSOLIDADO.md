@@ -933,6 +933,21 @@ Por tercera vez el hallazgo grande sale de **correr una guarda sobre algo que no
 
 > **Y lo que esta tanda NO encontró, dicho porque el instrumento también se equivoca:** una de mis pruebas afirmaba que la página no debía traer elemento de audio. **Lo trae siempre, vacío y oculto, y declara la ausencia con todas las letras** — que es exactamente lo que `ADR-020` §5 pide. La prueba que estaba mal era la mía, no el programa.
 
+### 17.2 La plantilla de la página es un artefacto compilado, y nada lo vigilaba
+
+`plugins/despacho/scripts/plantilla/pagina.html` **no se escribe: se compila** desde `tools/pagina-despacho/src/` con Node y se copia. **Es el primer artefacto compilado que este repositorio versiona**, y trae una clase de avería que no había aparecido antes: la fuente y lo que viaja pueden separarse sin que nada falle.
+
+| Avería | Qué pasa | Por qué no se ve |
+|---|---|---|
+| **La plantilla envejece** | se toca `src/`, no se vuelve a publicar, el plugin sigue entregando la página vieja | no hay error ni aviso; **lo que ella abre no es lo que dice el código** |
+| **Se edita el compilado a mano** | la corrección **desaparece en la siguiente compilación** | **sin rastro de que existió** — peor que no haberla hecho, porque alguien la dio por hecha. `ADR-020` §2 lo prohíbe y **nada lo hacía cumplir** |
+
+**Cerrado con dos mitades, y están partidas a propósito.** `publicar.mjs` escribe ahora `HUELLAS.json` —la huella de cada fuente y la del artefacto—, y `evals/scripts/test_pagina_publicada.py` lo comprueba **sin Node y sin red**, que es lo que el corredor exige. La comprobación fuerte —compilar otra vez y comparar byte a byte— corre **solo si hay Node y `node_modules`**, y **se salta diciéndolo**: una prueba que se salta en silencio es una prueba que no existe.
+
+> **Y la parte que hace de esto una guarda y no un gesto:** el registro tiene que cubrir **todas** las fuentes que hay en el disco, no las que había el día que se escribió. Un registro a medias protege esa mitad y nada más — que es la misma lección que el §17 apunta tres veces. Si aparece `src/nuevo.js`, la prueba falla **hasta que `publicar.mjs` lo incluya**, no cuando ya haya derivado.
+
+**Comprobado con mutantes en las tres averías**, y editar el compilado dispara **dos guardas independientes**. Se verificó además que compilar de nuevo da la plantilla que viaja **byte a byte**: la que está en el repositorio es de verdad una compilación de estas fuentes.
+
 ### Lo vivo
 
 | # | Qué | Estado |

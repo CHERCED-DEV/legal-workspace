@@ -279,6 +279,8 @@ legal-workspace/
 │     │  ├─ marca.py                  <- la regla de ` - REVISADO`, en un solo sitio
 │     │  ├─ traer_modelos.py          <- baja los modelos que no se versionan
 │     │  ├─ modelos/PROCEDENCIA.md    <- de donde salen los modelos y con que licencia
+│     │  ├─ plantilla/pagina.html     <- ARTEFACTO COMPILADO: no se edita aqui.
+│     │  │                               Sale de tools/ (abajo) y lo vigila una prueba
 │     │  └─ README-*.md               <- uno por programa que lo necesita
 │     └─ skills/                <- los DOCE metodos. La carpeta es el nombre del comando
 │        ├─ buscar-en-el-caso/       ├─ inventario-de-bienes/
@@ -288,9 +290,16 @@ legal-workspace/
 │        │  └─ FORMATO-DE-SALIDA.md  ├─ revisar-documento/
 │        │     <- apoyo del metodo   ├─ revision-de-rigor/
 │        ├─ inventario-de-anexos/    └─ transcribir-audio/
+├─ tools/
+│  └─ pagina-despacho/         <- las FUENTES de plantilla/pagina.html (ADR-020).
+│                                 Se compila aqui con Node; lo que viaja al plugin
+│                                 es el resultado. La maquina de ella NO necesita Node.
+│                                 Tras tocar src/: `npm ci && npm run publicar`
 └─ docs/                        <- arquitectura del proyecto; NO es parte del plugin
    └─ discovery/                <- material de pruebas y guias de trabajo del dueno
 ```
+
+**Y la plantilla de la página tampoco se edita donde está.** `scripts/plantilla/pagina.html` es **un artefacto compilado** desde `tools/pagina-despacho/`: quien lo corrija a mano ve su corrección desaparecer en la siguiente publicación, sin rastro de que existió. `ADR-020` §2 lo prohíbe por escrito, y desde el 2026-09-22 **hay una prueba que lo hace cumplir** (`evals/scripts/test_pagina_publicada.py`): falla si alguien edita el compilado, y falla si se tocan las fuentes y no se vuelve a publicar.
 
 **Los modelos no se versionan.** `scripts/modelos/` está en `.gitignore`: son 52 MB de
 binarios de terceros —reconocimiento de texto en imágenes y separación de voces—. Lo que sí

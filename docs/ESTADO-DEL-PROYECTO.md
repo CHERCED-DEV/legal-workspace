@@ -53,7 +53,7 @@ Este documento responde a una sola pregunta: **¿en qué vamos?** Está escrito 
 | | Qué |
 |---|---|
 | **El producto** | De seis métodos a **doce**, con **catorce programas** que hacen el trabajo mecánico —**ocho expuestos al modelo**, seis de correr a mano—. **Doce specs** escritas y ejecutadas |
-| **La medición** | De cero a **305 pruebas** y cuatro guardas que corren solas sobre todas las salidas: el conteo declarado contra las fichas que hay, todo número que no esté en el material, las afirmaciones prohibidas, y cuántos `SKILL.md` dicen algo |
+| **La medición** | De cero a **313 pruebas** y cuatro guardas que corren solas sobre todas las salidas: el conteo declarado contra las fichas que hay, todo número que no esté en el material, las afirmaciones prohibidas, y cuántos `SKILL.md` dicen algo |
 | **La cobertura** | Los **seis corpus** del repositorio, leídos y triados. Quedaba uno sin cubrir en agosto; hoy ninguno |
 | **Lo que encontró ejecutar** | Defectos en los once métodos que se ejecutaron, **ninguno visible releyendo**. Y **ocho de los hallazgos no fueron de los métodos sino de las guardas** que los vigilan |
 | **Lo que sigue igual** | Nadie lo ha instalado. **Ninguna abogada ha abierto una sola salida del producto.** No hay una cifra de coste |

@@ -127,6 +127,40 @@ demostrar la diferencia, y en este repositorio eso no cuenta como corrección.
 
 ---
 
+## 4.ter El primer artefacto compilado que este repositorio versiona
+
+`plugins/despacho/scripts/plantilla/pagina.html` **no se escribe: se compila** desde
+`tools/pagina-despacho/src/` con Node y se copia al plugin. Hasta esta fusión, todo lo que
+viajaba era la fuente misma. **Un artefacto compilado versionado trae una avería que no
+había aparecido aquí:** la fuente y lo que viaja pueden separarse **sin que nada falle**.
+
+Dos formas, y las dos se ven igual de bien en el editor:
+
+1. **La plantilla envejece.** Se toca `src/estado.js`, no se vuelve a publicar, y el plugin
+   entrega la página vieja. No hay error, no hay aviso, y **lo que ella abre no es lo que
+   dice el código**.
+2. **Alguien edita el `.html` compilado a mano.** Su corrección **desaparece en la siguiente
+   compilación, sin rastro de que existió** — peor que no haberla hecho, porque alguien la
+   dio por hecha. `ADR-020` §2 lo prohíbe por escrito, y **nada lo hacía cumplir**.
+
+**Cerrado en dos mitades, partidas a propósito.** `publicar.mjs` escribe `HUELLAS.json` con
+la huella de cada fuente y la del artefacto; `evals/scripts/test_pagina_publicada.py` lo
+comprueba **sin Node y sin red**, que es lo que el corredor exige. La comprobación fuerte
+—compilar de nuevo y comparar byte a byte— corre **solo si hay Node y `node_modules`**, y
+**se salta diciéndolo** (`OK (skipped=1)`): una prueba que se salta en silencio es una
+prueba que no existe.
+
+**Y la tercera prueba es la que hace de esto una guarda y no un gesto:** el registro tiene
+que cubrir **todas** las fuentes del disco, no las que había el día que se escribió. Si
+aparece `src/nuevo.js`, falla hasta que `publicar.mjs` lo incluya.
+
+**Comprobado en esta máquina, que sí tiene Node:** `npm ci && npm run build` produce un
+archivo **idéntico byte a byte** al que está en el repositorio. La plantilla que viaja es de
+verdad una compilación de estas fuentes — que es lo que las huellas por sí solas no podrían
+demostrar, porque un `HUELLAS.json` escrito sobre un artefacto equivocado cuadraría igual.
+
+---
+
 ## 5. Lo que este documento NO puede decir
 
 - **`/transcribir-audio` no se ha ejecutado aquí, y no se puede.** `faster-whisper`,
