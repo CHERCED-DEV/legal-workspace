@@ -89,7 +89,7 @@ export function crearFranja(cont, contrato, estado, alPulsar) {
   const leyenda = document.createElement('p')
   leyenda.className = 'franja-leyenda'
   leyenda.innerHTML = `
-    <span><i class="pt riesgo-alto"></i> cifra o nombre en duda, o las pasadas difieren</span>
+    <span><i class="pt riesgo-alto"></i> cifra o nombre en duda, o las lecturas automáticas no coinciden</span>
     <span><i class="pt riesgo-medio"></i> palabra dudosa</span>
     <span><i class="pt riesgo-bajo"></i> puede no ser habla</span>
     <span><i class="pt sello"></i> ya comprobado</span>`

@@ -16,9 +16,20 @@ export function crearEstado(clave, alCambiar) {
   let sucio = false
   let datos = {}
 
+  const leer = () => JSON.parse(localStorage.getItem(llave) || '{}')
+
   try {
-    datos = JSON.parse(localStorage.getItem(llave) || '{}')
+    datos = leer()
   } catch { almacenOK = false }
+
+  // La misma pagina abierta en dos pestanas: cada una guardaba su copia entera y
+  // la ultima en escribir borraba las marcas de la otra, sin decir nada. Ahora se
+  // relee antes de escribir y se repinta cuando la otra pestana cambia algo.
+  window.addEventListener('storage', (e) => {
+    if (e.key !== llave) return
+    try { datos = leer() } catch { return }
+    alCambiar?.(null)
+  })
 
   const persistir = () => {
     try { localStorage.setItem(llave, JSON.stringify(datos)) }
@@ -36,6 +47,7 @@ export function crearEstado(clave, alCambiar) {
     cuantos: () => Object.keys(datos).length,
 
     marcar(id, tipo, correccion) {
+      if (almacenOK) { try { datos = leer() } catch { /* sigue con lo que tiene */ } }
       if (tipo === 'corregido') datos[id] = { estado: tipo, fecha: hoy(), correccion }
       else if (datos[id]?.estado === tipo) delete datos[id]
       else datos[id] = { estado: tipo, fecha: hoy() }
