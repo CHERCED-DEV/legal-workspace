@@ -45,6 +45,11 @@ EXPUESTOS = {
     # para que un numero de hablante se convierta en un nombre, y solo
     # cuando una persona lo afirma: el programa no deduce a nadie.
     "nombrar_voces.py":       "qué voz es quién, según ella",
+    # Decimo, el 2026-09-22: la puerta entre transcribir y producir. La
+    # declara `nombrar-voces`, y la declarara todo metodo que produzca algo
+    # a partir de una transcripcion -- un acta, un resumen --, porque lo que
+    # contesta es qué falta preguntarle a ella antes de empezar.
+    "estado_transcripcion.py": "en qué estado está una transcripción",
     "verificar_fidelidad.py": "comprobar que el .docx dice lo que el .md",
 }
 

@@ -27,12 +27,9 @@ Lo que este programa NO hace:
 """
 import argparse, io, json, os, re, sys
 
-# Criterios ELEGIDOS, no medidos: dicen cuando conviene desconfiar de la
-# separacion de voces. Se declaran para que se puedan discutir y cambiar.
-DOMINANTE_MALA = 0.80      # una voz con mas del 80 % del habla: separacion nominal
-DOMINANTE_DUDOSA = 0.60
-MINIMO_VOZ_S = 15.0        # por debajo de esto, una voz no da ni para reconocerla
-PUREZA_BAJA = 0.70
+# El diagnostico de separacion NO se define aqui: vive en la puerta
+# (estado_transcripcion.py) y se importa. Una sola redaccion de la regla.
+from estado_transcripcion import perfil, diagnostico, PUREZA_BAJA  # noqa: E402
 
 # Formas de presentarse. Solo sirven para ENSENAR candidatos, nunca para asignar.
 PRESENTACION = re.compile(
@@ -71,22 +68,6 @@ def documento(d):
 
 
 # --------------------------------------------------------------------- ficha
-def perfil(doc):
-    """Lo que se sabe de cada voz a partir de lo que se publicó."""
-    voces = {}
-    for s in doc["segmentos"]:
-        v = s.get("voz")
-        if v is None:
-            continue
-        p = voces.setdefault(v, {"segundos": 0.0, "lineas": 0, "dudosas": 0, "segmentos": []})
-        p["segundos"] += max(0.0, s["fin"] - s["inicio"])
-        p["lineas"] += 1
-        if s.get("pureza", 1) < PUREZA_BAJA:
-            p["dudosas"] += 1
-        p["segmentos"].append(s)
-    return voces
-
-
 def intervenciones(segs):
     """Tramos seguidos de esa voz, de más largo a más corto: sirven de muestra."""
     grupos, actual = [], []
@@ -105,30 +86,6 @@ def enlace(pagina, inicio, texto):
     if not pagina:
         return texto
     return "[%s](<%s#t=%d>)" % (texto, pagina, int(inicio))
-
-
-def diagnostico(voces, doc):
-    total = sum(p["segundos"] for p in voces.values()) or 1.0
-    grandes = [v for v, p in voces.items() if p["segundos"] >= MINIMO_VOZ_S]
-    dom = max((p["segundos"] for p in voces.values()), default=0.0) / total
-    sin_voz = sum(1 for s in doc["segmentos"] if s.get("voz") is None)
-    if dom >= DOMINANTE_MALA or len(grandes) < 2:
-        veredicto = ("NO SIRVE para distinguir quién habla",
-                     "Una sola voz se lleva el %d %% de lo hablado. Cuando eso pasa, lo más "
-                     "probable es que el programa haya metido a varias personas en la misma "
-                     "voz: ponerle un nombre sería atribuirle a alguien frases de otro."
-                     % round(100 * dom))
-    elif dom >= DOMINANTE_DUDOSA:
-        veredicto = ("DUDOSA",
-                     "La voz dominante se lleva el %d %%. Puede ser real —alguien que expone "
-                     "durante casi toda la reunión— o una fusión de varias personas. Hay que "
-                     "oír las muestras antes de etiquetar." % round(100 * dom))
-    else:
-        veredicto = ("Sirve como punto de partida",
-                     "El habla está repartida entre %d voces. Aun así, que estén separadas no "
-                     "prueba que cada una sea una sola persona." % len(grandes))
-    return {"voces_con_15s": len(grandes), "dominante": dom, "sin_voz": sin_voz,
-            "veredicto": veredicto[0], "porque": veredicto[1]}
 
 
 def ficha(args):

@@ -267,6 +267,7 @@ legal-workspace/
 │     │  ├─ preparar_material.py      <- descomprime, ordena, extrae texto (OCR)
 │     │  ├─ transcribir_audio.py      <- grabaciones a texto, con voces y marcas
 │     │  ├─ nombrar_voces.py          <- que voz es quien, segun ella; nunca deduce
+│     │  ├─ estado_transcripcion.py   <- la puerta: que falta antes de producir
 │     │  ├─ segunda_opinion.py        <- el segundo motor: detecta la omision silenciosa
 │     │  ├─ medir_realce.py           <- instrumentacion de la extraccion
 │     │  ├─ comparar_iteraciones.py   <- compara tres carpetas en vez de mirarlas

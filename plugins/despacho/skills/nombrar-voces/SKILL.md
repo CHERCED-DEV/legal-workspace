@@ -2,7 +2,7 @@
 name: nombrar-voces
 description: "Método para ponerle nombre y cargo a las voces de una transcripción ya hecha, con una regla que no se rompe: quien nombra es la profesional, nunca la máquina. Mide primero si la separación de voces de esa grabación aguanta; si no aguanta, lo dice y se niega a etiquetar. Prepara una ficha con cuánto habla cada voz, tres muestras enlazadas al minuto para reconocerla y las presentaciones que haya en el audio, sin darlas por buenas. Recoge lo que ella declare —quién es, qué cargo, cómo lo sabe— y regenera la transcripción con las etiquetas y su procedencia. Úsalo después de transcribir-audio, cuando haga falta saber quién dijo qué. No interpreta, no deduce nombres y NO redacta actas."
 version: 0.1.0
-allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/nombrar_voces.py *)
+allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/nombrar_voces.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/estado_transcripcion.py *)
 ---
 
 # nombrar-voces — qué voz es quién, según ella
@@ -33,7 +33,18 @@ De ahí salen tres consecuencias que no se negocian:
 
 ## 3. El procedimiento
 
-### Fase 1 — Mirar si la separación de esa grabación aguanta
+### Fase 1 — Mirar en qué estado está esa transcripción
+
+Antes de preguntar nada, **la puerta**: qué hay, quién habla, y qué comprobó ella oyendo.
+
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/estado_transcripcion.py \
+  "Transcripcion - Audio 2.md" "datos/A2 - datos completos.json" \
+  --comprobado "comprobado - Audio 2.json"
+```
+
+El informe termina diciendo **qué preguntarle antes de producir**. Si de ahí sale que hay que
+nombrar voces, se sigue con la ficha:
 
 ```bash
 python ${CLAUDE_PLUGIN_ROOT}/scripts/nombrar_voces.py ficha "<datos completos>.json" \
