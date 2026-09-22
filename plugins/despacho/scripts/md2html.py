@@ -295,7 +295,7 @@ def texto_con_dudas(seg, umbral_importante=0.70, umbral_resto=0.35):
     return armado
 
 
-def construir_bloques(doc, marcas, ventanas, gana):
+def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None):
     """Devuelve (html, bloques del contrato). El HTML se lee sin JavaScript;
     el contrato lleva los metadatos que la pagina necesita para trabajar.
 
@@ -329,10 +329,20 @@ def construir_bloques(doc, marcas, ventanas, gana):
         if voz != voz_previa:
             cerrar()
             quien = ("Hablante %s" % html.escape(str(voz))) if voz is not None else "Hablante ?"
+            # El nombre, si una PERSONA lo declaro. La maquina agrupa; nombrar es
+            # de ella, y por eso el nombre va pegado a quien lo afirma.
+            et = (etiquetas or {}).get(str(voz)) if voz is not None else None
+            segun = ""
+            if et:
+                if et.get("texto"):
+                    quien += ' <span class="nombrada">%s</span>' % html.escape(et["texto"])
+                avisos = [x for x in (et.get("aviso"), et.get("procedencia")) if x]
+                if avisos:
+                    segun = '<span class="segun">%s</span>' % html.escape(" · ".join(avisos))
             partes.append(
                 '<section class="turno"><h3 class="turno-cab">'
-                '<span class="quien">%s</span>'
-                '<span class="desde">desde %s</span></h3>' % (quien, hms(s["inicio"])))
+                '<span class="quien">%s</span>%s'
+                '<span class="desde">desde %s</span></h3>' % (quien, segun, hms(s["inicio"])))
             abierto = True
         elif hueco > 10.0 and abierto:
             partes.append('<p class="pausa">— %d segundos sin habla detectada —</p>' % round(hueco))
@@ -356,11 +366,42 @@ def construir_bloques(doc, marcas, ventanas, gana):
             "riesgo": riesgo,
             "gravedad": _gravedad(s, mk, desacuerdo),
             "marcas": mk,
-            "etiqueta": ("Hablante %s" % voz) if voz is not None else None,
+            "etiqueta": ((("Hablante %s" % voz) + ((" — " + (etiquetas or {}).get(str(voz), {}).get("texto", ""))
+                          if (etiquetas or {}).get(str(voz), {}).get("texto") else ""))
+                         if voz is not None else None),
             "alternativas": alts,
         })
     cerrar()
     return "\n".join(partes), bloques
+
+
+def bloque_voces(d):
+    """Quien declaro las voces, en la propia pagina.
+
+    Va en el CUERPO y no en la ficha de la cabecera porque la ficha solo admite
+    «Campo: valor», y esto es una lista donde cada linea lleva su procedencia."""
+    et = d.get("etiquetas") or {}
+    if not et:
+        return ""
+    dec = d.get("voces_declaradas") or {}
+    quien = dec.get("declarado_por") or "una persona"
+    fecha = dec.get("fecha") or "sin fecha"
+    filas = []
+    for v in sorted(et, key=lambda x: int(x) if str(x).isdigit() else 99):
+        e = et[v]
+        partes = ["<strong>Hablante %s</strong>" % html.escape(str(v))]
+        if e.get("texto"):
+            partes.append(html.escape(e["texto"]))
+        if e.get("como_lo_se"):
+            partes.append("<em>%s</em>" % html.escape(e["como_lo_se"]))
+        if e.get("aviso"):
+            partes.append(html.escape(e["aviso"]))
+        filas.append("<li>%s</li>" % " — ".join(partes))
+    return ('<section class="voces-declaradas"><h2>Quién es cada voz</h2>'
+            '<p>Lo declaró <strong>%s</strong> el <strong>%s</strong>. '
+            '<strong>No lo comprobó ningún programa:</strong> la máquina agrupó las voces por '
+            'su sonido, y el nombre lo puso una persona.</p><ul>%s</ul></section>'
+            % (html.escape(quien), html.escape(fecha), "".join(filas)))
 
 
 # -------------------------------------------------------------------- pagina
@@ -540,7 +581,9 @@ def main():
             tipo = "Cola de comprobación"
             titulo = "QUÉ COMPROBAR — " + re.sub(r"^TRANSCRIPCI[ÓO]N\s*[—-]\s*", "", titulo)
         else:
-            contenido, bloques = construir_bloques(doc, marcas, d.get("ventanas"), gana)
+            contenido, bloques = construir_bloques(doc, marcas, d.get("ventanas"), gana,
+                                                   d.get("etiquetas"))
+            contenido = bloque_voces(d) + contenido
             n_hall = None
             tipo = "Transcripción · superficie de trabajo"
         datos["bloques"] = bloques

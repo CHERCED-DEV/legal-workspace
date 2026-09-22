@@ -118,7 +118,7 @@ LO QUE ESTA TRANSCRIPCION NO DICE
 ## 6. Lo que este método NO hace
 
 - **No interpreta.** Ni resume, ni saca hechos, ni decide qué es relevante.
-- **No pone nombres a las voces.** Nunca, ni aunque en el audio alguien se presente.
+- **No pone nombres a las voces.** Nunca, ni aunque en el audio alguien se presente. Ponerles nombre es **otro método** —`nombrar-voces`—, y allí el nombre lo pone **ella**, no la máquina.
 - **No corrige el texto con el glosario.** Solo avisa.
 - **No escribe en `1-Documentos recibidos/`** ni en `0-Estado del caso`.
 - **No pone la marca ` - REVISADO`.** Esa la pone ella, siempre.

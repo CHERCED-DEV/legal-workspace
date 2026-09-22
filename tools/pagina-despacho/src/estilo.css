@@ -82,6 +82,22 @@ body {
 .progreso { margin-left: auto; display: flex; align-items: center; gap: .5rem; color: var(--tinta-suave); }
 .aviso-persistencia { margin: 0 auto .6rem; color: var(--duda); font-size: .82rem; }
 .aviso-enlace { margin: 0 auto .6rem; font-size: .85rem; font-weight: 600; }
+
+/* El nombre de una voz y quien lo afirma. Van juntos a proposito: la maquina
+   agrupo el sonido, la persona puso el nombre, y eso no puede leerse como si
+   lo hubiera averiguado el programa. */
+.turno-cab .nombrada { font-weight: 600; }
+.turno-cab .segun {
+  flex-basis: 100%; order: 3; font-weight: 400;
+  color: var(--tinta-suave); font-size: .78rem;
+}
+.voces-declaradas {
+  border: 1px solid var(--linea); border-left: 3px solid var(--acento);
+  padding: .8rem 1rem; margin: 0 0 1.5rem; background: var(--papel-alto);
+}
+.voces-declaradas h2 { margin: 0 0 .4rem; font-size: 1.05rem; }
+.voces-declaradas p { margin: 0 0 .5rem; font-size: .9rem; }
+.voces-declaradas ul { margin: 0; padding-left: 1.1rem; font-size: .9rem; }
 /* La pagina abierta sin su carpeta (desde dentro del .zip, o suelta). Tiene que
    verse antes que nada: todo lo demas de la pagina depende de esto. */
 .aviso-sola {

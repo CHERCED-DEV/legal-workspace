@@ -13,7 +13,7 @@ Esta hoja **es para quien instala**, no para quien usa. Termina exactamente dond
 | | |
 |---|---|
 | **Claude Code**, instalado y con sesión iniciada | Es la ventana donde se escribe |
-| **Conexión** | Solo para instalar y para trabajar. El plugin son doce métodos de texto más una carpeta de programas |
+| **Conexión** | Solo para instalar y para trabajar. El plugin son trece métodos de texto más una carpeta de programas |
 | **Nada más** | No hay servidor, ni base de datos, ni clave que pedir, ni nada que pagar aparte de la suscripción de ella |
 
 **No hace falta** Git ni saber programar. **Python es opcional y hace la diferencia:** sin él los doce comandos funcionan igual —el modelo hace a mano el trabajo mecánico, más lento y gastando mucha más lectura—; con él, la oficina de programas del plugin prepara el material, busca dentro del expediente y produce los Word. **Ningún comando exige Python para arrancar, y todos declaran cuándo no lo tuvieron.**

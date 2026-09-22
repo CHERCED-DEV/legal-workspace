@@ -687,7 +687,17 @@ def main():
     ap.add_argument("--pasadas", type=int, default=4)
     ap.add_argument("--glosario", default="")
     ap.add_argument("--dispositivo", default="auto", choices=("auto", "cpu", "cuda"))
+    ap.add_argument("--umbral-voces", type=float, default=UMBRAL_VOCES,
+                    help="cuanto tienen que parecerse dos tramos para contarlos como la misma "
+                         "voz (por defecto %.2f). MEDIDO en una reunion de 22 minutos: con 0,90 "
+                         "una sola voz se lleva el 74 %%%% del habla y dos personas distintas "
+                         "quedan fundidas; con 0,60 quedan separadas, pero salen 15 voces y la "
+                         "misma persona aparece varias veces. Para poner nombres, equivocarse "
+                         "PARTIENDO es mas barato que equivocarse FUNDIENDO: lo primero se "
+                         "arregla diciendo «estas dos son la misma», lo segundo mete en boca de "
+                         "una las palabras de otra." % UMBRAL_VOCES)
     a = ap.parse_args()
+    globals()["UMBRAL_VOCES"] = a.umbral_voces
 
     try:
         from faster_whisper import WhisperModel

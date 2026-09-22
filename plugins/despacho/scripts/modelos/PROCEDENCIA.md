@@ -51,6 +51,22 @@ distintas quedan como una sola. **0,90 es el punto donde deja de inventar sin em
 
 Velocidad medida: **5,7 × tiempo real** en la GPU de esta máquina.
 
+## Lo que el umbral 0,90 hace en una grabación larga (22 min, medido el 2026-09-22)
+
+La calibración de arriba se hizo sobre **siete minutos**. Repetida sobre una reunión de **22 minutos** con más intervinientes, el mismo umbral se comporta muy distinto. El control es concreto: en esa grabación hay una **objeción** y una **respuesta** que casi con seguridad son de dos personas distintas.
+
+| Umbral | Voces | La que más habla | ¿Separa objeción y respuesta? |
+|---|---|---|---|
+| **0,90 (el elegido)** | 5 | **74 %** | **No: las funde** |
+| 0,80 | 7 | 77 % | No |
+| 0,70 | 10 | 70 % | No |
+| 0,60 | 15 | 56 % | **Sí** |
+| 0,50 | 22 | 30 % | Sí |
+
+**Los dos errores no cuestan lo mismo.** Fundir dos personas pone en boca de una las palabras de otra, y en un escrito eso no tiene arreglo. Partir a una persona en varias voces solo cuesta que alguien diga «estas dos son la misma» — que es exactamente lo que `nombrar-voces` admite declarar.
+
+**Qué se hizo con esto, y qué no.** El valor por defecto **sigue siendo 0,90**: cambiarlo exigiría una verdad de referencia que nadie ha hecho —oír unos minutos y anotar quién habla cuándo, la validación 3 de `ADR-017`—, y sin ella «más voces» no significa «mejor». Lo que sí hay es una palanca declarada: `transcribir_audio.py --umbral-voces 0.60`, con esta tabla al lado. **Para una grabación que vaya a pasar por `nombrar-voces`, bajarlo es lo prudente.**
+
 ## Licencias — comprobado el 2026-09-19
 
 `ADR-017` §Preguntas nº 5 advertía que algunos modelos de voz están restringidos a uso personal
