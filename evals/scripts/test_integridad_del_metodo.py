@@ -180,5 +180,65 @@ class ElOrdenInvertidoEstaBienYNoSeIguala(unittest.TestCase):
         self.assertEqual(1, len(formas), formas)
 
 
+class TodoLoQueSeEscribeEstaEnLaTablaDeConvenciones(unittest.TestCase):
+    """El indice de SPEC-08 deduce el comando por el nombre del archivo.
+
+    Lo que no este en esa tabla sale como **«no se pudo saber de donde
+    salio»** -- que es correcto y es lo peor que puede decir un indice cuyo
+    unico trabajo es atribuir.
+
+    **Este defecto ya habia pasado una vez** con `/redactar-escrito`, la salida
+    mas importante del producto (§8 del backlog). El 2026-09-22 se busco con la
+    misma pregunta -- *¿que escribe en `2-Borradores/` y no esta en la tabla?*
+    -- y faltaban **tres** filas. Dos las escribe `preparar_material.py` **en
+    cada ingesta**, asi que casi toda carpeta preparada por el programa tenia
+    dos archivos de origen desconocido.
+
+    Esta prueba cierra la clase, no el caso.
+    """
+
+    def tabla(self):
+        t = texto("estado-del-caso")
+        i = t.index(u"| El nombre lleva | Lo produjo |")
+        j = t.index(u"> **Y ojo con dos cosas", i)
+        return t[i:j]
+
+    def test_los_programas_que_escriben_estan_en_la_tabla(self):
+        """Lo que un PROGRAMA deja en 2-Borradores, buscado en su codigo."""
+        import re as _re
+        tabla = self.tabla()
+        faltan = []
+        for f in sorted(SCRIPTS.glob("*.py")):
+            cod = f.read_text(encoding="utf-8")
+            for m in _re.finditer(r'f?"([A-Z][^"]{5,40}) - \{?[a-z_.()]*date', cod):
+                if m.group(1) not in tabla:
+                    faltan.append("%s escribe «%s»" % (f.name, m.group(1)))
+        self.assertEqual([], faltan)
+
+    def test_los_metodos_que_nombran_su_salida_estan_en_la_tabla(self):
+        import re as _re
+        tabla = self.tabla()
+        faltan = []
+        for f in sorted(S.glob("*/SKILL.md")):
+            if f.parent.name == "estado-del-caso":
+                continue
+            t = f.read_text(encoding="utf-8")
+            for m in _re.finditer(r"`((?:2-Borradores/)?[A-ZÍ][^`]{5,45}?)\s*[-—]\s*<", t):
+                nombre = m.group(1).replace("2-Borradores/", "").strip()
+                if nombre and nombre not in tabla:
+                    faltan.append("%s: «%s»" % (f.parent.name, nombre))
+        self.assertEqual([], sorted(set(faltan)))
+
+    def test_revisar_documento_ya_tiene_convencion(self):
+        """No la tenia, y por eso su archivo salia sin origen."""
+        t = texto("revisar-documento")
+        self.assertIn(u"Revisión de documento - <cuál se revisó> - <AAAA-MM-DD>.md", t)
+
+    def test_la_tabla_cubre_los_dos_del_preparador(self):
+        tabla = self.tabla()
+        self.assertIn(u"Registro de ingesta", tabla)
+        self.assertIn(u"ingesta-<fecha>.json", tabla)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
