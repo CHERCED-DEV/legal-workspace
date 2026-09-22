@@ -2,7 +2,9 @@
 
 **Fecha:** 2026-08-27/28. **Material:** 23 fotografías JPG (8 documentos, 23 páginas, 45,5 MB).
 **Contexto:** B — la usuaria es abogada de la Inspección de Policía de Salento y actúa como
-contradictor interno. Ver `memory/contexto-b-inspeccion-salento.md`.
+contradictor interno.
+
+> **Nota de 2026-09-05 sobre esta línea.** Decía *«Ver `memory/contexto-b-inspeccion-salento.md`»*, y **ese archivo no está en el repositorio ni puede estarlo**: `memory/` es la carpeta que el asistente guarda por máquina, fuera del control de versiones. **El hecho no depende de ella** —está dicho aquí arriba, versionado, y es lo que se cita—, pero su ampliación **no la puede abrir nadie más**, y de ese hecho cuelgan hoy la fila `C-8` del backlog, `SPEC-03` entera y la pregunta de negocio 7. Se retira la remisión en vez de dejarla apuntando al vacío.
 
 > ## CORRECCIÓN — 2026-08-28. Este documento se llamaba «Primer pase» y no lo era.
 >

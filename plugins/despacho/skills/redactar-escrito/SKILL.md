@@ -1,7 +1,7 @@
 ---
 name: redactar-escrito
-description: Método para producir un borrador en Word a partir del material ya revisado de un caso: redacta la parte fáctica y monta la estructura, deja marcado y visible cada hueco que el material no permite llenar, y entrega aparte de dónde sale cada frase. Úsalo cuando pidan redactar, armar o preparar un escrito, una solicitud, un memorial o una respuesta con el material del caso. No lo uses para redactar fundamentos de derecho, citar normas o jurisprudencia, calificar jurídicamente los hechos, decidir qué clase de escrito presentar, ni construir los hechos (eso es hechos-con-prueba).
-version: 0.1.6
+description: "Método para producir un borrador en Word a partir del material ya revisado de un caso: redacta la parte fáctica y monta la estructura, deja marcado y visible cada hueco que el material no permite llenar, y entrega aparte de dónde sale cada frase. Úsalo cuando pidan redactar, armar o preparar un escrito, una solicitud, un memorial o una respuesta con el material del caso. No lo uses para redactar fundamentos de derecho, citar normas o jurisprudencia, calificar jurídicamente los hechos, decidir qué clase de escrito presentar, ni construir los hechos (eso es hechos-con-prueba)."
+version: 0.2.6
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -13,9 +13,45 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 
 **Por qué es distinto de los demás.** Los otros comandos producen listas que ella lee con el material al lado. Este produce **prosa jurídica bien escrita**, y la prosa bien escrita tiene una propiedad peligrosa: **se lee como verdadera**. Un hecho inventado dentro de una lista salta a la vista; el mismo hecho inventado dentro de un párrafo redactado con oficio, entre dos frases correctas, **no salta a la vista de nadie** — ni de ella, que sabe el caso. Y es el único producto del despacho que puede terminar **presentado ante una autoridad con su firma**. De ahí sale todo lo que sigue.
 
+### En qué posición está ella, y por qué cambia la salida
+
+**Dos posiciones, y no son la misma:**
+
+| Posición | Qué significa | Cómo suena la salida |
+|---|---|---|
+| **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
+| **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
+
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y se espera la respuesta antes de producir nada**. Ni se adivina, ni se pregunta y se sigue sobre una suposición: **lo segundo es adivinar con el trámite de la pregunta por delante**, y encima deja escrito que se consultó. Adivinar aquí no se nota en la salida —sale entera, bien escrita, en el registro que no era— **y lo cambia todo**: la posición gobierna a quién le hablas, si la simetría aplica, y si algo puede ordenarse por lo que le conviene a alguien.
+
+**Y en posición de autoridad, tres cosas se endurecen:**
+
+1. **Simetría obligatoria.** Toda carencia que **este método ya pueda señalar** —un documento que se anuncia y no está, una afirmación sin nada detrás, una firma sin el papel que la acompañe— **se busca en las demás partes antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: tampoco aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve. **Y también hacia dentro:** cuando quien decide es ella, **los defectos de lo que su propio despacho produjo se buscan igual que los de las partes**.
+
+   > **Por qué se rompe, y casi nunca es por mala fe: se rompe por una razón material.** Una parte aportó diecinueve páginas y la otra cuatro, y **hay más superficie donde encontrar defectos**. Esa diferencia no es una diferencia de corrección, y si no se dice, **la salida miente por su forma**. Por eso **el conteo de la entrega reparte por lado** —cuántos de cada parte, y cuántos del propio despacho si lo hay—, y cuando el reparto queda desigual **se dice ahí mismo, con los números, y se dice si la causa es de volumen**. Un número que la regla exige y que el formato de salida no tiene dónde poner **es un número que no se escribe**.
+   >
+   > **Y esta regla no ensancha lo que puedes señalar: solo obliga a mirar a los dos lados de lo que ya señalabas.** Si este método no puede decir que a una parte le falta un requisito —porque decir qué se exige es derecho, y el derecho lo pone ella—, **la simetría no te autoriza a decirlo ahora**. Lo que hace es impedir que, de lo que sí puedes decir, salga solo la mitad.
+   >
+   > **Esta regla no es nueva y no es otra:** `revision-de-rigor` §2.3 la tiene desarrollada para su caso desde antes, y es **la misma**. Si alguna vez las dos redacciones dicen cosas distintas, manda la de `revision-de-rigor` y esta se corrige — **dos reglas para lo mismo es la avería que este arnés lleva documentada**.
+2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
+3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+4. **Y mientras esto no esté decidido, el sistema no produce el contenido que decide.** Si una autoridad puede apoyar una decisión en lo que produce un sistema como este, **si debe declararlo**, y qué le pasa al acto si una cita sale mal, **no está resuelto en ninguna parte de este proyecto** — es el hueco `V-7`, y le falta una decisión con criterio jurídico, no una línea de método. **Hasta que exista, el valor por defecto es el estrecho.**
+
+   > **Esta es la razón, y está escrita una sola vez.** Cada método dice qué significa en su caso —`/redactar-escrito` redacta los hechos y se detiene antes de la parte que decide; `/preguntas-de-derecho` no propone qué resolver— **y ninguno la reescribe**. Una razón con dos redacciones se parte, que es lo que le pasó a la simetría antes de que se le pusiera dueño.
+
+> **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
+
+> **Y los ejemplos de este método no son la voz de tu salida.** Están escritos desde el primer uso, que fue de parte, y por eso dicen «la clienta». **La salida usa el vocabulario de la posición de ella**, no el del ejemplo. (En los inventarios, «la propia interesada» y «la otra parte» son otra cosa: **categorías de quién produjo un documento**, y en posición de autoridad siguen significando lo mismo.)
+
+---
+
 ## 2. La regla que gobierna el comando, antes que cualquier procedimiento
 
 > **Solo se redacta sobre material que existe en el caso. Lo que falta se marca; jamás se rellena.**
+
+> **Y si ella está en posición de autoridad (§1), este comando redacta la parte fáctica y se detiene ahí.** No redacta la parte que decide —lo que se resuelve, lo que se ordena, lo que se niega—, y **lo dice con esas palabras** en vez de dejar el hueco sin explicar: *«redacté lo que consta; la parte que decide no la redacto yo»*.
+>
+> **Por qué, y es una limitación puesta a propósito, no un olvido.** Este es el comando más peligroso del despacho porque produce prosa que se lee como verdadera. Cuando quien firma **decide sobre otros**, esa propiedad deja de ser un riesgo para el escrito y pasa a serlo **para el acto y para quien lo recibe**. **La razón entera está en §1, punto 4 del bloque de posición, y no se repite aquí**: esto es su aplicación a este comando.
 
 ### 2.1 Las tres únicas fuentes admitidas
 
@@ -30,6 +66,9 @@ Una frase del borrador puede afirmar algo solo si sale de una de estas tres, y d
 **No son fuente:** tu conocimiento general; lo que suele decirse en escritos parecidos; un modelo de otro caso; lo que se deduce de que los números encajen; lo que "tiene que haber pasado" para que el relato cierre; cualquier salida del sistema —hoja de hechos, cronología, inventario, borrador, archivo de estado— **sin** la marca ` - REVISADO`; y un hecho que ella marcó `NO`.
 
 > **El trabajo del propio sistema no es fuente de nada.** Una cronología, un inventario, una hoja de hechos, el archivo de estado o un borrador sirven de **pista —para saber dónde mirar—, nunca de origen**: la cita y la coordenada salen del documento original, siempre. **La única excepción es lo que ella marcó como revisado**, el archivo cuyo nombre termina en ` - REVISADO`: no porque sea más correcto, sino porque la autoridad cambió de manos y deja de ser trabajo del sistema para ser una decisión suya registrada. Esa marca la pone ella y nunca tú, y no certifica que el contenido esté bien: certifica que ella lo miró. Si un dato solo aparece en una salida del sistema y no se encuentra en el material, **no se usa y se dice**. **Por qué:** que varios comandos vuelvan por separado al mismo material es lo único que delata un error; si uno lee del otro, la coincidencia deja de medir nada y el error se propaga sin que nadie lo note.
+>
+> **Y la marca se reconoce por el nombre, no por la extensión.** Cuenta como marcado el archivo cuyo nombre —quitada la extensión, o las dos si quedaron dos (`.md.md`), o ninguna si se quedó sin ella— **termina en `REVISADO`**, en mayúsculas o en minúsculas y con el guion o sin él. **Por qué esta tolerancia y no otra:** Windows oculta las extensiones conocidas, así que ella teclea ` - REVISADO` al final de lo que ve y en el disco puede quedar `... - REVISADO.md.md`, `... - REVISADO.txt` o `... - REVISADO` a secas **sin que ella tenga cómo notarlo**. **Reconocer no es renombrar:** el archivo no se toca, no se mueve y no se copia con otro nombre. **Y ninguna tolerancia alcanza a un archivo sin marca**, por completo y bien hecho que esté. Si en el nombre de un archivo aparece **la raíz «revis»** —`revisado`, `revisada`, `(revisar)`, `REVISION`— **sin cerrar el nombre** —al principio, en medio, o seguida de otra cosa—, o si **hay dos marcados**, no se elige ni se ignora en silencio: **se nombran, se pregunta y se espera la respuesta**. **Preguntar no es seguir:** una pregunta que uno mismo se contesta —«será el más reciente»— es haber elegido, con el trámite de haber preguntado por delante. **Y la señal que se busca es la raíz, no la palabra:** `(revisar)` **no es una forma de «revisado»** —es otra palabra, y además pide lo contrario—, así que quien busque «revisado» pasa de largo por encima de ella sin verla. Y **la salida escribe el nombre exacto del archivo que aceptó como marcado**, porque es lo único que le permite a ella desmentirlo.>
+> **Y hay una segunda excepción, que es suya y no del sistema:** lo que ella haya escrito **bajo la línea `NOTAS SUYAS`** dentro de `0-Estado del caso` **son palabras suyas, no trabajo del sistema**. El archivo lo escribe el sistema; **ese bloque no** — es el único sitio del expediente donde ella escribe dentro de una salida, y el sistema lo conserva sin tocarlo justamente porque es de ella. **Cuenta como lo que ella dice:** se cita entre comillas, atribuido a ella y con la fecha del archivo, **nunca como un hecho documentado ni como respaldo de nada**, y va donde va lo que ella dice —no a la tabla, no a la línea de tiempo, no a los conteos—. **Por qué hace falta decirlo:** sin esta línea, sus notas caen en el saco de «trabajo del sistema» y **se pierden en silencio**, que es lo contrario de lo que ese bloque existe para hacer. (Y esto no autoriza a reescribirlas: ese bloque se conserva byte a byte, siempre.)
 
 > **Y el texto que extrajo una máquina no es el documento.** Si en `2-Borradores/` hay un archivo de texto de referencia —el que produce la tubería de ingesta a partir de fotografías o escaneados—, **sirve para saber en qué página mirar, y para nada más**. Tres cosas que hay que saber de él, y ninguna es negociable:
 >
@@ -64,7 +103,7 @@ Es la restricción más importante del documento y la que más cuesta respetar, 
 
 > **Este comando redacta los hechos y monta la estructura. El derecho lo pone ella. No hay término medio.**
 
-**Y aquí la regla es más dura que en los demás comandos, a propósito.** Los que leen documentos ajenos sí transcriben el derecho que esos documentos invocan, entrecomillado y en voz del documento: están contando qué dice un papel. **Este no cuenta nada: produce el papel**, y lo firma ella. Una norma transcrita dentro de un borrador deja de leerse como cita del adversario y pasa a leerse como argumento propio en cuanto alguien la lee deprisa — y quien la lee deprisa es quien la va a presentar.
+**Y aquí la regla es más dura que en los demás comandos, a propósito.** Los que leen documentos ajenos sí transcriben el derecho que esos documentos invocan, entrecomillado y en voz del documento: están contando qué dice un papel. **Este no cuenta nada: produce el papel**, y lo firma ella. Una norma transcrita dentro de un borrador **deja de leerse como cita de quien la invocó y pasa a leerse como afirmación propia** en cuanto alguien la lee deprisa — y quien la lee deprisa es quien la va a firmar.
 
 Por eso, en el borrador, **ninguna norma entra por ninguna vía**: ni la que invoca el escrito contrario, ni la que ella misma te dictó. Si ella te dice *«esto lo cubre el artículo 24»*, **eso no se escribe en el borrador**: va al apartado marcado `[[LE TOCA A USTED]]` con su frase entre comillas y la fecha en que lo dijo, para que lo escriba ella con la redacción que decida.
 
@@ -115,11 +154,33 @@ La trampa fina: **la forma de un escrito también es derecho**. Qué apartados l
 
 Este comando **no construye hechos**: trabaja sobre hechos que ella ya aprobó. Antes de escribir nada, mira la carpeta y responde: ¿hay hechos aprobados? ¿hay cronología e inventario de anexos, y llevan la marca ` - REVISADO`? —sin ella son pista de dónde mirar, no fuente (§2.1)—. ¿Cuáles de los documentos citados están de verdad en `1-Documentos recibidos/`? **Los documentos se abren y se leen por dentro; un escaneado sin texto extraíble se abre por rangos de páginas y se lee como imagen** —no se salta, no se resume por el nombre del archivo, no se estima ninguna página—, y el archivo de correspondencias (§6) dice cuáles se leyeron así: si cada pasada elige por su cuenta cómo accedió al material, **dos pasadas del mismo caso dejan de ser comparables**.
 
-**Qué cuenta como hechos aprobados, y nada más cuenta.** El comando de hechos escribe su salida en `2-Borradores/Hechos - <caso> - <AAAA-MM-DD>.md`. **Ella** abre ese archivo y escribe al lado de cada ficha `SÍ`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda añadiendo ` - REVISADO` al final del nombre: `Hechos - <caso> - <AAAA-MM-DD> - REVISADO.md`. **Solo el archivo cuyo nombre termina en ` - REVISADO.md` cuenta como hechos aprobados.** Y lo mismo vale para cualquier otra salida que quieras usar como fuente —una cronología, un inventario—: sin esa marca es una propuesta que nadie ha mirado.
+**Qué cuenta como hechos aprobados, y nada más cuenta.** El comando de hechos escribe su salida en `2-Borradores/Hechos - <caso> - <AAAA-MM-DD>.md`. **Ella** abre ese archivo y escribe al lado de cada ficha `SÍ`, `NO` o `A MEDIAS: <su corrección>`, y lo guarda añadiendo ` - REVISADO` al final del nombre: `Hechos - <caso> - <AAAA-MM-DD> - REVISADO.md`. **Solo el archivo cuyo nombre termina en `REVISADO` cuenta como hechos aprobados.** Y lo mismo vale para cualquier otra salida que quieras usar como fuente —una cronología, un inventario—: sin esa marca es una propuesta que nadie ha mirado.
 
-**Comprobación dura, antes de la primera frase.** Si no encuentras ningún archivo de hechos cuyo nombre termine en ` - REVISADO.md`: **no hay hechos aprobados**. Lo dices con esas palabras y preguntas, en vez de usar el archivo sin marcar. Y nunca —por ningún motivo, ni aunque el archivo sin marcar esté completo y bien hecho, ni aunque coincida con lo que dicen los documentos— redactas sobre el archivo sin la marca como si fueran hechos aprobados. La marca no certifica que las fichas estén bien: certifica que ella las miró, y eso es justo lo que este comando no puede suplir.
+**Cómo se reconoce la marca, y por qué no basta con la forma canónica.** Windows oculta las extensiones conocidas: ella ve `Hechos - Salento - 2026-08-27`, escribe ` - REVISADO` al final de lo que ve, y **lo que queda en el disco depende de cómo esté configurado ese equipo y con qué programa abrió el archivo**. Estas cinco son la misma decisión suya y **las cinco cuentan**:
 
-**Si no hay hechos aprobados, dilo y detente:** *"No hay hechos aprobados: en la carpeta hay siete documentos y ningún archivo de hechos terminado en ` - REVISADO`. Puedo redactar sobre los documentos, pero entonces cada frase sale de mi lectura y no de su decisión. Antes de esto va `/hechos-con-prueba`, y después su revisión de ese archivo. ¿Sigo igual, o prefiere eso?"* — y esperas. Si hay un archivo de hechos **sin** la marca, lo nombras y dices que nadie lo ha revisado; no lo cuentas como aprobado ni lo usas de atajo. Si ella dice que sigas, sigues, y **el borrador lo dice en su encabezado**. **Producto:** la lista de lo que vas a usar, y la de lo que **no pudiste abrir o leer** (archivo que no abre, página que sigue sin dejarse leer después de abrirla como imagen, documento citado que no está); la segunda viaja hasta el cierre.
+| Lo que queda en el disco | De dónde sale |
+|---|---|
+| `Hechos - Salento - 2026-08-27 - REVISADO.md` | Extensiones ocultas. Es la forma canónica |
+| `Hechos - Salento - 2026-08-27 - REVISADO.md.md` | Extensiones visibles: escribió sobre el nombre completo |
+| `Hechos - Salento - 2026-08-27 - REVISADO.txt` | «Guardar como» desde el Bloc de notas |
+| `Hechos - Salento - 2026-08-27 - REVISADO` | Renombró borrando la extensión visible |
+| `Hechos - Salento - 2026-08-27 -REVISADO.md` · `... - revisado.md` | Se comió el espacio, o no puso mayúsculas |
+
+**La regla, en una línea:** se mira el nombre **sin la extensión** —sin las dos, si quedaron dos—, y cuenta si **termina en `REVISADO`**, en mayúsculas o minúsculas, con guion o sin él.
+
+**Y estas NO cuentan, y no se ignoran en silencio:** `REVISADO - Hechos - Salento.md` (al principio), `Hechos - Salento (revisar).md`, `Hechos - Salento - REVISADO - v2.md` (la marca no cierra el nombre). Ante cualquiera de ellas **la nombras, dices que no cuenta como marcada y preguntas** — porque el caso probable no es que ella se equivocara, sino que **quiso aprobar y su computador la traicionó**.
+
+**Si hay dos archivos marcados** del mismo caso —dos fechas, o el mismo con dos extensiones—: **no eliges. Los nombras los dos con su fecha, preguntas cuál manda, y te detienes ahí igual que si no hubiera ninguno.** El más reciente no manda por ser el más reciente.
+
+> **Y esto es una parada, no un aviso.** Es el mismo alto que el de «no hay hechos aprobados», y hace falta decirlo con las mismas palabras porque el fallo aquí es más fácil: con cero marcados no hay sobre qué redactar y la parada se impone sola; **con dos, hay dos archivos completos y utilizables delante, y seguir es cómodo**. Un modelo con prisa pregunta, se contesta solo *«será el más reciente»* y sigue — y entonces **ha elegido él cuál de sus dos decisiones vale**, que es exactamente lo que la marca existe para que decida ella. **Preguntar y seguir sin respuesta es peor que no preguntar**, porque deja escrito que se consultó.
+
+**Reconocer no es renombrar.** No corriges el nombre, no mueves el archivo y no lo copias con otro nombre. Arreglárselo sería decidir tú que esa era su intención, que es justo lo que la marca existe para no decidir.
+
+**Y digas lo que digas, lo declaras:** en el encabezado del borrador y en la salida de pantalla va **el nombre exacto del archivo que aceptaste como marcado, con su extensión tal cual está en el disco**. Es lo único que le permite a ella desmentirte de un vistazo.
+
+**Comprobación dura, antes de la primera frase.** Si no encuentras ningún archivo de hechos cuyo nombre termine en `REVISADO` **en ninguna de las cinco formas de arriba**: **no hay hechos aprobados**. Lo dices con esas palabras y preguntas, en vez de usar el archivo sin marcar. Y nunca —por ningún motivo, ni aunque el archivo sin marcar esté completo y bien hecho, ni aunque coincida con lo que dicen los documentos— redactas sobre el archivo sin la marca como si fueran hechos aprobados. La marca no certifica que las fichas estén bien: certifica que ella las miró, y eso es justo lo que este comando no puede suplir.
+
+**Si no hay hechos aprobados, dilo y detente:** *"No hay hechos aprobados: en la carpeta hay siete documentos y ningún archivo de hechos terminado en «REVISADO» —lo busqué también como `- REVISADO.md.md`, `- REVISADO.txt` y sin extensión, por si su computador le cambió el nombre al guardarlo—. Puedo redactar sobre los documentos, pero entonces cada frase sale de mi lectura y no de su decisión. Antes de esto va `/hechos-con-prueba`, y después su revisión de ese archivo. ¿Sigo igual, o prefiere eso?"* — y esperas. Si hay un archivo de hechos **sin** la marca, lo nombras y dices que nadie lo ha revisado; no lo cuentas como aprobado ni lo usas de atajo. Si ella dice que sigas, sigues, y **el borrador lo dice en su encabezado**. **Producto:** la lista de lo que vas a usar, y la de lo que **no pudiste abrir o leer** (archivo que no abre, página que sigue sin dejarse leer después de abrirla como imagen, documento citado que no está); la segunda viaja hasta el cierre.
 
 ### Fase 2 — Preguntar qué escrito y para quién, sin proponer una clase
 
@@ -302,7 +363,30 @@ Este bloque solo aparece si hay algo que reportar. Ante la duda de si un texto r
 
 Respóndelas **sobre el borrador que acabas de escribir**. Si alguna respuesta es la que no toca, corrige; si no puedes corregir, dilo en el cierre.
 
-1. ¿De **cada** frase fáctica puedo señalar su fuente exacta, ahora mismo, sin volver a buscarla? ¿Los hechos que usé salieron de un archivo terminado en ` - REVISADO.md`, o estoy redactando sin hechos aprobados y lo dije? ¿Cité como origen de algún dato una salida del propio sistema, en vez del documento original?
+**Al terminar esta lista, escribe este bloque al final de la entrega.** Es la única parte de este método que habla de sí mismo, y existe para una sola cosa: **hoy nadie sabe cuánto atrapa esta comprobación.** Se sabe que un error la atravesó y llegó al entregable; no se sabe si atrapó cuarenta o ninguno, y mientras no se sepa, **recortar esta sección y dejarla como está son las dos igual de defendibles**, que es justo lo que impide decidir.
+
+```text
+LO QUE ESTA PASADA SE CORRIGIÓ A SÍ MISMA
+  Datos que volví a abrir y comprobar: «N»
+  Corregidos al comprobarlos: «N» — «cuáles, por su etiqueta»
+  No se pudieron comprobar: «N» — «cuáles y por qué»
+  Preguntas de esta lista que me hicieron corregir algo: «sus números»
+  «o: ninguna»
+  Esto cuenta correcciones hechas, no errores que queden. Cero
+  corregidos significa que la comprobación no encontró ninguno, nunca
+  que no los haya. Y lo escribe quien hizo el trabajo: no prueba que
+  esta salida sea correcta.
+```
+
+**Tres reglas sobre este bloque, y la tercera es la que lo hace servir de algo:**
+
+1. **Anotar no sustituye a corregir.** La corrección va en la entrega como siempre; aquí solo se dice que ocurrió.
+2. **Este bloque no decide nada.** No retiene la entrega, no rebaja ninguna etiqueta, no cambia una sola palabra de lo demás.
+3. **Ni se infla ni se esconde.** Un número alto es buena noticia —quiere decir que la comprobación funciona—, y cero con muchas comprobaciones también es información. **Lo único que arruina esta medida es un número que no sea verdad**, y no hay nada que ganar falseándolo: no se te evalúa por él.
+
+**Y si este método no vuelve a abrir documentos** —porque su trabajo lo hace un programa—, el primer renglón dice `no aplica: lo hizo un programa` y los demás se responden igual. **Inventar un número para llenar el hueco es peor que el hueco.**
+
+1. ¿De **cada** frase fáctica puedo señalar su fuente exacta, ahora mismo, sin volver a buscarla? ¿Los hechos que usé salieron de un archivo terminado en `REVISADO`, y **escribí su nombre exacto tal como está en el disco**, o estoy redactando sin hechos aprobados y lo dije? ¿Descarté algún archivo con «revisado» en el nombre sin nombrarlo y preguntar? ¿Renombré, moví o copié algún archivo de ella para «arreglarle» la marca? ¿Cité como origen de algún dato una salida del propio sistema, en vez del documento original?
 2. ¿Hay alguna frase con **más precisión que su fuente** — una fecha, una cifra, un medio, un nombre, un cargo? ¿Alguna fecha o alguna cifra que salga de una cuenta mía y no de un documento?
 3. ¿Completé alguna frase con algo verosímil en lugar de abrir un hueco? ¿Mencioné algún documento que no está en la carpeta? ¿Di por ilegible algún documento sin haberlo abierto antes como imagen?
 4. ¿Escribí "no existe" o "no hay" donde lo único que sé es que **no lo encontré en el material**?

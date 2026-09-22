@@ -33,6 +33,26 @@ En la columna de la izquierda está lo que usted quiere lograr. En la de la dere
 
 ---
 
+## 1 bis. Le va a preguntar en qué posición está usted, y conviene saber por qué
+
+**La primera vez que trabaje un caso, le va a preguntar una cosa: si usted representa a alguna de las partes, o si le corresponde decidir el asunto.** Es una pregunta sola y no la repite.
+
+**No es burocracia. Cambia lo que recibe.**
+
+Si usted **representa a alguien**, el sistema habla de «su clienta» y de «el escrito que usted presenta», que es lo natural.
+
+Si a usted **le corresponde decidir** —una inspección, una comisaría, cualquier despacho que resuelve—, entonces **usted no tiene clienta**, y tres cosas cambian:
+
+- **No le va a hablar nunca de «su clienta».** Habla de las partes, de la actuación y de lo que consta en el expediente.
+- **Simetría obligatoria: si le señala que a una parte le falta algo, busca lo mismo en la otra y le dice qué encontró** — aunque no encuentre nada. Esto salió de un caso real suyo: al plantear que un apoderado no había acreditado su calidad, **la misma carencia aparecía en el otro lado**. Es el error más fácil de cometer cuando se revisa un expediente, y **no se comete eligiendo mal: se comete mirando solo un lado**.
+- **Nada le llega ordenado por lo que le conviene a nadie.** No hay «esto le sirve» ni «lo más favorable»: quien decide no tiene un lado al que servirle.
+
+**Y una cosa que no cambia, que es la que sostiene todo:** las reglas de siempre —de dónde sale cada dato, que lo alegado no es lo probado, que no calcula, que no dice derecho— **son exactamente las mismas en las dos posiciones**. La variante aprieta en un solo sitio y no afloja en ninguno.
+
+> **Y hay algo que hoy no hace, a propósito.** Si a usted le corresponde decidir, **`/redactar-escrito` le redacta la parte de los hechos y ahí se detiene: no redacta la parte que decide.** No es un fallo ni una limitación técnica. **Si una autoridad puede apoyar una decisión en lo que produce un sistema como este, si tiene que decirlo, y qué le pasa a la decisión si una cita sale mal, es algo que este proyecto no ha resuelto** — y mientras no esté resuelto, lo prudente es que la parte que decide la escriba usted. Cuando se resuelva, se le dirá.
+
+---
+
 ## 2. Cómo organizar sus carpetas
 
 Una carpeta por caso, con el nombre que usted quiera, y adentro estas cuatro cosas:
@@ -169,6 +189,10 @@ se escribe al lado de la ficha.
 Cuando termine, guarde este archivo añadiendo « - REVISADO» al final del
 nombre. Solo así cuenta como hechos aprobados: un archivo sin esa marca es
 una propuesta que nadie ha mirado.
+No se preocupe por la terminacion del archivo: Windows se la oculta, y si
+al renombrar le queda « - REVISADO.md.md», « - REVISADO.txt» o
+« - REVISADO» a secas, cuenta igual. Lo unico que importa es que el nombre
+TERMINE en REVISADO.
 
 3. LAS FICHAS
 ────────────────────────────────────────────────────────────────────
@@ -288,7 +312,9 @@ Hechos - Ríos - 2026-08-25.md              <- lo que él le propuso
 Hechos - Ríos - 2026-08-25 - REVISADO.md   <- lo que usted aprobó
 ```
 
-Solo el archivo cuyo nombre termina en ` - REVISADO` cuenta como hechos aprobados. El otro es una propuesta que nadie ha mirado todavía, y él lo trata como tal. Si más adelante le pide un borrador y no encuentra ningún archivo con esa marca, se lo dirá con esas palabras —no hay hechos aprobados— y le preguntará, en vez de tirar del archivo sin marcar como si usted lo hubiera visto.
+Solo el archivo cuyo nombre termina en ` - REVISADO` cuenta como hechos aprobados. El otro es una propuesta que nadie ha mirado todavía, y él lo trata como tal.
+
+**Y no tiene que pelearse con la terminación del archivo.** Windows le esconde el `.md` del final, así que al renombrar puede quedarle en el disco `Hechos - Ríos - 2026-08-25 - REVISADO.md.md`, o `- REVISADO.txt`, o `- REVISADO` sin nada detrás — y usted no tiene cómo verlo. **Las cinco formas cuentan igual.** Lo único que importa es que el nombre **termine** en REVISADO: escriba la marca al final y olvídese del resto. Él le dirá, en su respuesta, el nombre exacto del archivo que tomó como aprobado, para que usted lo desmienta si tomó el que no era. Y si encuentra un archivo con «revisado» puesto de otra forma —al principio del nombre, o un `(revisar)`— **no lo da por aprobado ni lo pasa por alto: se lo nombra y le pregunta**. Si más adelante le pide un borrador y no encuentra ningún archivo con esa marca, se lo dirá con esas palabras —no hay hechos aprobados— y le preguntará, en vez de tirar del archivo sin marcar como si usted lo hubiera visto.
 
 **Y esa marca vale para cualquier entrega, no solo para la de hechos.** Si repasa una cronología o un inventario y le parece bien, guárdelo añadiendo ` - REVISADO` al nombre, igual que la hoja de hechos: desde ese momento él puede apoyarse en ese archivo. Sin la marca lo usa solo para saber dónde mirar y vuelve a sacar cada dato del documento original — que es más lento, y es justo lo que impide que un error de una entrega se cuele en la siguiente sin que nadie lo note. La marca no dice que el contenido esté perfecto; dice que usted lo miró, y eso es lo que cambia.
 

@@ -1,2 +1,11 @@
 # Los scripts de shell se ejecutan en Git Bash: con CRLF fallan con "\r: command not found".
 *.sh text eol=lf
+
+# Y la plantilla compilada, por la misma razon y con una peor: es un ARTEFACTO.
+# El 2026-09-22 llego a master con 68 retornos de carro metidos por un checkout
+# de Windows, y eso la separa para siempre de lo que produce la compilacion:
+# `test_pagina_publicada.py` no puede volver a cuadrar, y una guarda que esta
+# roja por algo que nadie sabe arreglar es una guarda que se aprende a ignorar.
+# Se fijan tambien las FUENTES, para que el proximo commit no lo repita.
+*.html          text eol=lf
+tools/pagina-despacho/src/*  text eol=lf

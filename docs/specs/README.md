@@ -6,7 +6,7 @@
 
 ## Por qué existe esta carpeta
 
-Este proyecto **ya hacía desarrollo dirigido por especificación sin llamarlo así**: los nueve `SKILL.md` no son documentación de un programa, **son el programa** — especificaciones en prosa que un modelo ejecuta. Esa es la arquitectura, y es correcta.
+Este proyecto **ya hacía desarrollo dirigido por especificación sin llamarlo así**: los doce `SKILL.md` no son documentación de un programa, **son el programa** — especificaciones en prosa que un modelo ejecuta. Esa es la arquitectura, y es correcta.
 
 Lo que faltaba es la capa intermedia. Hoy hay:
 
@@ -60,14 +60,19 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | Capacidad | Estado real hoy | Decisión | Spec |
 |---|---|---|---|
 | **Instalar y actualizar el plugin** | Remoto publicado y **con hoja de instalación**. **Cero instalaciones fuera de esta máquina** | ADR-012 | **SPEC-01** + **SPEC-11** — lo que falta ocurre en su máquina |
-| **Los nueve métodos** | Desplegados y ejecutados en dos casos reales | los `SKILL.md` son la spec | SPEC-04 a SPEC-08 — de defecto |
-| **Hablarle a una autoridad, no a una parte** | **No existe.** Los `SKILL.md` dicen «su clienta» y la única usuaria real es la inspección | ninguna | **SPEC-03** — pendiente |
+| **Los doce métodos** | Desplegados; nueve ejecutados en dos casos reales, los dos de la oficina de programas todavía no, y **`transcribir-audio` entró por fusión el 2026-09-22 sin correrse aquí** —sus bibliotecas no están en este entorno— | los `SKILL.md` son la spec | SPEC-04 · 05 · 06 · 08 **ejecutadas**; SPEC-07 pendiente |
+| **Hablarle a una autoridad, no a una parte** | **Construido el 2026-09-05:** los doce preguntan la posición **y esperan la respuesta** —los once de entonces, y el duodécimo el día que entró—, ninguna regla presupone bando —siete reescritas, no dos—, y la **simetría obligatoria** es método, reconciliada con la que `revision-de-rigor` §2.3 ya tenía. **Lo que no existe es la decisión de `V-7`** | ninguna todavía — hace falta **un ADR** | **SPEC-03**, con el valor conservador puesto mientras tanto |
+| **Que dos pasadas del mismo caso se puedan comparar** | **Construido el 2026-09-05.** Cada pasada dice qué se corrigió a sí misma y qué pregunta lo atrapó | `PM-M-1` (c) y (d) | **SPEC-12** — y **sin una sola cifra todavía** |
+| **Que abrir el material no cueste veintiuna lecturas por página** | **Construido el 2026-09-05** en los dos comandos que lo tenían vivo; los dos inventarios ya lo tenían | `PM-M-4` | **SPEC-13** — el ahorro sigue sin medirse |
+| **Que las reglas repetidas no deriven** | **Construido el 2026-09-05.** 12 pruebas que exigen que los bloques repetidos **digan lo mismo**, no solo que estén | ninguna | `evals/scripts/test_bloques_identicos.py` |
 | **Leer fotos sin capa de texto (OCR)** | **Dentro del plugin** desde el 2026-09-01, con su comando `/preparar-material` | ADR-016 · **ADR-018** | el `SKILL.md` es su spec |
 | **Detectar la omisión silenciosa (dos motores)** | **Dentro del plugin**; sigue faltando el segundo motor | ADR-016 · **ADR-018** | Fase 5 de `/preparar-material` |
-| **Entregable en Word** | **Dentro del plugin.** Falta que `/redactar-escrito` lo invoque | ADR-014 · **ADR-018** | **la siguiente** |
+| **Entregable en Word** | **Dentro del plugin, y las siete skills que entregan lo invocan** —`/redactar-escrito` incluida— con su regla de degradación escrita | ADR-014 · **ADR-018** | el `SKILL.md` es su spec |
 | **Transcribir audio de audiencia** | Motor y modelos instalados; **falta el script**. Ya no hay nada que lo bloquee salvo audio real | ADR-017 · **ADR-018** | **ninguna todavía** |
 | **Que una skill ejecute código** | ~~No existe~~ **SÍ SE PUEDE, y ya se hace.** El Core nunca hizo falta | **ADR-018** | probado con `/preparar-material` |
-| **Copia de seguridad del trabajo de ella** | **No existe.** ADR escrito, cero implementación | ADR-013 | **ninguna** — hueco `V-5` |
+| **Que lo que ella escribe sobreviva a una pasada** | **Construido el 2026-09-05.** El archivo de estado reemplaza solo su cabecera; lo suyo se conserva byte a byte y se comprueba | `PM-M-8` | **SPEC-06**, con banco de 13 pruebas |
+| **Saber qué produjo el sistema en una carpeta** | **Construido el 2026-09-05**, dentro de `/estado-del-caso`: qué comando, de qué pasada, y cuál aprobó ella | ninguna | **SPEC-08** |
+| **Copia de seguridad del trabajo de ella** | **No existe.** ADR escrito, cero implementación. **No la resuelve SPEC-06**: esa salva un archivo, no la carpeta | ADR-013 **con diez preguntas pendientes, leídas el 2026-09-05** (`BACKLOG` §7) | **ninguna, y no puede haberla todavía:** dos de esas preguntas son para la oficina de ella —si ya tiene respaldo, y qué cifrado ofrece su Windows— y **el ADR manda preguntarlas antes de proponer nada**. Y el riesgo real lo escribe ADR-012 q8: **git no respalda nada de lo que importa** |
 | **Medir horas-persona y coste por caso** | **No existe.** Todo se mide en tokens | ninguna | **ninguna** — huecos `V-2`, `V-3` |
 | **Reanudar un comando que se cayó** | **No existe** | ninguna | **ninguna** — hueco `V-4` |
 | **Riesgo de que la usuaria sea autoridad** | **Cero líneas en todo el repositorio** | ninguna | **ninguna** — hueco `V-7` |
@@ -82,6 +87,8 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 
 3. **Nada de esto se puede ordenar sin `V-10`.** Sin decidir qué es la primera versión, cualquier orden que yo proponga es una preferencia mía disfrazada de plan.
 
+4. **Y una cuarta, del 2026-09-05: «ejecutada» se está acumulando sin que nada lo comprueba en uso.** Siete specs ejecutadas, **una sola con pruebas capaces de fallar**. Las otras seis son texto en los `SKILL.md` y su único banco posible es una pasada real, que no ha ocurrido. **Un contador de specs ejecutadas es exactamente la clase de métrica que este repositorio ya se prohibió** — un autoinforme no es control (`H-12`).
+
 ---
 
 ## Estado de las especificaciones
@@ -90,17 +97,51 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 |---|---|---|---|---|
 | [SPEC-01](SPEC-01-instalacion-del-plugin.md) | Instalación del plugin desde el remoto | defecto | `EP-ENTRADA-0` · `H-10` | **Parcialmente ejecutada.** O-1 a O-4 pasan; O-5 a O-7 solo en su máquina |
 | ~~SPEC-02~~ | ~~La hoja de hechos: dónde se escribe y cómo se aprueba~~ | — | ~~`H-05` · G17~~ | **RETIRADA — el defecto ya estaba cerrado.** Ver abajo |
-| SPEC-03 | Variante de contexto B | defecto | `P-02` · G7 | Pendiente — no escrita |
-| SPEC-04 | Bloque «dicho por usted, no documentado en la carpeta» | defecto | `P-05` · `P-06` · G6 | Pendiente — no escrita |
-| SPEC-05 | Blindaje de la marca ` - REVISADO` | defecto | `PM-M-2` · G25 | Pendiente — no escrita |
-| SPEC-06 | `0-Estado del caso`: reemplazo dirigido, no reescritura | defecto | `H-11` · G19 | Pendiente — no escrita |
-| SPEC-07 | Los doce hallazgos de `inventario-de-bienes` | defecto | `V-1` | Pendiente — no escrita |
-| SPEC-08 | Índice de las salidas de una pasada | defecto | `P-07` · G37 | Pendiente — no escrita |
+| [SPEC-03](SPEC-03-contexto-b-autoridad.md) | Variante de contexto B: cuando ella no representa a nadie | defecto | `P-02` · G7 | **Ejecutada en su primera mitad.** La segunda —qué puede redactarle a quien decide— **espera el ADR de `V-7`**, y mientras tanto queda puesto el valor conservador |
+| [SPEC-04](SPEC-04-dicho-por-usted.md) | Bloque «dicho por usted, no documentado en la carpeta» | defecto | `P-05` · `P-06` · G6 | **Ejecutada** — falta una pasada real |
+| [SPEC-05](SPEC-05-la-marca-revisado.md) | Blindaje de la marca ` - REVISADO` | defecto | `PM-M-2` · G25 | **Ejecutada** — O-1, O-6 y O-7 pasan; O-2 a O-5 piden pasada real |
+| [SPEC-06](SPEC-06-escritura-dirigida-del-estado.md) | `0-Estado del caso`: reemplazo dirigido, no reescritura | defecto | `PM-M-8` · G19 | **Ejecutada** — **con banco de 13 pruebas en verde**; falta una pasada real |
+| ~~SPEC-07~~ | ~~Los doce hallazgos de `inventario-de-bienes`~~ | — | ~~`V-1`~~ | **RETIRADA — los doce ya estaban aplicados.** Auditados uno por uno el 2026-09-05 · [la auditoría](../technical-design/v0/notes-verification/auditoria-inventario-de-bienes-2026-09-05.md) |
+| [SPEC-08](SPEC-08-indice-de-las-salidas.md) | Índice de las salidas de una pasada | defecto | `P-07` · G37 | **Ejecutada** — falta una pasada real |
 | [SPEC-09](SPEC-09-preguntas-de-derecho.md) | `preguntas-de-derecho`: las dos puertas que le faltan | defecto | salvedad de `H-04` · `V-1` | **Ejecutada** — falta probar la inyección |
 | [SPEC-10](SPEC-10-limite-del-texto-extraido.md) | El límite del material extraído, dentro de los `SKILL.md` | defecto | `H-16` · `EP-1.1-COORDENADA` | **Ejecutada** — falta una pasada real |
 | [SPEC-11](SPEC-11-la-primera-instalacion.md) | La primera instalación: que empezar no dependa de preguntar | defecto | `H-08` · defecto abierto de SPEC-01 | **Ejecutada** — falta que alguien instale |
+| [SPEC-12](SPEC-12-lo-que-la-pasada-atrapo.md) | Que cada pasada diga qué se corrigió a sí misma | defecto | `PM-M-1` (c) y (d) · G23 | **Ejecutada** en los once — falta una pasada real que produzca cifras |
+| [SPEC-13](SPEC-13-reindexar-por-pieza.md) | Abrir cada pieza una vez, no veintiuna | defecto | `PM-M-4` · G24 · §2 ítem 8 | **Ejecutada** en los dos que lo tenían vivo — los dos inventarios ya tenían la forma |
+| [SPEC-14](SPEC-14-el-conteo-lo-hace-un-programa.md) | El conteo que se pedía a ojo | defecto | **la primera pasada real sobre el `caso-03`** | **Ejecutada.** Es la única spec cuyo defecto no salió de leer nada: salió de correr el método |
 
-> **Cuenta honesta: tres escritas y ejecutadas —una de ellas a medias—, una retirada, cinco que hoy son solo una fila de esta tabla.** «Pendiente» aquí significa que el archivo **no existe**. El índice del 31/08 marcaba SPEC-02 como «Escrita» y la enlazaba; el archivo nunca existió. Corregido.
+> **Cuenta honesta, al final del 2026-09-05: doce escritas y ejecutadas, dos retiradas, ninguna pendiente de escribir.** Las dos retiradas —SPEC-02 y SPEC-07— lo fueron por la misma razón: **el defecto que iban a arreglar ya estaba arreglado**. «Pendiente» aquí significaba que el archivo no existía, y hoy no queda ninguna en ese estado.
+
+### Y una cuenta que importa más que esa
+
+**Doce specs ejecutadas. Cinco métodos comprobados en pasada real, el 2026-09-05.** Se ejecutaron `hechos-con-prueba`, `cronologia`, `revision-de-rigor`, `revisar-documento` e `inventario-de-anexos` contra el `caso-03`, cuyo truth set estaba escrito antes de esta sesión. **Cero afirmaciones prohibidas afirmadas, cuatro trampas de entidad de cuatro superadas** — y la pasada más valiosa fue la que **no produjo archivo**: `inventario-de-anexos` se detuvo en su Fase 2 porque no hay hoja de hechos aprobada, que es exactamente lo que SPEC-05 existe para garantizar. **Y ejecutar encontró seis defectos, todos míos y ninguno visible releyendo**, entre ellos dos conteos mal hechos y dos operaciones aritméticas prohibidas en la primera salida producida bajo la regla que las prohíbe. Registro completo: [la pasada del caso-03](../technical-design/v0/notes-verification/pasada-caso-03-2026-09-05.md).
+
+| # | Spec | Qué estaba mal |
+|---|---|---|
+| 1 | SPEC-05 | La regla se contradecía con su propio ejemplo: `(revisar)` no contiene «revisado» |
+| 2 | SPEC-03 | La simetría autorizaba a valorar un requisito — que es hacer derecho, prohibido en los once |
+| 3 | SPEC-04 | Lo que ella escribe bajo `NOTAS SUYAS` no contaba como suyo, y se perdía |
+| 4 | — | **El propio registro de la pasada**: dije dónde dispara la simetría sin ir a mirar |
+| 5 | SPEC-05 | «Pregunta cuál manda» **sin «y te detienes»** |
+| 6 | SPEC-03 | La posición también se preguntaba sin esperar — en los once |
+| 7 | SPEC-03 | Una segunda regla de simetría, más débil, al lado de la que `revision-de-rigor` §2.3 ya tenía |
+| 8 | SPEC-03 | El barrido de contexto B buscó **una sola palabra**: quedaban seis reglas con vocabulario de adversario |
+| 9 | — | `revision-de-rigor` **no sabía nombrar una cuenta ya hecha** — el error que los otros diez tienen prohibido, en el documento que se firma |
+| 10 | — | Ni **la ausencia inflada** ni **la secuencia leída como causa**: dos invariantes duras, invisibles para el que revisa |
+| 11 | SPEC-03 | La regla exigía un número que **el formato de salida no tenía dónde poner** |
+| 12 | — | `buscar.py` devolvía **el trabajo del sistema como si fuera el expediente** — y el peor caso llevaba la marca ` - REVISADO` |
+| 13 | — | **«Vereda» contaba como identificador**: dos predios vecinos se habrían fundido en una fila |
+| 14 | — | **Ninguna negativa estaba hecha para quien decide.** Contestarle a una autoridad qué resolver no es opinar: es tomarle el acto |
+| 15 | — | **El defecto 7 otra vez, cometido por mí dos horas después de escribirlo** |
+| 16 | — | El conteo de la búsqueda **mezclaba renglones con coincidencias** |
+| 17 | SPEC-08 | El índice **no reconocía los borradores de `/redactar-escrito`** — lo único que ella firma |
+| 18 | AC-05 | **Tres mecanismos adivinando lo que el archivo dice en su primera línea** |
+
+> **Y el decimoquinto es el que hay que leer dos veces:** es el séptimo, **cometido otra vez, por mí, dos horas después de haberlo encontrado y escrito**. Los catorce primeros son cosas que no vi. Ese lo vi, lo nombré, escribí que *«una regla con dos redacciones se parte»*, y volví a partir una. **La conclusión no es tener más cuidado: es que el cuidado no basta y hace falta la guarda.**
+
+> **Y la conclusión, que gobierna cómo se lee esta tabla entera:** *«ejecutada» significa que el cambio está en el código y que pasan los observables que no dependen de nadie.* **No significa que funcione.** Ocho de ocho defectos aparecieron en la primera tarde de poner las reglas a decidir sobre un expediente concreto, y **el expediente lo construí yo, que escribí las reglas** — está sesgado hacia ellas por construcción. Lo que un caso real trae y ese no es lo que a nadie se le ocurrió poner.
+
+**Tres de los quince quedaron con guarda automática** (`evals/scripts/test_bloques_identicos.py`, 12 pruebas comprobadas con mutantes): que los bloques repetidos **digan lo mismo** y no solo estén, y que **toda regla que mande preguntar mande esperar**.
 
 ### Lo que las dos primeras ejecuciones enseñaron sobre el backlog
 
@@ -112,8 +153,16 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | `H-04` | Cerrable — «el bloque anti-inyección está en los nueve» | **Estaba en ocho.** Faltaba en la única skill cuyo trabajo es negarse |
 | `H-16` | Parcial — «no consta la regla dentro de los `SKILL.md`» | **No constaba en ninguna de las nueve**, ni en la de revisión de rigor |
 | `H-10` | Abierto — «la guía publica `/cronologia` como fiable» | **La guía ya advertía de las dos formas.** El defecto real era que **no existía hoja de instalación** |
+| `H-11` | Abierto, dos mitades — «`inventario-de-anexos` sin regla de no sobrescritura; `estado-del-caso` reescribe sin copia previa» | **Las dos mitades cerradas.** La regla está en `inventario-de-anexos` §1 y la copia previa en `estado-del-caso` Fase 6.4. Lo vivo era otra cosa: `PM-M-8`, que no es la pérdida sino **la copia** |
+| `PM-M-2` | Abierto | **Vivo y entero.** Es el primero que resulta estar exactamente como decía |
+| `V-1` — los doce hallazgos de `inventario-de-bienes` | Abierto, «tres graves, sin aplicar», **primer puesto de mi lista** | **Los doce aplicados**, más las dos adiciones del Control 7 y los recortes del Control 5. La crítica se aplicó y **nadie cerró el ítem** |
+| `P-05` · `P-06` · `P-07` | Abiertos | **Vivos y enteros.** Salieron de un pase real, no de una lectura de diagnóstico |
 
-> **Cuatro de cuatro.** Ningún ítem del backlog resultó estar como decía. **La regla 4 no es una precaución: es lo único que ha funcionado.** Y el corolario incómodo: **los ~112 identificadores restantes tienen el mismo origen y tampoco están verificados contra el código.**
+> **Seis de seis en el primer grupo, y el corte está donde se esperaba.** Ningún ítem **que salió de leer documentos de diagnóstico** resultó estar como decía. Los cuatro que **salieron de un pase real** —`PM-M-2`, `P-05`, `P-06`, `P-07`— estaban vivos y exactos, los cuatro.
+>
+> **Y `V-1` es el más caro de los seis**, porque no falló en un detalle: **puso en primer lugar de mi lista un trabajo ya hecho**, con el argumento más fuerte que tenía —«defectos graves en producto desplegado, y nadie los está contando»—. Su causa es distinta de las otras cinco: ahí la crítica **se aplicó** y nadie cerró el ítem. Eso no lo arregla releer más; lo arregla **cerrar el ítem en el mismo commit que aplica el arreglo**, que es lo que esta capa hace por construcción y lo que un documento de crítica suelto no hace.
+>
+> **Esa es la regla que sale de nueve verificaciones, y es más útil que la regla 4:** *un ítem que nació ejecutando el producto describe un defecto real; uno que nació leyendo un documento sobre el producto, la mitad de las veces no.* Los ~108 identificadores restantes se leen con esa lente: **primero los que tienen un pase detrás.**
 
 ### Por qué se retiró SPEC-02, y qué queda vivo de su grupo
 
@@ -134,7 +183,15 @@ Iba a especificar el arreglo de `H-05` —*«dos comandos consumen una hoja de h
 
 ## Qué se hace ahora, y qué no lo decido yo
 
-**Puedo escribir y ejecutar ya**, sin depender de nadie: SPEC-05 (la marca ` - REVISADO`), SPEC-06 (`0-Estado del caso`), SPEC-04 (el bloque de lo dicho no documentado) y SPEC-08 (el índice de salidas). Las cuatro son texto dentro de los `SKILL.md`, no necesitan Core ni instalar nada.
+**Las cuatro que podía escribir y ejecutar solo, están hechas** (2026-09-05): SPEC-05, SPEC-06, SPEC-04 y SPEC-08. Tres son texto dentro de los `SKILL.md`; SPEC-06 añadió además el séptimo programa del plugin y el primer banco de pruebas de la oficina.
+
+**De mi lado ya no queda ninguna spec sin escribir.** Lo que queda, y en este orden:
+
+| # | Qué | Por qué en ese puesto |
+|---|---|---|
+| 1 | **Seguir ejecutando los métodos contra el `caso-02`**, uno por uno | Ocho defectos en la primera tarde. **No hay razón para creer que la proporción baje** en los que todavía no han tocado un expediente |
+| 2 | **Ampliar el `caso-02`** con trampas que no se me ocurrieron a mí | Su límite es que **lo construyó quien escribió las reglas**. Cada trampa que salga de un caso real vale por diez inventadas |
+| 3 | **`PM-M-1` (a) y (b)** — etiquetar filas de coste y separar `input`/`cache_read` | Necesitan **los logs de una corrida**, y no los hay |
 
 **SPEC-03 —contexto B— es la más valiosa y la más delicada:** cambia a quién le habla el producto en su único uso real. No es una corrección de redacción; toca qué puede y qué no puede proponerle un sistema a quien decide. Merece decidirse, no escribirse de una.
 

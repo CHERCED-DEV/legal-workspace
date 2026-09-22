@@ -276,14 +276,40 @@ def medir(run_dir, caso, dir_salidas, version, excluir=()):
     return resumen
 
 
+def veredicto(r):
+    """Tres estados, y el del medio faltaba.
+
+    Antes, «intacta» significaba solo «cero fabricaciones», y un run VACIO
+    tiene cero fabricaciones por construccion: la medicion certificaba un run
+    donde no paso nada. Y las paginas sin declarar -- 25 de 25 -- se imprimian
+    debajo sin tocar el veredicto.
+
+    NO MEDIBLE no es lo mismo que COMPROMETIDA, y confundirlas es lo que hacia
+    que este instrumento no pudiera fallar.
+    """
+    v, c = r["veracidad"], r["coste"]
+    if c["comandos"] == 0 and c["turnos"] == 0:
+        return "NO MEDIBLE", "no hay nada que medir: el run no registra ni un comando ni un turno"
+    if v["fabricaciones"] > 0:
+        return "COMPROMETIDA", "%d fabricaciones" % v["fabricaciones"]
+    if v["paginas_ilegibles"] and v["declaradas"] == 0:
+        return "NO MEDIBLE", ("de %d paginas ilegibles no se declaro ninguna: o no se leyeron, "
+                              "o la salida no las menciona" % v["paginas_ilegibles"])
+    return "INTACTA", "cero fabricaciones sobre %d paginas ilegibles, %d declaradas" % (
+        v["paginas_ilegibles"], v["declaradas"])
+
+
 def imprimir(r):
     v, c, vol = r["veracidad"], r["coste"], r["volumen"]
     print("\n" + "═" * 74)
     print("  MEDICIÓN · versión %s · caso «%s» · %s" % (r["version"], r["caso"], r["medido"]))
     print("═" * 74)
 
-    ok = v["fabricaciones"] == 0
-    print("\n  VERACIDAD" + ("  ── intacta" if ok else "  ── COMPROMETIDA"))
+    estado, porque = veredicto(r)
+    r["veredicto"] = {"estado": estado, "porque": porque}
+    ok = estado == "INTACTA"
+    print("\n  VERACIDAD  ── %s" % estado)
+    print("    %s" % porque)
     print("    fabricaciones ................. %d   %s" % (
         v["fabricaciones"], "(cero: no atribuyó nada a una página ilegible)" if ok else "*** REGRESIÓN ***"))
     print("    páginas ilegibles declaradas .. %d de %d" % (v["declaradas"], v["paginas_ilegibles"]))
@@ -314,11 +340,13 @@ def imprimir(r):
 
 
 def comparar(a, b):
+    """Devuelve True si el después es aceptable; False si hay que descartarlo."""
     """Antes y después. Sin esto, una mejora es una opinión."""
     print("\n  COMPARACIÓN  %s → %s" % (a["version"], b["version"]))
     print("  " + "─" * 60)
     fa, fb = a["veracidad"]["fabricaciones"], b["veracidad"]["fabricaciones"]
-    if fb > fa:
+    regresion = fb > fa
+    if regresion:
         print("  ⚠ REGRESIÓN DE VERACIDAD: %d → %d fabricaciones. Se descarta." % (fa, fb))
     else:
         print("  veracidad ....... %d → %d fabricaciones" % (fa, fb))
@@ -329,6 +357,7 @@ def comparar(a, b):
         pct = ((y - x) / x * 100) if x else 0
         print("  %-16s %s → %s  (%+.0f %%)" % (etiq, f"{x:,}", f"{y:,}", pct))
     print()
+    return not regresion
 
 
 def main():
@@ -351,6 +380,10 @@ def main():
         run = cand[0]
 
     caso = json.load(io.open(a.caso, encoding="utf-8"))
+    if "_INVALIDADO" in caso:
+        print("\n  AVISO — la ficha de este caso lleva _INVALIDADO. Lo que sigue se cita")
+        print("  con esa salvedad, y la cifra de fabricaciones mide menos de lo que parece.")
+        print("  Ver _REVISION_DE_LA_INVALIDACION en la propia ficha.\n")
     r = medir(run, caso, a.salidas, a.version,
               excluir=tuple(x.strip() for x in a.excluir.split(",") if x.strip()))
     imprimir(r)
@@ -360,9 +393,24 @@ def main():
         io.open(a.guardar, "w", encoding="utf-8").write(json.dumps(r, ensure_ascii=False, indent=1))
         print("  guardado en %s\n" % a.guardar)
 
+    aceptable = True
     if a.comparar_con:
-        comparar(json.load(io.open(a.comparar_con, encoding="utf-8")), r)
+        aceptable = comparar(json.load(io.open(a.comparar_con, encoding="utf-8")), r)
+
+    # El codigo de salida es el veredicto. Un banco que siempre sale 0 no puede
+    # fallar, y un banco que no puede fallar no mide nada (G22, PM-5.1-BANCO).
+    estado = r.get("veredicto", {}).get("estado")
+    if estado == "NO MEDIBLE":
+        print("  → NO MEDIBLE. No se puede decir nada de esta corrida.\n")
+        return 3
+    if estado == "COMPROMETIDA":
+        print("  → VERACIDAD COMPROMETIDA. La corrida se descarta.\n")
+        return 2
+    if not aceptable:
+        print("  → REGRESIÓN frente a la medición anterior. El cambio se descarta.\n")
+        return 4
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

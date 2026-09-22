@@ -165,6 +165,10 @@ se escribe al lado de la ficha.
 Cuando termine, guarde este archivo añadiendo « - REVISADO» al final del
 nombre. Solo así cuenta como hechos aprobados: un archivo sin esa marca es
 una propuesta que nadie ha mirado.
+No se preocupe por la terminacion del archivo: Windows se la oculta, y si
+al renombrar le queda « - REVISADO.md.md», « - REVISADO.txt» o
+« - REVISADO» a secas, cuenta igual. Lo unico que importa es que el nombre
+TERMINE en REVISADO.
 
 3. LAS FICHAS
 
@@ -285,6 +289,10 @@ se escribe al lado de la ficha.
 Cuando termine, guarde este archivo añadiendo « - REVISADO» al final del
 nombre. Solo así cuenta como hechos aprobados: un archivo sin esa marca es
 una propuesta que nadie ha mirado.
+No se preocupe por la terminacion del archivo: Windows se la oculta, y si
+al renombrar le queda « - REVISADO.md.md», « - REVISADO.txt» o
+« - REVISADO» a secas, cuenta igual. Lo unico que importa es que el nombre
+TERMINE en REVISADO.
 
 3. LAS FICHAS
 

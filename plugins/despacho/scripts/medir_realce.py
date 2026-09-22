@@ -7,9 +7,20 @@ Instrumentacion de tres niveles, la misma de preparar_material.py:
 """
 import os, sys, time, json
 from pathlib import Path
-import numpy as np
-import cv2
-from PIL import Image
+try:
+    import numpy as np
+    import cv2
+    from PIL import Image
+except ImportError as _e:
+    # Declarar cual falta, como los demas. Este es instrumentacion de
+    # desarrollo -- clase ADMIN, no expuesta al modelo -- y aun asi la promesa
+    # de `INSTALACION.md` vale para el: «las pide diciendo cual».
+    sys.stderr.write(
+        "FALTA una biblioteca de imagen y sin ella esta medicion no existe: %s\n"
+        "  Este programa mide si el realce mejora lo que el OCR ve. No lo usa\n"
+        "  ningun metodo del plugin: es instrumentacion de desarrollo.\n"
+        "  pip install numpy opencv-python-headless pillow\n" % _e)
+    raise SystemExit(3)
 
 CASO = Path(os.environ.get("CASO_RECIBIDOS", "")).expanduser()
 MODELOS = Path(__file__).resolve().parent / "modelos"

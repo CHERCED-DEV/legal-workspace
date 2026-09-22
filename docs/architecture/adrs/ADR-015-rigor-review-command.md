@@ -14,7 +14,7 @@ El pase real del 2026-08-27/28 añadió tres hechos:
 2. **La usuaria real lo pidió por su nombre funcional:** *«soy contradictor interno»*. No pidió redactar: pidió poner a prueba.
 3. **El contrato ya está escrito y es el único del corpus convertible en `SKILL.md` sin inventarle la forma**: trece campos por hallazgo y cinco veredictos cerrados.
 
-Y un problema que este ADR debe resolver, no heredar: **la misma capacidad está descrita en seis archivos con dos contratos incompatibles** —`08-adversarial-review-and-decision-support.md` (ficha de 7 campos), `adversarial-review/judicial-rigor.md` (21 líneas), `workflows/20` (ficha de 13 campos), `workflows/08`, `skill-candidates/adversarial-review.md` y `evals/adversarial-benchmark.md`—. `08` enlaza a `adversarial-review/*` y **nunca a `workflows/20`**. Quien implemente siguiendo el índice equivocado construye otra cosa.
+Y un problema que este ADR debe resolver, no heredar: **la misma capacidad está descrita en seis archivos con dos contratos incompatibles** —`08-adversarial-review-and-decision-support.md` (ficha de 7 campos), `adversarial-review/judicial-rigor.md` (21 líneas), `workflows/20` (ficha de 13 campos), `workflows/08`, `skill-candidates/adversarial-review.md` y `docs/skills-support/evals/adversarial-benchmark.md`—. `08` enlaza a `adversarial-review/*` y **nunca a `workflows/20`**. Quien implemente siguiendo el índice equivocado construye otra cosa.
 
 ## Decision
 
@@ -120,7 +120,7 @@ Descartada: el comando es texto puro. Esperar solo posterga la única capacidad 
 ## Validación / pruebas necesarias
 
 1. **Convertir `workflows/20` en `SKILL.md` y ejecutarlo sobre el mismo expediente [radicado del expediente]**, comparando contra los 14 hallazgos producidos a mano. Es la única prueba que dice si el SKILL preserva el método.
-2. Comprobar contra `evals/adversarial-benchmark.md` que la custodia del truth set sigue fuera de la skill.
+2. Comprobar contra `docs/skills-support/evals/adversarial-benchmark.md` que la custodia del truth set sigue fuera de la skill.
 3. Medir cuántos hallazgos sobreviven a la verificación de la profesional, y cuántos eran `UNSUPPORTED_REVIEW_OBSERVATION` mal marcados.
 4. Probar la simetría con un expediente donde solo una parte tenga defectos: comprobar que el informe **dice** que buscó en las dos y no encontró en una.
 

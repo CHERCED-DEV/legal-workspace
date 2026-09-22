@@ -5,6 +5,29 @@
 > **CORRECCIÓN — 2026-08-31.** Al ir a escribir la spec del ítem **4 de §2** —«la hoja de hechos: dos comandos consumen un archivo que nadie escribe»— se leyó el código y **el defecto ya estaba cerrado y verificado en ejecución real** desde antes de esta consolidación. Estaba mal contado aquí: entró como abierto porque se consolidó leyendo documentos de diagnóstico, no los `SKILL.md`. Las tres filas afectadas quedan tachadas en su sitio, no borradas.
 >
 > **Y esa es la lección, no la errata:** un backlog que se consolida leyendo diagnósticos y no el código **produce trabajo inventado**. La regla 4 de `docs/specs/README.md` sale de aquí — antes de escribir una spec de defecto, se comprueba que el defecto siga vivo. **El resto de este índice tiene el mismo origen y no ha sido reverificado contra el código.**
+>
+> **SEGUNDA CORRECCIÓN — 2026-09-05, y afina la anterior.** Van nueve ítems verificados contra el código, y el patrón ya no es «el backlog está mal contado»: **es más fino y más útil.**
+>
+> | De dónde nació el ítem | Verificados | Estaban como decían |
+> |---|---|---|
+> | De **leer documentos de diagnóstico** (`H-04`, `H-05`, `H-10`, `H-11`, `H-16`) | 5 | **0 de 5** |
+> | De **ejecutar el producto en un caso real** (`PM-M-2`, `P-05`, `P-06`, `P-07`) | 4 | **4 de 4** |
+>
+> **TERCERA CORRECCIÓN — al cierre del 2026-09-05, y cambia la conclusión de las dos anteriores.** Las dos correcciones de arriba dicen que **el backlog** estaba mal contado. Al final del día la cuenta es peor y es sobre mí:
+>
+> | Origen del ítem | Verificados | Estaban como decían |
+> |---|---|---|
+> | De **leer documentos de diagnóstico** | 6 | **0 de 6** |
+> | De **ejecutar el producto en un caso real** | 4 | **4 de 4** |
+> | **De lo que yo escribí esta misma semana**, puesto a decidir sobre un expediente | 15 | **0 de 15** |
+>
+> **Quince defectos en lo escrito estos días**, encontrados ejecutándolo contra un expediente sintético, **ninguno visible releyéndolo**. Dos merecen citarse aparte: uno estaba **en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse**, y **el último es uno de los otros, repetido por mí dos horas después de escribirlo**. Está todo en [la pasada de escritorio](technical-design/v0/notes-verification/pasada-de-escritorio-2026-09-05.md).
+>
+> **Lo que eso significa para este documento:** el problema nunca fue que el backlog fuera viejo. **Es que escribir una regla y releerla no dice si decide.** Un ítem cerrado por lectura —el mío incluido, el de hace dos horas incluido— vale lo que vale un ítem del 28/08: hay que ponerlo delante de un caso.
+>
+> **Y el corolario del defecto 15, que es el más incómodo:** saber la regla no basta para cumplirla. De los quince, **tres quedaron con prueba automática** —que los bloques repetidos digan lo mismo, que toda regla que mande preguntar mande esperar, y que la razón de `V-7` se escriba una sola vez— porque **una lección escrita en un documento la vuelve a romper quien la escribió**.
+>
+> **La regla que sale de ahí gobierna en qué orden se lee lo que queda:** *un ítem que nació ejecutando el producto describe un defecto real; uno que nació leyendo un documento sobre el producto, la mitad de las veces describe algo ya arreglado, o describe mal lo que está roto.* De los ~108 identificadores sin verificar, **los que tienen un pase real detrás van primero** — y los cuatro que se cerraron el 2026-09-05 son precisamente esos.
 
 
 > **LA COLA DE EJECUCIÓN ESTÁ EN GITHUB — 2026-09-19.** Los issues del repositorio son desde hoy la cola de trabajo, sembrada con `docs/backlog/crear-issues-github.sh`. **No crean un espacio de identificadores nuevo:** cada issue lleva en el título el identificador que ya existe —`ADR-NNN`, su número de validación o de pregunta pendiente— y apunta al documento que lo posee. **GitHub dice qué se está haciendo; el documento sigue diciendo qué es.**
@@ -34,9 +57,9 @@ Y peor, porque es un identificador y no una prosa:
 
 ### 0.3 Lo que este documento NO cubre todavía
 
-**Los ADR no se leyeron.** El lector asignado a `docs/architecture/adrs/` cayó por un error de conexión a mitad de trabajo. Por tanto **las preguntas pendientes y las validaciones necesarias de los diecisiete ADR no están en este índice**, y son de los ítems mejor formulados del repositorio.
+~~**Los ADR no se leyeron.**~~ **LEÍDOS Y TRIADOS EL 2026-09-05 — ver §7.** Eran dieciocho, no diecisiete, y traen **más de ochenta preguntas pendientes**. No se volcaron: se cortaron primero entre las que gobiernan el producto construido (ADR-012 a 018) y las que diseñan un Core que no existe (ADR-001 a 011). **Tres estaban ya contestadas por el código y nadie las cerró**, y de las vivas salieron diez ítems y un hueco nuevo.
 
-También quedan fuera, y hay que decirlo: `docs/backlog/architecture-post-v0.md`, `docs/REFINADO-Y-FUENTES.md`, `docs/PENDIENTE-FORMA-DE-ENTREGA.md`, `docs/technical-design/` y los veinte dossiers de `docs/skills-support/`.
+También quedaban fuera, y había que decirlo: `docs/backlog/architecture-post-v0.md`, `docs/REFINADO-Y-FUENTES.md`, `docs/PENDIENTE-FORMA-DE-ENTREGA.md`, `docs/technical-design/` (46 documentos) y `docs/skills-support/` (89). **Los seis se cubrieron el 2026-09-05: §§8 a 13.** Los dos grandes, como corpus y no pieza a pieza, con la razón escrita.
 
 **Este índice está incompleto y sabe dónde.**
 
@@ -50,7 +73,7 @@ No son ítems de trabajo: son **avisos de que dos documentos dicen cosas incompa
 |---|---|---|
 | C-1 | `H-04` dice que el bloque anti-inyección vive «en 1 de 6 comandos» | ~~Está en los nueve~~ **Comprobado el 2026-08-31: estaba en OCHO.** Faltaba en `preguntas-de-derecho` — la única skill cuyo trabajo entero es negarse. **Añadido por SPEC-09; ahora sí son nueve** |
 | C-2 | `H-09` da por pendiente renombrar `fact-builder` | **Ya se llama `hechos-con-prueba/`** y el README lo documenta → **cerrable** |
-| C-3 | **Cuántos comandos hay:** `PM-M-10` dice cinco, casi todo `ESTADO` dice seis, otros hablan del séptimo | **El repositorio tiene nueve.** Cuatro cifras sobre la misma cosa |
+| C-3 | **Cuántos comandos hay:** `PM-M-10` dice cinco, casi todo `ESTADO` dice seis, otros hablan del séptimo | ~~El repositorio tiene nueve~~ **Once desde el 2026-09-01.** Cinco cifras sobre la misma cosa, y **esta línea era la quinta**: se quedó vieja seis días después de escribirse. Un conteo dentro de un documento envejece solo |
 | C-4 | **Qué es «el séptimo comando»** | Cuatro respuestas incompatibles. Ver §0.2 |
 | C-5 | `PM-RECHAZO-OCR` **rechazó** el OCR con dos condiciones escritas; ADR-016 y `preparar_material.py` **lo construyeron** | No consta que las condiciones se escribieran, y **la `Ñ` mayúscula sigue rota** — el error exacto que el rechazo temía |
 | C-6 | El registro del pase vendió el OCR como «divide por ~7 el coste»; **su propio §5.4 lo desmiente** | La justificación válida es la corroboración, no el ahorro. Ya corregido en el documento |
@@ -70,18 +93,18 @@ Deduplicados, ordenados por **cuánto desbloquean**, no por esfuerzo.
 
 | # | Ítem | Grupo | Bloquea a | Estado |
 |---|---|---|---|---|
-| **1** | **Publicar el plugin.** Sin remoto no hay URL de marketplace, y sin eso ninguna corrección llega a sus manos | G1 · `EP-ENTRADA-0` | Literalmente todo lo demás | Abierto tras tres fases. `git remote -v` sigue vacío |
+| **1** | **Publicar el plugin.** Sin remoto no hay URL de marketplace, y sin eso ninguna corrección llega a sus manos | G1 · `EP-ENTRADA-0` | Literalmente todo lo demás | ~~Abierto tras tres fases. `git remote -v` sigue vacío~~ **HECHO.** Comprobado el 2026-09-05: `origin` es `github.com/CHERCED-DEV/legal-workspace` y el `marketplace.json` existe. **Lo que sigue abierto es el ítem 3 —instalarlo—, que es otro trabajo** |
 | **2** | **Decidir y decirle dónde se procesa su material.** Toca secreto profesional, no interfaz | G30 · `EP-P10` | Imprimir la guía · entregar sin mentirle · licenciar a terceros | Abierto |
 | **3** | **Instalarlo una vez en una máquina que no sea la del dueño** | G34 · `PLAN §5.2-1` | La guía · cualquier medición de uso · la venta | Cero ejecuciones instaladas |
 | ~~4~~ | ~~**La hoja de hechos: dónde se escribe y su mecanismo de aprobación.**~~ **CERRADO — corregido el 2026-08-31.** La cadena está completa: `hechos-con-prueba` §4 escribe la ruta, `redactar-escrito` §3 e `inventario-de-anexos` §5 la consumen y se detienen sin la marca, y `discovery/primera-ejecucion-real.md` §4 lo verificó en ejecución real | G17 · `H-05` | ya no bloquea nada | **Cerrado.** Estaba mal contado aquí |
-| **5** | **Instrumentar antes de cortar nada** | G23 · `PM-M-1` | Nueve ítems y las ~20 propuestas de recorte | Abierto |
-| **6** | **Una prueba capaz de fallar.** Existen 678 líneas de banco y seis fixtures que ninguna evaluación mencionó | G22 · `PM-5.1-BANCO` | La regla de composición · M-9 · M-11 · M-12 | Abierto |
-| **7** | **Variante de contexto B.** La única usuaria real es autoridad y los `SKILL.md` le hablan de «su clienta» | G7 · `P-02` | Que ella ejecute sin traducir a mano cada salida | Abierto |
-| **8** | **Reindexar por pieza y la Fase 0 de preguntas.** Dos bucles anidados piden 76 barridas y 239 aperturas donde caben 14 y 14 | G24 · `PM-M-4` | Que el comando caro sea usable | Abierto |
+| **5** | **Instrumentar antes de cortar nada** | G23 · `PM-M-1` | Nueve ítems y las ~20 propuestas de recorte | **A medias desde el 2026-09-05 — SPEC-12.** Las partes **(c)** —cuántos anclajes corrigió la comprobación— y **(d)** —qué pregunta de la autoevaluación disparó la corrección— están en los once `SKILL.md`. **(a)** y **(b)** necesitan los logs de una corrida y siguen abiertas. **El dato no existirá hasta la primera pasada real que produzca el bloque** |
+| **6** | **Una prueba capaz de fallar.** Existen 678 líneas de banco y seis fixtures que ninguna evaluación mencionó | G22 · `PM-5.1-BANCO` | La regla de composición · M-9 · M-11 · M-12 | **HECHO en su parte de veracidad, el 2026-09-05.** Tres cosas que faltaban, y ninguna era la misma: **(1)** el instrumento podía fallar —`medir.py` tenía un veredicto de un solo estado y un run vacío daba cero fabricaciones por construcción; ahora son tres estados y el código de salida es el veredicto—; **(2)** había sobre qué correrlo —`caso-03`, materializado desde el banco que ya estaba diseñado, con su ficha de medición y su verdad **por construcción, no invalidada** como la del `caso-01`—; y **(3)** el método se ejecutó entero contra él: **veinte fichas, cero afirmaciones prohibidas afirmadas, las cuatro trampas de entidad superadas**. **Lo que sigue faltando es el coste:** eso necesita una corrida instrumentada con transcript, y una pasada de escritorio no lo es. Y una advertencia que va en la propia ficha: **esta línea base la produjo la misma parte que escribió el método** |
+| **7** | **Variante de contexto B.** La única usuaria real es autoridad y los `SKILL.md` le hablan de «su clienta» | G7 · `P-02` | Que ella ejecute sin traducir a mano cada salida | **A medias desde el 2026-09-05 — SPEC-03.** Bloque de posición en los once, **cinco reglas** que presuponían bando reescritas —eran cinco, no dos—, y la **simetría obligatoria** convertida en método a partir de lo que el pase real hizo a mano. **Lo que falta no es mío: es el ADR de `V-7`** |
+| **8** | **Reindexar por pieza y la Fase 0 de preguntas.** Dos bucles anidados piden 76 barridas y 239 aperturas donde caben 14 y 14 | G24 · `PM-M-4` | Que el comando caro sea usable | **HECHO el 2026-09-05 — SPEC-13.** Y estaba mal contado en su «dónde»: `inventario-de-anexos` **ya tenía la forma buena**, igual que `inventario-de-bienes`. Vivo en dos de cuatro, no en cuatro — así que la spec **portó una forma que ya existía en el plugin** en vez de inventar una. **No retira ningún control y no cuenta como una de las cinco de composición.** Falta medir el ahorro, y para eso ya hay instrumento (SPEC-12) y ninguna cifra |
 | **9** | **Cuánto puede costar un caso.** Cuesta nada: es una pregunta a una persona | G35 · `PLAN §5.2-5` | Todo el capítulo de economía | Abierto |
-| **10** | **Fichar `inventario-de-bienes` y `preguntas-de-derecho`, y aplicar los doce hallazgos de la crítica** | sin origen — ver §3 | Cualquier cuenta honesta de qué es el producto | **Nadie lo cubre** |
+| ~~10~~ | ~~**Fichar `inventario-de-bienes` y `preguntas-de-derecho`, y aplicar los doce hallazgos de la crítica**~~ | sin origen — ver §3 | ya no bloquea nada | **CERRADO el 2026-09-05.** `preguntas-de-derecho` la fichó SPEC-09. Y **los doce hallazgos ya estaban aplicados**, los doce, más las dos adiciones del Control 7: [la auditoría](technical-design/v0/notes-verification/auditoria-inventario-de-bienes-2026-09-05.md). **Estaba mal contado aquí** |
 
-**Se quedaron a un paso:** `PM-M-2` (blindar la marca ` - REVISADO` contra la extensión oculta de Windows — la victoria más barata que existe) y `H-11`/`PM-M-8` (media hora que convierte una pérdida irreversible en recuperable).
+~~**Se quedaron a un paso:** `PM-M-2` … y `H-11`/`PM-M-8` …~~ **CERRADOS el 2026-09-05.** `PM-M-2` con SPEC-05 y `PM-M-8` con SPEC-06. Y `H-11` **no estaba abierto**: sus dos mitades llevaban tiempo cerradas en el código (ver §4). Lo que quedaba vivo del grupo `G19` no era la pérdida —la copia previa existe desde antes— sino **la copia**: que el modelo tuviera que volver a teclear un texto de ella para conservarlo. Eso es lo que cierra SPEC-06, y con banco de pruebas.
 
 ---
 
@@ -91,7 +114,7 @@ Esto es lo que apareció al mirar los cuatro juntos. **Ninguno de los 177 ítems
 
 | # | Hueco | Por qué importa |
 |---|---|---|
-| **V-1** | **Dos comandos existen y no tienen ni un ítem:** `inventario-de-bienes` y `preguntas-de-derecho`. Y hay una `critica-inventario-de-bienes.md` con **doce hallazgos, tres graves, sin aplicar** | Es un backlog entero fuera del backlog, en un comando desplegado |
+| ~~V-1~~ | ~~**Dos comandos existen y no tienen ni un ítem**… con **doce hallazgos, tres graves, sin aplicar**~~ **CERRADO el 2026-09-05, y era falso en su parte más fuerte.** Los doce estaban aplicados. `preguntas-de-derecho` la cerró SPEC-09 el 31/08 | **La lección no es sobre este comando.** Este ítem puso durante siete días, en primer lugar de la lista, **un trabajo ya hecho** — y con el argumento más fuerte del documento. Su causa es distinta de los otros cinco mal contados: aquí la crítica **se aplicó** y nadie cerró el ítem. Lo arregla **cerrar el ítem en el commit que aplica el arreglo**, no releer más |
 | **V-2** | **Nadie pregunta si esto se ha usado para algo real** — si alguna salida entró en un escrito firmado o en una decisión | Es la primera pregunta de cualquier comprador y **lo único que separa demo de producto** |
 | **V-3** | **Nadie mide el tiempo de ella.** Todo se mide en tokens y turnos; no hay una cifra de horas-persona antes y después | **Sin eso no hay caso de negocio, solo factura** |
 | **V-4** | **No hay reanudación ni punto de control.** Un comando de 97 turnos que se cae en el 60 no tiene ítem | — |
@@ -101,6 +124,10 @@ Esto es lo que apareció al mirar los cuatro juntos. **Ninguno de los 177 ítems
 | **V-8** | **Datos de terceros que no consintieron.** El riesgo está declarado y **no tiene dueño**: nadie produce la política de tratamiento ni dice quién responde | Freno número uno para licenciar |
 | **V-9** | **Bus factor.** La disponibilidad del dueño figura como dependencia operativa y no como riesgo de producto | — |
 | **V-10** | **No hay alcance de la primera versión, ni precio, ni revisión de qué existe ya en el mercado colombiano** | La regla de composición implica cuatro o cinco versiones y ningún documento dice qué va en la primera |
+| ~~V-11~~ **CERRADO el 2026-09-05: reescrito entero.** | ~~**`scripts/README-md2docx.md` describe un producto que ya no existe.**~~ Encontrado el 2026-09-05. Tiene arriba una nota de corrección del 01/09 y **el cuerpo entero sigue siendo el de antes**: manda instalar Node, exportar `NODE_PATH`, correr `node md2docx.js`, dice que el conversor «vive en `tools/` y no en `plugins/`» y repite la premisa que ADR-018 derribó —«mientras el plugin sea texto puro, la skill no puede ejecutar código»— | **Es la única documentación de una pieza que sí viaja en el plugin**, y las instrucciones que da fallan. Una nota arriba no corrige un cuerpo: quien lo lea de corrido hace lo que dice el cuerpo. Y repite en el disco de ella la suposición falsa que costó tres capacidades |
+| **V-14** | **`2-Borradores/` guarda tres cosas distintas y nada marca cuál es cuál:** lo que produjo el sistema, lo que escribió ella, y los derivados de máquina —el texto de referencia del OCR—. Encontrado el 2026-09-05 al triar ADR-016 q3 | **En un solo día, tres mecanismos han tenido que aprender a distinguirlas por su cuenta**: el índice de salidas de SPEC-08, el clasificador de `buscar.py` y la regla de la marca. **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no tres reglas** |
+| ~~V-13~~ **CERRADO el 2026-09-05, y sin esperar a la instalación.** Se entrecomillaron las **once** descripciones, no solo las cinco rotas: los once parsean con PyYAML y **ninguna cambió de contenido** —comprobado par a par contra el diff—. Se arregló en vez de dejarlo registrado porque **entrecomillar no tiene coste ni pierde nada**: retira el riesgo en lugar de convertirlo en una pregunta que solo la instalación contestaría, y hacerlo en las once impide que la próxima edición lo reintroduzca | ~~**Cinco de los once `SKILL.md` tienen un frontmatter que un lector estricto de YAML rechaza.**~~ Encontrado el 2026-09-05 al comprobar los archivos tocados. La causa es la misma en los cinco: **un `:` seguido de espacio dentro de `description:`, sin comillas** — *«…de un caso leyendo su carpeta: qué documentos hay…»*. Afecta a `estado-del-caso`, `redactar-escrito`, `buscar-en-el-caso`, `preguntas-de-derecho` y `preparar-material`. **Lo verificado es que PyYAML los rechaza; lo que NO está verificado es si el lector de la plataforma es estricto** — y no se puede saber sin instalar | **Si lo es, esos cinco comandos no cargan en su máquina, y el fallo aparecería justo en la primera instalación** — la que nunca se ha hecho (`PLAN §5.2-1`, `G34`). El arreglo son cinco pares de comillas; lo que falta es **la instalación que diga si hace falta**, que es otra vez la entrada 0. Se registra sin arreglar a propósito: arreglarlo a ciegas convertiría una pregunta comprobable en una suposición más |
+| ~~V-12~~ **CERRADO el 2026-09-05: el árbol lista las once skills y los siete programas, y se comprueba con un `grep`.** | ~~**El árbol de archivos del `README.md` del plugin miente por omisión.**~~ Encontrado el 2026-09-05: lista seis skills de once y **no menciona `scripts/`**, que son siete programas | El árbol es lo que alguien lee para saber qué es esto. Hoy oculta la mitad del producto, incluida la parte que ADR-018 declaró posible |
 
 ---
 
@@ -122,6 +149,18 @@ Esto es lo que apareció al mirar los cuatro juntos. **Ninguno de los 177 ítems
 - **`H-04`** — ~~está en los nueve `SKILL.md`~~ **La salvedad tenía razón.** Al comprobarlo el 2026-08-31 estaban en ocho: `preguntas-de-derecho` no tenía ninguna sección. **SPEC-09 lo añadió y ahora son nueve** — cerrable de verdad, y no por lectura de diagnóstico.
 - **`H-09`** — la carpeta ya es `hechos-con-prueba/`.
 
+**Cerrado el 2026-09-05, con spec y con su verificación:**
+
+| Qué | Ítems que cierra | Con qué | Qué falta para darlo por muerto |
+|---|---|---|---|
+| La marca ` - REVISADO` frente a la extensión oculta de Windows | `PM-M-2` · `G25` · lo vivo de `G17` | **SPEC-05** — regla de reconocimiento en las seis skills que la citan, más la guía | Una pasada real con un `... - REVISADO.md.md` en la carpeta (O-2 a O-5) |
+| Que un texto de ella no se re-emita al reescribir el archivo de estado | `PM-M-8` · lo vivo de `G19` | **SPEC-06** — `scripts/estado_del_caso.py`, séptimo programa del plugin, **con 13 pruebas comprobadas capaces de fallar** | Una pasada real (O-10) |
+| Dónde va lo que ella dice y la carpeta no registra | `P-05` · `P-06` · `G6` | **SPEC-04** — bloque propio en `estado-del-caso` y sección 6 en `cronologia`, **sin inventar un sexto grado de certeza** | Una pasada real en que ella aporte un dato de viva voz |
+| El índice de las salidas de una pasada | `P-07` · `G37` | **SPEC-08** — dentro de `/estado-del-caso`, no un comando nuevo | Una pasada real sobre una carpeta con varias salidas |
+| `H-11`, las dos mitades | `H-11` · parte de `G19` | **Ya estaban cerradas antes.** `inventario-de-anexos` §1 tiene la regla de no sobrescritura; `estado-del-caso` Fase 6.4, la copia previa | Nada. **Estaba mal contado aquí** |
+
+> **Ninguno de los cuatro está comprobado muerto en uso.** «Ejecutada» significa que el cambio está en el código y que los observables que no dependen de nadie pasan. Los que exigen una pasada real están declarados pendientes en cada spec, **y no se cuentan como cerrados**.
+
 **Parciales, y por qué no se pueden cerrar:**
 
 | Ítem | Qué falta |
@@ -129,7 +168,7 @@ Esto es lo que apareció al mirar los cuatro juntos. **Ninguno de los 177 ítems
 | `H-16` · `EP-1.1-COORDENADA` | ADR-016 y ADR-017 documentan el límite; **no consta la regla de fallo declarado dentro de los `SKILL.md`** |
 | `PASE §6-1` · `PLAN §4-6` | El conversor existe, pero «por ahora a mano»: o el Core lo asume, o depende de que alguien corra un script |
 | `PLAN §4-4` | Falta calibrar o **retirar** la métrica de cobertura vieja |
-| `P-01` | La `Ñ` mayúscula, `Ú`, `¿` y `¡` siguen rotas |
+| `P-01` | La `Ñ` mayúscula, `Ú`, `¿` y `¡` siguen rotas. **Y desde el 2026-09-05 se sabe exactamente qué falta para arreglarlo.** El modelo latino que `PROCEDENCIA.md` daba por inalcanzable **está en Hugging Face con licencia Apache-2.0**, se baja con `scripts/traer_modelos.py --latino`, y su diccionario —836 caracteres, no 502— **trae `Ñ`, `Ú` y `¿`; `¡` tampoco está ahí**. **Lo que bloquea no es encontrarlo: es medirlo.** Cambiar de reconocedor es versión nueva (ADR-016 §9) y el actual tiene 12 de 12 identificadores críticos sin regresión sobre 23 fotografías reales; el latino, cero mediciones. **Hacen falta las fotografías, que son del bloque 0** |
 | `PLAN §8-4` | Falta la **regla de consumo**: que los agentes reciban el texto de referencia y no la carpeta de imágenes |
 | `PM-M-5` | El vehículo Word existe; **las reglas de ancho, orientación y fila de títulos no constan escritas en la skill** |
 | `PLAN §5.3-c` | La regla de licencias está escrita y **no tiene mecanismo que la haga cumplir** |
@@ -203,32 +242,36 @@ Y de la corrección del §0.2 sale una segunda: **ningún documento nuevo de pla
 
 | # | Qué | Cuesta | Desbloquea |
 |---|---|---|---|
-| **0.1** | **Crear el repositorio remoto y publicar el plugin** | Poco | Todo. Es la entrada 0 desde hace tres fases |
+| ~~0.1~~ | ~~**Crear el repositorio remoto y publicar el plugin**~~ **HECHO** — comprobado el 2026-09-05 | — | Lo que desbloqueaba sigue esperando a **0.3 bis: instalarlo una vez** (fila 3 de §2) |
 | **0.2** | **Decir cuánto puede costar un caso** | Nada — es una respuesta | Todo el capítulo de economía: cuánto abanicar, qué modelo enruta qué |
 | **0.3** | **Decidir dónde se procesa el material de ella, y decírselo** | Nada técnico, mucho criterio | Poder imprimir la guía sin mentirle · licenciar |
 | **0.4** | **Instalar Tesseract** — `winget install --id UB-Mannheim.TesseractOCR` | 30 segundos | La segunda opinión: lo único que detecta una omisión silenciosa |
 | **0.5** | **Conseguir un segundo caso**, de otra materia y otra persona | Bajo | Saber si esto es producto o traje a la medida |
 | **0.6** | **Diez minutos de audiencia real**, con transcripción manual de referencia | Una tarde | Todo el uso de audio |
 | **0.7** | **El formulario 11 de vuelta**, aunque sea a medias | — | La única señal externa que existe sobre si esto sirve |
+| **0.8** | ~~Los dos PDF del caso-01, para **reconstruir** el truth set~~ **REPLANTEADO el 2026-09-05, y puede costar minutos en vez de una tarde: MIRAR TRES DE LAS 25 PÁGINAS.** La nota que invalidó el banco dice que esas páginas eran «sin capa de texto» y que el modelo «las lee como imagen»; **el campo `material` del mismo archivo dice otra cosa: «23 páginas SIN UNA SOLA LETRA»**. Si eso es literal —páginas en blanco—, leerlas como imagen no devuelve nada, afirmar algo sobre ellas **sigue siendo fabricación por construcción**, y **el truth set es válido tal como está**. Si tienen tinta sin capa de texto —manuscrito, sellos—, la invalidación tiene razón y hay que rehacerlo | **Abrir el PDF y mirar tres páginas** | **Desbloquea la fila 1.3 y con ella las ~20 propuestas de recorte** (G22). Y decide entre «el banco vuelve hoy» y «hay que rehacerlo» |
+| **0.9** | **¿La oficina ya tiene algún mecanismo de respaldo?** —servidor, NAS, unidad de red, una costumbre no escrita | **Una pregunta** | `A-2` · ADR-013 q2. **Se pregunta antes de proponer nada:** si existe, el respaldo se integra con él en vez de crear un segundo mecanismo paralelo. Puede ahorrar el diseño entero |
+| **0.10** | **Cómo obtiene ella el `pull`** — clon con credencial de solo lectura instalada una vez (recomendada), token suyo, o cuenta suya de GitHub. **Y si necesita `git` instalado** | Una decisión y media hora | `A-3` · `A-4` · ADR-012 q1 y q5. **Bloquean la instalación**, que es la fila 3 de §2 |
+| **0.11** | **Cómo quiere ella que se llame el comando de revisión de rigor.** Dijo «contradictor interno» | Una pregunta | `A-7` · ADR-015 q1. Hoy se llama como lo decidimos nosotros, que es `H-08` en pequeño |
 
 ### Bloque 1 — Puedo empezar ya, en este orden
 
 | # | Qué | Grupo | Por qué en este puesto |
 |---|---|---|---|
-| **1.1** | **Fichar `inventario-de-bienes` y `preguntas-de-derecho`** y aplicar los doce hallazgos de su crítica, tres graves | V-1 | **Hay defectos graves en un comando desplegado y nadie los está contando** |
-| **1.2** | **Instrumentar** (`PM-M-1`): etiquetar filas de coste, separar `input`/`cache_read`, contar anclajes corregidos y qué pregunta de autoevaluación disparó | G23 | Bloquea nueve ítems y las ~20 propuestas de recorte. **Ninguna de sus cuatro medidas toca el producto** |
-| **1.3** | **Correr el banco de evaluación que ya existe** — 678 líneas, seis fixtures, con truth set | G22 | Hoy **no hay ninguna prueba capaz de fallar**. Sin esto ningún cambio es reversible con criterio |
-| **1.4** | **Blindar la marca ` - REVISADO`** contra la extensión oculta de Windows | G25 | La victoria más barata que existe, y castiga a la usuaria justo después del trabajo más caro |
-| **1.5** | **`0-Estado del caso`: reemplazo dirigido**, no reescritura completa | G19 | Media hora que convierte una pérdida irreversible en recuperable |
+| ~~1.1~~ | ~~**Fichar `inventario-de-bienes` y `preguntas-de-derecho`** y aplicar los doce hallazgos~~ **CERRADO el 2026-09-05: ya estaban aplicados los doce** | V-1 | ~~Hay defectos graves en un comando desplegado y nadie los está contando~~ **No los había.** Ver la auditoría |
+| **1.2** | **Instrumentar** (`PM-M-1`) — ~~cuatro medidas~~ **dos hechas y dos no.** Contar anclajes corregidos y qué pregunta disparó: **HECHO, SPEC-12**, en los once. Etiquetar filas de coste y separar `input`/`cache_read`: **necesitan los logs de una corrida**, y pasan al bloque 0 | G23 | Bloquea nueve ítems y las ~20 propuestas de recorte. **Ninguna de sus cuatro medidas toca el producto** — y sigue sin haber ni una cifra: el bloque existe y **nadie lo ha ejecutado todavía** |
+| **1.3** | ~~**Correr el banco de evaluación que ya existe** — 678 líneas, seis fixtures, con truth set~~ **NO ES DEL BLOQUE 1: PASA AL 0.** Comprobado el 2026-09-05 y hay dos cosas mal contadas aquí. **(a)** No son seis fixtures: **es uno**, `evals/casos/caso-01-familia.json`, y su propio campo `_material` dice que **el material no está en este repositorio y no lo estará** —documentos de una clienta real, con datos de una menor—: quien mida necesita los dos PDF originales, **que custodia el dueño**. **(b)** Ese único fixture **está invalidado por su propia nota desde el 2026-08-26**: el truth set supuso que 25 páginas sin capa de texto eran ilegibles y **es falso**, el modelo las lee como imagen. Mientras no se reconstruya, **la cifra de «fabricaciones» mide menos de lo que parece, y hay que decirlo cada vez que se cite** | G22 | Sigue siendo verdad que **no hay ninguna prueba capaz de fallar sobre una skill**. Las 37 verdes de `evals/knowledge-pack/` son del contrato del knowledge-pack, y las 13 de `evals/scripts/` son de un programa. **Ninguna mide un método** |
+| ~~1.4~~ | ~~**Blindar la marca ` - REVISADO`**~~ **HECHO el 2026-09-05 — SPEC-05.** Las seis skills que citan la marca la reconocen ahora en sus cinco formas, no la renombran, y declaran el nombre exacto del archivo que aceptaron | G25 | Cerrado salvo la pasada real |
+| ~~1.5~~ | ~~**`0-Estado del caso`: reemplazo dirigido**~~ **HECHO el 2026-09-05 — SPEC-06**, y no era lo que decía esta fila: la pérdida ya era recuperable. Lo que faltaba es que **un texto de ella dejara de pasar por el modelo** para volver al disco | G19 | Cerrado salvo la pasada real. **Único ítem del proyecto con banco de pruebas propio** |
 | ~~1.6~~ | ~~La hoja de hechos: dónde se escribe + mecanismo de aprobación~~ | G17 | **Retirado el 2026-08-31: el eslabón no estaba partido.** Se descubrió al ir a escribir su spec. Lo que queda del grupo es `PM-M-2` (fila 1.x de la marca) |
-| **1.7** | **Variante de contexto B** de los `SKILL.md` | G7 | La única usuaria real es autoridad y el producto le habla de «su clienta» |
-| **1.8** | **Reindexar la Fase 4 y la 6.1 por pieza** | G24 | 76 barridas y 239 aperturas donde caben 14 y 14. **Es el ahorro que no gasta garantía** |
+| ~~1.7~~ | ~~**Variante de contexto B** de los `SKILL.md`~~ **HECHA la mitad — SPEC-03.** | G7 | Lo que queda pasa al bloque 3: **`V-7` necesita un ADR antes que una spec** |
+| ~~1.8~~ | ~~**Reindexar la Fase 4 y la 6.1 por pieza**~~ **HECHO — SPEC-13** | G24 | 76 barridas y 239 aperturas donde caben 14 y 14. **Es el ahorro que no gasta garantía** — y sigue sin medirse |
 
 ### Bloque 2 — Después de instrumentar, nunca antes
 
 `PM-M-1` es prerrequisito literal de esto. Recortar a ciegas apunta a la maquinaria que produjo el cero fabricaciones.
 
-- Las ~20 propuestas de recorte del corpus.
+- Las ~20 propuestas de recorte del corpus. **Y ojo con lo que SPEC-12 sí y no cambió:** el instrumento (c)/(d) ya está escrito en los once métodos, pero **no ha producido ni una cifra**, porque nadie ha corrido una pasada con él. Tener el instrumento no es tener el dato, y **discutir un recorte con el instrumento recién puesto es discutirlo a ciegas exactamente igual que antes**.
 - La consolidación de «lo que hay que pedir» en una sola lista (G4).
 - El texto de referencia único (G10) — **con las cuatro condiciones de `PM-M-12`**, porque retira un detector cruzado.
 - Cotejar dos documentos (G3).
@@ -247,10 +290,694 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 
 ### Lo primero que haría mañana
 
-**Si solo hubiera tiempo para tres cosas:** publicar el plugin (0.1), responder cuánto puede costar un caso (0.2) y fichar los dos comandos huérfanos con sus doce hallazgos (1.1).
+~~**Si solo hubiera tiempo para tres cosas:** publicar el plugin (0.1), responder cuánto puede costar un caso (0.2) y fichar los dos comandos huérfanos con sus doce hallazgos (1.1).~~
 
-Las dos primeras son suyas y cuestan casi nada. La tercera es mía y es la única de la lista donde **hay defectos graves conocidos, en producto desplegado, que nadie está contando**.
+**REESCRITO EL 2026-09-05. De las tres, una estaba hecha y otra era falsa.** El plugin ya está publicado (0.1) y los doce hallazgos ya estaban aplicados (1.1). Quedaba una: preguntar cuánto puede costar un caso.
+
+**Si solo hubiera tiempo para tres cosas, hoy son estas, y las tres son suyas:**
+
+1. **Instalarlo una vez en una máquina que no sea la suya** (0.3 · §2 fila 3). Es la entrada 0 de verdad, ahora que el remoto existe, y **es lo único que dice si `V-13` deja cinco comandos sin cargar**.
+2. **Decir cuánto puede costar un caso** (0.2). Sigue costando una respuesta.
+3. **Los dos PDF del caso-01** (0.8), o decir qué caso lo sustituye. Sin eso no hay banco, y sin banco **ninguna de las ~20 propuestas de recorte se puede evaluar**.
+
+**Y una advertencia sobre este documento, que es la conclusión de nueve días:** de los diez ítems de §2, **dos estaban mal contados y uno era falso**. De los seis ítems nacidos de leer diagnósticos que se han verificado, **ninguno estaba como decía**. Antes de trabajar sobre cualquier fila de aquí, **léala contra el código** — y si la fila nació de un pase real, es la que probablemente sea cierta.
+
 
 ---
 
-*Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura parcial: faltan los ADR y cinco corpus más (§0.3).** Nada de este documento reemplaza a sus fuentes.*
+## §7 · Los ADR, leídos por fin — dieciocho entonces, veintidós hoy
+
+**Añadido el 2026-09-05.** El §0.3 de este documento declara, desde el 28 de agosto, que **los ADR no se leyeron** —*«el lector asignado cayó por un error de conexión a mitad de trabajo»*— y que sus preguntas pendientes *«son de los ítems mejor formulados del repositorio»*. Aquí están.
+
+**Y no se vuelcan tal cual.** Los dieciocho ADR contienen **más de ochenta preguntas pendientes**, y volcarlas sería ochenta ítems nuevos sin verificar — el pecado que este documento existe para no repetir. Antes hay que hacer un corte que nadie había hecho.
+
+### 7.1 El corte: cuáles gobiernan lo que existe
+
+| ADR | De qué tratan | ¿Gobiernan el producto construido? |
+|---|---|---|
+| **001 a 011** | La frontera de confianza, el modelo epistémico tipado, la memoria del caso, el log de eventos con hash-chain, las propuestas y autorizaciones, la superficie MCP, SQLite, el anclaje de fragmentos | **No.** Diseñan **el Core**, que no existe. Lo construido son doce `SKILL.md` y catorce programas |
+| **012 a 018** | Distribución y actualización, respaldo, entrega en Word, revisión de rigor, límite del OCR, límite del audio, la oficina de programas | **Sí.** Cada uno describe algo que hoy está en el disco |
+| **019 a 022** | El audio transcrito de verdad, la superficie de trabajo, los enlaces normativos, la comprobación barata | **Todavía no, y a propósito: los cuatro son `CANDIDATO`.** Ver 7.5 |
+
+> **El corte no es una opinión mía: lo hace ADR-018**, cuya decisión 1 dice con todas las letras: *«**El Core deja de ser dependencia de nada que ya funcione.** Si algún día existe, será para otra cosa; **ninguna capacidad construida vuelve a esperarlo.»*
+>
+> **Lo que eso significa para las ~60 preguntas de 001-011:** no están resueltas ni descartadas — **están en suspenso**, porque preguntan por decisiones de un sistema que nadie ha empezado a construir. *«¿`better-sqlite3` o `node:sqlite`?»* no bloquea nada hoy. **Entran a este índice el día que se decida construir el Core, y no antes.** Nombrarlas ahora las convertiría en deuda aparente y taparía las que sí pesan.
+
+### 7.2 Lo que el código ya contestó, y nadie cerró
+
+**Tres preguntas de ADR marcadas «pendientes» están respondidas en el disco.** Es el mismo patrón que `V-1`: el trabajo se hizo y el ADR no se enteró.
+
+| Pregunta | Qué dice el código |
+|---|---|
+| **ADR-015 q4** — *«¿Qué severidades existen? Un vocabulario abierto en un campo obligatorio es una grieta»* | **Cerrado.** `revision-de-rigor` §5 tiene **tres grados de vocabulario cerrado** —`soportado`, `limitado`, `sin soporte`— y **cinco valores cerrados** para el veredicto global. La grieta que temía no existe |
+| **ADR-016 q2** — *«¿El OCR corre siempre, o solo cuando el material no tiene capa de texto?»* | **Cerrado.** `preparar_material.py` solo lo ejecuta sobre **archivos de imagen** (`if not a.sin_ocr and imagenes`), más una bandera `--sin-ocr`. Un PDF con capa de texto no se reconoce nunca |
+| **ADR-014 q2** — *«¿Quién genera el `.docx`: la skill o el Core?»* | **Ya estaba tachada** por ADR-018 el 01/09. Se anota por completitud del corte |
+
+### 7.3 Las preguntas vivas, y dos son más grandes que su ADR
+
+**Estas sí entran al índice.** Ordenadas por lo que bloquean, no por su número.
+
+| # | De dónde | Qué pregunta | Por qué pesa |
+|---|---|---|---|
+| **A-1** | ADR-012 q8 | **Política de respaldo de la zona de trabajo de ella:** destino, frecuencia, cifrado, quién verifica, y qué se le enseña | **Es `V-5` con contenido, y más grande de lo que `V-5` decía.** El propio ADR lo escribe: *«es su riesgo real de pérdida total: **git no respalda nada de lo que importa**»*. La distribución por `git` protege el plugin, **no su trabajo** |
+| **A-2** | ADR-013 q2 | **¿La oficina ya tiene algún mecanismo de respaldo?** —servidor, NAS, unidad de red, costumbre no escrita | **Se pregunta antes de proponer nada.** Si existe, este ADR se integra con él en vez de crear un segundo mecanismo paralelo. **Cuesta una pregunta y puede ahorrar el diseño entero** |
+| **A-3** | ADR-012 q1 | **Cómo obtiene ella el `pull`:** clon inicial con credencial de solo lectura instalada una vez, token propio, o cuenta suya de GitHub | **Bloquea la instalación**, que es la fila 3 de §2. El ADR ya trae recomendación —la primera, *«ella nunca escribe una credencial»*— y **falta la decisión de los dueños** |
+| **A-4** | ADR-012 q5 | **¿Necesita `git` instalado en su máquina?** Y si no: ¿git portable, biblioteca, o lo instalan los dueños? | Bloquea la instalación por la vía práctica |
+| **A-5** | ADR-013 q1 | **Cifrado del disco del portátil y del externo — `POR VERIFICAR`** en la edición concreta de Windows | De la respuesta depende si hace falta una herramienta adicional o revisar la decisión de respaldo |
+| **A-6** | ADR-017 q5 | **Dos licencias con problema** en los modelos de diarización y en la herramienta contra la alucinación | Ya está en el índice como `PLAN §5.3-e`. **Se confirma con su origen**, que es mejor formulación que la que había |
+| **A-7** | ADR-015 q1 | **Cómo se llama en la superficie.** *«La usuaria dijo «contradictor interno»; la palabra de ella suele ser mejor que la nuestra»* | Cuesta una pregunta. Hoy se llama `revision-de-rigor` **porque lo decidimos nosotros**, que es exactamente lo que `H-08` —la jerga que llega a su pantalla— señala |
+| **A-8** | ADR-015 q3 | **¿La revisión de rigor se aplica también al material de la otra parte, o solo al propio?** En el pase se aplicó a los tres y funcionó; falta decidir si esa es la regla | **Y hoy pesa más que cuando se escribió:** con SPEC-03, en posición de autoridad **no hay «material propio» frente a «de la contraparte»** — hay dos partes y su propio proyecto, y la simetría obliga a los tres |
+| **A-9** | ADR-014 q3 y q4 | **¿El PDF consolidado se regenera con material nuevo o se produce uno por tanda?** · **¿Se entrega también `.pdf`**, para imprimir sin riesgo de edición accidental? | Producto. La segunda es barata y toca cómo llega a sus manos |
+| **A-10** | ADR-016 q5 · ADR-017 q4 | **Qué se hace cuando el derivado y el original no se pueden cotejar:** OCR que difiere del modelo con el original inaccesible; audio no disponible y solo transcripción de un tercero | Los dos son el mismo hueco: **el invariante de cotejo no se puede cumplir y hay que decir qué pasa entonces** |
+
+### 7.4 Y una pregunta de ADR que hoy describe un defecto vivo
+
+**ADR-016 q3** pregunta *«¿dónde vive el texto extraído — zona 2 o zona 3?»* y se contesta sola: *«Hoy se dejó en `2-Borradores/`, que es zona 2, y **probablemente esté mal**: es un derivado de material incorporado»*.
+
+**En el producto construido no hay zona 3**, así que la pregunta tal como está formulada no tiene respuesta posible. Pero **su síntoma sí es real y hoy se puede nombrar mejor que en agosto**:
+
+> **`2-Borradores/` guarda tres cosas distintas y ninguna marca cuál es cuál:** lo que produjo el sistema, lo que escribió ella, y **los derivados de máquina** —el texto de referencia del OCR—. Y en un solo día, **tres mecanismos distintos han tenido que aprender a distinguirlas por su cuenta**: el índice de salidas de SPEC-08, el clasificador de `buscar.py`, y la regla de la marca ` - REVISADO`.
+>
+> **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no tres reglas.** Queda registrado como **`V-14`**, y escrito como **[AC-05](architecture/adrs/AMENDMENT-CANDIDATES.md)** — candidato de enmienda a ADR-016, **abierto y esperando decisión**, con sus tres opciones y su recomendación. **No se resuelve unilateralmente**, que es la regla de ese documento; y la opción recomendada **le cambia una carpeta a ella**, lo que ADR-012 q7 manda validar con la profesional.
+
+### 7.5 Los cuatro ADR que trajo la fusión, y por qué ninguno gobierna todavía
+
+**Añadido el 2026-09-22.** `origin/master` trajo cuatro ADR fechados el 19 de septiembre. **Los cuatro están en `CANDIDATO`, los cuatro dicen por escrito que no se aplican hasta que el dueño decida, y eso es exactamente lo que el corte de 7.1 tiene que registrar en vez de darlos por vigentes.** Un ADR candidato leído como decisión es la avería que este §7 existe para no repetir.
+
+| ADR | Qué decide | Estado, y qué lo sujeta |
+|---|---|---|
+| **019** — *el audio se transcribió, y dos decisiones de ADR-017 no resistieron* | Modifica `ADR-017` con lo que el contacto con material real desmintió | **CANDIDATO.** Modifica un ADR que sigue en `Proposed`. Lo ya producido bajo el método viejo **se declara, no se borra** |
+| **020** — *la superficie de trabajo* | Una tercera capa `.html`, local, **sin una sola petición de red**, derivada del Markdown y nunca editable a mano | **CANDIDATO.** Extiende `ADR-014`, no lo sustituye. `md2html.py` existe en el disco y **ningún método lo declara** — es la clase `A_MANO` de §17 |
+| **021** — *enlaces normativos* | Se enlaza **solo el identificador que el material cita, literal**, sin afirmar vigencia ni contenido, con fecha de consulta | **CANDIDATO, y con una dependencia que puede matarlo:** depende de una comprobación que nadie ha hecho. Si falla, *«la decisión correcta es no enlazar nada»* |
+| **022** — *la comprobación es el camino más fácil* | Un clic reproduce el minuto; copiar **arrastra la procedencia**; cuatro estados de comprobación **y los pone ella** | **CANDIDATO.** Depende de `ADR-020` |
+
+> **Y el que más cerca pasa de una regla dura del producto es el 021.** Su propia §4 nombra la trampa: los repositorios oficiales sirven el **texto compilado**, y en un caso suele importar el que regía cuando ocurrieron los hechos. *«Un enlace a la versión de hoy sobre hechos de hace cinco años es peor que ningún enlace, porque parece comprobado.»* Hoy el producto **no cita normas**, y esa abstinencia es lo que hace que el problema no exista todavía — la misma abstinencia del §0.9. **Decidir el 021 es decidir gastarla.**
+
+**Lo vivo de 7.5:** `F-4` — **los cuatro ADR esperan decisión del dueño**, y tres de ellos (020, 021, 022) describen una capa que **no está construida**. `md2html.py` es lo único de esa capa que existe, y existe sin método que lo pida.
+
+**Cierre honesto del §0.3, al cierre del 2026-09-05:** leídos y triados los ADR (§7), `PENDIENTE-FORMA-DE-ENTREGA` (§8), `REFINADO-Y-FUENTES` (§9), **`architecture-post-v0` (§10)**, **las ocho preguntas de negocio (§11)** y **`skills-support` como corpus (§12)**. **Y con §13 no queda ninguno: los seis corpus del §0.3 están cubiertos.** Lo que falta ahora no es leer — es ejecutar el producto otra vez y hablar con ella.
+
+---
+
+## §8 · `PENDIENTE-FORMA-DE-ENTREGA`, y lo que costó no haberlo leído
+
+**Leído el 2026-09-05.** Recoge feedback del dueño del 27 de agosto sobre **la forma de la entrega y la forma de la carpeta**, y llevaba sin indexar desde entonces.
+
+**Y no haberlo leído costó dos defectos el mismo día**, los dos míos:
+
+| Qué decía el documento | Qué pasó por no haberlo leído |
+|---|---|
+| *«Una convención de nombres única, que hoy son tres distintas (guion, raya, con y sin nombre de caso)»* | **La tabla de convenciones de SPEC-08 no listaba a `/redactar-escrito`**, cuyos nombres empiezan por el radicado. El índice habría dicho «no sé qué comando lo produjo» **en todos los borradores**, que es lo único que ella firma |
+| *«Una carpeta es una afirmación silenciosa, y este producto está construido para no hacer afirmaciones silenciosas»* · *«la profundidad no la paga ella»* | **AC-05 recomendaba una subcarpeta.** Corregido a la vía que el propio documento propone y que además ya estaba en el disco: **el archivo se declara en su primera línea** |
+
+> **De ahí la regla, que vale para los cuatro corpus que siguen sin cubrir:** un documento sin indexar no es deuda documental. **Es un defecto esperando**, y este cobró el mismo día en que se leyó.
+
+### Lo vivo de este documento
+
+| # | Qué | Estado |
+|---|---|---|
+| **E-1** | **Unificar el formato de salida en los siete, con una convención de nombres única.** El documento dice que *«no depende de ninguna decisión pendiente»* | **Vivo, y medido de nuevo el 2026-09-05:** siguen siendo tres formas, más la del radicado. Es la condición para que el índice de SPEC-08 deje de ser heurística |
+| **E-2** | **DECISIÓN: ¿un formato o dos** —uno de lectura y uno para pegar—? | Pendiente, del dueño. Dos duplica el trabajo del método; uno obliga a elegir cuál pierde |
+| **E-3** | **DECISIÓN: ¿la carpeta refleja qué ES un documento** (clasificación, opinable, hoy prohibida al sistema) **o de dónde viene y a dónde va** (procedencia, comprobable, que es lo que hay)? | Pendiente, del dueño. **Y el documento ya trae el argumento que la resuelve casi sola:** `Pruebas/` y `Evidencias/` son valoraciones, y ubicar un archivo ahí **afirma algo que nadie decidió** |
+| **E-4** | **Medirlo de verdad:** *«la prueba no es que el archivo se vea bien en el editor, sino que ella lo abra con doble clic, lo copie y lo pegue en su escrito sin tocar nada»* | **Bloque 0.** Es la misma pasada real que esperan las once specs |
+| **E-5** | Un `.md` en Windows **puede no abrir con doble clic** | **Vivo y barato de comprobar** en la instalación, que es la fila 3 de §2 |
+
+## §9 · `REFINADO-Y-FUENTES`, y las cuatro afirmaciones que traía
+
+**Leído el 2026-09-05.** Es un documento de decisión del 27 de agosto, filtrado por un refutador, con etiquetas de evidencia —`HECHO MEDIDO`, `VERIFICADO`, `SUPUESTO`, `RIESGO`—. **Es el mejor formulado de los cinco corpus sin indexar**, y sus cuatro afirmaciones de cabecera se comprobaron una por una.
+
+| Lo que decía | Comprobado el 2026-09-05 |
+|---|---|
+| **«El fallo más caro»**: *«seis de los siete comandos ordenan declarar ilegible un escaneado sin capa de texto y uno lo lee. En el caso real son 25 de 39 páginas y la pieza central del asunto»* | **CERRADO.** Los **siete** dicen hoy *«se abre por rangos de páginas y se lee como imagen»*, y **ninguno** ordena declararlo ilegible |
+| **DP-1**, la contradicción viva: `revisar-documento` prohibía transcribir derecho ajeno; el plan lo recomendaba; **y la guía le enseñaba a ella que ver una norma es señal de que algo va mal** | **CERRADO, y la guía también.** `revisar-documento` dice hoy *«el documento sí trae derecho, y ese se transcribe»*, cinco skills más llevan la cláusula, y la guía dice que una norma entrecomillada y con su página **está bien** |
+| **«El banco no puede fallar»**: *«`medir.py` termina siempre con código 0 y certifica "VERACIDAD ── intacta" sobre un run vacío»* | **Medio falso y medio corto — y ARREGLADO hoy.** Un run inexistente **sí** salía con código 1; **un run válido y vacío salía con 0 y certificaba «intacta»**, porque un run donde no pasó nada tiene cero fabricaciones por construcción. Y las 25 páginas sin declarar se imprimían debajo sin tocar el veredicto. Ahora son tres estados y el código de salida es el veredicto |
+| **El paso 9 de su orden**: *«caso-02 sintético desde `13-synthetic-benchmark.md`. **El truth set ya está escrito**»* | **HECHO hoy, y con vergüenza:** esa misma mañana yo había construido un caso sintético **de mi cabeza**, escribiendo que su límite era no traer lo que a nadie se le ocurriría. **Estaba en el repositorio.** Materializado como `caso-03` |
+
+### Lo vivo de este documento
+
+| # | Qué | Estado |
+|---|---|---|
+| **R-1** | **Canal 3: la pregunta directa de ella.** *«No se activa ninguna skill: contesta el modelo desnudo, sin método, sin marcas, sin regla 1»*. Lo llamaba *«la corrección de fuentes jurídicas con mejor relación de todo el refinado»* | **Cerrado por dos vías:** existe `/preguntas-de-derecho` (SPEC-09) y la guía lo dice con esas palabras. **Lo que no está comprobado es que la skill se active sola**, y eso solo lo enseña una pasada |
+| **R-2** | **`cita_juridica[]` obligatoriamente vacío como prueba del banco que falla** — paso 1 de su orden, mitad no hecha | **Vivo y barato.** Es una prueba determinista sobre una salida guardada, y ahora hay dos expedientes con salidas de referencia |
+| **R-3** | **8.2 — ¿existe una abogada que verifique vigencia, con nombre?** Y si existe, ¿se acepta que *«sin `vigencia_hasta` comprobada, la norma no se sirve como citable»*? | **Del dueño.** Su propia lectura: *«no construirlo este ciclo. Un pack sin mantenedor da confianza en datos viejos»* |
+| **R-4** | **8.4 — ¿la palabra de ella manda sobre un documento, o va al lado?** | **Del dueño, y urge más de lo que parece:** *«hoy el modelo elige solo, y lo más probable es que corrija en silencio»* |
+| **R-5** | **8.6 — el presupuesto de medición:** cuántas corridas por brazo (7 para detectar un 20 %; con 3 solo se detecta 30-39 %), quién transcribe, y si el banco se parte en `verificar.py` + `medir.py` | **Del dueño.** Y su nota vale por sí sola: **la transcripción no puede hacerla el modelo** —circularidad— **ni entrar al repositorio** —custodia— |
+| **R-6** | El **−34 %** con que se adoptó `inventario-de-anexos` v0.2.0 **no es distinguible del ruido** (n=1, efecto mínimo detectable 52-67 %) | **Vivo, y es una advertencia sobre cómo se citan las cifras de este proyecto** |
+
+> **Y la frase de este documento que más vale, porque describe la garantía real del producto:** *«la abstinencia se acaba el día que exista el Knowledge Pack»*. Hoy no hay mecanismo que impida citar una norma derogada — **lo impide que el producto no cita normas**. Es una abstinencia, no un control.
+
+---
+
+---
+
+## §10 · `architecture-post-v0`, y el disparador que ya se disparó
+
+**Leído el 2026-09-05.** Es el registro de **24 exclusiones decididas y no olvidadas**, cada una con tres preguntas obligatorias: por qué está fuera de V0, **qué disparador la trae de vuelta**, y **qué no debe romperse hoy para que sea posible mañana**. La tercera es la que convierte el documento en algo distinto de una lista de deseos: es *«una restricción activa sobre el diseño de hoy»*.
+
+Así que se leyó como lo que dice ser —una lista de restricciones vigentes— y se auditó **contra el producto que existe**, no contra el Core que no existe.
+
+### Lo primero: un disparador ya se disparó, y nadie lo notó
+
+**`Ruling`** dice, palabra por palabra:
+
+> *«Pertenece al **contexto B (autoridad/decisor)**, cuyo trabajo real **NO HA SIDO LEVANTADO** […] Que la primera usuaria opere ambos contextos es **SUPUESTO, no hecho verificado**.»*
+>
+> *«**Disparador de vuelta.** El levantamiento del contexto B, y en particular la respuesta a la **pregunta de negocio 7** […] que puede **invertir la política de custodia**.»*
+
+Y la pregunta 7, en `docs/discovery/business-questions-next.md`, se aparcó con este argumento: *«Esta pregunta bloquea el diseño del contexto B — **que no se está haciendo**»*.
+
+**Las dos premisas son falsas hoy, y lo son por trabajo de este mismo repositorio:**
+
+| Lo que el documento asume | Lo que hay |
+|---|---|
+| Que la usuaria opere ambos contextos es **SUPUESTO** | **Verificado en campo.** Fila `C-8` de este backlog: *«**Es autoridad.**»* |
+| El diseño del contexto B **no se está haciendo** | **Se hizo el 2026-09-05.** SPEC-03 puso el bloque de posición en **los once** `SKILL.md`, reescribió las cinco reglas que presuponían bando y convirtió la simetría en método |
+
+> **El disparador se disparó, y su documento no se enteró.** No es un descuido del documento: es exactamente el modo de fallo que §8 dejó nombrado — *un documento sin indexar no es deuda documental, es un defecto esperando*. Aquí el defecto no era del documento, era **del índice que no lo tenía**.
+
+### Y la consecuencia que nadie había conectado
+
+La pregunta 7 no es una curiosidad de diseño. Dice que si en el contexto autoridad existe **un expediente digital oficial en un sistema externo**, nuestro almacén sería *«copia de trabajo y no custodio primario»* — y llama a eso *«una inversión, no un ajuste»*.
+
+**Siete `SKILL.md` justifican hoy la protección de escritura más fuerte del producto con esa razón**, tres de ellos con esta frase exacta:
+
+> *«Nunca escribe dentro de `1-Documentos recibidos/`: eso es el material tal como llegó y **es lo único que no se puede reconstruir**.»*
+
+Si ella, decidiendo, tiene el expediente oficial en el sistema de su entidad, **esa frase es falsa ahí**: sí se puede reconstruir, bajándolo otra vez.
+
+> **Y una corrección a este mismo apartado, hecha unas horas después de escribirlo.** Aquí decía **«tres `SKILL.md`»**. Son **siete** los que llevan la regla; tres usan esa redacción exacta y los otros cuatro dicen lo mismo con otras palabras. **Es la misma cuenta mal hecha que §12 encontró en el commit del 26 de agosto** —*«los tres skills que tocan fechas»*, cuando eran siete— **cometida por mí el mismo día en que la estaba señalando.** Dos veces «tres» donde había siete, con diez días de distancia y por la misma causa: contar con la vista en vez de contar con un comando. La **protección seguiría siendo correcta** —es la conservadora, y no depende de la frase—, pero **su razón declarada no lo sería**. Y este producto entero se sostiene sobre que las razones que escribe sean verdad: es la misma disciplina que le prohíbe escribir una fecha que no leyó.
+
+> **Esto se registra como pregunta, no como corrección.** Cuál es el expediente que vale cuando ella decide **es un hecho sobre su despacho**, no una decisión de arquitectura, y el propio documento ya trae la redacción para preguntárselo sin jerga. **Ninguna frase del producto se toca hasta que ella conteste.**
+
+| # | Qué | De quién | Estado |
+|---|---|---|---|
+| **A-4** | **Preguntarle la pregunta 7**, con la redacción que ya está escrita: *«cuando le toca decidir, ¿cuál es el expediente que vale? ¿El que está en el sistema de la entidad, o el que usted arma para poder trabajar?»* | **Del dueño.** Es una conversación, no una tarea | **Abierta, y ahora sí bloqueante:** dejó de bloquear «un contexto que no se levanta» el día en que se levantó |
+| **A-5** | Según la respuesta, **revisar la frase «es lo único que no se puede reconstruir»** en los tres `SKILL.md` que la usan | Mía, cuando A-4 tenga respuesta | **En espera de A-4.** No antes: cambiarla ahora sería sustituir un supuesto por otro |
+
+### Los 24 disparadores, auditados
+
+| Estado | Cuántos | Cuáles |
+|---|---|---|
+| **Disparado** | **1** | `Ruling` — arriba |
+| **Armado: lo dispara la instalación pendiente** | **2** | **Plano administrativo** (*«una migración en la máquina de la profesional […] o la existencia de una segunda instalación»*) y **actualizaciones automáticas** (*«más de una instalación que mantener»*). Los dos los enciende la fila 3 de §2, que ya estaba en el backlog por otro motivo |
+| **Cuelgan de una pregunta de negocio sin responder** | **5** | Conectores (2), PostgreSQL y búsqueda vectorial (3), Knowledge Pack (4), multi-máquina (5) |
+| **Cuelgan de trabajo no levantado o de una decisión comercial** | **16** | El resto |
+
+> **Y el dato que vale de esa tabla:** cinco disparadores dependen de las ocho preguntas de negocio, **ninguna de las ocho tiene respuesta escrita en el repositorio**, y la única que sí tiene un hecho de campo asociado —la 7— es precisamente la que nadie fue a mirar. Las preguntas están redactadas y listas desde hace semanas en `docs/discovery/business-questions-next.md`. **Lo que falta no es escribirlas: es una conversación de veinte minutos.**
+
+### La restricción más dura, comprobada contra el producto — y arreglada
+
+`Term / Deadline` se llama a sí misma *«la restricción más dura del documento»*:
+
+> *«Nada en V0 debe calcular, almacenar ni mostrar algo que se parezca a un plazo. Ni un campo de fecha derivada presentado como término, ni un “vence en N días”, ni una fecha calculada que la usuaria pueda leer como cómputo procesal. **La razón es de confianza, no de arquitectura**: una fecha que aparece en la pantalla se lee como afirmación del sistema, aunque en el código sea un cálculo ingenuo.»*
+
+**Se comprobó contra los once métodos, y el resultado tiene dos mitades.**
+
+**La buena:** el producto la cumple, y la cumple **por convergencia, no por obediencia** — se escribió sin leer este documento, y llegó a la misma prohibición desde el techo epistémico. `revisar-documento` llega a listar las frases exactas que nunca escribe (*«vence el…»*, *«le quedan N días»*), y `revision-de-rigor` §3.7 hace lo que ningún documento de arquitectura pidió: **buscar la cuenta ya hecha en el escrito que ella va a firmar**.
+
+**La mala, y era real:** la cumplía **con siete redacciones distintas**. Solo tres de los once traían la cláusula literal; los otros cuatro que escriben fechas la sostenían con el *«no calcular»* genérico del bloque de posición, que **no dice nada de convertir «treinta días» en una fecha**. Es la enfermedad de este repositorio otra vez: *una regla con dos redacciones se parte*.
+
+**Arreglado el mismo día.** Una sola cláusula, byte a byte, en los **siete** métodos que pueden escribir una fecha en su salida. Los otros cuatro no la llevan, y uno de ellos **no puede llevarla**: `preguntas-de-derecho` §6 tiene la única excepción del producto —si ella pone la regla de cómputo, se le hace la cuenta a la vista— y una frase absoluta ahí la contradiría. **Dos pruebas nuevas** vigilan las dos mitades: que la prohibición sea idéntica donde va, y que la excepción siga viviendo en un solo sitio. Comprobadas por mutación.
+
+### Las tres restricciones que no se pueden cumplir, y por qué decirlo importa
+
+`architecture-post-v0` escribe sus *«qué no debe romperse hoy»* para un **Core que no existe** (§7, ADR-018). Tres se leyeron con cuidado porque su enunciado suena aplicable y no lo es:
+
+| Restricción | Por qué hoy no aplica | Qué queda de ella |
+|---|---|---|
+| *«`ADMIN` sigue contando cero elementos, verificable por el test de superficie»* | No hay superficie MCP ni manifiesto de tools. **El canario no puede cantar porque no hay jaula** | **Se le construyó una jaula el mismo día, y cantó bien** — ver abajo |
+| *«toda mutación produce exactamente un evento»* (biyección mutación↔evento) | No hay Case Event Log. Las escrituras de hoy las hacen scripts sobre archivos | Queda **la disciplina**, y sí se cumple: `estado_del_caso.py` no reescribe, **sustituye solo la cabecera y conserva sus notas byte a byte** |
+| *«un backup sin round-trip de restauración probado no cuenta como backup»* | No hay backup | Queda como **la mejor frase del documento para el producto de hoy**, y aplicable tal cual: la copia que `estado_del_caso.py` hace antes de escribir **se restaura de verdad ante fallo**, y hay prueba que lo comprueba |
+
+> **Por qué esto se registra en vez de callarse.** La tentación al auditar un documento así es marcar las tres como «cumplidas» —suenan a cumplidas— o como «no aplica» y pasar. Las dos serían mentira: **una restricción que no puede violarse porque su objeto no existe no está cumplida, está vacía**, y el día que el Core exista alguien las dará por vigentes sin haberlas ejercitado nunca. Y hay una **cuarta** que sí es una restricción viva y hoy nadie vigila: *«el techo epistémico vive en el Domain, no en la superficie»*. **Hoy el techo epistémico vive entero en la superficie** —es prosa, en once `SKILL.md`— y no hay otro sitio donde ponerlo. No es un defecto del producto: es la descripción exacta de qué es este producto, y conviene tenerla escrita antes de que alguien construya el Core creyendo que la duplica.
+
+### El canario de `ADMIN`, traducido al producto que sí existe
+
+El **Principio 1** del plano administrativo dice que migraciones, packs y reparación *«existen solo en el runtime/CLI del producto, nunca como tools expuestas a Claude»*, y que eso **se comprueba con una prueba, no con una revisión que alguien recuerde hacer**: *«si algún día cuenta más de cero, la frontera se movió»*.
+
+Ese principio **sí tiene objeto hoy**, aunque no haya MCP: la superficie por la que este producto puede ejecutar código es el `allowed-tools` de cada `SKILL.md` (ADR-018). Así que se contó, por primera vez:
+
+| | |
+|---|---|
+| `SKILL.md` que declaran `allowed-tools` | **10 de 11** — todos menos `preguntas-de-derecho`, que no toca material |
+| Programas alcanzables desde la superficie | **6** — `md2docx`, `verificar_fidelidad`, `buscar`, `estado_del_caso`, `preparar_material`, `segunda_opinion` |
+| Programas en el disco **no** alcanzables desde ninguna skill | **2** — `traer_modelos.py` (baja los modelos de OCR) y `medir_realce.py` (mide si el realce mejora el OCR) |
+
+> **Y los dos que no están expuestos son exactamente de la clase `ADMIN`.** Bajar modelos de terceros es **instalar un pack**; medir el realce sobre material real es **instrumentación de desarrollo**. Ninguno de los dos tiene por qué poder invocarlo el modelo, y ninguno de los dos puede. **La cuenta de `ADMIN` en la superficie es cero** — no porque alguien la vigilara, sino porque la frontera se respetó sin nombrarla.
+>
+> **Ahora sí la vigila algo.** Una prueba fija los seis alcanzables y los dos reservados: si aparece un séptimo expuesto, o si uno de los dos administrativos se cuela en un `allowed-tools`, falla. Es la traducción literal del canario, y costó veinte líneas.
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| **A-4** | Preguntar la pregunta de negocio 7 | **Del dueño. Bloqueante desde hoy** (arriba) |
+| **A-5** | Revisar *«lo único que no se puede reconstruir»* según la respuesta | En espera de A-4 |
+| ~~**A-6**~~ | ~~Contar la superficie real de hoy~~ | **HECHA el 2026-09-05**, y con prueba que falla si crece — arriba |
+| **A-7** | Que la instalación en otra máquina (fila 3 de §2) **se registre como el disparo de dos exclusiones**, no solo como una prueba de que abre el `.md` | Cuando ocurra |
+| ~~**A-8**~~ | ~~Indexar `docs/discovery/business-questions-next.md`~~ | **HECHA el mismo día: §11**, y contestó tres de las ocho desde el disco |
+
+---
+---
+
+## §11 · Las ocho preguntas de negocio, y las tres que ya tienen respuesta en el disco
+
+**Leído el 2026-09-05**, porque §10 lo obligó: **cinco de los 24 disparadores del backlog de arquitectura cuelgan de estas ocho preguntas**, y una de ellas —la 7— resultó ser el disparador que ya se había disparado.
+
+`docs/discovery/business-questions-next.md` es lo mejor escrito de este corpus para su propósito: ocho preguntas **redactadas para ella y no para un ingeniero**, cada una con qué decisión depende, si bloquea, y una redacción sin jerga. Trae incluso la advertencia de método correcta: *«una pregunta que sugiere su propia respuesta produce confirmación, no información»*.
+
+**Y ninguna de las ocho tiene respuesta escrita.** Pero tres ya la tienen **en el disco de este repositorio**, puestas ahí por el trabajo de campo y nunca devueltas al documento que las esperaba.
+
+### Las tres que el propio repositorio ya contestó
+
+| # | Qué pregunta | Qué hay ya escrito, y dónde |
+|---|---|---|
+| **2** | *«¿cómo le llegan los documentos, en la práctica y sin idealizar?»* | **Contestada por dos pases reales.** `PASE-REAL-SALENTO` §encabezado: **23 fotografías JPG, 8 documentos, 23 páginas, 45,5 MB**. El canal real es *fotografiar un expediente en papel* — ni correo, ni plataforma. **Y el producto ya está construido sobre esa respuesta**: `preparar-material` existe porque el material llega así |
+| **3** | *«¿hablamos de cinco documentos o de quinientos?»* — el propio documento dice que **no necesita el número exacto** | **Contestada en orden de magnitud, dos veces.** Caso de familia: **56 páginas**, 39 de anexos, **14 legibles**. Salento: **8 documentos, 23 páginas**. Son **decenas**, no centenares. Es exactamente la precisión que la pregunta pide |
+| **7** | *«cuando le toca decidir, ¿cuál es el expediente que vale?»* | **Contestada a medias** — ver §10. La mitad que sí: **es autoridad**, y consta versionado en el encabezado del `PASE-REAL` (*«abogada de la Inspección de Policía de Salento, actúa como contradictor interno»*). **La mitad que falta es la que importa** y sigue siendo A-4 |
+
+> **Lo que esto dice del proyecto no es que el documento estuviera mal.** Estaba bien, y sigue estándolo. Es que **el trabajo de campo y el documento que lo esperaba nunca se cruzaron**: el pase midió, escribió sus números y siguió; las preguntas se quedaron en la carpeta de al lado, esperando una conversación que ya había ocurrido en parte. Es la misma enfermedad de §8 en su otra dirección — allí un documento sin leer costó dos defectos; aquí **un hecho sin devolver dejó cinco disparadores colgando de una pregunta que ya tenía media respuesta**.
+
+### La columna «¿BLOQUEA?» mide algo que ya no existe
+
+Las ocho responden **NO** a *«¿bloquea el Technical Design?»*, y el documento aclara que el resultado no se forzó: *«es consecuencia de que varias decisiones ya tomadas se tomaron precisamente para que estas preguntas no bloquearan»*. Es verdad y está bien argumentado.
+
+**Pero el Technical Design describe un Core que no se está construyendo** (§7, ADR-018). La pregunta que hoy vale es otra: **¿bloquea el producto que sí existe?** Releídas contra ese eje, la respuesta cambia en tres:
+
+| # | ¿Bloquea el Technical Design? | ¿Bloquea el producto de hoy? |
+|---|---|---|
+| **1** · «hecho acreditado» | NO — `ProfessionalDetermination` no tiene productor en V0 | **NO, y por una razón más fuerte que la del documento.** El riesgo que la pregunta existe para desactivar —*«un nombre equivocado puede sugerir efectos procesales»*— **no puede materializarse aquí**: este producto **nunca escribe la palabra «acreditado» como afirmación propia**. Está en la lista de palabras prohibidas de cinco métodos. No hay estado que nombrar mal porque no hay estado |
+| **2** · canales | NO — frontera de incorporación invariante al origen | **Ya no bloquea: está contestada** (arriba) |
+| **3** · volumen | NO — los umbrales son calibrables | **Ya no bloquea en su parte útil** (arriba). Lo que sigue abierto es *«cuando un caso se acaba, ¿cuánto tiempo necesita el material a la mano?»*, que no es volumen sino retención |
+| **4** · fuentes jurídicas | NO — ningún Knowledge Pack se carga | **NO. Y menos aún:** el producto **no cita derecho en absoluto** (§9). La abstinencia es total |
+| **5** · personas | NO — la tripleta de actor está en el schema | **SÍ, de otra manera.** Aquí no hay schema donde reservar un hueco: la única persona que el producto nombra es **ella**, en prosa, once veces. Si mañana un dependiente ejecuta un comando, **no hay dónde registrarlo** — y la marca ` - REVISADO` presupone que quien la puso fue ella |
+| **6** · backups | NO — pero **bloquea operar con datos reales** | **SÍ, y hoy más:** el producto ya corrió sobre **dos expedientes reales**, sin que esa pregunta se contestara. El documento decía que su respuesta *«habilita el paso de datos sintéticos a expedientes reales»*. **Ese paso ya se dio** |
+| **7** · expediente oficial | NO — «bloquea el diseño del contexto B, que no se está haciendo» | **SÍ.** El contexto B se hizo. Ver §10 |
+| **8** · ritmo | NO | NO |
+
+> **La fila 6 es la que incomoda, y por eso se escribe.** Es la única de las ocho que el documento marca como bloqueante de algo con nombre propio —*operar con datos reales*— y es el único umbral que el proyecto ya cruzó **sin la respuesta**. No es reprochable: el pase real fue lo que hizo bueno a este producto, y los cuatro de los cinco defectos vivos salieron de ahí. Pero **el riesgo que la pregunta 6 nombra sigue entero**: *«el robo del portátil destruye y expone todo a la vez»*, y hoy no consta que exista copia de nada.
+
+### Una referencia que no lleva a ninguna parte
+
+El encabezado del `PASE-REAL-SALENTO` —la pieza versionada que sostiene *«es autoridad»*— remite a `memory/contexto-b-inspeccion-salento.md`. **Ese archivo no está en el repositorio y no puede estarlo:** `memory/` es la carpeta que el asistente se guarda **por máquina**, fuera del control de versiones (`platform-facts.md` lo documenta: `~/.claude/projects/<proyecto>/memory/`).
+
+**El hecho no se cae** —el propio encabezado lo dice con todas las letras, y eso sí está versionado—, **pero su ampliación no la puede abrir nadie más**. Y de ese hecho cuelgan hoy `C-8`, SPEC-03 completa, el disparador de §10 y las preguntas A-4/A-5.
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| **A-8** | ~~Indexar las ocho preguntas~~ | **HECHA.** Este apartado |
+| ~~**A-9**~~ | ~~Devolver al documento de preguntas lo que el campo ya contestó~~ | **HECHA el mismo día.** Las preguntas 2, 3 y 7 llevan ahora su respuesta parcial, con fuente, fecha **y lo que siguen sin contestar** — que es la parte que no se puede saltar: dos casos no son una semana |
+| **A-10** | **La pregunta 6 —copia de seguridad— pasa de «no bloquea» a bloqueante retroactivo**, porque el paso que habilitaba ya se dio dos veces | **Del dueño.** No es diseño: es preguntarle a ella si hay copia de algo, hoy |
+| **A-11** | **La pregunta 5 empieza a bloquear el producto de hoy**, no el Core: la marca ` - REVISADO` presupone que la puso ella, y no hay nada que lo distinga si la pone otra persona | **Registrada, sin decidir.** Cuelga de A-4 en la práctica: las dos son la misma conversación |
+| ~~**A-12**~~ | ~~La referencia colgante a `memory/…`~~ | **HECHA el mismo día**, y con la corrección explicada dentro del propio documento de campo, no en silencio |
+
+---
+---
+
+## §12 · `skills-support`, y una cuenta mal hecha el 26 de agosto que se cerró hoy
+
+**Leído el 2026-09-05.** Y lo primero es una corrección a este mismo backlog: **no son «los veinte dossiers»**. Son **89 documentos y 5.429 líneas**, en once carpetas. La cifra venía de contar la raíz sin abrir las subcarpetas, y se arrastró por tres apartados.
+
+### Qué es, y por qué no cubrirlo no era deuda
+
+Es investigación para **skills jurídicas**: catálogo normativo, gobierno de jurisprudencia, cobertura del derecho colombiano, mapas de dependencias, marcos adversariales, evaluaciones sintéticas. **Y el producto que existe no cita derecho en absoluto** (§9, *«la abstinencia»*).
+
+> **Así que este corpus no está desactualizado: está por delante.** Describe la línea de producto que empieza el día que exista el Knowledge Pack, y §9 ya dejó dicho qué garantiza mientras tanto — *«hoy no hay mecanismo que impida citar una norma derogada; lo impide que el producto no cita normas»*. **Un corpus por delante no cobra defectos**, que es exactamente lo contrario de lo que pasó con `PENDIENTE-FORMA-DE-ENTREGA` (§8). Por eso este quedó de último, y estuvo bien.
+
+Y **se declara a sí mismo con honestidad**, en su primera pantalla: `SKILL_SUPPORT_CORPUS_NOT_READY`, `COVERAGE_GAPS_PRESENT`. No hay que descubrir que no está listo: lo dice.
+
+### La disciplina que este corpus sí practica
+
+Dos cosas que en otros sitios de este repositorio salieron mal, aquí salieron bien, y merece decirse porque §5 solo cuenta duplicados:
+
+| Riesgo | Cómo lo resolvió |
+|---|---|
+| **Dos documentos para lo mismo** — `00-scope-and-governance` / `00-scope-and-principles`, `03-priority-roadmap` / `03-skill-priority-roadmap` | **Cada uno abre con una nota de navegación que dice cuál prevalece.** No es la enfermedad de §5: es la enfermedad tratada |
+| **Dos listas de preguntas para la misma profesional** | `open-questions/questions-for-professional.md` **abre declarando la regla**: *«no repetir preguntas ya cubiertas sobre canales de evidencia, volumen, fuentes habituales, participantes, backups, expediente oficial y ritmo»*, y nombra el documento que las tiene. **Quince preguntas, cero solapes** |
+
+### Y la misma pregunta que §10 y §11, por tercera vez
+
+Esa segunda lista tiene, bajo **`BLOCKING SKILL DESIGN`**, esta:
+
+> *6. **Si llegara a actuar como autoridad**, ¿qué partes de una propuesta de decisión tendría que revisar o reescribir siempre usted misma, aunque una herramienta hubiera organizado el material?*
+
+**«Si llegara a actuar como autoridad.» Actúa.** Es la tercera vez en dos apartados que un documento aparca algo sobre el condicional de un hecho que el trabajo de campo ya estableció — el disparador `Ruling` (§10), la pregunta de negocio 7 (§11) y ahora esta. **Tres documentos, tres corpus distintos, la misma pregunta sin hacer.**
+
+Y hay una cuarta de esa lista que este producto ya contestó **sin preguntar**:
+
+> *2. ¿Qué revisión hace personalmente antes de permitir que un hecho llegue a un escrito?*
+
+La respuesta que el producto lleva escrita es la marca ` - REVISADO`: ella escribe `SÍ`, `NO` o `A MEDIAS` al lado de cada ficha y renombra el archivo. **Es una respuesta buena y es una suposición**, y coincide con `A-11` de §11 por el otro extremo — **nada distingue hoy que la marca la haya puesto ella y no un dependiente**.
+
+### La cuenta mal hecha, que es el hallazgo de este apartado
+
+El `README` de este corpus cierra con una corrección de ruta: *«la ruta vigente del plugin existente es `plugins/despacho/skills/fact-builder/`»*. **Esa carpeta no existe.** Se borró el **2026-08-26**, un día después de la fecha de referencia del corpus, en el commit que aplicó la crítica al arnés: **`H-09 fact-builder pasa a llamarse hechos-con-prueba`**. Hoy la nombran **55 documentos** del repositorio, 27 de ellos aquí.
+
+**No se van a renombrar los 55**, y decir por qué importa: son **registro histórico** —ADRs, notas de diseño, verificaciones— y reescribirlos falsearía lo que se decidió con la información de entonces. Se corrige **la única línea que afirma un hecho sobre hoy** y es falsa, y se deja dicho en qué se convirtió.
+
+**Pero ese mismo commit trae el hallazgo bueno**, en su propio texto:
+
+> *`H-03` la frontera del cálculo pasa a estar escrita por operación, no por tema, **en los tres skills que tocan fechas***
+
+**No son tres. Son siete.** Ese mismo día se contaron mal los métodos que pueden escribir una fecha en la salida de ella, la regla se puso en tres, y los otros cuatro se quedaron con el *«no calcular»* genérico —que no dice nada de convertir *«treinta días»* en una fecha— **durante diez días**.
+
+> **Y esto es lo que retro-justifica §10 entero.** La cuenta no se corrigió leyendo el producto: **once relecturas de estos `SKILL.md` en dos semanas no la vieron**. Se corrigió porque un documento de **otro corpus**, `architecture-post-v0`, obligó a contar: *«nada en V0 debe calcular, almacenar ni mostrar algo que se parezca a un plazo»*. Es la misma lección de la tabla de §0 con un tercer renglón:
+>
+> | Origen del hallazgo | Encontró algo |
+> |---|---|
+> | Releer lo que uno escribió | **No** — diez días mirándolo |
+> | Ejecutar el producto | **Sí** — 4 de 4 |
+> | **Cruzar dos corpus que nadie había cruzado** | **Sí — y encontró lo que releer no encontraba** |
+>
+> Escribir una regla y releerla no dice si decide. **Y contarla contra un documento que no la escribió, sí.**
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| ~~**S-1**~~ | ~~La ruta `fact-builder` que el `README` da por vigente~~ | **HECHA el 2026-09-05.** Corregida la línea, con la fecha del cambio y su commit; los 55 usos históricos **se dejan como están, y se dice por qué** |
+| **S-2** | **Preguntar la pregunta 6 de esta lista** — qué de una propuesta de decisión reescribiría siempre ella | **Del dueño. Es la misma conversación que `A-4`**, y conviene que sea una sola |
+| **S-3** | Las **89 piezas** de este corpus siguen sin triar una por una. **No urge**, por la razón de arriba | Vivo, de baja prioridad declarada |
+| **S-4** | Corregida en este backlog la cifra **«veinte dossiers»** → **89 documentos** | **HECHA.** Estaba en tres sitios |
+
+---
+---
+
+## §13 · `technical-design`, y una regla que este mismo corpus demostró que no protege
+
+**Leído el 2026-09-05, y con esto se cierra el §0.3.** Es el corpus más grande del repositorio: **46 documentos, 17.990 líneas** — veinte documentos numerados del kernel al despliegue, más notas de diseñadores y de verificación.
+
+### El triaje es el mismo que el de los ADR, y por la misma razón
+
+Los veinte documentos numerados diseñan **el Core que no existe** (§7, ADR-018): modelo de dominio, contrato MCP, persistencia, proyecciones, ciclo de vida del artefacto, autorización humana server-side. Sus **ocho decisiones que esperan aprobación** —`principal_type` sin `EXTERNAL`, el retiro de `register_artifact`, separar `event_seq` de `case_revision`, las cinco políticas del Product Floor— son decisiones **sobre ese Core**, y ninguna toca el producto que hoy corre.
+
+Y lo que ya se aprovechó de aquí, se aprovechó bien: **su §13 se materializó como `caso-03`**, el banco sintético que este backlog dio por inexistente y estaba diseñado desde el principio.
+
+### Pero un hallazgo sí transfiere, y es el más duro del repositorio
+
+`ESTADO-Y-HALLAZGOS-CRITICOS.md` §1.1 registra cinco hechos **verificados contra documentación oficial**. El segundo:
+
+> *«**No existe deny por ruta en Cowork.** Adjuntar una carpeta concede su árbol completo; el agente puede leer y escribir todo lo que alcance la cuenta del sistema operativo. **El único remedio documentado es posicional:** dejar los datos fuera de las carpetas permitidas.»*
+
+Y la conclusión que saca en §1.3, sobre el almacén del Core:
+
+> *«**La protección del case store no puede ser una regla; tiene que ser una posición.**»*
+
+**Aplíquese eso a `1-Documentos recibidos/`, que es la carpeta que este producto protege con más fuerza.** El resultado no es cómodo:
+
+| | |
+|---|---|
+| **¿La protección es una regla o una posición?** | **Una regla.** Prosa, en **nueve** `SKILL.md` — se contaron |
+| **¿Está disponible el remedio posicional?** | **No, y no puede estarlo.** El remedio es *«dejar los datos fuera de las carpetas permitidas»*, y **los métodos tienen que leer esa carpeta**. Sacarla de alcance es apagar el producto |
+| **¿Hay algún mecanismo del anfitrión que la respalde?** | **Ninguno.** `plugin.json` trae nombre, versión, descripción y palabras clave. **Cero hooks, cero `permissions`, cero `deny`** en todo el repositorio |
+
+> **Así que hoy la protección más fuerte del producto descansa entera en que el modelo obedezca un párrafo, nueve veces.** No es un defecto encontrado —la regla está en los nueve, incluidos los dos casos especiales, y se comprobó uno por uno—; es **el mecanismo, dicho con precisión**, y este corpus es el que verificó que un mecanismo así no es un perímetro.
+>
+> **Lo que sí se puede hacer desde aquí se hizo:** una prueba que **fija la cuenta de los nueve**. No convierte la regla en perímetro —nada de este lado puede—, pero el modo de fallo real no es que alguien borre la regla: es **un método nuevo que lea esa carpeta y no la traiga**. Eso ahora falla.
+>
+> **Y una distinción que hay que dejar escrita antes de que alguien la borre:** este hallazgo es sobre **Cowork**. Que Cowork *no* herede la configuración de Claude Code (hallazgo §1.1.1) implica que **Claude Code sí tiene** reglas de permiso; de dónde se ejecute el plugin **cambia qué protecciones existen**. Nadie ha escrito esa decisión, y vuelve a caer sobre la instalación pendiente — **la cuarta cosa que esa fila de §2 desbloquea**.
+
+### El riesgo abierto que este corpus llama el más grave, y a quién le toca
+
+`B-04`: no está documentado si un servidor MCP local puede alcanzar rutas fuera de las carpetas adjuntadas. *«Hasta resolverlo empíricamente no puede afirmarse que el perímetro de ADR-002 sea realizable sobre Cowork»*, y el protocolo de 31 pasos ya está escrito en `experiments/cowork-capability-spike/`.
+
+**No es trabajo de este backlog y conviene decirlo:** `B-04` decide si **el Core** es construible sobre ese anfitrión. Hoy no hay Core. Queda registrado como lo que es — **el riesgo mejor identificado del repositorio, con su experimento ya diseñado y sin ejecutar** — y no como deuda del producto que corre.
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| ~~**T-1**~~ | ~~Contar la protección de `1-Documentos recibidos/`~~ | **HECHA.** Nueve métodos, nueve prohibiciones, y una prueba que falla si aparece un décimo sin ella |
+| **T-2** | **Decidir y escribir en qué anfitrión corre esto**, porque de eso depende si existe algún mecanismo además de la prosa | **Del dueño, y es la fila 3 de §2 otra vez.** Ya desbloquea cuatro cosas distintas |
+| **T-3** | **La razón de la protección queda pendiente de `A-4`** — la dan siete métodos, y si el contexto autoridad tiene expediente oficial es falsa ahí. La prueba fija los siete **para que el día que se decida se toquen los siete y no tres** | En espera de A-4 |
+| **T-4** | `B-04` — ejecutar el spike de 31 pasos | **Del dueño, y no urge:** decide sobre un Core que no existe |
+| **T-5** | Los **46 documentos** no se triaron pieza a pieza, por la misma razón que `S-3` | Vivo, de baja prioridad declarada |
+
+---
+---
+
+## §14 · Lo que pasó al ejecutar el producto en los dos contextos
+
+**2026-09-05, después de cerrar el §0.3.** Once specs estaban «ejecutadas» y ninguna comprobada **corriendo el método**. Se corrieron cinco contra el `caso-03`, cuyo truth set estaba escrito antes de esta sesión. [El registro completo está aparte](technical-design/v0/notes-verification/pasada-caso-03-2026-09-05.md); aquí va lo que cambia el backlog.
+
+### El resultado de veracidad, que es el que manda
+
+**Cero afirmaciones prohibidas afirmadas. Cuatro trampas de entidad de cuatro superadas.** Nariño y Mariño separados —con la advertencia de que la entrevista los distingue una sola vez—, las dos sociedades Delmonte separadas con sus dos NIT, «M E QUIROGA B» **resuelta** diciendo sobre qué se apoya la lectura, y la vecina sin nombre.
+
+**Y la pasada más valiosa no produjo archivo.** `inventario-de-anexos` se detuvo en su Fase 2: no hay hoja de hechos con la marca ` - REVISADO`, así que preguntó **y esperó**, en vez de emparejar con la hoja sin marcar «para ir adelantando». Las otras cuatro comprueban que el método hace bien lo que hace; **esta comprueba que no hace lo que no debe**, que es la mitad difícil.
+
+### Y lo que ejecutar encontró, que releer no encontraba
+
+**Seis defectos, todos míos.** Los dos que más pesan:
+
+| Qué | Cuándo |
+|---|---|
+| *«las dos actas, con veintiún días de diferencia»* — veintiuno no está en ninguna pieza | En la **primera salida producida bajo la regla unificada esa misma mañana** |
+| *«la diferencia es de $500.000»* — no aparece en el material | En el **mismo archivo**. La guarda de esa mañana solo miraba fechas |
+
+### La cuenta que hay que mirar de frente
+
+**Cinco conteos mal hechos el mismo día**, todos de la misma operación:
+
+| Cuándo | Qué se contó | Dijo | Era |
+|---|---|---|---|
+| 26-08 | Skills que tocan fechas (`H-03` del commit del arnés) | tres | **siete** |
+| 05-09 | `SKILL.md` que justifican la protección de escritura (§10) | tres | **siete** |
+| 05-09 | Fichas apoyadas de la pasada de hechos | 10 y 7 | **9 y 6** |
+| 05-09 | Documentadas de la cronología | cinco | **cuatro** |
+| 05-09 | Métodos con el bucle anidado (SPEC-13) | dos | **cuatro** |
+
+**Ninguna se encontró releyendo. Las cinco con un comando.** Y el cuarto fue el peor, porque los números **no cuadraban** —15 donde había 14— **y en vez de recontar se escribió un párrafo explicando la discrepancia**. La explicación era plausible y era falsa.
+
+> **La conclusión no es «hay que contar mejor».** Es que **un documento que pide una cifra sin dar con qué obtenerla está pidiendo un error**, y este arnés lo hacía en tres métodos. Ahora los tres invocan un programa, y la regla nueva está escrita en dos de ellos: **si el conteo no cuadra, se recuenta; no se explica.**
+
+### La tabla de §0, con su cuarta fila
+
+| Origen del hallazgo | Verificados | Eran como se decía |
+|---|---|---|
+| Leer documentos de diagnóstico | 6 | **0 de 6** |
+| Ejecutar el producto en un caso real | 4 | **4 de 4** |
+| Releer lo que uno mismo escribió esa semana | 18 | **0 de 18** |
+| **Cruzar dos corpus que nadie había cruzado** (§12) | — | **encontró lo que releer no encontraba** |
+| **Ejecutar el producto contra material con verdad conocida** | 5 métodos | **6 defectos, cero visibles releyendo** |
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| **§2 · 6** | Una prueba capaz de fallar | **Hecho en veracidad.** Instrumento, material y cinco pasadas. **Falta el coste** |
+| **§2 · 5** | `PM-M-1` (a) y (b) — instrumentar | **Sigue abierto y seguirá:** necesita una corrida con transcript, y una pasada de escritorio no lo es |
+| **P-1** | **Que una abogada abra una de estas nueve salidas.** Ninguna la ha visto nadie | **Del dueño.** Es la única medición que importa y la que no se ha hecho |
+| ~~**P-2**~~ | ~~Correr las cinco contra el `caso-02`, contexto B~~ | **HECHO el 2026-09-05.** Cuatro salidas existían y **ninguna había pasado por las guardas**: encontraron seis cosas, tres de ellas **vocabulario cerrado abierto sin que nadie lo decidiera** —grados renombrados, un veredicto global que no es uno de los cinco, un evento contado dos veces—. Y la quinta pasada **tampoco produjo archivo**: aquí `inventario-de-anexos` para porque hay **dos** hojas marcadas, donde en el `caso-03` paraba porque no había **ninguna**. [Registro](technical-design/v0/notes-verification/pasada-caso-02-2026-09-05.md) |
+
+---
+---
+
+## §15 · Los once ejecutados, y lo que costó cada uno
+
+**2026-09-07.** §14 dejó cinco métodos corridos. Los seis que faltaban se corrieron el 7. **Los once del plugin se han ejecutado al menos una vez**, y ninguno salió limpio. *(El duodécimo, `transcribir-audio`, entró por fusión el 2026-09-22 y no se ha corrido: §17.)*
+
+### Los seis que faltaban
+
+| Método | Qué encontró ejecutarlo |
+|---|---|
+| `estado-del-caso` | **La cabecera la fecha el modelo y la copia la sella el programa, y nada comprobaba que coincidieran.** La primera pasada dejó dos fechas distintas en el mismo trabajo. La regla 4 dice que un resumen sin fecha miente por omisión; **con la fecha equivocada miente peor** |
+| `buscar-en-el-caso` | **La búsqueda no veía el archivo sin extensión** —el que deja Windows cuando ella guarda su hoja revisada— y devolvía *«CERO APARICIONES en lo que se pudo leer»*. **No decía que no hubiera podido abrirlo: decía que no estaba**, y le tocaba justo al archivo que lleva su decisión |
+| `inventario-de-bienes` | La trampa que decide: la querella y el predial comparten **solo «vereda Boquia»**, y una vereda ubica y no identifica. **No se funden**, y se dice por qué: fundirlos metería el predio de un vecino en la fila del caso, y **el error no se vería al leer** |
+| `redactar-escrito` | La cadena completa se ejecutó por fin —**faltaba el estado normal del fixture: exactamente una hoja marcada**— y el método **se detiene igual, en la Fase 2**. Abrir la primera puerta no abre la segunda |
+| `preguntas-de-derecho` | **La guarda de las cuentas empujaba a romper su §6**: marcaba *«el término que usted indicó»*, que es exactamente lo que esa sección autoriza y obliga a escribir atribuido |
+| `preparar-material` | **No arrancaba.** Exigía Pillow para todo, y Pillow hace falta solo para las imágenes: un ZIP de `.txt` no se podía preparar, y `--help` tampoco funcionaba |
+
+### Las cuatro paradas, juntas
+
+**Tres métodos se detienen ante una precondición que no se cumple, por cuatro causas distintas, y las cuatro son correctas:**
+
+| Método | Caso | Dónde para | Por qué |
+|---|---|---|---|
+| `inventario-de-anexos` | `caso-03` | Fase 2 | **Cero** hojas marcadas |
+| `inventario-de-anexos` | `caso-02` | Fase 2 | **Dos** hojas marcadas |
+| `redactar-escrito` | `caso-02` | Fase 1 | **Dos** hojas marcadas |
+| `redactar-escrito` | `caso-03` | **Fase 2** | Falta lo que solo ella puede decir |
+
+> **Y el dato que sale de ahí, que es para el dueño y no para mí:** la salida que ella firma **no se produce sin dos intervenciones suyas** —revisar veinte fichas una por una, y dictar qué escrito, para quién y con qué apartados—. **La primera no es rápida.** No es un defecto: es la forma que tiene este producto, y conviene saberla antes de prometer tiempos.
+
+### Lo que la vuelta completa dice de las guardas
+
+**Ocho de los hallazgos del día no fueron de los métodos: fueron de las guardas que los vigilan.**
+
+| Guarda | Qué le pasaba |
+|---|---|
+| `contar_fichas.py` | **Solo entendía la forma markdown de una pasada concreta.** Las plantillas reales son texto plano, y sobre las cuatro salidas escritas así decía «0 fichas» |
+| `contar_fichas.py` | Contaba **dos tablas con la misma etiqueta** como una — en la cronología y otra vez en el inventario de bienes |
+| `buscar_cuentas.py` | **Salía antes de mirar los importes** si no había ninguna duración. Un método sin duraciones y con importes pasaba en silencio |
+| `buscar_cuentas.py` | Leía **al revés** la negativa canónica: *«sobre si el término venció: eso no se lo puedo responder»* |
+| `puntuar_caso03.py` | Marcaba como cruce **la frase que distingue a los dos Diegos**, que es lo correcto de escribir |
+
+> **La lección no es que las guardas estuvieran mal escritas.** Es que **una guarda ajustada a una sola muestra protege esa muestra y nada más**, y que la única forma de descubrirlo es correrla sobre algo que no escribió quien la hizo. Las cinco se destaparon corriendo, ninguna releyendo.
+
+### Y dos piezas que cambiaron de sitio
+
+- **La regla de la marca ` - REVISADO` vivía solo dentro de una prueba.** Es el único mecanismo por el que la autoridad cambia de manos en este producto, y el producto no podía usarla. Pasa a `plugins/despacho/scripts/marca.py`, y la prueba comprueba esa.
+- **El canario de superficie disparó** sobre ese archivo nuevo y obligó a decidir de qué lado va. **De ninguno:** no se puede invocar. Es una tercera clase, con su condición comprobable —no trae `main`— y su prueba.
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| **P-1** | **Que una abogada abra una de estas once salidas.** Ninguna la ha visto nadie | **Del dueño.** Sigue siendo la única medición que importa |
+| **P-3** | **Las cuatro respuestas de la Fase 2** —qué escrito, para quién, qué apartados, qué hechos— para poder probar la redacción de verdad | **Del dueño.** Inventarlas sería dictar la estructura de un escrito jurídico, y eso **no se simula**: se deja sin hacer y se dice |
+| **P-4** | El coste. Sigue necesitando una corrida instrumentada con transcript | Abierto desde §14 |
+
+---
+---
+
+## §16 · Los documentos que caducan en silencio
+
+**2026-09-21.** Lo que quedaba por hacer del lado de la documentación, y lo que encontró hacerlo.
+
+### El hallazgo: un documento declaró su caducidad y caducó sin que nadie lo notara
+
+`ESTADO-DEL-PROYECTO.md` terminaba con esta línea:
+
+> *«Caduca con el próximo commit que toque `plugins/despacho/` o `docs/skills-support/`.»*
+
+**Caducó al día siguiente.** Hubo sesenta y un commits, y cuando se volvió a abrir **nueve de sus diez titulares eran falsos**: decía que nadie podía instalarlo, que ningún método se había ejecutado nunca, que los diecisiete hallazgos seguían vivos y que la cadena estaba partida. Las cuatro cosas dejaron de ser ciertas entre el 26 de agosto y el 7 de septiembre.
+
+> **Una fecha de caducidad no es una guarda.** Un documento que afirma cosas sobre el presente y no tiene nada que las compruebe **no avisa cuando envejece**: se queda ahí, con el mismo aspecto de verdad que tenía el primer día, y se le cree. Es el mismo argumento que este repositorio aplicó a los conteos —*el cuidado no basta y hace falta la guarda*— aplicado a la prosa.
+
+### Lo que se hizo, y la regla que salió
+
+| | |
+|---|---|
+| **Se reescribieron** | Los apartados que afirman cosas **sobre el presente**: `ESTADO-DEL-PROYECTO` §0, §5, §6 y la cabecera de §7, y las dos afirmaciones falsas de `evals/README.md` |
+| **Se conservaron** | Los que son **registro fechado** de un análisis —§1 a §4—, con una marca de qué quedó superado y dónde está lo vigente |
+| **Se tachó, no se borró** | Cada titular corregido lleva **la frase vieja al lado**: *«ya no aplica»* sin lo que decía antes no deja comprobar nada |
+
+> **Y por qué no se reescribe todo:** borrar §1–§4 quitaría lo que se sabía el 26 de agosto, **y de ahí salieron la mitad de las correcciones que vinieron después**. Un análisis fechado que resultó equivocado sigue siendo información sobre cómo se decidió.
+
+### El segundo, que pesa más
+
+`evals/README.md` es **el documento que dice qué mide el instrumento y qué no**, y esa segunda mitad es la que hace útil a un instrumento. Decía *«sin puntuador todavía»* con el puntuador escrito dos días antes, y *«lo que ninguno mide: que un modelo aplique la prosa; eso solo lo enseña una pasada real, que sigue sin ocurrir»* con **las once pasadas ya hechas**.
+
+> **Un instrumento que describe mal sus límites es peor que uno sin descripción: se le cree.**
+
+Se corrigieron las dos, y se añadió lo que no estaba: **las cuatro guardas que miran las salidas** —no lo que los métodos dicen— con el defecto concreto del que nació cada una.
+
+### Y lo que ahora lo vigila
+
+`evals/scripts/test_documentos_vigentes.py` — **dieciocho pruebas** sobre los dos documentos que más caro cuestan cuando envejecen:
+
+- Los titulares con respuesta en el disco: el remoto, que ningún método cite una norma, que sean **doce**, que **once de los doce** estén registrados como ejecutados —y que el que falta sea exactamente `transcribir-audio`, declarado en el §0—, que la cadena esté completa, la cifra de **55** documentos que nombran `fact-builder`, los **catorce** programas y los **ocho** expuestos.
+- Que el `README` de evals **nombre todas las guardas que existen**, **no nombre ninguna que no exista**, y que **todas cuelguen del corredor** — *una guarda que hay que acordarse de correr no es una guarda*.
+- **Y cuáles NO comprueba**, declarado: cuatro de los diez titulares son juicios y no cifras. Un lector que vea la suite pasar no debe creer que se validaron los diez.
+
+Comprobadas por mutación **en las dos direcciones**: fallan si el documento miente, y fallan si el producto cambia sin que el documento lo diga.
+
+### AC-05, medida y sin decidir
+
+Sigue **ABIERTA**, y es del dueño. Lo que se añadió es la cuenta, porque abarata la decisión: su recomendación (d) pide que **los tres mecanismos lean la declaración** que el derivado ya trae en su primera línea. **Uno la lee; dos infieren. Y cero de los once `SKILL.md` la mencionan.**
+
+> **La asimetría importa más que el uno de tres:** lo aplicado es **el programa**, que es la mitad fácil —se arregla y se comprueba—. Lo que falta es **la prosa que sigue el modelo**, donde no hay forma de comprobar que la leyó. Y el riesgo concreto de quedarse así lo nombra la propia enmienda: con un mecanismo leyendo y dos infiriendo, **la misma pieza puede salir clasificada de dos maneras en la misma pasada** — peor que los tres infiriendo igual.
+
+**Cuatro pruebas fijan esa medición al disco y no deciden nada.** Si alguien implementa (d), fallan — y su mensaje dice qué hacer: *«actualice AC-05, no esta prueba»*.
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| **D-1** | **Decidir AC-05**: si la convención se lleva también a los `SKILL.md`, o se acepta que ahí la carpeta siga siendo la señal | **Del dueño.** Ya no hace falta preguntarle nada a ella: no cambia ni una carpeta ni un nombre |
+| **D-2** | Los demás documentos vivos —la guía, `INSTALACION.md`, los `README`— **se comprobaron y están al día**. `PLAN-DE-MEJORA` y `PASE-REAL` son registro fechado y se quedan como están | **Comprobado el 2026-09-21** |
+
+## §17 · La fusión de `master`, y las cuatro guardas que la recibieron
+
+**Registro completo:** `docs/technical-design/v0/notes-verification/fusion-transcribir-audio-2026-09-22.md`
+
+`master` traía **un método nuevo, cuatro programas, cuatro ADR y una página local**; esta rama traía las guardas. **Al juntarlos, dieciséis pruebas fallaron en cuatro archivos, y ninguna por un error de la fusión: todas porque el producto cambió de tamaño.** Es exactamente lo que estas guardas dicen de sí mismas en la rama — *«fallan si el documento miente, y fallan si el producto cambia sin que el documento lo diga»*.
+
+### Lo que dijeron, y lo que era
+
+| Guarda | Qué dijo | Cerrado con |
+|---|---|---|
+| `test_bloques_identicos` | el método nuevo no trae **ninguno** de los bloques compartidos | los dos que le tocan, copiados **byte a byte** de los once |
+| `test_superficie` | cuatro programas **sin clasificar** y un método que nombra `1-Documentos recibidos/` fuera de la cuenta | una **cuarta clase** (abajo) y la fila del método nuevo |
+| `test_dependencias` | **tres** bibliotecas externas desconocidas | declaradas, con su fila en `INSTALACION.md` y una prueba que corre el programa de verdad |
+| `test_documentos_vigentes` | el `ESTADO-DEL-PROYECTO` dice **once y diez**; en el disco hay **doce y catorce** | §0 reescrito, y la excepción **nombrada en vez de escondida** |
+
+### La contradicción de fondo, que no era de conteo
+
+Tres métodos decían de una transcripción **«este método no la produce»** y remataban con que, sin ella, la grabación se declara y **ahí termina**. La primera mitad sigue siendo cierta; **la segunda dejó de serlo**. Lo que se escribió —una vez, idéntico en los tres, con guarda que falla si alguno lo reescribe— es que lo que sale del método nuevo **es trabajo del sistema**: pista, nunca origen, y material solo el día que ella le pone ` - REVISADO`. **Que ahora se pueda transcribir no es que ahora se pueda oír.**
+
+### La clase que hubo que inventar, y por qué no se llamó `ADMIN`
+
+Tres de los cuatro programas nuevos no son administrativos y ningún método los pide. Meterlos en `ADMIN` habría diluido la clase **justo por donde `architecture-post-v0` avisa**: *«la presión llega como una tool pequeña y razonable»*. Se abrió `A_MANO`, con esto escrito dentro: **que no estén expuestos no es una regla de seguridad, es una decisión que nadie ha tomado.** La guarda que los cubre es la misma.
+
+### Y otra vez lo mismo: tres defectos **de las guardas**, no de los métodos
+
+Por tercera vez el hallazgo grande sale de **correr una guarda sobre algo que no escribió su autor**:
+
+1. `test_integridad_del_metodo` solo conocía `f"Nombre - {date...`, y el programa nuevo usa `%s`. **Los siete archivos que deja por grabación pasaron por delante sin que los viera.**
+2. `contar_fichas.py` decía «0 fichas · NO COINCIDE» sobre una transcripción — **una acusación falsa contra una salida correcta**, y la forma de apagar el instrumento. Ahora la reconoce por el título que escribe el otro programa, con una prueba que lee ese código y falla si el título cambia.
+3. **`V-12` se cerró «con un grep» y sin dejar guarda**, y el árbol del `README` del plugin volvió a quedar mal en esta misma fusión. Ahora tiene cuatro pruebas, incluida la mitad que se olvida: **que no nombre nada que no exista**.
+
+### 17.1 Los tres programas que llegaron sin una sola prueba
+
+**De los catorce programas, cuatro entraron por la fusión y ninguno traía prueba.** Uno —`transcribir_audio.py`— no se puede probar aquí. Los otros tres no dependen de nada, y **cada uno cargaba un defecto ya corregido y sin nada que lo sujetara**. Una corrección sin prueba es una corrección que se puede deshacer sin que nadie se entere.
+
+`evals/scripts/test_programas_de_la_fusion.py`, **veintiuna pruebas**, las tres familias comprobadas capaces de fallar con mutantes:
+
+- **`verificar_citas.py`** — *«aprobaba en blanco toda cita de menos de cuatro palabras»*. En un programa cuyo único trabajo es cazar citas inventadas, un aprobado en blanco es peor que no tenerlo. Ahora está fijado que una cita corta que **no** está puntúa bajo, y que una partida con `[…]` vale lo que su **mitad peor**.
+- **`comparar_iteraciones.py`** — *«rellenaba la lista hasta N»*, haciendo pasar por dudoso lo que no lo era. Fijado: dos carpetas idénticas **no listan ni un tramo**; dos distintas sí.
+- **`md2html.py`** — **cero peticiones de red** (`ADR-020` §3). La razón no es de rendimiento: **una página que pide algo a un servidor cuenta lo que ella está leyendo.** Tres guardas independientes, y las tres disparan al meter una tipografía de Google en la plantilla.
+
+> **Y lo que esta tanda NO encontró, dicho porque el instrumento también se equivoca:** una de mis pruebas afirmaba que la página no debía traer elemento de audio. **Lo trae siempre, vacío y oculto, y declara la ausencia con todas las letras** — que es exactamente lo que `ADR-020` §5 pide. La prueba que estaba mal era la mía, no el programa.
+
+### 17.2 La plantilla de la página es un artefacto compilado, y nada lo vigilaba
+
+`plugins/despacho/scripts/plantilla/pagina.html` **no se escribe: se compila** desde `tools/pagina-despacho/src/` con Node y se copia. **Es el primer artefacto compilado que este repositorio versiona**, y trae una clase de avería que no había aparecido antes: la fuente y lo que viaja pueden separarse sin que nada falle.
+
+| Avería | Qué pasa | Por qué no se ve |
+|---|---|---|
+| **La plantilla envejece** | se toca `src/`, no se vuelve a publicar, el plugin sigue entregando la página vieja | no hay error ni aviso; **lo que ella abre no es lo que dice el código** |
+| **Se edita el compilado a mano** | la corrección **desaparece en la siguiente compilación** | **sin rastro de que existió** — peor que no haberla hecho, porque alguien la dio por hecha. `ADR-020` §2 lo prohíbe y **nada lo hacía cumplir** |
+
+**Cerrado con dos mitades, y están partidas a propósito.** `publicar.mjs` escribe ahora `HUELLAS.json` —la huella de cada fuente y la del artefacto—, y `evals/scripts/test_pagina_publicada.py` lo comprueba **sin Node y sin red**, que es lo que el corredor exige. La comprobación fuerte —compilar otra vez y comparar byte a byte— corre **solo si hay Node y `node_modules`**, y **se salta diciéndolo**: una prueba que se salta en silencio es una prueba que no existe.
+
+> **Y la parte que hace de esto una guarda y no un gesto:** el registro tiene que cubrir **todas** las fuentes que hay en el disco, no las que había el día que se escribió. Un registro a medias protege esa mitad y nada más — que es la misma lección que el §17 apunta tres veces. Si aparece `src/nuevo.js`, la prueba falla **hasta que `publicar.mjs` lo incluya**, no cuando ya haya derivado.
+
+**Comprobado con mutantes en las tres averías**, y editar el compilado dispara **dos guardas independientes**. Se verificó además que compilar de nuevo da la plantilla que viaja **byte a byte**: la que está en el repositorio es de verdad una compilación de estas fuentes.
+
+### 17.3 Y la guarda encontró algo el primer día que se expuso a código ajeno
+
+**2026-09-22, segunda fusión.** `master` avanzó cuatro commits mientras esta rama cerraba. Al traerlos, `test_pagina_publicada.py` —escrita horas antes— se puso roja, y **no por lo que se esperaba**:
+
+> `plugins/despacho/scripts/plantilla/pagina.html` llegó con **68 retornos de carro** metidos por un checkout de Windows. Los introdujo `fae6bc3`; el blob anterior era LF puro.
+
+**El síntoma no es visual.** La página se ve igual de bien en el navegador, y por eso nadie lo iba a ver. Lo que rompe es otra cosa: **el artefacto deja de poder cuadrar nunca con su compilación**, y la guarda se queda roja por algo que quien la encuentre no sabrá arreglar. **Una guarda roja sin remedio se aprende a ignorar**, y a partir de ahí deja de proteger también lo que sí importa.
+
+**Y no era la primera vez.** El `.gitattributes` de este repositorio existe desde hace días porque **un `.sh` con finales de Windows no arranca** —`\r: command not found`—. Aquello se arregló para `*.sh`, **y solo para `*.sh`**. Es literalmente el patrón que el §17 apunta tres veces: *una regla ajustada al caso que la estrenó protege ese caso y nada más*.
+
+**Cerrado entero, no solo el archivo:**
+
+| | Qué se hizo |
+|---|---|
+| **El archivo** | republicado desde la compilación: 0 retornos de carro |
+| **La regla** | `.gitattributes` fija ahora `*.html` y `tools/pagina-despacho/src/*`, no solo `*.sh` |
+| **La guarda** | barre **todo lo versionado**, no la plantilla: 316 archivos, ninguno con `\r`. Comprobada con un mutante |
+
+> **Arreglar el archivo sin fijar la regla es arreglarlo hasta el próximo commit.** Por eso hay una tercera prueba que comprueba que `.gitattributes` siga teniendo las tres reglas: si alguien quita una, falla ahí y no tres semanas después.
+
+### Lo vivo
+
+| # | Qué | Estado |
+|---|---|---|
+| **F-1** | **Ejecutar `/transcribir-audio` una vez de verdad.** No se puede aquí: sus tres bibliotecas no están en este entorno. Su medición viene de otra máquina y **no se reprodujo** | **Del dueño**, donde estén las bibliotecas |
+| **F-2** | **Decidir si `md2html.py` y `verificar_citas.py` se exponen.** Hoy están en `A_MANO` porque nadie lo decidió, no porque se decidiera que no | **Del dueño.** La guarda los sujeta mientras tanto |
+| **F-3** | Poner una transcripción de este producto **al lado de su audio**. Que el método diga bien lo que no sabe no prueba que lo que escribe sea correcto | **Abierto** |
+
+---
+---
+---
+
+*Consolidación asistida y verificada contra el repositorio donde se indica. **Cobertura completa del §0.3 desde el 2026-09-05** (§§7 a 13). Los dos corpus grandes están triados **como corpus**, no pieza a pieza (`S-3`, `T-5`), y se dice por qué. Nada de este documento reemplaza a sus fuentes.*

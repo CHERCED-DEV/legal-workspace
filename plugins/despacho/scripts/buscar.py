@@ -30,6 +30,34 @@ EXT_TEXTO = {'.md', '.txt'}
 EXT_IMAGEN = {'.jpg', '.jpeg', '.png', '.tif', '.tiff', '.bmp', '.heic'}
 NO_CITABLE = ("Esto es el texto EXTRAIDO, no el documento. El reconocedor omite "
               "en silencio: cero resultados NO significa que no este en el papel.")
+# Una aparicion dentro de 2-Borradores o 3-Para presentar NO es material del
+# caso: es trabajo del sistema, o de ella. El §2 de seis SKILL.md dice que el
+# trabajo del sistema es pista y nunca origen, y una busqueda que devuelve las
+# tres cosas en una sola lista invita justo a citar la que no se puede citar.
+NO_ES_MATERIAL = ("De estos renglones, %d estan FUERA de 1-Documentos recibidos: "
+                  "no son material del caso.\n"
+                  "  Lo que hay en 2-Borradores es trabajo del sistema o borradores "
+                  "de ella; lo de 3-Para presentar es lo que ella dio por terminado.\n"
+                  "  Sirven para saber donde mirar. La cita sale del documento "
+                  "original, siempre.")
+
+
+# Un derivado de maquina se declara a si mismo en su primera linea. Leer esa
+# declaracion es mejor que deducirla de la carpeta: viaja con el archivo aunque
+# ella lo mueva, y no le cuesta una carpeta ni un renombrado. Ver AC-05.
+DECLARACION = re.compile(r'^\s*(TEXTO DE REFERENCIA|TEXTO EXTRAIDO)\b', re.I)
+
+
+def se_declara_derivado(texto):
+    """¿El archivo dice en sus primeras lineas que lo produjo una maquina?"""
+    return any(DECLARACION.match(l) for l in texto.split('\n', 5)[:5])
+
+
+def origen(rel, texto=None):
+    """Tres cosas, y la del medio la dice el archivo, no la carpeta."""
+    if texto is not None and se_declara_derivado(texto):
+        return 'derivado'
+    return 'material' if str(rel).replace('\\', '/').startswith('1-Documentos recibidos') else 'otro'
 # Un expediente colombiano no contiene ideogramas: si salen, es basura del OCR.
 CJK = re.compile(r'[一-鿿぀-ヿ가-힯]')
 
@@ -65,9 +93,44 @@ def texto_pdf(ruta):
         return None
 
 
+def es_texto_sin_extension(ruta):
+    """Un archivo SIN extension que resulta ser texto.
+
+    Existe por un defecto real, y del peor tipo. Windows oculta las extensiones
+    conocidas, asi que cuando ella guarda su hoja revisada el archivo puede
+    quedar como `Hechos - <caso> - <fecha> - REVISADO`, **sin extension**. §2 de
+    seis SKILL.md dice que las cinco formas cuentan igual y que la marca se
+    reconoce por el nombre, no por la extension.
+
+    **Esta busqueda filtraba por extension**, asi que ese archivo -- el que
+    lleva la DECISION de ella -- era invisible, y buscar algo que solo estuviera
+    ahi devolvia «CERO APARICIONES en lo que se pudo leer». No decia que no
+    hubiera podido leerlo: decia que no estaba. Es la unica forma de cero que
+    este programa no puede permitirse.
+    """
+    if ruta.suffix:
+        return False
+    try:
+        with io.open(ruta, 'rb') as fh:
+            cabeza = fh.read(4096)
+    except Exception:
+        return False
+    if b'\x00' in cabeza:
+        return False
+    try:
+        cabeza.decode('utf-8')
+    except UnicodeDecodeError:
+        # Un corte a mitad de caracter multibyte no lo hace binario.
+        try:
+            cabeza[:-3].decode('utf-8')
+        except UnicodeDecodeError:
+            return False
+    return True
+
+
 def leer(ruta):
     e = ruta.suffix.lower()
-    if e in EXT_TEXTO:
+    if e in EXT_TEXTO or es_texto_sin_extension(ruta):
         try:
             return io.open(ruta, encoding='utf-8', errors='replace').read()
         except Exception:
@@ -91,7 +154,10 @@ def _carpetas(caso, ambito):
 def piezas(caso, ambito):
     for c in _carpetas(caso, ambito):
         for f in sorted(c.rglob('*')):
-            if f.is_file() and f.suffix.lower() in EXT_TEXTO | {'.docx', '.pdf'}:
+            if not f.is_file():
+                continue
+            if (f.suffix.lower() in EXT_TEXTO | {'.docx', '.pdf'}
+                    or es_texto_sin_extension(f)):
                 yield f
 
 
@@ -115,18 +181,27 @@ def buscar(caso, aguja, exacto=False, contexto=90, ambito=None):
             ilegibles.append(str(f.relative_to(caso)))
             continue
         leidos.append(str(f.relative_to(caso)))
+        derivado = se_declara_derivado(t)
         lineas = t.split('\n')
         for n, linea in enumerate(lineas, 1):
             campo = linea if exacto else plano(linea)
-            for m in patron.finditer(campo):
-                ini = max(0, m.start() - contexto)
-                fin = min(len(linea), m.end() + contexto)
-                hallazgos.append({
-                    'archivo': str(f.relative_to(caso)),
-                    'linea': n,
-                    'texto': linea[ini:fin].strip(),
-                    'sospechoso': bool(CJK.search(linea)) or len(linea.strip()) < 3,
-                })
+            # Un renglon se devuelve UNA vez, aunque la cadena aparezca varias.
+            # Repetirlo idéntico no dice donde mirar mejor y ademas hincha el
+            # conteo, que es lo que ella lee. Las veces se dicen aparte.
+            veces = len(patron.findall(campo))
+            if not veces:
+                continue
+            m = patron.search(campo)
+            ini = max(0, m.start() - contexto)
+            fin = min(len(linea), m.end() + contexto)
+            hallazgos.append({
+                'archivo': str(f.relative_to(caso)),
+                'linea': n,
+                'veces': veces,
+                'derivado': derivado,
+                'texto': linea[ini:fin].strip(),
+                'sospechoso': bool(CJK.search(linea)) or len(linea.strip()) < 3,
+            })
     return hallazgos, leidos, ilegibles
 
 
@@ -150,8 +225,11 @@ def main():
     imgs = imagenes(caso, a.solo)
 
     if a.json:
+        for x in hall:
+            x['origen'] = 'derivado' if x.get('derivado') else origen(x['archivo'], None)
         print(json.dumps({'cadena': a.cadena, 'hallazgos': hall, 'leidos': leidos,
                           'ilegibles': ilegibles,
+                          'fuera_de_recibidos': len([x for x in hall if x['origen'] != 'material']),
                           'imagenes_no_miradas': [str(x.relative_to(caso)) for x in imgs],
                           'aviso': NO_CITABLE},
                          ensure_ascii=False, indent=1))
@@ -180,15 +258,33 @@ def main():
     for x in hall:
         if x['archivo'] != actual:
             actual = x['archivo']
-            print('### %s' % actual)
+            if x.get('derivado'):
+                etiqueta = ('   <- NO es material: lo produjo una MAQUINA, y el archivo'
+                            ' lo dice en su primera linea')
+            elif origen(actual) == 'material':
+                etiqueta = ''
+            else:
+                etiqueta = '   <- NO es material del caso'
+            print('### %s%s' % (actual, etiqueta))
         marca = '  [renglon dudoso: basura probable del OCR]' if x['sospechoso'] else ''
         if x['sospechoso']:
             dudosos += 1
-        print('  linea %-5d %s%s' % (x['linea'], x['texto'], marca))
+        veces = '  [%d veces en este renglon]' % x['veces'] if x.get('veces', 1) > 1 else ''
+        print('  linea %-5d %s%s%s' % (x['linea'], x['texto'], veces, marca))
     print()
-    print('%d apariciones en %d archivos.%s'
-          % (len(hall), len({x['archivo'] for x in hall}),
+    fuera = len([x for x in hall if origen(x['archivo'], None) != 'material'])
+    derivados = len([x for x in hall if x.get('derivado')])
+    total = sum(x.get('veces', 1) for x in hall)
+    extra = ' (%d apariciones: alguna se repite en su renglon)' % total if total != len(hall) else ''
+    print('%d renglones en %d archivos%s.%s'
+          % (len(hall), len({x['archivo'] for x in hall}), extra,
              ('  %d en renglones dudosos.' % dudosos) if dudosos else ''))
+    if fuera:
+        print(NO_ES_MATERIAL % fuera)
+    if derivados:
+        print("  Y %d de esos renglones salen de un archivo que se declara producido"
+              "\n  por una maquina: no es citable como literal, y que algo no aparezca"
+              "\n  ahi NO es informacion sobre el papel." % derivados)
     print(NO_CITABLE)
 
 

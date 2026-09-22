@@ -1,0 +1,19 @@
+{
+  "_que_es": "Huellas de las fuentes y de la plantilla publicada. Las comprueba evals/scripts/test_pagina_publicada.py, sin Node. Si no cuadran, la plantilla del plugin no corresponde a estas fuentes: publique.",
+  "publicado": "2026-09-22",
+  "artefacto": "plugins/despacho/scripts/plantilla/pagina.html",
+  "huella_del_artefacto": "d22a8244e5748273b007189e8c9f5175a2d2044c1f3fd92733543efd040c10e2",
+  "fuentes": {
+    "src/contrato.js": "da02d0d05ba84091c8c009ee55d67e2165295e7bab20e23c2db6b4e05ff2c89e",
+    "src/estado.js": "2ae416ce8c99b94d8c800d8b5d7d5e3cee0615ebc2dc1e989b5714330f58277d",
+    "src/estilo.css": "f281f675932d48cdc894aac77e4f14ca3ac633adc78bde91f33f534f931c5e98",
+    "src/franja.js": "9cd01d917ec329b2617e1a0afb1a0de426305b351008a84a4aa19c5d1d7c16f9",
+    "src/medios.js": "8de9ac8bdd4d95f57e9e5f6920064e99b77db9c6880476296aa67904161bedab",
+    "src/pagina.js": "c845d475649f5b38b8e3e5dde2fc08111851d97e333ad7317a91a37dff2f10f3",
+    "src/teclado.js": "16590044138db8105ad2cd97f8aa4ba1e50ab7cc1c2afb33f8481d732c1f9c9e",
+    "index.html": "9fbdcf6ce4ecb606b63db900de052e0e59db1ff5420b3ccb40600973c7573721",
+    "vite.config.js": "65ad0ca4d978e0f2cce84921ce2f0c9a0177e60c74bb50004d4b6fc3d8e42b06",
+    "package.json": "5b2af1f3e22a2fdfbda0062913d926194b29a412139c8f4923531fe7a18817a7",
+    "package-lock.json": "8922769e282efd6d2d74413638af9f78098bdf95ac30bb6a97cf1e5f3dc0f0b9"
+  }
+}

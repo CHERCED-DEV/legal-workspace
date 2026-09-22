@@ -31,7 +31,8 @@ def limpiar(md):
 def cargar(carpeta):
     todo = []
     for f in sorted(glob.glob(os.path.join(carpeta, "Transcripcion*.md"))):
-        todo += norm(limpiar(io.open(f, encoding="utf-8").read()))
+        with io.open(f, encoding="utf-8") as fh:
+            todo += norm(limpiar(fh.read()))
     return todo
 
 def puntuar(cita, todo):
@@ -65,7 +66,8 @@ def main(doc, carpetas):
             return 2
         fuentes.append((os.path.basename(c.rstrip("\\/")) or c, palabras))
 
-    texto = io.open(doc, encoding="utf-8").read()
+    with io.open(doc, encoding="utf-8") as fh:
+        texto = fh.read()
     citas = list(dict.fromkeys(re.findall(r"«([^»]{18,})»", texto)))
     varias = len(fuentes) > 1
     malas = 0

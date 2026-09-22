@@ -16,9 +16,34 @@ Esta hoja **es para quien instala**, no para quien usa. Termina exactamente dond
 | **Conexión** | Solo para instalar y para trabajar. El plugin son trece métodos de texto más una carpeta de programas |
 | **Nada más** | No hay servidor, ni base de datos, ni clave que pedir, ni nada que pagar aparte de la suscripción de ella |
 
-**No hace falta** Git ni saber programar. **Python es opcional y hace la diferencia:** sin él los doce comandos funcionan igual —el modelo hace a mano el trabajo mecánico, más lento y gastando mucha más lectura—; con él, la oficina de programas del plugin prepara el material, busca dentro del expediente y produce los Word. **Ningún comando exige Python para arrancar, y todos declaran cuándo no lo tuvieron.**
+**No hace falta** Git ni saber programar. **Python es opcional y hace la diferencia:** sin él los doce comandos funcionan igual —el modelo hace a mano el trabajo mecánico, más lento y gastando mucha más lectura—; con él, la oficina de programas del plugin prepara el material, busca dentro del expediente, produce los Word y **conserva intactas sus notas del archivo de estado**. **Ningún comando exige Python para arrancar, y todos declaran cuándo no lo tuvieron.**
 
-Si va a instalarlo: `python.org`, versión 3.9 o posterior, marcando «Add to PATH». Las bibliotecas las pide cada programa cuando le hacen falta, diciendo cuál.
+Si va a instalarlo: `python.org`, versión 3.9 o posterior, marcando «Add to PATH». Las bibliotecas las pide cada programa cuando le hacen falta, diciendo cuál — **y desde el 2026-09-21 eso es cierto en todos**: dos reventaban con un error de Python en pantalla, y se comprobó uno por uno. Los catorce programas de hoy lo cumplen, y hay una prueba que falla el día que uno deje de cumplirlo.
+
+### Las bibliotecas, y qué se pierde sin cada una
+
+**No hace falta instalarlas todas, y ninguna hace falta para que los doce comandos arranquen.** La tabla está aquí para que quien instala pueda decidir, en vez de descubrirlo cuando un comando lo diga:
+
+| Si instala | Con qué | Qué gana | Qué pasa sin ella |
+|---|---|---|---|
+| **python-docx** | `pip install python-docx` | **Las entregas en Word** — y la comprobación de que el Word dice lo mismo que el `.md` | El comando entrega el contenido **en texto y lo declara**. La entrega existe, peor, y diciéndolo |
+| **pypdf** | `pip install pypdf` | Que la búsqueda mire **dentro de los PDF** | La búsqueda no ve esos PDF **y lo dice en su salida** |
+| **Pillow · numpy · rapidocr-onnxruntime** | `pip install pillow numpy rapidocr-onnxruntime` | **Sacar el texto de las fotografías y los escaneados** — es lo que convierte 23 fotos de un expediente en algo con lo que se puede trabajar | El preparador monta la carpeta y copia los originales igual, **sin extraer texto**. Los comandos leen las imágenes a mano: más lento y mucha más lectura |
+| **faster-whisper · av · numpy** | `pip install faster-whisper av numpy` | **Pasar una grabación a texto** en esta misma máquina, sin que el audio salga de ella | `/transcribir-audio` **no transcribe nada y lo dice**, nombrando la biblioteca que falta. Es la única de esta tabla sin camino degradado: el resto del caso sigue, la grabación se declara y no se usa |
+| **sherpa-onnx** | `pip install sherpa-onnx` | Que la transcripción **separe las voces** —«Hablante 1», «Hablante 2»— sin ponerles nombre | La transcripción sale igual, **sin números de hablante y avisando de ello**. Se pierde saber si dos frases seguidas son de la misma persona |
+| **Tesseract** *(programa, no biblioteca)* | Ver lo que dice `segunda_opinion.py` al correrlo | Una **segunda opinión** sobre lo que el primer reconocedor leyó mal | Ese control no existe, y el programa lo dice con esas palabras |
+
+> **Lo que ninguna biblioteca cambia:** los doce métodos, sus reglas y lo que se niegan a hacer. Python no añade criterio — **añade que el trabajo mecánico lo haga un programa** en vez de gastarse la lectura del modelo en él.
+
+**Y el orden si va a instalar solo una:** `python-docx`. Es la que produce el archivo que ella abre.
+
+**Todo de una vez, si quiere terminar:**
+
+```
+pip install python-docx pypdf pillow numpy rapidocr-onnxruntime faster-whisper av sherpa-onnx
+```
+
+> **Y una advertencia sobre las tres últimas:** `faster-whisper` y `sherpa-onnx` **descargan modelos la primera vez que se usan**, y pesan. Si no va a transcribir grabaciones, la línea de arriba sin ellas le sirve igual.
 
 ---
 

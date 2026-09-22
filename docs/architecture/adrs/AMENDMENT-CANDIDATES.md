@@ -1,6 +1,8 @@
 # ADR Amendment Candidates — enmiendas que requieren decisión de los dueños
 
-**Estado:** **APROBADAS POR LOS DUEÑOS.** Las cuatro enmiendas fueron aprobadas y **ya están aplicadas** a los ADRs correspondientes (001, 004, 005), que siguen `Accepted` con su texto enmendado y su supersede registrado. Este documento queda como **registro histórico** del análisis que las sustentó.
+> **AÑADIDO EL 2026-09-05 — hay un quinto candidato, y este está ABIERTO.** Las cuatro primeras son registro histórico; **AC-05 no**: nace de leer los ADR contra el código el 2026-09-05 y **espera decisión**. Ver el final de este documento.
+
+**Estado de las cuatro primeras:** **APROBADAS POR LOS DUEÑOS.** Las cuatro enmiendas fueron aprobadas y **ya están aplicadas** a los ADRs correspondientes (001, 004, 005), que siguen `Accepted` con su texto enmendado y su supersede registrado. Este documento queda como **registro histórico** del análisis que las sustentó.
 
 | Enmienda | ADR | Supersede | Estado |
 |---|---|---|---|
@@ -89,3 +91,104 @@ Para cada enmienda basta una de estas tres respuestas:
 - **APROBAR** — se enmienda el ADR, se actualiza el corpus y se registra el supersede.
 - **RECHAZAR** — el ADR queda como está y el Technical Design se corrige para ser fiel a su letra.
 - **APLAZAR** — se mantiene el diseño neutral donde lo es (AC-02 y AC-04 lo son; AC-01 y AC-03 no: bloquean el schema de autorizaciones y el manifiesto de tools respectivamente).
+
+---
+
+## AC-05 — ADR-016: dónde viven los derivados de máquina
+
+**Estado: ABIERTO.** Propuesto el 2026-09-05. **No se aplica nada hasta que ustedes decidan**, por la misma regla que gobierna a los cuatro anteriores: los conflictos se declaran, no se resuelven unilateralmente.
+
+### La pregunta original, y por qué ya no se puede contestar tal como está
+
+**ADR-016, pregunta pendiente 3:**
+
+> *«¿Dónde vive el texto extraído — zona 2 o zona 3 de ADR-012? Hoy se dejó en `2-Borradores/`, que es zona 2, y **probablemente esté mal**: es un derivado de material incorporado.»*
+
+**En el producto construido no existe la zona 3.** Las zonas son del diseño de ADR-012 para un Core que no se construyó (ver `BACKLOG` §7.1): lo que hay en el disco son tres carpetas —`1-Documentos recibidos/`, `2-Borradores/`, `3-Para presentar/`— y nada más. **La pregunta, literalmente, no tiene respuesta posible hoy.**
+
+### Pero el síntoma es real, y el 2026-09-05 se pudo medir
+
+`2-Borradores/` guarda **tres cosas de naturaleza distinta**, y ninguna marca cuál es cuál:
+
+| Qué hay | Quién lo produjo | Qué se puede hacer con ello |
+|---|---|---|
+| Hoja de hechos, cronología, inventarios | **El sistema** | Pista, nunca origen — salvo con la marca ` - REVISADO` |
+| Borradores y notas de ella | **Ella** | Es suyo. Lo que escriba manda |
+| `Texto de referencia - <fecha>.txt` | **Una máquina**, sin criterio | **Nunca se cita.** Sirve para saber en qué página mirar |
+
+**Y la medida es esta: en un solo día, tres mecanismos distintos tuvieron que aprender a distinguirlas por su cuenta.**
+
+1. **El índice de salidas** de SPEC-08, que deduce el comando por la convención de nombre.
+2. **El clasificador de `buscar.py`**, que marca `<- NO es material del caso` todo lo que está fuera de `1-Documentos recibidos/`.
+3. **La regla de la marca ` - REVISADO`**, que decide cuál de esos archivos puede usarse como fuente.
+
+> **Tres mecanismos resolviendo la misma distinción por separado es la señal de que falta una decisión, no de que falten tres reglas.** Y los tres la resuelven **por inferencia** —por el nombre, por la carpeta— cuando podría estar dicha por la estructura.
+
+### Las tres opciones, con lo que cuesta cada una
+
+| | Qué es | A favor | En contra |
+|---|---|---|---|
+| **(a) Dejarlo como está** | Los tres mecanismos siguen infiriendo | Cuesta cero. Funciona hoy | **Cada mecanismo nuevo tendrá que aprenderlo otra vez**, y el cuarto puede aprenderlo distinto |
+| **(b) Una subcarpeta `2-Borradores/derivados-de-maquina/`** | Los derivados salen del montón | La distinción queda dicha por la estructura | **Descartada — ver abajo.** Le cuesta una carpeta a ella, y una carpeta afirma |
+| **(c) Una convención de nombre** —prefijo fijo | Igual que (b) sin mover archivos | Más barato | Frágil: **las convenciones de nombre de este producto ya son tres distintas** (defecto 17 del 2026-09-05) |
+| **(d) Leer la declaración que el archivo ya trae** | El derivado **ya se declara a sí mismo en su primera línea**. Lo que falta es que alguien la lea | **Cuesta cero carpetas, cero renombrados y cero convenciones nuevas.** Y la declaración **viaja con el archivo** aunque ella lo mueva | Hay que escribir la convención para que la cumplan los derivados futuros, no solo este |
+
+> **CORRECCIÓN DE ESTE MISMO DOCUMENTO — el 2026-09-05, unas horas después de escribirlo.** La recomendación era **(b)**. Se cambió al leer `PENDIENTE-FORMA-DE-ENTREGA.md` —del 27 de agosto, y declarado sin cubrir en el §0.3 del backlog—, que trae **dos argumentos que yo no tenía**:
+>
+> 1. **La restricción que fijó el propio dueño**, citada en `17-deployment-layout.md`: *«que sea muy intuitiva para ella… sin que ellos sientan que es demasiado ruidoso o **lleno de carpetas**»*. Y la resolución que se le dio: *«las tres condiciones se cumplen a la vez solo si **la profundidad no la paga ella**»*. **Una carpeta más la paga ella.**
+> 2. Y el principio, que es más fuerte: **«una carpeta es una afirmación silenciosa, y este producto está construido para no hacer afirmaciones silenciosas»**.
+>
+> Ese mismo documento propone la vía buena en su §2.d: *«que lo diga el nombre del archivo, no la carpeta… cuesta cero carpetas y es lo que menos paga ella»*.
+
+### Y al ir a escribir (c) apareció que la respuesta ya está en el disco
+
+**`preparar_material.py` ya escribe el texto de referencia con esta cabecera**, en sus tres primeras líneas:
+
+```text
+TEXTO DE REFERENCIA — extraido automaticamente
+
+NO ES CITABLE COMO LITERAL. Sirve para buscar dentro del material.
+LA AUSENCIA DE ALGO AQUI NO SIGNIFICA QUE NO ESTE EN EL DOCUMENTO.
+```
+
+**El archivo dice lo que es, dónde no puede usarse, y cuál es su modo de fallo — y ningún mecanismo lo lee.** Los tres lo deducen de la carpeta o del nombre, teniendo la respuesta en el primer renglón.
+
+**Recomendación: (d).** Con dos piezas:
+
+1. **La convención, escrita una vez:** *todo archivo que produzca una máquina sin criterio empieza declarando qué es y por qué no se cita.* Es ADR-018 decisión 3 —*«toda salida de un script es material derivado con su receta»*— llevada al propio archivo, y no crea nada nuevo.
+2. **Que los mecanismos la lean**, en vez de inferir. La carpeta sigue siendo pista; **la declaración manda**.
+
+**Lo que sigue necesitando decisión de ustedes:** si la convención se fija así, y si `preparar_material.py` es el único derivado o vienen más —la transcripción de audio es el siguiente—. **Lo que ya no hace falta preguntarle a ella:** nada, porque **no le cambia ni una carpeta ni un nombre.**
+
+### MEDIDO EL 2026-09-21: la recomendación está aplicada en un sitio de tres, y falta justo el difícil
+
+**Sigue ABIERTA y no se decide aquí.** Lo que se añade es la cuenta, porque hace la decisión más barata de tomar.
+
+La recomendación (d) tiene dos piezas: escribir la convención, y **que los tres mecanismos lean la declaración en vez de inferir**. Se contaron los tres:
+
+| Mecanismo | ¿Lee la declaración? | Cómo lo resuelve hoy |
+|---|---|---|
+| **`buscar.py`** | **Sí**, desde el 2026-09-05 | `se_declara_derivado()` mira las cinco primeras líneas, y la salida dice *«lo produjo una MÁQUINA, y el archivo lo dice en su primera línea»* |
+| **El índice de salidas** (`estado-del-caso`, SPEC-08) | **No** | Por la convención de nombre: `Texto de referencia - <fecha>` ⇒ `/preparar-material`. **Infiere** |
+| **La regla del trabajo del sistema** (el §2 de seis `SKILL.md`) | **No** | Por la carpeta. **Y ninguno de los once `SKILL.md` menciona la declaración**: `contar_skills.py "TEXTO DE REFERENCIA"` da **0 de 11** |
+
+> **Y la asimetría es la que importa, no el uno de tres.** Lo aplicado es **el programa**, que es la mitad fácil: un programa se arregla y se comprueba. Lo que falta es **la prosa que sigue el modelo**, que es la mitad difícil — no hay forma de comprobar que la leyó, solo de escribirla bien y medir la salida.
+>
+> **Con lo cual la pregunta abierta se afina, y sigue siendo suya:** no es solo *«¿se fija la convención?»*, sino **¿se lleva también a los `SKILL.md`, o se acepta que ahí la carpeta siga siendo la señal?** Las dos son defendibles. Lo que no lo es es dejar que **un mecanismo lea y dos infieran**, porque entonces la misma pieza puede salir clasificada de dos maneras en la misma pasada — y eso es peor que los tres infiriendo igual.
+
+**Lo que esto NO cambia:** nada del disco, nada de las carpetas de ella, y ninguna salida. Es una cuenta sobre lo que ya hay.
+
+### Lo que esta enmienda haría con ADR-016
+
+- **Cerrar la q3 tal como está** —zona 2 o zona 3— por **premisa inexistente**, igual que ADR-018 cerró la q2 de ADR-014.
+- **Abrir en su lugar** la pregunta que sí tiene respuesta: *«¿los derivados de máquina se separan de los borradores dentro de `2-Borradores/`?»*.
+- **No tocar ninguno de sus invariantes.** El límite del OCR —falla callándose, no se cita, la ausencia no es información— **sigue mandando entero**, esté el archivo donde esté.
+
+### Lo que se hizo mientras tanto, y por qué no espera
+
+**`buscar.py` ya lee la declaración** desde el 2026-09-05: cuando un archivo la trae, sale marcado por lo que él dice ser y no por dónde está. **Es reversible y no compromete la decisión**: si ustedes eligen otra vía, se quita en una línea. Se hizo porque la alternativa era dejar el cuarto mecanismo inferiendo mal mientras se decide.
+
+### Y lo que no depende de ustedes
+
+Independientemente de lo que decidan, **la distinción ya está escrita en los tres sitios** y con test donde se pudo (`evals/scripts/test_buscar.py`). Esta enmienda no arregla un defecto abierto: **evita el cuarto mecanismo.**
+

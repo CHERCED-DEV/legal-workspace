@@ -1,7 +1,7 @@
 ---
 name: inventario-de-bienes
-description: Método para recorrer el material de un caso e inventariar los bienes y las deudas que aparecen en él —qué documento lo respalda y en qué página, a nombre de quién figura según ese documento, qué fecha trae, qué valor aparece escrito y quién produjo ese documento—, más lo que falta y las contradicciones entre documentos. Úsalo cuando pidan armar el inventario de bienes de una separación, un divorcio, una sucesión o cualquier asunto donde haya que saber qué bienes aparecen y con qué papel detrás. No lo uses para decidir qué bienes entran y cuáles no, calcular valores, sumar, restar deudas, sacar porcentajes, proponer un reparto ni decir a quién le corresponde qué.
-version: 0.2.5
+description: "Método para recorrer el material de un caso e inventariar los bienes y las deudas que aparecen en él —qué documento lo respalda y en qué página, a nombre de quién figura según ese documento, qué fecha trae, qué valor aparece escrito y quién produjo ese documento—, más lo que falta y las contradicciones entre documentos. Úsalo cuando pidan armar el inventario de bienes de una separación, un divorcio, una sucesión o cualquier asunto donde haya que saber qué bienes aparecen y con qué papel detrás. No lo uses para decidir qué bienes entran y cuáles no, calcular valores, sumar, restar deudas, sacar porcentajes, proponer un reparto ni decir a quién le corresponde qué."
+version: 0.4.1
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -17,11 +17,45 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 
 **Que tú no afirmes derecho no significa borrar el que traiga el documento.** Si el material invoca una norma o una providencia y eso es parte de lo que dice, **se transcribe entre comillas, con su página y en voz del documento —nunca en la tuya—**: *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece…»*. Transcribirla **no afirma que esa norma exista, siga rigiendo ni diga lo que el documento le atribuye**; eso lo comprueba ella. Es la misma regla que aplicas a cualquier afirmación del material.
 
+**Y la frontera no es un tema, es una operación.** No basta con no afirmar derecho: **nunca sumas ni restas días sobre una fecha para producir otra, aunque el resultado no sea un plazo.** Una fecha calculada se lee exactamente igual de bien que una leída, y no lo es. Toda fecha que aparezca en tu salida tiene que estar escrita tal cual en un documento o en el nombre de un archivo; cuántos días hay entre dos, qué día cayó tal cosa, o en qué fecha termina un «treinta días», no lo escribes tú. Las fechas que el material trae escritas sí; las que salen de una cuenta, no.
+
 **Cómo se accede al material, y por qué se dice.** Los archivos se abren y se leen por dentro. **Un escaneado sin texto extraíble se abre por rangos de páginas y se lee como imagen** —no se salta, no se resume por el nombre del archivo, no se estima nada—. Esto se declara en la entrega: si cada pasada elige por su cuenta cómo accedió al material, **dos pasadas del mismo caso dejan de ser comparables** y nadie puede saber si la diferencia está en los documentos o en la lectura.
 
 **Dónde se escribe.** A `2-Borradores/`, en **un documento de Word**, con nombre `Inventario de bienes — «caso» — «fecha» — pasada «n».docx`. La tabla se promete lista para pegar, y eso solo se cumple si sale como **tabla de verdad, con sus columnas y sus filas**. **Si no puedes producir un archivo de Word**, escribes el mismo contenido en texto en esa carpeta y **lo dices**; nunca das por hecho un archivo que no dejaste. **Nunca sobrescribes** lo que ya está en `2-Borradores/`: la pasada nueva sale aparte, con el número siguiente y una línea de qué cambió. La primera es siempre `pasada 1`.
 
 **Nunca escribas, renombres, muevas ni corrijas nada dentro de `1-Documentos recibidos/`**: esa carpeta es el material tal como llegó y es lo único que no se puede reconstruir. Se lee y no se toca.
+
+---
+
+### En qué posición está ella, y por qué cambia la salida
+
+**Dos posiciones, y no son la misma:**
+
+| Posición | Qué significa | Cómo suena la salida |
+|---|---|---|
+| **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
+| **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
+
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y se espera la respuesta antes de producir nada**. Ni se adivina, ni se pregunta y se sigue sobre una suposición: **lo segundo es adivinar con el trámite de la pregunta por delante**, y encima deja escrito que se consultó. Adivinar aquí no se nota en la salida —sale entera, bien escrita, en el registro que no era— **y lo cambia todo**: la posición gobierna a quién le hablas, si la simetría aplica, y si algo puede ordenarse por lo que le conviene a alguien.
+
+**Y en posición de autoridad, tres cosas se endurecen:**
+
+1. **Simetría obligatoria.** Toda carencia que **este método ya pueda señalar** —un documento que se anuncia y no está, una afirmación sin nada detrás, una firma sin el papel que la acompañe— **se busca en las demás partes antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: tampoco aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve. **Y también hacia dentro:** cuando quien decide es ella, **los defectos de lo que su propio despacho produjo se buscan igual que los de las partes**.
+
+   > **Por qué se rompe, y casi nunca es por mala fe: se rompe por una razón material.** Una parte aportó diecinueve páginas y la otra cuatro, y **hay más superficie donde encontrar defectos**. Esa diferencia no es una diferencia de corrección, y si no se dice, **la salida miente por su forma**. Por eso **el conteo de la entrega reparte por lado** —cuántos de cada parte, y cuántos del propio despacho si lo hay—, y cuando el reparto queda desigual **se dice ahí mismo, con los números, y se dice si la causa es de volumen**. Un número que la regla exige y que el formato de salida no tiene dónde poner **es un número que no se escribe**.
+   >
+   > **Y esta regla no ensancha lo que puedes señalar: solo obliga a mirar a los dos lados de lo que ya señalabas.** Si este método no puede decir que a una parte le falta un requisito —porque decir qué se exige es derecho, y el derecho lo pone ella—, **la simetría no te autoriza a decirlo ahora**. Lo que hace es impedir que, de lo que sí puedes decir, salga solo la mitad.
+   >
+   > **Esta regla no es nueva y no es otra:** `revision-de-rigor` §2.3 la tiene desarrollada para su caso desde antes, y es **la misma**. Si alguna vez las dos redacciones dicen cosas distintas, manda la de `revision-de-rigor` y esta se corrige — **dos reglas para lo mismo es la avería que este arnés lleva documentada**.
+2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
+3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+4. **Y mientras esto no esté decidido, el sistema no produce el contenido que decide.** Si una autoridad puede apoyar una decisión en lo que produce un sistema como este, **si debe declararlo**, y qué le pasa al acto si una cita sale mal, **no está resuelto en ninguna parte de este proyecto** — es el hueco `V-7`, y le falta una decisión con criterio jurídico, no una línea de método. **Hasta que exista, el valor por defecto es el estrecho.**
+
+   > **Esta es la razón, y está escrita una sola vez.** Cada método dice qué significa en su caso —`/redactar-escrito` redacta los hechos y se detiene antes de la parte que decide; `/preguntas-de-derecho` no propone qué resolver— **y ninguno la reescribe**. Una razón con dos redacciones se parte, que es lo que le pasó a la simetría antes de que se le pusiera dueño.
+
+> **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
+
+> **Y los ejemplos de este método no son la voz de tu salida.** Están escritos desde el primer uso, que fue de parte, y por eso dicen «la clienta». **La salida usa el vocabulario de la posición de ella**, no el del ejemplo. (En los inventarios, «la propia interesada» y «la otra parte» son otra cosa: **categorías de quién produjo un documento**, y en posición de autoridad siguen significando lo mismo.)
 
 ---
 
@@ -32,6 +66,9 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 El inventario ofrece: esto aparece, esto lo dice tal documento, esto lo escribió tal persona, esto no está, esto no cuadra. Quién decide qué entra, cuánto vale y a quién le toca es ella.
 
 > **El trabajo del propio sistema no es fuente de nada.** Una cronología, un inventario, una hoja de hechos, el archivo de estado o un borrador sirven de **pista —para saber dónde mirar—, nunca de origen**: la cita y la coordenada salen del documento original, siempre. **La única excepción es lo que ella marcó como revisado**, el archivo cuyo nombre termina en ` - REVISADO`: no porque sea más correcto, sino porque la autoridad cambió de manos y deja de ser trabajo del sistema para ser una decisión suya registrada. Esa marca la pone ella y nunca tú, y no certifica que el contenido esté bien: certifica que ella lo miró. Si un dato solo aparece en una salida del sistema y no se encuentra en el material, **no se usa y se dice**. **Por qué:** que varios comandos vuelvan por separado al mismo material es lo único que delata un error; si uno lee del otro, la coincidencia deja de medir nada y el error se propaga sin que nadie lo note.
+>
+> **Y la marca se reconoce por el nombre, no por la extensión.** Cuenta como marcado el archivo cuyo nombre —quitada la extensión, o las dos si quedaron dos (`.md.md`), o ninguna si se quedó sin ella— **termina en `REVISADO`**, en mayúsculas o en minúsculas y con el guion o sin él. **Por qué esta tolerancia y no otra:** Windows oculta las extensiones conocidas, así que ella teclea ` - REVISADO` al final de lo que ve y en el disco puede quedar `... - REVISADO.md.md`, `... - REVISADO.txt` o `... - REVISADO` a secas **sin que ella tenga cómo notarlo**. **Reconocer no es renombrar:** el archivo no se toca, no se mueve y no se copia con otro nombre. **Y ninguna tolerancia alcanza a un archivo sin marca**, por completo y bien hecho que esté. Si en el nombre de un archivo aparece **la raíz «revis»** —`revisado`, `revisada`, `(revisar)`, `REVISION`— **sin cerrar el nombre** —al principio, en medio, o seguida de otra cosa—, o si **hay dos marcados**, no se elige ni se ignora en silencio: **se nombran, se pregunta y se espera la respuesta**. **Preguntar no es seguir:** una pregunta que uno mismo se contesta —«será el más reciente»— es haber elegido, con el trámite de haber preguntado por delante. **Y la señal que se busca es la raíz, no la palabra:** `(revisar)` **no es una forma de «revisado»** —es otra palabra, y además pide lo contrario—, así que quien busque «revisado» pasa de largo por encima de ella sin verla. Y **la salida escribe el nombre exacto del archivo que aceptó como marcado**, porque es lo único que le permite a ella desmentirlo.>
+> **Y hay una segunda excepción, que es suya y no del sistema:** lo que ella haya escrito **bajo la línea `NOTAS SUYAS`** dentro de `0-Estado del caso` **son palabras suyas, no trabajo del sistema**. El archivo lo escribe el sistema; **ese bloque no** — es el único sitio del expediente donde ella escribe dentro de una salida, y el sistema lo conserva sin tocarlo justamente porque es de ella. **Cuenta como lo que ella dice:** se cita entre comillas, atribuido a ella y con la fecha del archivo, **nunca como un hecho documentado ni como respaldo de nada**, y va donde va lo que ella dice —no a la tabla, no a la línea de tiempo, no a los conteos—. **Por qué hace falta decirlo:** sin esta línea, sus notas caen en el saco de «trabajo del sistema» y **se pierden en silencio**, que es lo contrario de lo que ese bloque existe para hacer. (Y esto no autoriza a reescribirlas: ese bloque se conserva byte a byte, siempre.)
 
 > **Y el texto que extrajo una máquina no es el documento.** Si en `2-Borradores/` hay un archivo de texto de referencia —el que produce la tubería de ingesta a partir de fotografías o escaneados—, **sirve para saber en qué página mirar, y para nada más**. Tres cosas que hay que saber de él, y ninguna es negociable:
 >
@@ -74,7 +111,7 @@ Una lista de bienes escrita por una de las partes **es una afirmación de esa pa
 
 **El nombre que el documento se da a sí mismo se transcribe, y ahí se detiene.** Si se titula «Escritura pública n.º 1234», eso es lo que se escribe, con su página. El método no añade ni una palabra sobre qué se sigue de eso: qué peso tiene ese documento es de ella.
 
-**Palabras que no se escriben nunca:** *probado, acreditado, demostrado, quedó claro, es de ella, es de él, le pertenece, le corresponde, entra, no entra*, y **el nombre de cualquier categoría que clasifique el bien por su origen o por su régimen**. Todas afirman algo que este método no puede afirmar. Se escribe qué documento nombra el bien y quién produjo ese documento; la conclusión la saca ella. **Estas palabras no se escriben como afirmación propia.** Si el documento las trae, se transcriben entre comillas, con su página y con quién lo produjo al lado: censurar el documento de la propia clienta es perder material.
+**Palabras que no se escriben nunca:** *probado, acreditado, demostrado, quedó claro, es de ella, es de él, le pertenece, le corresponde, entra, no entra*, y **el nombre de cualquier categoría que clasifique el bien por su origen o por su régimen**. Todas afirman algo que este método no puede afirmar. Se escribe qué documento nombra el bien y quién produjo ese documento; la conclusión la saca ella. **Estas palabras no se escriben como afirmación propia.** Si el documento las trae, se transcriben entre comillas, con su página y con quién lo produjo al lado: censurar el documento de una de las partes es perder material.
 
 **Y el vocabulario de la relación es de tres palabras, sin sinónimos ni cuarta categoría** —las mismas de `hechos-con-prueba`—:
 
@@ -90,7 +127,7 @@ Una lista de bienes escrita por una de las partes **es una afirmación de esa pa
 
 ### Fase 1 — El recorrido de captura: se lee una vez y se anota todo
 
-Este es **el único recorrido completo del material hasta la comprobación final**. Se abre cada archivo de `1-Documentos recibidos/` (y de cualquier ruta que ella te señale), se lee por dentro y se anota **en ese momento** todo lo que las fases siguientes necesitan. **La captura es la tabla de trabajo**, y todo lo que viene después se hace sobre ella. **Si hay hoja de hechos aprobada del caso** —el archivo terminado en ` - REVISADO.md`— **o una nota que ella señale, los bienes nombrados ahí entran como apariciones**, con esa fuente como quien lo produjo y su ubicación exacta. Sin esa marca no se usa: es pista de dónde mirar, no origen (§2).
+Este es **el único recorrido completo del material hasta la comprobación final**. Se abre cada archivo de `1-Documentos recibidos/` (y de cualquier ruta que ella te señale), se lee por dentro y se anota **en ese momento** todo lo que las fases siguientes necesitan. **La captura es la tabla de trabajo**, y todo lo que viene después se hace sobre ella. **Si hay hoja de hechos aprobada del caso** —el archivo cuyo nombre termina en `REVISADO`, en cualquiera de sus formas (§2): `- REVISADO.md`, `- REVISADO.md.md`, `- REVISADO.txt`, sin extensión o sin el espacio— **o una nota que ella señale, los bienes nombrados ahí entran como apariciones**, con esa fuente como quien lo produjo y su ubicación exacta. **El nombre exacto del archivo aceptado se escribe en la salida.** Sin esa marca no se usa: es pista de dónde mirar, no origen (§2).
 
 > **Lo que no se capture obligará a volver al documento, y volver es lo que encarece el método.** Cada regreso al original cuesta más que el dato que se fue a buscar. Se vuelve **una sola vez**, al final y en bloque (Fase 4).
 
@@ -100,6 +137,12 @@ Este es **el único recorrido completo del material hasta la comprobación final
 
 1. **Descripción, según el documento** — sus palabras, no las tuyas. Si dice *"vehículo de servicio particular, marca X, modelo 2018"*, eso se transcribe. Nunca lo llames por lo que crees que es.
 2. **Todos los números y datos con que el documento lo identifica** —matrícula, catastral, placa, motor, número de escritura y notaría, número de cuenta, folio, dirección— **transcritos tal cual, con su página**. Son lo único que después permite saber si dos menciones hablan del mismo bien, y **cada documento suele traer uno distinto**: por eso se recogen todos y no el primero.
+
+   > **Y una distinción que en material rural decide el inventario entero: ubicar no es identificar.** Un identificador solo lo es si **dos bienes distintos no pueden compartirlo**. Una matrícula, una placa, un número catastral, una cuenta: nadie más los tiene. Pero **una vereda, un barrio, un sector, una manzana, un corregimiento o un municipio los comparten decenas de predios** — *«el predio de la vereda Boquia»* no dice cuál de los que hay en la vereda.
+   >
+   > **Esos van en la descripción, no entre los identificadores**, y se anotan igual, con su página. Una dirección **sí** identifica cuando llega a ser única —calle, número, y apartamento o interior si lo hay—; si se queda en el sector, no.
+   >
+   > **Por qué se dice aquí y no se deja al criterio:** dos apariciones que solo comparten la vereda **se fundirían en un bien**, y entonces el inventario mete en una fila **el predio de dos vecinos distintos**. Es el error que este método llama «el más difícil de detectar después», y en un expediente rural es el caso normal, no el raro.
 3. **A nombre de quién figura, según el documento** — el nombre que el documento pone, literal y con página, **y con la palabra que el documento usa** (*propietario*, *titular*, *comprador*, *arrendatario*, *afiliado*, *cuentahabiente*), transcrita igual. Si el documento no lo dice: *"el documento no dice a nombre de quién figura"*. Jamás deducido del apellido, del relato ni del nombre del archivo.
 4. **La fecha que el documento asocia al bien** —adquisición, apertura, registro—, **solo si el documento la trae**, con cita y página. Es distinta de la fecha del documento y se anotan las dos.
 5. **El valor, transcrito con su fuente** — el número **exactamente como está escrito**, con su moneda; **la palabra que el documento usa** (*avalúo*, *precio*, *saldo a*, *valor estimado*); **la fecha que ese valor lleva**; y **la página**. Sin valor escrito: *"el documento no trae valor"*. Nunca uno traído de otro documento, nunca uno actualizado. Si el documento lo escribe en letras y en números y **no coinciden**, se transcriben los dos y va a contradicciones (§7, parte 4).
@@ -114,6 +157,8 @@ Este es **el único recorrido completo del material hasta la comprobación final
 
 **Una grabación no se oye; su transcripción sí es material, y se recorre como cualquier documento.** Llega por `1-Documentos recibidos/` y **este método no la produce**: sin transcripción, la grabación se declara y no se usa. En **«quién lo produjo»**, la columna que la tabla ya tiene, va quién la hizo —una persona, o **un programa de transcripción y cuál**, porque un programa de transcripción es un productor de material igual que un tercero—. Cuando en este método se cita un minuto, es porque ese minuto **está escrito** en una transcripción que sí puedes leer; nunca porque hayas escuchado nada. **Si la transcripción no distingue las voces, no se atribuye ninguna frase a nadie**: se escribe que no lo distingue —y a nombre de quién figura un bien no sale nunca del relato, sino del documento (punto 3)—. Y como **una transcripción se equivoca**, un valor o un identificador que solo salga de ahí se marca **para comprobarlo contra el audio**, igual que una cita se comprueba contra su página. La que ella entrega es material; un texto salido de una pasada anterior del propio sistema no lo es —es trabajo del sistema (§2)—.
 
+> **Y desde que existe `/transcribir-audio`, hay un camino — que no cambia nada de lo anterior.** Ese método produce una transcripción **en esta máquina**, y lo que sale de ahí **es trabajo del sistema**: pista, nunca origen. **No entra como material por haber salido**; entra cuando ella la revisa y le pone la marca ` - REVISADO`, igual que cualquier otro trabajo del sistema. Mientras no lleve esa marca, **la grabación sigue declarada y sin usar**, y el minuto que se cite sigue estando escrito en algo que ella entregó. Que ahora se pueda transcribir **no es que ahora se pueda oír**.
+
 > **Mal:** "B-04 — El apartamento, a nombre de ella, $250 millones." → **Bien:** "B-04 — «Apartamento 301, edificio X» (p. 2) — matrícula «050-123456» (p. 2) — figura como «propietario: A. P.» (p. 2) — «avalúo catastral: $198.430.000», con fecha 2024 (p. 3) — certificado con membrete de la oficina Y (p. 1)."
 
 **Cuando termina este recorrido, el material queda cerrado hasta la Fase 4.** Si en las Fases 2 o 3 te falta un dato, **no abras el documento**: apúntalo en la lista de pendientes y recógelo en el recorrido de comprobación.
@@ -122,11 +167,11 @@ Este es **el único recorrido completo del material hasta la comprobación final
 
 **Esta fase no abre ningún documento.**
 
-**Agrupar.** Cada bien recibe una etiqueta corta —`B-01`, `B-02`— que sirve **solo para nombrarlo**: "el B-04 no me sirve". No se reutiliza jamás. Dos apariciones son **el mismo bien** cuando comparten **cualquiera** de los identificadores del punto 2, o cuando **un documento cita al otro** —la escritura menciona la matrícula, el certificado menciona la escritura y la notaría—. Cuando se unen por cita y no por identificador compartido, **la fila lo dice**: *"se unen porque el certificado cita la escritura n.º X (p. 2)"*. Si solo se parecen en la descripción —*"la camioneta"* y *"vehículo marca X"*— **no se funden**: quedan como dos bienes y se declara la duda en el bloque de contradicciones. Fundir dos bienes parecidos es el error más difícil de detectar después.
+**Agrupar.** Cada bien recibe una etiqueta corta —`B-01`, `B-02`— que sirve **solo para nombrarlo**: "el B-04 no me sirve". No se reutiliza jamás. Dos apariciones son **el mismo bien** cuando comparten **cualquiera** de los identificadores del punto 2 —**de los que identifican, no de los que solo ubican**: compartir vereda, barrio o sector no funde nada—, o cuando **un documento cita al otro** —la escritura menciona la matrícula, el certificado menciona la escritura y la notaría—. Cuando se unen por cita y no por identificador compartido, **la fila lo dice**: *"se unen porque el certificado cita la escritura n.º X (p. 2)"*. Si solo se parecen en la descripción —*"la camioneta"* y *"vehículo marca X"*— **no se funden**: quedan como dos bienes y se declara la duda en el bloque de contradicciones. Fundir dos bienes parecidos es el error más difícil de detectar después.
 
 **Tres lecturas de la misma tabla, y ninguna exige abrir nada.** La primera va por filas: cada aparición con su documento y su productor. La segunda agrupa por etiqueta: **qué hay detrás de cada bien** —y ahí salta a la vista el bien que solo aparece en un documento producido por una parte, o el que no aparece en ninguno—. **Y la misma lectura al revés:** el bien que aparece en un documento de un tercero o de una oficina y **no** en ninguna lista de las partes; se marca, porque es el que nadie mencionó. La tercera es fila contra fila: **lo mismo con dos valores, dos fechas o dos nombres distintos**. Las tres se entregan (§7).
 
-**Las contradicciones se entregan, no se resuelven.** Se anotan **los dos datos, cada uno con su documento y su página**, y **sin decir cuál es el bueno**. No elijas el más reciente, ni el del tercero, ni el de tu propia clienta.
+**Las contradicciones se entregan, no se resuelven.** Se anotan **los dos datos, cada uno con su documento y su página**, y **sin decir cuál es el bueno**. No elijas el más reciente, ni el del tercero, ni el de la parte que a ella le interese o le corresponda resolver.
 
 ### Fase 3 — Detectar lo que falta: es la parte de mayor valor y tiene sección propia, **§5**
 
@@ -296,6 +341,29 @@ Título y subtítulo son opcionales; sin ellos toma el primer `#` del archivo y 
 
 Responde sobre tu propia salida. Si alguna respuesta es "no" donde debería ser "sí", corrige; si no puedes corregir, dilo en la entrega.
 
+**Al terminar esta lista, escribe este bloque al final de la entrega.** Es la única parte de este método que habla de sí mismo, y existe para una sola cosa: **hoy nadie sabe cuánto atrapa esta comprobación.** Se sabe que un error la atravesó y llegó al entregable; no se sabe si atrapó cuarenta o ninguno, y mientras no se sepa, **recortar esta sección y dejarla como está son las dos igual de defendibles**, que es justo lo que impide decidir.
+
+```text
+LO QUE ESTA PASADA SE CORRIGIÓ A SÍ MISMA
+  Datos que volví a abrir y comprobar: «N»
+  Corregidos al comprobarlos: «N» — «cuáles, por su etiqueta»
+  No se pudieron comprobar: «N» — «cuáles y por qué»
+  Preguntas de esta lista que me hicieron corregir algo: «sus números»
+  «o: ninguna»
+  Esto cuenta correcciones hechas, no errores que queden. Cero
+  corregidos significa que la comprobación no encontró ninguno, nunca
+  que no los haya. Y lo escribe quien hizo el trabajo: no prueba que
+  esta salida sea correcta.
+```
+
+**Tres reglas sobre este bloque, y la tercera es la que lo hace servir de algo:**
+
+1. **Anotar no sustituye a corregir.** La corrección va en la entrega como siempre; aquí solo se dice que ocurrió.
+2. **Este bloque no decide nada.** No retiene la entrega, no rebaja ninguna etiqueta, no cambia una sola palabra de lo demás.
+3. **Ni se infla ni se esconde.** Un número alto es buena noticia —quiere decir que la comprobación funciona—, y cero con muchas comprobaciones también es información. **Lo único que arruina esta medida es un número que no sea verdad**, y no hay nada que ganar falseándolo: no se te evalúa por él.
+
+**Y si este método no vuelve a abrir documentos** —porque su trabajo lo hace un programa—, el primer renglón dice `no aplica: lo hizo un programa` y los demás se responden igual. **Inventar un número para llenar el hueco es peor que el hueco.**
+
 1. **¿Hay en mi salida algún importe, plazo, porcentaje o fecha que yo haya calculado, en vez de transcribirlo de un documento?** No debe haber ninguno: ni un total, ni una resta, ni un porcentaje, ni un valor actualizado. El único número propio permitido es el conteo de la parte 6.
 2. ¿Cada valor lleva la palabra que el documento usa, la fecha que ese valor trae y su página?
 3. ¿Hice **un solo** recorrido de captura y anoté en él los nueve puntos de la Fase 1, en vez de ir volviendo al documento?
@@ -303,7 +371,7 @@ Responde sobre tu propia salida. Si alguna respuesta es "no" donde debería ser 
 5. ¿**Todas** las filas dicen quién produjo el documento, incluidas las que produjo la propia interesada?
 6. ¿Puse en la misma fila una lista de una parte y un certificado, en vez de dejarlos en filas distintas bajo la misma etiqueta?
 7. ¿El nombre de quien figura salió del apellido, del relato o del nombre del archivo, en vez de lo que el documento muestra? ¿Va con la palabra que el documento usa —propietario, arrendatario, afiliado— y no con una mía?
-8. ¿Fundí dos bienes que solo se parecían en la descripción, sin un identificador compartido ni una cita de un documento al otro? ¿Y desdoblé en dos un mismo bien porque cada documento lo identifica con un número distinto?
+8. ¿Fundí dos bienes que solo se parecían en la descripción, sin un identificador compartido ni una cita de un documento al otro? **¿Fundí dos que solo comparten una vereda, un barrio, un sector o una manzana —que ubican y no identifican (Fase 1, punto 2)—?** ¿Y desdoblé en dos un mismo bien porque cada documento lo identifica con un número distinto?
 9. ¿Reuní todo lo comprobable en una sola lista, ordenada por archivo y página, y lo comprobé en **un solo recorrido**? ¿Quedó algo sin comprobar y sin declararlo?
 10. ¿Usé "sitúa" donde quería decir "apoya a medias", o porque el documento no decía a nombre de quién figura? Que falte eso no rebaja el "apoya": va a 5-C. Un bien cuyas apariciones solo sitúan va a 5-B.
 11. ¿Escribí "falta", "no existe" o "no hay" donde lo único que sé es que no lo encontré? ¿Di por existente un documento solo porque otro lo menciona?

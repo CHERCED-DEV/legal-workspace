@@ -18,7 +18,7 @@ texto. Cada método le dice a Claude cómo hacer una tarea concreta del despacho
 procedimiento fijo, qué **no** puede hacer nunca dentro de esa tarea, y cómo tiene que
 entregar el resultado.
 
-La regla que comparten los doce: **todo sale del material del caso, y de dónde sale se
+La regla que comparten los trece: **todo sale del material del caso, y de dónde sale se
 dice**. Ninguno valora prueba, ninguno calcula plazos, ninguno pone derecho. Lo que el
 material no da, se marca como faltante en vez de rellenarse.
 
@@ -32,7 +32,7 @@ material no da, se marca como faltante en vez de rellenarse.
 | `/nombrar-voces` | **Llama a un programa:** pone nombre y cargo a las voces de una transcripción, **pero solo lo que ella afirme**: mide antes si la separación de esa grabación aguanta y **se niega a etiquetar si no aguanta**; prepara una ficha con muestras de cada voz enlazadas al minuto para reconocerla; y deja cada etiqueta pegada a **quién la afirmó y cuándo**. No deduce nombres y **no redacta actas**. |
 | `/hechos-con-prueba` | Recorre el material del caso y devuelve **hechos candidatos**, cada uno emparejado con el fragmento concreto que lo apoya, lo contradice o lo sitúa; los que no tienen nada detrás quedan marcados como tales. No valora prueba ni decide estrategia. |
 | `/revisar-documento` | Lee **un** documento que llegó (escrito de contraparte, requerimiento, contrato, respuesta) y devuelve en una pasada qué es, qué afirma, qué pide, qué decide, qué referencias de tiempo trae **textualmente** y qué parece exigir actuación. No calcula plazos ni dice si algo está vencido. |
-| `/estado-del-caso` | Lee la carpeta del caso y reconstruye **solo con lo que dicen los archivos** qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta y qué quedó a medias o sin respuesta. No pronostica ni valora solidez. |
+| `/estado-del-caso` | Lee la carpeta del caso y reconstruye **solo con lo que dicen los archivos** qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta y qué quedó a medias o sin respuesta. Lista aparte **las salidas del propio sistema**, con qué comando las produjo y cuáles están revisadas. No pronostica ni valora solidez. **Llama a un programa** para escribir el resumen: reemplaza solo la cabecera y **lo que ella escribió bajo `NOTAS SUYAS` se conserva byte a byte**, sin volver a pasar por el modelo. |
 | `/cronologia` | Extrae **todo evento con fecha**, con el documento y la página de donde sale cada una y **el grado de certeza de esa fecha** (documentada, referida, aproximada, deducida, en conflicto); añade los eventos sin fecha situados por anclas, los conflictos sin resolver y los periodos sobre los que el material calla. No cuenta plazos ni decide cuál fecha es la buena. |
 | `/inventario-de-anexos` | Produce la **tabla de anexos numerada** lista para pegar en un escrito —qué es cada documento, quién lo produjo, de qué fecha es, a qué afirmación sirve— y, en bloque aparte, **lo que falta**, separado en sus tres clases. No decide qué se aporta. |
 | `/inventario-de-bienes` | Recorre el material e inventaría **bienes y deudas**: qué documento respalda cada uno, a nombre de quién figura según ese documento, qué fecha trae y qué valor **transcrito**; más lo que falta y las contradicciones entre documentos. Señala el bien que aparece en un papel de un tercero y **en ninguna lista de las partes**. No decide qué bienes entran, no calcula, no reparte. |
@@ -68,7 +68,7 @@ Lo que eso habilita y lo que no:
 **POR COMPROBAR — con material real de ella, antes de sentarse a trabajar.**
 
 - **Qué hace con un PDF escaneado sin capa de texto.** Es el formato en que llegan la mitad de
-  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los doce parten de
+  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los trece parten de
   leer el material y citar página. Hay que saber si lo lee, si lo lee mal en silencio, o si avisa
   de que no puede — y las tres respuestas llevan a instrucciones distintas para ella.
 
@@ -260,19 +260,31 @@ legal-workspace/
 │     │  └─ plugin.json         <- nombre, version, descripcion del plugin
 │     ├─ README.md              <- este archivo
 │     ├─ GUIA-PARA-LA-ABOGADA.md  <- lo que lee ella; viaja con el plugin
-│     ├─ INSTALACION.md         <- la hoja de instalacion
-│     ├─ scripts/               <- la oficina de programas; los metodos los llaman
-│     │  ├─ preparar_material.py    <- montar el expediente, OCR, PDF consolidado
-│     │  ├─ buscar.py               <- buscar dentro del caso sin leerlo
-│     │  ├─ transcribir_audio.py    <- grabaciones a texto, con voces y marcas de tiempo
-│     │  ├─ md2docx.py              <- la salida en Word de verdad
-│     │  ├─ verificar_fidelidad.py  <- que el Word no perdio contenido
-│     │  ├─ verificar_citas.py      <- que cada cita este LITERAL en la fuente
-│     │  ├─ segunda_opinion.py      <- comparar dos reconocedores de imagen
-│     │  └─ modelos/                <- binarios de terceros; NO van en git
-│     │     └─ PROCEDENCIA.md       <- de donde salieron, sha256 y que se midio
-│     └─ skills/                <- un SKILL.md por metodo; el nombre de la carpeta
-│        │                         es el nombre del comando
+│     ├─ INSTALACION.md         <- la hoja de instalacion (SPEC-11)
+│     ├─ scripts/               <- la oficina de programas. Python es OPCIONAL:
+│     │  │                         sin el los trece comandos funcionan igual,
+│     │  │                         mas lentos, y cada uno declara que no lo tuvo
+│     │  ├─ preparar_material.py      <- descomprime, ordena, extrae texto (OCR)
+│     │  ├─ transcribir_audio.py      <- grabaciones a texto, con voces y marcas
+│     │  ├─ nombrar_voces.py          <- que voz es quien, segun ella; nunca deduce
+│     │  ├─ segunda_opinion.py        <- el segundo motor: detecta la omision silenciosa
+│     │  ├─ medir_realce.py           <- instrumentacion de la extraccion
+│     │  ├─ comparar_iteraciones.py   <- compara tres carpetas en vez de mirarlas
+│     │  ├─ buscar.py                 <- donde aparece algo, sin abrir los documentos
+│     │  ├─ md2docx.py                <- la entrega en Word, con tablas de verdad
+│     │  ├─ md2html.py                <- la misma entrega para abrir en el navegador
+│     │  ├─ verificar_fidelidad.py    <- cuanto texto sobrevivio a la conversion
+│     │  ├─ verificar_citas.py        <- que cada cita este LITERAL en la fuente
+│     │  ├─ estado_del_caso.py        <- reemplaza la cabecera del archivo de estado
+│     │  │                               sin tocar lo que ella escribio (SPEC-06)
+│     │  ├─ contar_fichas.py          <- cuenta la salida y la contrasta con lo declarado
+│     │  ├─ marca.py                  <- la regla de ` - REVISADO`, en un solo sitio
+│     │  ├─ traer_modelos.py          <- baja los modelos que no se versionan
+│     │  ├─ modelos/PROCEDENCIA.md    <- de donde salen los modelos y con que licencia
+│     │  ├─ plantilla/pagina.html     <- ARTEFACTO COMPILADO: no se edita aqui.
+│     │  │                               Sale de tools/ (abajo) y lo vigila una prueba
+│     │  └─ README-*.md               <- uno por programa que lo necesita
+│     └─ skills/                <- los TRECE metodos. La carpeta es el nombre del comando
 │        ├─ buscar-en-el-caso/       ├─ inventario-de-bienes/
 │        ├─ cronologia/              ├─ preguntas-de-derecho/
 │        ├─ estado-del-caso/         ├─ preparar-material/
@@ -281,9 +293,16 @@ legal-workspace/
 │        │     <- apoyo del metodo   ├─ revision-de-rigor/
 │        ├─ inventario-de-anexos/    ├─ transcribir-audio/
 │        ├─ nombrar-voces/          └─ preguntas-de-derecho/
+├─ tools/
+│  └─ pagina-despacho/         <- las FUENTES de plantilla/pagina.html (ADR-020).
+│                                 Se compila aqui con Node; lo que viaja al plugin
+│                                 es el resultado. La maquina de ella NO necesita Node.
+│                                 Tras tocar src/: `npm ci && npm run publicar`
 └─ docs/                        <- arquitectura del proyecto; NO es parte del plugin
    └─ discovery/                <- material de pruebas y guias de trabajo del dueno
 ```
+
+**Y la plantilla de la página tampoco se edita donde está.** `scripts/plantilla/pagina.html` es **un artefacto compilado** desde `tools/pagina-despacho/`: quien lo corrija a mano ve su corrección desaparecer en la siguiente publicación, sin rastro de que existió. `ADR-020` §2 lo prohíbe por escrito, y desde el 2026-09-22 **hay una prueba que lo hace cumplir** (`evals/scripts/test_pagina_publicada.py`): falla si alguien edita el compilado, y falla si se tocan las fuentes y no se vuelve a publicar.
 
 **Los modelos no se versionan.** `scripts/modelos/` está en `.gitignore`: son 52 MB de
 binarios de terceros —reconocimiento de texto en imágenes y separación de voces—. Lo que sí
@@ -307,7 +326,7 @@ tener nada que hacer allí.
 
 1. Crear la carpeta `plugins/despacho/skills/<nombre-del-comando>/`. El nombre de la carpeta
    es el nombre del comando: `skills/contar-terminos/` -> `/contar-terminos`.
-2. Dentro, un `SKILL.md` que empiece por el bloque de metadatos, igual que los doce que ya
+2. Dentro, un `SKILL.md` que empiece por el bloque de metadatos, igual que los trece que ya
    están:
    ```yaml
    ---

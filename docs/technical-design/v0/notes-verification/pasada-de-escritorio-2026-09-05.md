@@ -1,0 +1,394 @@
+# Pasada de escritorio sobre el caso-02: qué aguantó y qué se cayó
+
+**Fecha:** 2026-09-05. **Qué es:** la primera vez que las specs escritas estos días se ejecutan contra un expediente, en vez de declararse ejecutadas.
+
+> **Y lo que no es, dicho primero.** El expediente es **sintético y lo construí yo, que escribí las reglas**. Está sesgado hacia esas reglas por construcción: **lo que un caso real trae y este no es lo que a nadie se le ocurrió poner**. Esto no sustituye la pasada real, no mide veracidad y no dice que el producto sirva. Dice una cosa más pequeña y que no se tenía: **si las reglas deciden cuando se les pone delante el caso que dicen manejar.**
+
+---
+
+## El resultado en una línea
+
+**Dieciocho defectos, los dieciocho míos — y el decimoquinto es uno de los otros, repetido por mí después de haberlo escrito.** Ninguno se veía leyendo la spec. Aparecieron al poner las reglas a decidir sobre nombres de archivo concretos, sobre un expediente con dos partes, y —el quinto— **dentro del propio registro de esta pasada**, en el párrafo donde yo explicaba por qué las otras cosas fallaban por no comprobarse.
+
+| # | Spec | Qué estaba mal |
+|---|---|---|
+| 1 | SPEC-05 | La regla se contradecía con su propio ejemplo: `(revisar)` no contiene «revisado» |
+| 2 | SPEC-03 | La simetría autorizaba a valorar un requisito, que es hacer derecho |
+| 3 | SPEC-04 | Lo que ella escribe bajo `NOTAS SUYAS` no contaba como suyo |
+| 4 | SPEC-05 | «Pregunta cuál manda» **sin «y te detienes»** |
+| 5 | — | **Mi propio registro**: dije dónde dispara la simetría sin ir a mirar |
+| 6 | SPEC-03 | **La posición se preguntaba sin esperar respuesta** — el defecto 4, en los once y en la regla que gobierna a las demás |
+| 7 | SPEC-03 | **Escribí una segunda regla de simetría, más débil, al lado de la que `revision-de-rigor` §2.3 ya tenía** |
+| 8 | SPEC-03 | **Mi barrido de contexto B buscó una sola palabra**: quedaban seis reglas con vocabulario de adversario |
+| 9 | — | **`revision-de-rigor` no sabía nombrar una cuenta ya hecha** — el error que los otros diez tienen prohibido, en el documento que se firma |
+| 10 | — | Y tampoco **la ausencia inflada** ni **la secuencia leída como causa**: dos invariantes duras de los diez, invisibles para el que revisa |
+| 11 | SPEC-03 | **La regla exigía un número que el formato de salida no tenía dónde poner** |
+| 12 | — | **`buscar.py` devolvía el trabajo del sistema como si fuera el expediente** — y el peor caso llevaba la marca ` - REVISADO` |
+| 13 | — | **«Vereda» contaba como identificador**: dos predios vecinos se habrían fundido en una fila |
+| 14 | — | **Ninguna negativa estaba hecha para quien decide.** Contestarle a una autoridad qué resolver no es opinar: es tomarle el acto |
+| 15 | — | **El defecto 7 otra vez, cometido por mí dos horas después de escribirlo.** El cuidado no basta: hace falta la guarda |
+| 16 | — | **El conteo de la búsqueda mezclaba renglones con coincidencias** y devolvía el mismo renglón repetido |
+| 17 | SPEC-08 | **El índice no reconocía los borradores de `/redactar-escrito`** — la única salida que ella firma |
+| 18 | AC-05 | **Tres mecanismos adivinando lo que el archivo dice en su primera línea**, y una recomendación mía corregida por un documento sin indexar |
+
+---
+
+## Defecto 1 — SPEC-05 se contradecía con su propio ejemplo
+
+**Cómo apareció.** Traduje la regla de la marca a código para ver si decide. **Falló en la primera ejecución.**
+
+**Qué decía la regla:**
+
+> *«Si hay un archivo con «revisado» de cualquier otra forma —al principio del nombre, en medio, `(revisar)`— … se nombran y se pregunta»*
+
+**«revisar» no contiene «revisado».** Son dos palabras distintas. La regla ofrecía como ejemplo un caso **que su propio enunciado no cubre**, así que un modelo aplicándola al pie —buscando «revisado»— **pasaría por encima de `Hechos - Salento (revisar).md` sin verlo**.
+
+**Por qué importa más de lo que parece:** ese es exactamente el fallo silencioso que SPEC-05 existe para impedir —el comando que no ve el archivo y se calla—, **reproducido dentro de SPEC-05**, escrita el mismo día.
+
+**Corregido:** la señal que se busca es **la raíz «revis»**, no la palabra, en los seis `SKILL.md`, y la regla explica por qué.
+
+## Defecto 2 — La simetría de SPEC-03 ensanchaba lo que un método puede decir
+
+**Cómo apareció.** Al aplicar `/estado-del-caso` al expediente. Los dos apoderados firman y **ninguno acredita su calidad** — la trampa 1, puesta para que dispare la simetría. Y al ir a escribirlo: **`estado-del-caso` no puede decirlo.** Que la acreditación se exija es una regla de derecho, y este método tiene prohibido contener derecho.
+
+**Qué decía mi regla:**
+
+> *«Toda carencia que señales de una parte —un documento que no acreditó, una afirmación sin respaldo, **un requisito que no consta**— se busca en las demás…»*
+
+**«Un requisito que no consta» es una invitación a valorar un requisito**, es decir, a hacer derecho, en once métodos que lo tienen prohibido. Escribí una regla de imparcialidad que abría la puerta a la infracción más grave del producto.
+
+**Corregido en los once:** la simetría alcanza a *«toda carencia que **este método ya pueda señalar**»*, con una advertencia explícita: *«esta regla no ensancha lo que puedes señalar: solo obliga a mirar a los dos lados de lo que ya señalabas»*.
+
+> **Y la trampa 1 no se pierde por eso: cambia de sitio.** En `estado-del-caso` lo correcto es **no decirlo**, y que la simetría no dispare ahí no es un fallo: es la regla comportándose bien.
+
+---
+
+## Defecto 5 — Dije dónde dispara la simetría sin comprobarlo, y me equivoqué de comando
+
+**Añadido el 2026-09-05, unas horas después, ejecutando `/inventario-de-anexos` contra el mismo expediente.**
+
+El párrafo de arriba decía, en su primera versión, que quien hace visible la carencia *«es `inventario-de-anexos`, con «quién produjo el documento»»*. **Escrito sin comprobarlo. Es falso.**
+
+`inventario-de-anexos` Fase 2 toma las afirmaciones que hay que sostener **de tres sitios y solo tres**: la hoja de hechos aprobada, el borrador del escrito, o lo que ella indique. **Ninguno es «lo que el propio material afirma».** Una firma de alguien que se presenta como apoderado, sin nada detrás, **no tiene entrada ahí tampoco**.
+
+**Dónde sí dispara, comprobado esta vez:** en **`hechos-con-prueba`**. Su Fase 2 recoge afirmaciones de *«algo que alguien dice o que un documento consigna»* —el material mismo—, la Fase 3 las consolida en hechos candidatos, y la Fase 5 marca **sin apoyo** al que no tiene ninguna pieza detrás. Ese es el estado exacto de la afirmación «X actúa como apoderado», y ahí la simetría tiene de qué agarrarse.
+
+**Y hacía falta algo más que saberlo: la regla no tenía anclaje.** Estaba escrita como principio general en el bloque de posición de los once, y **un principio sin punto de enganche es un principio que no dispara**. Se ancló en la fila «Sin apoyo» de la Fase 5 de `hechos-con-prueba`, con el caso real como ejemplo y con la distinción escrita al lado: *no estás diciendo que haga falta acreditar nada —eso es derecho— estás diciendo que una afirmación del material no tiene detrás ninguna pieza, aplicado a los dos lados en vez de a uno.*
+
+**La cadena correcta, entonces, es de dos pasos y no de uno:** `hechos-con-prueba` lo hace visible y aplica la simetría → ella lo aprueba → `inventario-de-anexos` lo empareja con el documento ausente. Que sea una cadena y no un solo comando **es la razón por la que no se veía**.
+
+---
+
+## Defecto 4 — La regla decía «pregunta» y no decía «y te detienes»
+
+**Encontrado ejecutando `/redactar-escrito`** —«el comando más peligroso del despacho»— contra el mismo expediente, que tiene **dos** archivos de hechos marcados a propósito.
+
+La regla de SPEC-05 decía: *«no eliges. Los nombras los dos con su fecha y preguntas cuál manda.»* **Y ahí terminaba.**
+
+**Compárese con el caso de cero marcados**, que sí está resuelto desde antes: *«Si no hay hechos aprobados, **dilo y detente** … — y esperas.»* Con cero hay una parada explícita. **Con dos había una orden de preguntar y ninguna de parar.**
+
+**Por qué el fallo es más fácil aquí, y no al revés.** Con cero marcados **no hay sobre qué redactar** y la parada se impone sola. **Con dos hay dos archivos completos y utilizables delante**, y seguir es cómodo: un modelo con prisa pregunta, se contesta solo *«será el más reciente»* y sigue. Y entonces **ha elegido él cuál de las dos decisiones de ella vale** — que es exactamente lo que la marca existe para no decidir.
+
+> **Y deja algo peor que no haber preguntado:** deja escrito en la salida que se consultó, así que quien la lea creerá que la elección la hizo ella.
+
+**Corregido:** en el bloque §2 de las seis, *«se nombran, se pregunta **y se espera la respuesta**»*, con la razón al lado —*preguntar no es seguir*—; y en `redactar-escrito` e `inventario-de-anexos`, la parada dicha con las mismas palabras que la de «no hay hechos aprobados», porque es el mismo alto.
+
+---
+
+## Defecto 6 — El mismo, más grande: la posición también se preguntaba sin esperar
+
+**El defecto 4 no era un caso: era una clase.** Encontrado uno, se barrieron los once buscando **toda regla que mande preguntar sin mandar detenerse**. El barrido devolvió tres candidatos y uno era grave.
+
+| Dónde | Qué decía | Veredicto |
+|---|---|---|
+| **El bloque de posición, en los ONCE** | *«se pregunta una vez … y no se adivina»* | **Roto.** No decía que se espere |
+| `inventario-de-anexos` §Fase 2, sin hechos aprobados | Pregunta y ofrece tres vías, y **resuelve qué hacer con cada respuesta** | Correcto, se deja como está |
+| `preparar-material` Fase 0 | *«Si falta una, se pregunta. No inventes un nombre de caso ni elijas un destino»* | Correcto: *«no inventes»* es la parada |
+
+**Por qué el de la posición es peor que el de las dos marcas.** Con dos archivos marcados, lo que se elige mal es cuál de dos decisiones suyas vale. **Con la posición se elige a quién le habla el producto** — y de ahí cuelga si la simetría aplica y si algo puede ordenarse por lo que le conviene a alguien. Un modelo que pregunte y siga sobre una suposición produce **una salida entera, bien escrita, en el registro que no era**, y nada en ella lo delata.
+
+**Corregido en los once:** *«se pregunta una vez … **y se espera la respuesta antes de producir nada**. Ni se adivina, ni se pregunta y se sigue sobre una suposición: lo segundo es adivinar con el trámite de la pregunta por delante, y encima deja escrito que se consultó.»*
+
+> **Y esto es lo que hace que un barrido valga más que una corrección.** El defecto 4 costó una regla; buscar a sus hermanos costó cinco minutos y encontró el mismo fallo en once archivos, en la regla que gobierna a las demás. **Un defecto encontrado es una pregunta sobre dónde más vive.**
+
+---
+
+## Defecto 7 — Escribí una segunda regla de simetría al lado de una mejor que ya existía
+
+**Encontrado al abrir `revision-de-rigor` para ejecutarlo.** Su **§2.3 se llama «La simetría es obligatoria, y no se negocia»** y lleva ahí desde antes de que yo escribiera SPEC-03.
+
+**Y es mejor que la mía en tres cosas que a mí no se me ocurrieron:**
+
+| Lo que tiene §2.3 | Lo que tenía la mía |
+|---|---|
+| **Simetría hacia dentro:** *«cuando quien pide la revisión es la propia autoridad, los defectos de sus propios actos se buscan igual que los de las partes»* | Nada. Solo miraba entre partes |
+| **Por qué se rompe, y es material:** *«una parte aportó diecinueve páginas y la otra cuatro, y hay más superficie donde encontrar defectos. Esa diferencia no es una diferencia de corrección»* | Nada. La mía suponía que el sesgo es de intención |
+| **Una consecuencia contable:** el conteo reparte los hallazgos por lado, y si el reparto es desigual **se dice, con los números** | Nada |
+
+**Así que hice exactamente lo que este repositorio lleva documentado como su enfermedad:** una segunda regla, más débil, para lo mismo, **en once archivos**, al lado de una que ya funcionaba. Es «dos ledgers con identificadores que colisionan» otra vez, y esta vez la escribí yo mientras la citaba.
+
+**Corregido:** el bloque de los once adopta las tres piezas que le faltaban y **dice de quién es la regla**: *«Esta regla no es nueva y no es otra: `revision-de-rigor` §2.3 la tiene desarrollada para su caso desde antes, y es la misma. Si alguna vez las dos redacciones dicen cosas distintas, manda la de `revision-de-rigor` y esta se corrige.»* Una regla con dos redacciones necesita saber cuál manda, o vuelve a partirse.
+
+## Defecto 8 — Mi barrido de contexto B buscó una sola palabra
+
+**SPEC-03 se ejecutó grepeando «clienta».** Al ejecutar `/revisar-documento` apareció lo que ese grep no ve: su Fase 6 termina en *«describe huecos del documento, **no defectos del adversario**»*. **Quien decide no tiene adversario.**
+
+Barrido de verdad —`adversari`, `contraparte`, `el otro lado`, `a favor de`, `le conviene`— y salieron **seis reglas más**, en tres comandos:
+
+| Dónde | Decía | Dice |
+|---|---|---|
+| `revisar-documento` (descripción) | «un escrito de la contraparte» | «un escrito de una de las partes» |
+| `revisar-documento` §1 | «Un escrito de la contraparte invoca normas» | «Un escrito de parte invoca normas» |
+| `revisar-documento` Fase 6 | «no defectos del adversario» | «no defectos de quien lo escribió» + *si ella decide, no existe un adversario cuyos defectos buscar* |
+| `revision-de-rigor` §4 | «Una contraparte razonable podría alegar X» | «Otra parte razonable…» + *vale para cualquiera de las partes* |
+| `revision-de-rigor` §7 | «su objeto es a menudo material de la contraparte» | «material producido por otro» |
+| `redactar-escrito` §1 | «deja de leerse como cita del adversario» | «como cita de quien la invocó» |
+| `estado-del-caso` §6 | «Depende de la contraparte» | «Depende de las demás partes» |
+
+**La lección:** un barrido por una palabra no es un barrido. **La palabra que buscas es la que ya sabías que estaba mal**; las que hacen daño son las que no se te ocurrió buscar.
+
+---
+
+## Defecto 9 — El único método que puede ver una cuenta ya hecha no sabía nombrarla
+
+**Encontrado ejecutando `/revision-de-rigor`** contra un proyecto de resolución añadido al expediente para esto. El proyecto dice: *«Han transcurrido más de seis meses desde entonces»*.
+
+**Ese número no está en ningún documento.** Sale de restar dos fechas — y una de las dos está en conflicto entre la querella y la contestación. Es exactamente el error que **los diez comandos restantes tienen prohibido cometer**, con el argumento que el arnés repite en todos: *«un número mal calculado se lee exactamente igual de bien que uno correcto, no despierta ninguna sospecha, y basta una sola vez»*.
+
+**Y `revision-de-rigor` no tenía dónde ponerlo.** Sus seis categorías —estado inflado, alcance excedido, material contrario omitido, vacío de prueba, contradicción, salto lógico— **no incluyen «esto es una cuenta»**. Sus únicas menciones a calcular eran sobre lo que él mismo no hace, nunca sobre lo que encuentra.
+
+> **Y esa asimetría deja el producto protegido justo al revés.** La prohibición de calcular cubre los diez comandos que **producen** texto. **El único que se enfrenta a un texto donde la cuenta ya está hecha —el que se va a firmar— no la nombraba.**
+
+**Corregido:** son **siete** cosas, no seis. La séptima es *«número o fecha que salió de una cuenta»*, y con la disciplina del método: **se señala que la cuenta existe y de qué dos datos salió, no si está bien** —decir «esa resta da mal» sería calcular para comprobar—. La octava, la de peticiones sin respuesta, conserva su condición de aplicar solo a expedientes.
+
+---
+
+## Defecto 10 — Y el noveno abrió una pregunta que había que barrer entera
+
+El defecto 9 no era sobre el cálculo: era sobre **una asimetría de diseño**. Diez comandos tienen prohibiciones duras porque **producen** texto; uno solo se enfrenta a un texto **ya escrito**. La pregunta que sale de ahí es sistemática:
+
+> **¿Qué prohibiciones de los diez no sabe nombrar el que revisa?**
+
+Barrida contra las cuatro invariantes más duras del arnés. **Dos huecos más:**
+
+| Invariante de los diez | ¿La detecta `revision-de-rigor`? |
+|---|---|
+| **No calcular** fechas ni importes | **No la detectaba** — defecto 9, corregido |
+| **«No está en la carpeta» no es «no existe»** | **No la detectaba.** Sus únicas menciones a la ausencia eran sobre el texto extraído por OCR |
+| **Secuencia no es causa** (`cronologia` §5) | **No la detectaba.** Un *«tras el reclamo, canceló»* en el texto revisado pasaba entero |
+| **Cita fantasma** —coordenada real, contenido inexistente— | **Sí**, por la vía de «alcance excedido» y «vacío de prueba» |
+
+**Y aquí no se añadieron dos categorías más.** Con la lección del defecto 7 delante —**una regla con dos redacciones se parte**—, cada hueco se enganchó donde ya vive su forma, y **apuntando a su dueño**:
+
+- **La ausencia inflada** es *«estado inflado» con el signo cambiado* —del papel al mundo—, así que va como segunda mitad de esa categoría, con la formulación honesta que los demás métodos ya usan. Y con la nota de que **en posición de autoridad pesa más**: una ausencia inflada en un acto que decide se lee como hecho probado en contra de alguien.
+- **La secuencia leída como causa** es el salto lógico más frecuente, **ya descrito en `cronologia` §5**, que **manda su redacción**. Va como sub-caso del salto lógico, con la lista de conectores de esa sección y sin reescribirla.
+
+> **La lista pasa de seis a siete, no a nueve.** Un método cuyo procedimiento crece con cada hallazgo deja de ser un procedimiento.
+
+---
+
+## Defecto 11 — La regla exigía un número que el formato no tenía dónde poner
+
+**Encontrado ejecutando `/hechos-con-prueba`**, que es donde SPEC-13 reescribió dos fases ese mismo día y donde quedó el anclaje de la simetría (defecto 5).
+
+Al escribir el conteo de la salida hizo falta el reparto por lado —dos hechos sin apoyo de la querellante, dos del querellado— **y el formato de conteo de ese método no lo prevé**: pide *«cuántos hechos propuestos, cuántos apoyados, cuántos sin apoyo, cuántos contradichos, cuántos vacíos, cuántos descartes»*, y nada por parte.
+
+**La regla lo exigía y la salida no tenía dónde ponerlo.** Es la misma forma del defecto 5 —*un principio sin punto de enganche no dispara*—, en su versión más silenciosa: aquí no falta la regla, **falta la casilla**.
+
+**Corregido en los once**, dentro del bloque de posición para no abrir once redacciones: *«el conteo de la entrega reparte por lado —cuántos de cada parte, y cuántos del propio despacho si lo hay—, y cuando el reparto queda desigual se dice ahí mismo, con los números, y se dice si la causa es de volumen»*. Con la frase que resume la clase entera: **un número que la regla exige y que el formato de salida no tiene dónde poner es un número que no se escribe.**
+
+### Y lo que esa misma ejecución confirmó, que era el objeto de correrla
+
+| Qué se probaba | Resultado |
+|---|---|
+| **SPEC-13**, escrita ese día: barrer por pieza y comprobar en bloque | **Cuatro piezas, cuatro aperturas** en la captura y **cuatro reaperturas** en la comprobación — no once, que es lo que pedía el método anterior con once anclajes |
+| **El anclaje de la simetría** (defecto 5), puesto ese día en la fila «Sin apoyo» | **Disparó.** H-05 y H-06 —los dos apoderados— salieron juntas, con el reparto igual y con la distinción escrita: *no se dice que haga falta acreditar nada; se dice que una afirmación no tiene detrás ninguna pieza* |
+| El bloque anti-inyección | Atrapó el texto de la p. 2 y **dijo dónde quedó el punto que le pedían omitir** |
+
+---
+
+## Defecto 12 — La búsqueda devolvía el trabajo del sistema como si fuera el expediente
+
+**Y este no es de escritorio: `buscar.py` se corrió de verdad contra el expediente.** Es la primera pieza del día que se ejecuta como programa y no como lectura.
+
+Buscando «cerca», devolvió **ocho apariciones en siete archivos, en una sola lista**:
+
+| Dónde | Qué es |
+|---|---|
+| `1-Documentos recibidos/` — 3 archivos | **El material del caso** |
+| `2-Borradores/Cronologia…`, `Hechos…`, **`Hechos … - REVISADO.md.md`** | **Trabajo del sistema** |
+| `3-Para presentar/proyecto-resolucion.txt` | **Trabajo de ella** |
+
+**Cinco de las ocho no eran material, y nada lo decía.** Ni el programa ni el `SKILL.md`: `grep` de «trabajo del sistema» en los dos devolvía cero.
+
+**Por qué importa, y es la regla más repetida del arnés.** El §2 de seis `SKILL.md` dice que el trabajo del sistema es **pista, nunca origen**. Una búsqueda que contesta *««cerca» está en `Hechos - Salento…md` línea 3»* **invita exactamente al movimiento prohibido**. Y el caso peor está en la propia lista: la aparición dentro de `Hechos - Salento - 2026-04-10 - REVISADO.md.md` **tiene aspecto de fuente autorizada** — lleva la marca de ella —, y para esto no lo es: la marca dice que ella lo miró, **no que el dato salga de ahí**.
+
+**Corregido en el programa y en la skill.** Cada archivo fuera de `1-Documentos recibidos/` sale marcado `<- NO es material del caso`, el cierre cuenta cuántas apariciones están fuera y de qué son, y el `--json` lleva `origen` por hallazgo y `fuera_de_recibidos`. La skill añade la regla y nombra el caso peligroso.
+
+**Con 8 pruebas de regresión** (`evals/scripts/test_buscar.py`), comprobadas con dos mutantes: un clasificador que diga que **todo** es material cae con 4 fallos; uno que diga que **nada** lo es, con 3 — porque el control positivo exige que `1-Documentos recibidos/` **no** salga marcado.
+
+> **Y una nota sobre cómo se encontró, que corrige un reflejo mío.** Al ver la primera salida creí que el descargo *«cero resultados no significa que no esté en el papel»* solo aparecía en algunas búsquedas. **Era mi propio `head -20` cortándolo.** Lo comprobé antes de escribirlo. El defecto 4 de esta misma lista fue exactamente lo contrario: afirmar sin mirar.
+
+---
+
+## Defecto 13 — «Ubicar» no es «identificar», y en material rural eso decide el inventario entero
+
+**Encontrado ejecutando `/inventario-de-bienes`**, y solo aparece porque el expediente de prueba es **rural** — una querella de policía en una vereda de Salento, que es donde ocurrió el pase real.
+
+La regla de identidad, corregida en su día por el hallazgo H2 de la crítica, dice: *«Dos apariciones son el mismo bien cuando comparten **cualquiera** de los identificadores del punto 2»*. Y el punto 2 los lista: *«matrícula, catastral, placa, motor, número de escritura y notaría, número de cuenta, folio, **dirección**»*.
+
+**En el expediente, la querella dice «el predio ubicado en la vereda Boquia» y el recibo de predial dice «Predio: vereda Boquia».** Comparten eso y nada más — el predial es el único que trae número catastral.
+
+**Bajo la regla literal, se funden.** Y una vereda la comparten decenas de predios: el inventario metería **el predio de dos vecinos distintos en una sola fila**. Es exactamente el error que este método llama *«el más difícil de detectar después»*, y **en un expediente rural es el caso normal, no el raro**.
+
+> **Y es el hallazgo H2 rebotando.** H2 arregló que el método **partiera** un predio en dos por traer cada documento un identificador distinto. La corrección abrió la puerta contraria: **fundir dos por compartir un dato que no identifica a nadie.** Las dos formas de fallo salen de la misma frase.
+
+**Corregido:** un identificador solo lo es si **dos bienes distintos no pueden compartirlo**. Vereda, barrio, sector, manzana, corregimiento y municipio **ubican y no identifican**: van en la descripción, se anotan igual con su página, y **no funden nada**. Una dirección sí identifica cuando llega a ser única —calle, número, interior—; si se queda en el sector, no. Con su pregunta en la autoevaluación.
+
+---
+
+## Defecto 14 — Todas las negativas estaban hechas para quien pregunta la ley; ninguna para quien la decide
+
+**Encontrado ejecutando `/preguntas-de-derecho`**, que es la skill cuyo trabajo entero es negarse — y por eso el hueco pesa más.
+
+**Sus ejemplos, uno por uno, son de parte:** *«¿Cuál es el término para contestar?»*, *«¿Qué necesito para radicar?»*, *«¿Sirve esta cláusula?»*. Y sus prohibiciones también: *«no opina sobre si a ella le conviene una vía»*.
+
+**Ninguna cubre la forma que toma la pregunta cuando quien la hace decide:** *«¿amparo la posesión?»*, *«¿le doy la razón a quién?»*, *«¿qué debo resolver aquí?»*. **No suenan a preguntas de derecho —suenan a la decisión misma— y son las dos cosas a la vez.**
+
+> **Y la diferencia no es de forma, es de qué pasa si se contesta.** Cuando la pregunta la hace una parte, la negativa cuesta una molestia. **Cuando la hace quien decide, responderla no es opinar: es tomarle el acto.**
+
+**Y había un segundo filo, en el sitio donde menos se ve.** El §6 de esa skill existe para no tratar a la abogada como a la propia memoria del modelo: si ella aporta la norma, se usa. **Eso, para una autoridad, tiene un límite que no estaba escrito:**
+
+| Ella da… | Y pregunta… | El resultado es… |
+|---|---|---|
+| Una regla de **cómputo** | qué fecha sale | **un dato.** Se hace la cuenta a la vista. Correcto |
+| Una regla de **fondo** —*«procede el amparo cuando hay perturbación»*— | si procede | **su decisión.** Y esa no se calcula |
+
+**Corregido:** §1 reconoce la forma autoritativa de la pregunta y da la razón entera de la negativa; §7 añade *«no propone qué resolver»* con el mismo valor conservador que `/redactar-escrito` y la misma remisión a `V-7`; §6 gana su límite —se devuelve **qué consta y qué no bajo esa regla**, y ahí se detiene—; y la autoevaluación, su octava pregunta.
+
+---
+
+## Defecto 15 — El defecto 7, cometido otra vez por mí, dos horas después de escribirlo
+
+Al cerrar el defecto 14 hice una comprobación de rutina: **¿en cuántos sitios está escrito el valor conservador de `V-7`?** En dos, con dos redacciones distintas — `redactar-escrito` §2 y `preguntas-de-derecho` §7, las dos explicando por su cuenta por qué el sistema no produce el contenido que decide.
+
+**Es el defecto 7 exacto**, cometido **después** de haberlo encontrado, escrito y comentado en este mismo documento.
+
+> **Y por eso vale más que los otros catorce.** Los defectos 1 a 14 son cosas que no vi. Este lo vi, lo nombré, escribí que *«una regla con dos redacciones se parte»*, y **volví a partir una dos horas más tarde**. La conclusión no es que haya que tener más cuidado: es que **el cuidado no basta y hace falta la guarda**.
+
+**Corregido con la forma que la lección exige, no con la que sale sola.** La razón —`V-7`, y el valor por defecto estrecho mientras no haya ADR— **se escribe una sola vez**, en el punto 4 del bloque de posición, que es byte a byte idéntico en los once y ya tiene test. Los dos métodos que la aplican **conservan su regla operativa** —uno no redacta la parte que decide, el otro no propone qué resolver— **y apuntan a la razón en vez de repetirla**.
+
+**Y la guarda, que es lo que faltaba:** `test_la_razon_de_v7_se_escribe_una_sola_vez` comprueba que ese motivo **no aparece fuera del bloque** en esos dos archivos, y que sí aparece la remisión. Comprobado con un mutante: devolverle a `redactar-escrito` su explicación propia hace caer la prueba.
+
+---
+
+## Defecto 16 — El conteo de la búsqueda mezclaba renglones con coincidencias
+
+**Encontrado corriendo `buscar.py` sobre un texto que imita lo que el OCR produce.** Buscando «AÑO» en *«El año pasado hubo un daño en el predio»*, la salida devolvía **el mismo renglón dos veces, idéntico**, y lo contaba como dos apariciones.
+
+**La causa es correcta y el efecto no:** «AÑO» sin tildes es `ano`, que aparece dos veces en el renglón —en `ano` y dentro de `dano`—. **Pero repetir el renglón no dice mejor dónde mirar, y hincha el número que ella lee.**
+
+**Corregido:** un renglón sale **una vez** y dice `[2 veces en este renglon]` cuando corresponde; el cierre distingue *«N renglones en M archivos»* de *«(N apariciones: alguna se repite en su renglon)»*. Con tres pruebas y un mutante que devuelve el comportamiento viejo — cae con 10 fallos.
+
+### Y lo que la misma prueba confirmó, que vale más que el defecto
+
+**La búsqueda tiende el puente sobre la eñe rota del OCR.** El reconocedor no tiene `Ñ` mayúscula y escribe `SENOR`; **buscar «señora» encuentra «senora»**, y al revés.
+
+> **Es lo que hace superable el defecto `P-01`.** La cita sigue saliendo del original —eso no cambia—, pero **al menos se sabe dónde mirar**. Sin esa tolerancia, buscar sobre material fotografiado no encontraría nada y el defecto del vocabulario sería total en vez de parcial.
+
+Queda con prueba propia, en las dos direcciones, y escrito en el `SKILL.md` con su precio: **«AÑO» también encuentra «DAÑO»**, y para eso está `--exacto`.
+
+---
+
+## Defecto 17 — El índice de SPEC-08 no reconocía la salida más importante del producto
+
+**Encontrado leyendo `PENDIENTE-FORMA-DE-ENTREGA.md`**, uno de los documentos que el §0.3 del backlog declara sin cubrir desde el 28 de agosto. Dice, entre lo pendiente: *«una convención de nombres única, que hoy son tres distintas (guion, raya, con y sin nombre de caso)»*.
+
+**Medido el 2026-09-05: es verdad, y hay una forma que el documento no nombra.**
+
+| Forma del nombre | Quién la usa |
+|---|---|
+| `<Comando> - <caso> - <fecha>` — **guion corto** | `hechos-con-prueba`, `cronologia`, `revision-de-rigor` |
+| `<Comando> — <caso> — <fecha> — pasada <n>` — **raya larga** | los dos inventarios, y la copia del archivo de estado |
+| **`<radicado> — <qué es> — <fecha>`** | **`/redactar-escrito`** |
+
+**La tercera empieza por el radicado del caso, no por el comando.** Y la tabla de convenciones que escribí en SPEC-08 esa misma mañana decía *«el nombre **empieza por**»* y **no listaba a `redactar-escrito` en absoluto**.
+
+> **Consecuencia:** el índice de salidas habría marcado *«no se pudo saber qué comando lo produjo»* **en todos los borradores** — que son lo único que ella firma, y la salida más importante del producto. El índice existía para distinguir el trabajo del sistema del de ella, **y en el caso que más importa habría dicho que no sabía**.
+
+**Corregido:** la tabla dice *«el nombre **lleva**»*, incluye las dos formas de `redactar-escrito`, y advierte de las dos trampas — que no todos empiezan por el comando, y que **guion corto y raya larga se parecen a ojo**, así que se compara por el texto de al lado y no por el signo. El arreglo de fondo —unificar las convenciones— **no se hace desde ahí**, y ya está pedido en `PENDIENTE-FORMA-DE-ENTREGA` §1.
+
+> **Y la lección, que no es sobre nombres de archivo:** escribí una tabla de convenciones **leyendo las skills que escriben salidas** y me faltó una. El documento que lo decía llevaba en el repositorio desde el 27 de agosto, **declarado sin leer en el §0.3**. Los documentos sin indexar no son deuda documental: **son defectos esperando.**
+
+---
+
+## Defecto 18 — Tres mecanismos adivinando lo que el archivo dice en su primera línea
+
+**El mismo `PENDIENTE-FORMA-DE-ENTREGA.md` corrigió AC-05, escrito por mí unas horas antes.** Yo había recomendado **una subcarpeta** para los derivados de máquina. Ese documento trae dos argumentos que yo no tenía:
+
+1. **La restricción del propio dueño:** *«sin que ellos sientan que es demasiado ruidoso o **lleno de carpetas**»*, resuelta entonces con *«las tres condiciones se cumplen a la vez solo si **la profundidad no la paga ella**»*. **Una carpeta más la paga ella.**
+2. Y el principio: **«una carpeta es una afirmación silenciosa, y este producto está construido para no hacer afirmaciones silenciosas»**.
+
+**Y al ir a escribir la alternativa, apareció que la respuesta ya estaba en el disco.** `preparar_material.py` escribe el texto de referencia con esta cabecera, desde antes:
+
+```text
+TEXTO DE REFERENCIA — extraido automaticamente
+
+NO ES CITABLE COMO LITERAL. Sirve para buscar dentro del material.
+LA AUSENCIA DE ALGO AQUI NO SIGNIFICA QUE NO ESTE EN EL DOCUMENTO.
+```
+
+> **El archivo dice qué es, dónde no puede usarse y cuál es su modo de fallo — y los tres mecanismos lo deducían de la carpeta.** Con la respuesta en el primer renglón.
+
+**Hecho:** `buscar.py` lee la declaración y marca por lo que el archivo dice ser, no por dónde está; el `--json` distingue **tres** orígenes —`material`, `derivado`, `otro`— y el cierre repite el modo de fallo del derivado. AC-05 pasa a recomendar esa vía, que **no le cambia a ella ni una carpeta ni un nombre**, y por eso ya no necesita preguntárselo.
+
+**Y una regresión que atrapó una prueba vieja:** la etiqueta nueva —*«lo produjo una MAQUINA»*— **dejaba de decir que no es material**, y un lector podía inferir lo contrario. Las dos van juntas ahora. La prueba que falló era del mismo día, tres horas antes.
+
+---
+
+## Dos barridos que no encontraron nada, y decirlo también es el resultado
+
+**(c) La integración entre los dos programas que escriben en su carpeta.** `preparar_material.py` monta el esqueleto del caso; `estado_del_caso.py` escribe el archivo de estado. **Si el primero creara ese archivo sin la línea `NOTAS SUYAS`, el segundo se negaría a escribirlo para siempre** —esa es su regla R-2— y el defecto sería invisible: una carpeta recién montada en la que un comando no funciona nunca.
+
+**No ocurre**, comprobado en el código y en las pruebas: `preparar_material.py` crea las tres carpetas y **no toca `0-Estado del caso`** —su skill lo dice y su autoevaluación lo pregunta—, así que `estado-del-caso` cae en su camino de «el archivo no existe → primera revisión → `--crear`», que lo crea **con la marca**. `test_con_crear_nace_con_el_bloque_de_ella` y la comprobación de que la segunda pasada ya funciona sin `--crear` cubren la cadena entera.
+
+**(a) Reglas que pudieran empujar a un método más allá del límite de derecho** —la clase del defecto 2—. Se buscó `requisito`, `acreditar`, `procedente`, `suficiente`, `idóneo`, `legitimación`, `válido`, `competente`, `nulidad`, `caducidad`, `prescripción` en los once. **Ninguna aparición autoriza cruzar el límite:** todas son prohibiciones —nombrar la figura para vetarla, que es el uso correcto—, declaraciones de «este método no contiene derecho», o el guardarraíl que se añadió al corregir el defecto 2.
+
+**(b) Qué métodos declaran el límite.** Siete lo dicen con esas palabras. Los cuatro que no, comprobados uno por uno **y ninguno es un hueco**:
+
+| Método | Por qué no lo dice |
+|---|---|
+| `redactar-escrito` | Tiene una regla **más dura**: *«ninguna norma entra por ninguna vía, ni la que invoca el escrito contrario, ni la que ella misma te dictó»* — y la llama su restricción más importante |
+| `preguntas-de-derecho` | **Su método entero es negarse a responder derecho.** Declararlo sería repetir el título |
+| `buscar-en-el-caso` | Devuelve archivo y renglón. Su principio rector es otro, y es el suyo: *«cero apariciones significa "no aparece en lo que se pudo leer", jamás "no está en el papel"»* |
+| `preparar-material` | Trabajo mecánico de un programa; no produce afirmaciones sobre el caso |
+
+> **Un barrido que vuelve limpio vale lo mismo que uno que encuentra algo, si se escribe.** Sin este apartado, dentro de un mes alguien vuelve a preguntarse lo mismo y lo vuelve a mirar.
+
+---
+
+## Lo que aguantó
+
+| Spec | Qué se ejercitó | Resultado |
+|---|---|---|
+| **SPEC-06** | La pasada entera sobre una copia del expediente: `--comprobar`, cabecera nueva de 1.912 bytes, copia previa, comprobación | **Las notas de ella volvieron idénticas byte a byte** — 296 bytes, con tildes, «comillas españolas», guiones largos y `¿`. La cabecera cambió. La copia quedó en `2-Borradores/` |
+| **SPEC-06** | Que el programa no enseñe sus notas | No apareció ni una palabra suya en la salida: solo `5 renglones` |
+| **SPEC-05** | `- REVISADO.md.md` · sin extensión · `(revisar)` · dos marcados | Los cuatro clasificados como manda la regla, **una vez corregida** |
+| **SPEC-08** | El índice de salidas sobre cinco archivos producidos por el sistema | Se pudo escribir con comando, fecha y estado de revisión, **y el que no encaja se listó sin adivinarle comando** |
+| **SPEC-05 + SPEC-08 juntas** | Dos archivos marcados en la misma carpeta | El índice **nombró los dos y devolvió la decisión**, en vez de elegir el más reciente |
+| **SPEC-03** | La posición se dedujo de la carpeta —membrete de la inspección, «se constituye el despacho»— sin preguntar | La salida no dice «su clienta» en ninguna parte |
+
+---
+
+## Lo que sigue sin comprobarse, y no lo puede comprobar esto
+
+- **Que un modelo aplique la prosa.** Aquí la apliqué yo leyéndola, que es el mejor caso posible: **conozco lo que quise decir**. Una pasada real la aplica quien no.
+- **Veracidad.** No hay escaneados ni ocasión de fabricar sobre una página vacía. Eso es el caso-01 y sigue bloqueado en su material.
+- **Que el bloque de SPEC-12 produzca cifras.** No se ejercitó: exige una pasada completa de un método, no la lectura de una carpeta.
+- **Coste.** Nada de esto mide un turno.
+
+## La conclusión, que es sobre cómo trabajar y no sobre estas dos correcciones
+
+**Nueve specs se declararon ejecutadas leyéndolas. Dos estaban mal, y las dos se vieron en la primera hora de ponerlas a decidir.** No hay razón para creer que la proporción sea distinta en las otras siete: lo único que cambia es que a esas todavía no se les ha puesto nada delante.
+
+**«Ejecutada» seguirá significando poco mientras signifique «escrita y releída».** Un expediente sintético lo mejora un peldaño y no más; el peldaño que falta es el mismo desde hace días, y no depende de mí.

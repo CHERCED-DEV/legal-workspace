@@ -1,7 +1,7 @@
 ---
 name: revisar-documento
-description: Método para revisar un documento que llegó al caso —un escrito de la contraparte, una comunicación de una autoridad, un contrato, un requerimiento, una respuesta— y devolver en una sola pasada qué es, qué afirma, qué pide, qué decide, qué referencias temporales contiene textualmente y qué parece exigir una actuación. Úsalo cuando pidan revisar, leer, entender o resumir un documento recibido. No lo uses para redactar la respuesta, calcular plazos, decir si algo está vencido, calificar el documento ni responder preguntas de derecho.
-version: 0.1.4
+description: "Método para revisar un documento que llegó al caso —un escrito de una de las partes, una comunicación de una autoridad, un contrato, un requerimiento, una respuesta— y devolver en una sola pasada qué es, qué afirma, qué pide, qué decide, qué referencias temporales contiene textualmente y qué parece exigir una actuación. Úsalo cuando pidan revisar, leer, entender o resumir un documento recibido. No lo uses para redactar la respuesta, calcular plazos, decir si algo está vencido, calificar el documento ni responder preguntas de derecho."
+version: 0.2.5
 allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
@@ -15,15 +15,49 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(pyt
 
 **Este método no contiene derecho.** No hay aquí normas, plazos, clases de escritos ni requisitos de ninguna jurisdicción, y **tú no afirmas ninguno**. Si para decir qué es el documento crees necesitar una categoría jurídica, no la necesitas: **transcribe cómo se llama a sí mismo**.
 
-**Pero el documento sí trae derecho, y ese se transcribe.** Un escrito de la contraparte invoca normas en cada apartado; entregar la revisión sin ellas es devolver el documento mutilado justo donde más pesa, y de un modo que ella no puede notar. Se recogen **igual que cualquier otra afirmación del documento: entre comillas, con su página, en voz del documento y nunca en la tuya** — *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece que…»*.
+**Pero el documento sí trae derecho, y ese se transcribe.** Un escrito de parte invoca normas en cada apartado; entregar la revisión sin ellas es devolver el documento mutilado justo donde más pesa, y de un modo que ella no puede notar. Se recogen **igual que cualquier otra afirmación del documento: entre comillas, con su página, en voz del documento y nunca en la tuya** — *«el escrito invoca el artículo X (p. 4)»*, jamás *«el artículo X establece que…»*.
+
+**Y la frontera no es un tema, es una operación.** No basta con no afirmar derecho: **nunca sumas ni restas días sobre una fecha para producir otra, aunque el resultado no sea un plazo.** Una fecha calculada se lee exactamente igual de bien que una leída, y no lo es. Toda fecha que aparezca en tu salida tiene que estar escrita tal cual en un documento o en el nombre de un archivo; cuántos días hay entre dos, qué día cayó tal cosa, o en qué fecha termina un «treinta días», no lo escribes tú. Las fechas que el material trae escritas sí; las que salen de una cuenta, no.
 
 > **La cláusula, y va escrita en la salida:** transcribir una norma que el documento invoca **no afirma que esa norma exista, que siga rigiendo, ni que diga lo que el documento le atribuye**. Eso lo comprueba ella.
 
 Es la misma regla que ya gobierna todo lo demás: cuando el escrito afirma un hecho, lo transcribes sin darlo por cierto. Con el derecho no cambia nada — solo cambiaría si empezaras a hablar tú.
 
-**Dónde entra y dónde sale.** El documento se lee desde `1-Documentos recibidos/`, que es **solo lectura**: es el material tal como llegó, y alterarlo destruye lo único que no se puede reconstruir. Si ella pide el resultado como archivo, se escribe en `2-Borradores/`. Nunca se escribe en `1-Documentos recibidos/` y nunca se toca `0-Estado del caso (no editar).txt`.
+**Dónde entra y dónde sale.** El documento se lee desde `1-Documentos recibidos/`, que es **solo lectura**: es el material tal como llegó, y alterarlo destruye lo único que no se puede reconstruir. Si ella pide el resultado como archivo, se escribe en `2-Borradores/` **con este nombre**: `Revisión de documento - <cuál se revisó> - <AAAA-MM-DD>.md`. **El nombre no es decoración:** es lo único por lo que `/estado-del-caso` puede decir después qué comando lo produjo, y un archivo sin convención sale de ese índice como «no se pudo saber de dónde salió». Nunca se escribe en `1-Documentos recibidos/` y nunca se toca `0-Estado del caso (no editar).txt`.
 
 **Cómo se accede al documento, y por qué se dice.** El archivo se abre y se lee por dentro. **Un escaneado sin texto extraíble se abre por rangos de páginas y se lee como imagen** —no se salta, no se resume por el nombre del archivo, no se estima nada—. El apartado 1 dice cómo se leyó: si cada pasada elige por su cuenta cómo accedió al documento, **dos pasadas del mismo documento dejan de ser comparables** y nadie puede saber si la diferencia está en el papel o en la lectura.
+
+---
+
+### En qué posición está ella, y por qué cambia la salida
+
+**Dos posiciones, y no son la misma:**
+
+| Posición | Qué significa | Cómo suena la salida |
+|---|---|---|
+| **Parte** | Representa a alguien y defiende su interés | «su clienta», «la parte que usted representa», «el escrito que usted presenta» |
+| **Autoridad** | **Decide entre otros.** No defiende a nadie | «la querellante», «el querellado», «las partes», «la actuación», «lo que consta en el expediente». **Nunca «su clienta»: no la tiene** |
+
+**Cómo se sabe.** Por lo que ella diga, o por lo que la carpeta muestre —un documento dirigido a su despacho, un radicado donde ella es la autoridad que recibe, una actuación que ella firma como quien resuelve—. **Si no se puede saber, se pregunta una vez** —*«¿usted representa a una de las partes, o le corresponde decidir este asunto?»*— **y se espera la respuesta antes de producir nada**. Ni se adivina, ni se pregunta y se sigue sobre una suposición: **lo segundo es adivinar con el trámite de la pregunta por delante**, y encima deja escrito que se consultó. Adivinar aquí no se nota en la salida —sale entera, bien escrita, en el registro que no era— **y lo cambia todo**: la posición gobierna a quién le hablas, si la simetría aplica, y si algo puede ordenarse por lo que le conviene a alguien.
+
+**Y en posición de autoridad, tres cosas se endurecen:**
+
+1. **Simetría obligatoria.** Toda carencia que **este método ya pueda señalar** —un documento que se anuncia y no está, una afirmación sin nada detrás, una firma sin el papel que la acompañe— **se busca en las demás partes antes de entregarla, y el resultado se escribe, lo encuentres o no**. Escribir *«se buscó lo mismo respecto de la otra parte: tampoco aparece»* es información; **no buscarlo es tomar partido con la selección**, que es la forma de tomar partido que no se ve. **Y también hacia dentro:** cuando quien decide es ella, **los defectos de lo que su propio despacho produjo se buscan igual que los de las partes**.
+
+   > **Por qué se rompe, y casi nunca es por mala fe: se rompe por una razón material.** Una parte aportó diecinueve páginas y la otra cuatro, y **hay más superficie donde encontrar defectos**. Esa diferencia no es una diferencia de corrección, y si no se dice, **la salida miente por su forma**. Por eso **el conteo de la entrega reparte por lado** —cuántos de cada parte, y cuántos del propio despacho si lo hay—, y cuando el reparto queda desigual **se dice ahí mismo, con los números, y se dice si la causa es de volumen**. Un número que la regla exige y que el formato de salida no tiene dónde poner **es un número que no se escribe**.
+   >
+   > **Y esta regla no ensancha lo que puedes señalar: solo obliga a mirar a los dos lados de lo que ya señalabas.** Si este método no puede decir que a una parte le falta un requisito —porque decir qué se exige es derecho, y el derecho lo pone ella—, **la simetría no te autoriza a decirlo ahora**. Lo que hace es impedir que, de lo que sí puedes decir, salga solo la mitad.
+   >
+   > **Esta regla no es nueva y no es otra:** `revision-de-rigor` §2.3 la tiene desarrollada para su caso desde antes, y es **la misma**. Si alguna vez las dos redacciones dicen cosas distintas, manda la de `revision-de-rigor` y esta se corrige — **dos reglas para lo mismo es la avería que este arnés lleva documentada**.
+2. **Nada se orienta a la ventaja de nadie.** Ni en lo que incluyes, ni en el orden, ni en los adjetivos. No existe «esto le sirve», «lo más favorable», ni un orden por utilidad: **quien decide no tiene un lado al que servirle.**
+3. **Ninguna salida propone qué resolver.** Se entrega lo que el material dice; qué se decide con eso es de ella. Es la misma regla de siempre, y aquí es más estricta que en ningún otro sitio.
+4. **Y mientras esto no esté decidido, el sistema no produce el contenido que decide.** Si una autoridad puede apoyar una decisión en lo que produce un sistema como este, **si debe declararlo**, y qué le pasa al acto si una cita sale mal, **no está resuelto en ninguna parte de este proyecto** — es el hueco `V-7`, y le falta una decisión con criterio jurídico, no una línea de método. **Hasta que exista, el valor por defecto es el estrecho.**
+
+   > **Esta es la razón, y está escrita una sola vez.** Cada método dice qué significa en su caso —`/redactar-escrito` redacta los hechos y se detiene antes de la parte que decide; `/preguntas-de-derecho` no propone qué resolver— **y ninguno la reescribe**. Una razón con dos redacciones se parte, que es lo que le pasó a la simetría antes de que se le pusiera dueño.
+
+> **Lo que NO cambia con la posición, y decirlo es parte de la regla:** las fuentes admitidas, «alegado no es acreditado», la fuente exacta de cada dato, no calcular, no afirmar derecho, y el vocabulario de la ausencia. **Esta variante endurece un solo eje —la orientación— y no afloja ninguno.** Si algo de aquí se leyera como permiso para relajar otra regla, se está leyendo mal.
+
+> **Y los ejemplos de este método no son la voz de tu salida.** Están escritos desde el primer uso, que fue de parte, y por eso dicen «la clienta». **La salida usa el vocabulario de la posición de ella**, no el del ejemplo. (En los inventarios, «la propia interesada» y «la otra parte» son otra cosa: **categorías de quién produjo un documento**, y en posición de autoridad siguen significando lo mismo.)
 
 ---
 
@@ -105,7 +139,7 @@ Tres listas distintas. No se mezclan nunca.
 
 ### Fase 5 — Localizar lo que exige una actuación
 
-**Señales de que algo la interpela.** El documento se dirige a ella o a su clienta; usa verbos de requerimiento (*aportar, remitir, comparecer, subsanar, pagar, corregir, manifestarse*); anuncia una consecuencia si no se hace; o fija un destinatario y un canal para responder.
+**Señales de que algo la interpela.** El documento se dirige a ella, a su despacho o a alguien de quien ella responde —según su posición—; usa verbos de requerimiento (*aportar, remitir, comparecer, subsanar, pagar, corregir, manifestarse*); anuncia una consecuencia si no se hace; o fija un destinatario y un canal para responder.
 
 **Cómo se escribe cada línea.** Tres partes, siempre, y nada más: **qué pide el documento** (literal) + **a quién se lo pide** + **ubicación**. Así: *"El documento pide «aportar copia del contrato de arrendamiento» (p. 10) y menciona un plazo de «cinco días» (p. 10)"*, nunca *"tiene que aportar el contrato antes del viernes"*. Y si no hay ninguna: *"en lo revisado no se localizó ninguna petición dirigida a usted"* — que es lo que se encontró, no una conclusión sobre lo que procede.
 
@@ -123,7 +157,7 @@ Tres formas típicas: **el anexo que se anuncia y no está**; **el hecho que se 
 
 **El anexo anunciado solo se da por ausente después de mirar.** Antes de escribir *"no aparece entre lo recibido"*, lista `1-Documentos recibidos/` (Fase 1). Si no pudiste mirarla, la línea se escribe *"anuncia el «Anexo 3 — comprobante» (p. 12); no se comprobó contra la carpeta"*, que es lo que sabes.
 
-Es la fase más útil y la que más fácil se contamina: **describe huecos del documento, no defectos del adversario.**
+Es la fase más útil y la que más fácil se contamina: **describe huecos del documento, no defectos de quien lo escribió.** Y si ella decide el asunto (§1), **no existe un adversario cuyos defectos buscar**: existen dos partes, y lo que se señale de una se busca en la otra.
 
 ### Fase 7 — Revisar la propia salida
 
@@ -295,6 +329,29 @@ CONTEO: 3 afirmaciones · 2 peticiones · 0 decisiones ·
 ## 9. Autoevaluación antes de entregar
 
 Responde **sobre tu propia salida**. Si alguna falla, corrige; si no puedes corregir, dilo en la entrega.
+
+**Al terminar esta lista, escribe este bloque al final de la entrega.** Es la única parte de este método que habla de sí mismo, y existe para una sola cosa: **hoy nadie sabe cuánto atrapa esta comprobación.** Se sabe que un error la atravesó y llegó al entregable; no se sabe si atrapó cuarenta o ninguno, y mientras no se sepa, **recortar esta sección y dejarla como está son las dos igual de defendibles**, que es justo lo que impide decidir.
+
+```text
+LO QUE ESTA PASADA SE CORRIGIÓ A SÍ MISMA
+  Datos que volví a abrir y comprobar: «N»
+  Corregidos al comprobarlos: «N» — «cuáles, por su etiqueta»
+  No se pudieron comprobar: «N» — «cuáles y por qué»
+  Preguntas de esta lista que me hicieron corregir algo: «sus números»
+  «o: ninguna»
+  Esto cuenta correcciones hechas, no errores que queden. Cero
+  corregidos significa que la comprobación no encontró ninguno, nunca
+  que no los haya. Y lo escribe quien hizo el trabajo: no prueba que
+  esta salida sea correcta.
+```
+
+**Tres reglas sobre este bloque, y la tercera es la que lo hace servir de algo:**
+
+1. **Anotar no sustituye a corregir.** La corrección va en la entrega como siempre; aquí solo se dice que ocurrió.
+2. **Este bloque no decide nada.** No retiene la entrega, no rebaja ninguna etiqueta, no cambia una sola palabra de lo demás.
+3. **Ni se infla ni se esconde.** Un número alto es buena noticia —quiere decir que la comprobación funciona—, y cero con muchas comprobaciones también es información. **Lo único que arruina esta medida es un número que no sea verdad**, y no hay nada que ganar falseándolo: no se te evalúa por él.
+
+**Y si este método no vuelve a abrir documentos** —porque su trabajo lo hace un programa—, el primer renglón dice `no aplica: lo hizo un programa` y los demás se responden igual. **Inventar un número para llenar el hueco es peor que el hueco.**
 1. ¿Leí el documento entero —última página, pies, tablas, anexos— antes de escribir la primera línea?
 2. ¿Escribí en algún lugar qué **es** el documento, en vez de cómo se titula y quién lo firma?
 3. ¿Hay alguna petición presentada como decisión, o alguna decisión rebajada a petición?

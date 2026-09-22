@@ -1,5 +1,81 @@
 # Banco de medición del arnés Despacho
 
+> **Añadido el 2026-09-05: hay dos bancos aquí, y miden cosas distintas.** Conviene no confundirlos, porque uno está bloqueado y el otro no.
+>
+> | Carpeta | Qué mide | Estado |
+> |---|---|---|
+> | `casos/caso-01-familia.json` + `medir.py` | **Veracidad y coste sobre material real**: fabricaciones, páginas declaradas, turnos | **Bloqueado, y quizá menos de lo que parece.** El material no está aquí ni estará —documentos de una clienta real, con datos de una menor—. Y su truth set está invalidado por una nota que **puede estar mal contada**: dice «sin capa de texto», y el campo `material` del mismo archivo dice «sin una sola letra». **Si son páginas en blanco, el truth set es válido y basta mirar tres páginas para saberlo.** Ver `_REVISION_DE_LA_INVALIDACION` en el propio archivo |
+> | `scripts/` + `casos/caso-02-sintetico-autoridad/` | **Que las reglas estructurales de los métodos disparen**, y que los bloques repetidos no deriven. **Contexto B: ella decide entre dos partes** | En verde, y comprobadas capaces de fallar con mutantes |
+> | `casos/caso-03-hidraulica-desde-el-diseno/` | **Los diez ingredientes y las ocho afirmaciones prohibidas** de `13-synthetic-benchmark.md`, materializados. **Contexto A: ella representa a una clienta** | ~~«Sin puntuador todavía»~~ — **`scripts/puntuar_caso03.py` existe desde el 2026-09-05** y comprueba seis de las ocho prohibidas y dos de las cuatro trampas de entidad. **Las otras tres se leen a mano, y eso va escrito en el propio programa** |
+> | `knowledge-pack/` | El contrato del knowledge pack | 37 en verde |
+>
+> **Todo de una vez:** `sh evals/scripts/correr-todo.sh`
+>
+> **Y desde el 2026-09-05 `medir.py` puede fallar, que antes no.** Su veredicto tiene **tres estados** y el código de salida es el veredicto:
+>
+> | Estado | Cuándo | Código |
+> |---|---|---|
+> | `INTACTA` | Cero fabricaciones **sobre una corrida que existió** y con páginas ilegibles declaradas | 0 |
+> | `NO MEDIBLE` | El run no registra ni un comando ni un turno, **o** no se declaró ninguna de las páginas ilegibles | 3 |
+> | `COMPROMETIDA` | Hay fabricaciones | 2 |
+> | *(regresión)* | El después tiene más fabricaciones que el antes | 4 |
+>
+> **El defecto que cierra**, señalado en `REFINADO-Y-FUENTES` §0.5 el 27 de agosto: *«el banco no puede fallar… certifica "VERACIDAD ── intacta" sobre un run vacío»*. Era cierto en su parte grave — **un run vacío tiene cero fabricaciones por construcción** — y se quedaba corto en otra: **25 páginas sin declarar de 25 se imprimían debajo del veredicto sin tocarlo.**
+>
+> **Y lo que ninguno medía:** que un modelo aplique la prosa de los `SKILL.md`. ~~«Eso solo lo enseña una pasada real, que sigue sin ocurrir»~~ — **ocurrió**: los **once** métodos se ejecutaron contra los dos casos entre el 5 y el 7 de septiembre, y encontraron defectos en los once. Registro en `docs/technical-design/v0/notes-verification/pasada-*.md`.
+>
+> **Lo que sigue sin medirse, y ahora es lo único:** el **coste** —hace falta una corrida instrumentada con transcript, y las once pasadas son de escritorio— y **que le sirva a alguien**: ninguna abogada ha abierto una sola salida del producto.
+>
+> **Y desde el 2026-09-22 hay un duodécimo método, `/transcribir-audio`, que no se ejecutó aquí y no se puede:** sus tres bibliotecas no están en este entorno. Lo que sí se comprobó es que, sin ellas, **declara cuál falta y no revienta** — que es lo único que esta suite puede decir de él. Su medición viene de la máquina donde se escribió, y está en su `SKILL.md` §4.
+
+### Las cuatro guardas que corren sobre las salidas
+
+Además de las pruebas, hay cuatro programas que miran **lo que los métodos producen**, no lo que los métodos dicen. Nacieron los días 5 y 7 de septiembre, **cada uno de un defecto concreto**, y todos cuelgan de `scripts/comprobar-salidas.sh`, que a su vez cuelga de `correr-todo.sh`.
+
+| Guarda | Qué mira | De qué defecto nació |
+|---|---|---|
+| `plugins/despacho/scripts/contar_fichas.py` | El conteo que la salida declara contra las fichas que tiene, en **seis formatos** | La Fase 6 pedía un conteo llamándolo *«instrumento de honestidad»* **y no daba con qué hacerlo**. Salió mal a la primera |
+| `scripts/buscar_cuentas.py` | Toda duración o importe que **no esté en el material** | La regla de fechas se unificó una mañana y **se rompió esa misma tarde**, en la primera salida producida bajo ella |
+| `scripts/puntuar_caso03.py` | Las afirmaciones prohibidas, **y cuáles no puede comprobar** | El `LEEME` decía *«se lee la salida contra las dos tablas»*, y leer tablas a ojo es lo que este repositorio demostró que falla |
+| `scripts/contar_skills.py` | Cuántos `SKILL.md` dicen algo, **antes de escribir «N de los M»** | **Seis conteos mal hechos en dos días**, todos de esa forma, ninguno encontrado releyendo |
+
+> **Y la advertencia que vale para las cuatro, porque se aprendió corriéndolas:** **una guarda ajustada a una sola muestra protege esa muestra y nada más.** El contador solo entendía la forma en que estaban escritas las salidas que lo estrenaron; sobre las escritas con la plantilla real de los métodos decía «0 fichas». **Ocho de los hallazgos de septiembre no fueron de los métodos: fueron de las guardas.**
+
+
+### Los tres programas que llegaron sin una sola prueba
+
+**Añadido el 2026-09-22.** La fusión trajo cuatro programas. Uno —`transcribir_audio.py`— **no se puede probar aquí**: sus bibliotecas no están en este entorno, y de él solo se comprueba que declare cuál le falta. Los otros tres no dependen de nada y llevaban **cero pruebas**, teniendo cada uno **un defecto ya corregido y sin nada que lo sujete** — y una corrección sin prueba es una corrección que se puede deshacer sin que nadie se entere.
+
+`scripts/test_programas_de_la_fusion.py` — **veintiuna pruebas**:
+
+| Programa | Lo que sujeta | El defecto del que sale |
+|---|---|---|
+| `verificar_citas.py` | Que una cita corta **que no está** puntúe bajo, y que una partida con `[…]` valga lo que su **mitad peor** | *«aprobaba en blanco toda cita de menos de cuatro palabras»*. En un programa cuyo único trabajo es cazar citas inventadas, **un aprobado en blanco es peor que no tenerlo** |
+| `comparar_iteraciones.py` | Que dos carpetas idénticas **no listen ni un tramo**, y que dos distintas sí | *«rellenaba la lista hasta N»*, **haciendo pasar por dudoso lo que no lo era** |
+| `md2html.py` | **Cero peticiones de red** — ni direcciones, ni `src`/`href` a otro origen, ni tipografías remotas | `ADR-020` §3, y la razón no es de rendimiento: **una página que pide algo a un servidor cuenta lo que ella está leyendo.** Es la clase de invariante que se cumple el día que se escribe y se rompe callando el día que alguien añade una tipografía bonita |
+
+> **Y una cosa que esta tanda NO encontró, y conviene decirlo:** el elemento de audio **sí** viaja siempre en la página, vacío y oculto. Parecía un defecto y no lo es: la página **declara la ausencia con todas las letras** —*«no se encontró la grabación… no se puede comprobar oyendo»*—, que es lo que `ADR-020` §5 pide. Una página que simplemente no trajera nada dejaría sin saber si falta el audio o si ese material no lo tiene. **La prueba que estaba mal era la mía.**
+
+### La plantilla de la página es un artefacto compilado, y nada lo vigilaba
+
+**Añadido el 2026-09-22.** `plugins/despacho/scripts/plantilla/pagina.html` **no se escribe: se compila** desde `tools/pagina-despacho/src/`. Eso abre dos averías que se ven igual de bien en el editor:
+
+1. **La plantilla envejece.** Alguien toca `src/`, no vuelve a publicar, y el plugin sigue entregando la página vieja. **No hay error, no hay aviso**, y lo que ella abre no es lo que dice el código.
+2. **Alguien edita el `.html` compilado a mano.** `ADR-020` §2 lo prohíbe con todas las letras y **esa prohibición no tenía nada que la hiciera cumplir**. Una corrección a mano se pierde en la siguiente compilación **sin dejar rastro de que existió** — que es peor que no haberla hecho, porque alguien la dio por hecha.
+
+`scripts/test_pagina_publicada.py` — **ocho pruebas**, y están partidas en dos a propósito:
+
+| Cuándo corre | Qué comprueba |
+|---|---|
+| **Siempre**, sin red y sin Node | `HUELLAS.json` —que escribe `publicar.mjs`— contra el disco: ninguna fuente cambió, el artefacto no se editó a mano, y **el registro cubre todas las fuentes que existen** |
+| **Si hay Node y `node_modules`** | La compilación de verdad, y que dé **el mismo archivo byte a byte** |
+
+> **La segunda se salta casi siempre, y se salta diciéndolo** (`OK (skipped=1)`). **Una prueba que se salta en silencio es una prueba que no existe.**
+>
+> **Y la tercera fila de la primera mitad es la que hace de esto una guarda y no un gesto:** un registro de huellas que solo cubra la mitad de las fuentes protege esa mitad y nada más. Si mañana aparece `src/nuevo.js`, la prueba falla **hasta que `publicar.mjs` lo incluya** — no cuando ya haya derivado.
+
+Las tres averías se comprobaron con mutantes: tocar una fuente, editar el compilado —que dispara **dos** guardas independientes— y añadir una fuente sin registrar.
+
 > **Por qué existe.** Hasta hoy toda afirmación sobre si una versión del arnés es mejor o más barata que otra era una opinión. Este banco la convierte en una cifra. La primera vez que se corrió ya corrigió tres errores del plan de mejora que iban a dirigir el trabajo al sitio equivocado.
 
 **Esto no es producto.** Vive fuera del plugin, no se instala en la máquina de nadie y no viaja al Despacho de ella.
