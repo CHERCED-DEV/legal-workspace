@@ -48,6 +48,12 @@ EXTERNAS = {
     "pypdf": "leer PDF",
     "rapidocr_onnxruntime": "reconocer texto en fotografias",
     "sherpa_onnx": "separar voces, sin ponerles nombre",
+    # Solo las usa `alineacion_forzada.py`, y solo dentro de una funcion:
+    # sin ese experimento el plugin no las necesita. Estan MEDIDAS como no
+    # aptas para este material (CER mediana 0,60), asi que se declaran
+    # aparte en INSTALACION.md y no se piden para el uso normal.
+    "torch": "el experimento de alineacion forzada por CTC",
+    "transformers": "el modelo acustico de ese experimento",
 }
 
 

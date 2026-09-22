@@ -80,6 +80,11 @@ A_MANO = {
     # pide ningún método porque reescribe datos ya publicados: eso lo decide
     # una persona, mirando los números que imprime.
     "alinear_tiempos.py":      "que el minuto suene donde dice la línea",
+    # El 2026-09-22 dejó de vivir suelto en el escritorio y entró aquí, con
+    # los datos del caso fuera, en un .json que no se versiona. No se expone
+    # al modelo porque BORRA Y REHACE la carpeta de salida: eso lo lanza una
+    # persona que sabe lo que va a rehacer.
+    "construir_entrega.py":    "arma el paquete que recibe ella, y lo comprueba",
 }
 
 # Y una tercera clase, que aparecio el 2026-09-07 cuando el canario disparo
