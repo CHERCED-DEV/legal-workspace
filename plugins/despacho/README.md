@@ -271,6 +271,7 @@ legal-workspace/
 │     │  ├─ verdad_de_referencia.py   <- quien habla de verdad, marcado a oido
 │     │  ├─ alinear_tiempos.py        <- que el minuto suene donde dice la linea
 │     │  ├─ construir_entrega.py      <- arma el paquete que recibe ella, y lo comprueba
+│     │  ├─ esqueleto_de_modelo.py    <- que forma tiene el documento que ella dio de ejemplo
 │     │  ├─ alineacion_forzada.py     <- modulo: alinear por CTC; MEDIDO que aqui no sirve
 │     │  ├─ segunda_opinion.py        <- el segundo motor: detecta la omision silenciosa
 │     │  ├─ medir_realce.py           <- instrumentacion de la extraccion

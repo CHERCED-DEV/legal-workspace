@@ -85,6 +85,11 @@ A_MANO = {
     # al modelo porque BORRA Y REHACE la carpeta de salida: eso lo lanza una
     # persona que sabe lo que va a rehacer.
     "construir_entrega.py":    "arma el paquete que recibe ella, y lo comprueba",
+    # Lee el documento que ELLA da como modelo y saca su forma, midiendo si
+    # la sacó entera: rearma el texto desde lo extraído y tiene que salir
+    # idéntico. No se expone porque extraer una forma no es producir nada
+    # para ella: es la comprobación previa de que el modelo se entendió.
+    "esqueleto_de_modelo.py":  "qué forma tiene el documento que ella dio de ejemplo",
 }
 
 # Y una tercera clase, que aparecio el 2026-09-07 cuando el canario disparo
