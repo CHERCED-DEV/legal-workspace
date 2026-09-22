@@ -155,7 +155,7 @@ class LasLineasDeComandoEscritasFuncionan(unittest.TestCase):
 class ElOrdenInvertidoEstaBienYNoSeIguala(unittest.TestCase):
     """Los dos programas se usan seguidos y toman los argumentos al reves.
 
-    El error natural al leerlos juntos es igualarlos. Los siete metodos que los
+    El error natural al leerlos juntos es igualarlos. Los ocho metodos que los
     invocan lo tienen bien; esto lo fija.
     """
 
@@ -178,7 +178,7 @@ class ElOrdenInvertidoEstaBienYNoSeIguala(unittest.TestCase):
             self.assertIn(u'verificar_fidelidad.py "<el .docx>" "<el .md>"', t,
                           f.parent.name)
 
-    def test_los_siete_lo_escriben_igual(self):
+    def test_los_ocho_lo_escriben_igual(self):
         formas = set()
         for f in sorted(S.glob("*/SKILL.md")):
             for m in re.finditer(r"md2docx\.py ([^\n`]*)",

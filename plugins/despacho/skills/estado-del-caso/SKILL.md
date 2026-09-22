@@ -184,6 +184,7 @@ Recorres las tres carpetas y anotas, por cada archivo: **el nombre tal como est�
 | `Inventario de anexos — <caso> — <fecha> — pasada <n>` | `/inventario-de-anexos` |
 | `Inventario de bienes — <caso> — <fecha> — pasada <n>` | `/inventario-de-bienes` |
 | `Revisión de rigor - <qué se revisó> - <fecha>` | `/revision-de-rigor` |
+| `Acta - <reunión> - <fecha>` **y** `Acta - De dónde sale cada frase - <fecha>` | `/acta-de-reunion` — **el segundo dice de qué minuto sale cada frase del primero** |
 | **`<radicado> — Borrador — <clase de escrito> — <fecha>`** y **`<radicado> — De dónde sale cada frase — <fecha>`** | **`/redactar-escrito`** |
 | `0-Estado del caso — anterior (<fecha>)` | este mismo comando, en una pasada anterior |
 | `Texto de referencia - <fecha>` | `/preparar-material` — **y no es el documento** (§2) |
