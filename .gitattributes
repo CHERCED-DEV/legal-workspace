@@ -9,3 +9,9 @@
 # Se fijan tambien las FUENTES, para que el proximo commit no lo repita.
 *.html          text eol=lf
 tools/pagina-despacho/src/*  text eol=lf
+
+# La pagina de voces (SPEC-15): lo mismo. `test_pagina_voces.py` compara las
+# huellas de sus fuentes y de la plantilla, y un checkout de Windows que les
+# meta retornos de carro las separaria para siempre.
+tools/pagina-voces/*       text eol=lf
+tools/pagina-voces/src/*   text eol=lf
