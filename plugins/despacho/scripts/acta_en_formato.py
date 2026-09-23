@@ -258,7 +258,13 @@ def main():
              and not re.match(r"^\|[\s|:-]+\|$", l.strip())]
     if filas:
         p = doc.add_paragraph()
-        cuerpo = [[c.strip() for c in f.strip().strip("|").split("|")] for f in filas]
+        # Un hueco lleva su propia barra -- «[[FALTA 3 — que falta | quien lo da]]» --
+        # y dentro de una tabla partia la celda: la mitad del hueco saltaba a la
+        # columna siguiente y EMPUJABA fuera el dato real, que desaparecia sin
+        # aviso (la fidelidad seguia en 99,7 %). Dentro de una celda la barra
+        # va escapada, «\|», como en cualquier tabla Markdown.
+        cuerpo = [[c.strip().replace("\\|", "|")
+                   for c in re.split(r"(?<!\\)\|", f.strip().strip("|"))] for f in filas]
         tc = doc.add_table(rows=0, cols=len(cuerpo[0]))
         tc.style = "Table Grid"
         fila_titulo(tc, "COMPROMISOS", F, len(cuerpo[0]))
