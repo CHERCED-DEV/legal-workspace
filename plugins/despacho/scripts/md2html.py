@@ -418,7 +418,47 @@ def _avisos_de_bucle(doc):
     return abre, cierra
 
 
-def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=None):
+def tramos_de(ruta):
+    """Los tramos que una entrega senala a mano: [{desde, hasta, abre, cierra}].
+
+    El aviso llega ya redactado (Markdown de una linea): lo redacta quien arma
+    la entrega, y el Word lleva el mismo texto. Aqui solo se coloca."""
+    if not ruta:
+        return []
+    if not os.path.isfile(ruta):
+        raise SystemExit("NO SE PUDO GENERAR: no esta el archivo de tramos %s" % ruta)
+    tramos = json.load(io.open(ruta, encoding="utf-8"))
+    for t in tramos:
+        if not all(isinstance(t.get(k), str) and t[k].strip()
+                   for k in ("desde", "hasta", "abre", "cierra")):
+            raise SystemExit("NO SE PUDO GENERAR: un tramo senalado no trae desde, hasta, "
+                             "abre y cierra")
+    return tramos
+
+
+def _avisos_de_tramos(doc, tramos):
+    """{indice de segmento: cartel} para abrir y cerrar cada tramo senalado.
+
+    La linea se busca por la hora que IMPRIME, que es la que se cita. Si no
+    esta, o esta dos veces, no se genera la pagina: un aviso que cae en otra
+    linea, o que se cae en silencio, es peor que no tenerlo."""
+    abre, cierra = {}, {}
+    for t in tramos:
+        a = [s["i"] for s in doc["segmentos"] if hms(s["inicio"]) == t["desde"]]
+        z = [s["i"] for s in doc["segmentos"] if hms(s["inicio"]) == t["hasta"]]
+        if len(a) != 1 or len(z) != 1 or z[0] < a[0]:
+            raise SystemExit("NO SE PUDO GENERAR: el tramo senalado %s-%s no se localiza en "
+                             "los datos (%d lineas a las %s, %d a las %s)"
+                             % (t["desde"], t["hasta"], len(a), t["desde"], len(z), t["hasta"]))
+        abre[a[0]] = abre.get(a[0], "") + (
+            '<div class="aviso-bucle tramo">&#9888; %s</div>' % _linea(t["abre"]))
+        cierra[z[0]] = ('<div class="aviso-bucle tramo cierre">&#9888; %s</div>'
+                        % _linea(t["cierra"])) + cierra.get(z[0], "")
+    return abre, cierra
+
+
+def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=None,
+                      tramos=None):
     """Devuelve (html, bloques del contrato). El HTML se lee sin JavaScript;
     el contrato lleva los metadatos que la pagina necesita para trabajar.
 
@@ -456,6 +496,13 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=N
         if _mejor is not None and _dist is not None and _dist <= 2.0:
             _donde.setdefault(_mejor, []).append(_k)
     abre_bucle, cierra_bucle = _avisos_de_bucle(doc)
+    # Un tramo senalado puede envolver un tramo repetido: abre antes y cierra
+    # despues.
+    abre_t, cierra_t = _avisos_de_tramos(doc, tramos or [])
+    for _k, _v in abre_t.items():
+        abre_bucle[_k] = _v + abre_bucle.get(_k, "")
+    for _k, _v in cierra_t.items():
+        cierra_bucle[_k] = cierra_bucle.get(_k, "") + _v
     voz_previa = object()
     fin_previo = -99.0
     abierto = False
@@ -707,6 +754,9 @@ def main():
     ap.add_argument("--datos", default=None)
     ap.add_argument("--compromisos", default=None,
                     help="el .json que señala dónde se habló de un compromiso")
+    ap.add_argument("--tramos", default=None,
+                    help="el .json de tramos que la entrega senala a mano, con su aviso "
+                         "ya redactado: [{desde, hasta, abre, cierra}]")
     ap.add_argument("--audio", default=None)
     ap.add_argument("--sonda", default=None,
                     help="archivo que deberia estar junto a la pagina; si no carga, "
@@ -765,7 +815,8 @@ def main():
         else:
             contenido, bloques = construir_bloques(doc, marcas, d.get("ventanas"), gana,
                                                    d.get("etiquetas"),
-                                                   compromisos_de(a.compromisos))
+                                                   compromisos_de(a.compromisos),
+                                                   tramos_de(a.tramos))
             contenido = bloque_voces(d) + contenido
             n_hall = None
             tipo = "Transcripción · superficie de trabajo"

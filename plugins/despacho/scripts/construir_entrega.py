@@ -4,7 +4,10 @@
     python construir_entrega.py <entrega.json>
 
 El .json describe UNA entrega: dónde está el material, qué grabaciones
-lleva, qué documentos la forman y qué dice el aviso de cada uno. **Ese
+lleva, qué documentos la forman y qué dice el aviso de cada uno; y, si
+hace falta, los tramos que hay que señalar a mano (`tramos_senalados`:
+audio, desde, hasta, titulo, detalle y cierre opcional), que van entre
+dos avisos en el Word y en la página sin tocar el texto transcrito. **Ese
 archivo se queda fuera del repositorio**, porque nombra el caso y las
 rutas de la máquina; aquí vive solo el cómo.
 
@@ -127,6 +130,77 @@ def marcar_bucles(cuerpo, n):
                       % (b["veces"], ts, a_hms(b["hasta"]), prueba, b["veces"] - 1, b["veces"],
                          round(b["hasta"] - b["desde"])))
     return "\n".join(lineas), len(bs)
+
+
+HORA = re.compile(r"^\d\d:\d\d:\d\d$")
+
+
+def tramos_de(config, n):
+    """Los tramos que ESTA entrega senala en la grabacion n.
+
+    Un tramo repetido lo detecta el programa; esto no. Aqui entra lo que se
+    descubrio despues, mirando -- una palabra que ninguna otra lectura
+    sostiene, un pasaje mal leido --, y que el programa no sabe ver. El texto
+    del aviso vive en la configuracion de la entrega, fuera del repositorio,
+    porque nombra lo que se dijo en el caso."""
+    out = []
+    for t in config.get("tramos_senalados") or []:
+        if t.get("audio") != n:
+            continue
+        for k in ("desde", "hasta", "titulo", "detalle"):
+            if not isinstance(t.get(k), str) or not t[k].strip():
+                falla("un tramo senalado del Audio %d no trae «%s»" % (n, k))
+        if not (HORA.match(t["desde"]) and HORA.match(t["hasta"])):
+            falla("un tramo senalado del Audio %d no trae horas HH:MM:SS" % n)
+        if hms_a_s(t["hasta"]) < hms_a_s(t["desde"]):
+            falla("el tramo senalado del Audio %d acaba antes de empezar (%s-%s)"
+                  % (n, t["desde"], t["hasta"]))
+        out.append(t)
+    return out
+
+
+def aviso_de_tramo(t):
+    """(apertura, cierre) del aviso de un tramo senalado. El mismo texto va al
+    Word y a la pagina, para que las dos digan lo mismo."""
+    abre = ("**%s** %s Va de %s a %s. **No se ha borrado ni cambiado nada del texto "
+            "transcrito**: las líneas siguen ahí, entre este aviso y el de cierre."
+            % (t["titulo"].strip(), t["detalle"].strip(), t["desde"], t["hasta"]))
+    cierra = "**Fin del tramo señalado.**"
+    if (t.get("cierre") or "").strip():
+        cierra += " " + t["cierre"].strip()
+    return abre, cierra
+
+
+def marcar_tramos(cuerpo, n, tramos):
+    """Pone cada tramo senalado entre dos avisos, DONDE ella lee.
+
+    Igual que el tramo repetido: no borra ni cambia una palabra. Corregir el
+    texto seria poner otra lectura en lugar de la que hay, y nadie ha oido el
+    tramo para saber cual es la buena. Lo que si se puede es impedir que lo
+    lea como si nada.
+
+    Localiza las lineas por su hora impresa, y se detiene si una hora no
+    esta o esta dos veces: un aviso en la linea equivocada es peor que
+    ninguno."""
+    lineas = cuerpo.split("\n")
+    for t in tramos:
+        horas = [(k, m.group(1)) for k, m in ((k, LINEA.match(l)) for k, l in enumerate(lineas)) if m]
+        a = [k for k, h in horas if h == t["desde"]]
+        z = [k for k, h in horas if h == t["hasta"]]
+        if len(a) != 1 or len(z) != 1:
+            falla("Audio %d: el tramo senalado %s-%s no se localiza en la transcripcion "
+                  "(%d lineas a las %s y %d a las %s)"
+                  % (n, t["desde"], t["hasta"], len(a), t["desde"], len(z), t["hasta"]))
+        a, z = a[0], z[0]
+        if z < a:
+            falla("Audio %d: en el tramo senalado %s-%s la ultima linea va antes que la primera"
+                  % (n, t["desde"], t["hasta"]))
+        abre, cierra = aviso_de_tramo(t)
+        lineas.insert(z + 1, "> ⚠ " + cierra)
+        lineas.insert(z + 1, "")
+        lineas.insert(a, "")
+        lineas.insert(a, "> ⚠ " + abre)
+    return "\n".join(lineas), len(tramos)
 
 
 def nombre_audio(n, hora):
@@ -300,6 +374,26 @@ def main():
         if n_bucles:
             print("  Audio %d: %d tramo(s) repetido(s) marcados en la transcripcion" % (n, n_bucles))
 
+        tramos = tramos_de(C, n)
+        cuerpo3, n_tramos = marcar_tramos(cuerpo2, n, tramos)
+        if solo_texto(cuerpo3) != solo_texto(cuerpo2):
+            falla("al senalar tramos del Audio %d cambio texto transcrito" % n)
+        cuerpo2 = cuerpo3
+        con_tramos = []
+        if n_tramos:
+            ruta_tramos = os.path.join(RENDER, "transcripciones", "Audio %d - tramos.json" % n)
+            # La pagina recibe el aviso ya redactado: asi Word y pagina dicen
+            # lo mismo, palabra por palabra, sin dos redacciones que mantener.
+            para_pagina = []
+            for t in tramos:
+                abre, cierra = aviso_de_tramo(t)
+                para_pagina.append({"desde": t["desde"], "hasta": t["hasta"],
+                                    "abre": abre, "cierra": cierra})
+            with io.open(ruta_tramos, "w", encoding="utf-8") as f:
+                json.dump(para_pagina, f, ensure_ascii=False, indent=1)
+            con_tramos = ["--tramos", ruta_tramos]
+            print("  Audio %d: %d tramo(s) senalado(s) en la transcripcion" % (n, n_tramos))
+
         md_nuevo = os.path.join(RENDER, "transcripciones", "Audio %d.md" % n)
         io.open(md_nuevo, "w", encoding="utf-8").write(nueva + sep + cuerpo2)
 
@@ -308,7 +402,7 @@ def main():
               "--datos", os.path.join(ORIGEN, "datos", "A%d - datos completos.json" % n),
               "--audio", os.path.join(SALIDA, "audio", nombre_audio(n, hora)),
               "--origen", "Transcripción automática del Audio %d (recibido por WhatsApp el %s a las %s)"
-              % (n, dia, hh), *_senalados(n))
+              % (n, dia, hh), *(_senalados(n) + con_tramos))
         py_ok(os.path.join(SCRIPTS, "md2docx.py"), md_nuevo,
               os.path.join(SALIDA, "Word", "Audio %d - transcripcion.docx" % n))
     print("Transcripciones: %d paginas y %d Word; texto transcrito identico al original"
