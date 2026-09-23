@@ -8,3 +8,6 @@ __pycache__/
 plugins/despacho/scripts/modelos/*.onnx
 plugins/despacho/scripts/modelos/*.txt
 plugins/despacho/scripts/modelos/*.yml
+
+# Residuo que deja el guardian de medir_realce al correr la suite.
+informe_realce.json

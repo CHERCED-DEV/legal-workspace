@@ -22,6 +22,9 @@ formato no trae escudo, sale sin escudo y lo dice. Los datos del acta salen del
 import argparse, io, json, os, re, sys
 
 MARCA = re.compile(r"\[\[(FALTA[^\]]*|LE TOCA A USTED[^\]]*)\]\]")
+# **negrita**, *cursiva*, `monoespaciada`. Se APLICAN: un acta con los
+# asteriscos a la vista no la firma nadie.
+INLINE = re.compile(r"\*\*(.+?)\*\*|\*([^*\n]+?)\*|`([^`\n]+?)`")
 
 
 def falla(msg):
@@ -116,8 +119,20 @@ def fila_titulo(tabla, texto, F, columnas):
 
 
 def leer_acta(md):
-    """Parte el .md en sus piezas. No interpreta: reparte."""
-    campos, desarrollo, compromisos, cierre, dirigio = [], [], [], [], []
+    """Parte el .md en sus piezas. No interpreta: reparte.
+
+    Dos cosas que se hacian mal hasta el 2026-09-22, y las dos se veian solo
+    mirando el Word terminado:
+
+      * Lo que va ANTES del primer «##» -- el aviso de que esto es un borrador
+        sin revisar -- caia en el anexo, al final del documento. El aviso que
+        mas importa, en la pagina que nadie mira. Ahora sale en la primera,
+        debajo del titulo.
+      * El «##» del anexo se consumia y no se emitia, asi que el anexo llegaba
+        sin titulo: una lista de puntos numerados sin decir de que son.
+    """
+    preambulo, campos, desarrollo = [], [], []
+    compromisos, cierre, dirigio = [], [], []
     donde = None
     for linea in md.split("\n"):
         t = linea.rstrip()
@@ -126,6 +141,8 @@ def leer_acta(md):
             donde = ("campos" if "DATOS GENERALES" in n else
                      "desarrollo" if "DESARROLLO" in n else
                      "compromisos" if "COMPROMISOS" in n else "cierre")
+            if donde == "cierre":
+                cierre.append(t)          # el titulo del anexo, que se perdia
             continue
         if t.startswith("# ") or t.strip() in ("---", ""):
             continue
@@ -136,9 +153,12 @@ def leer_acta(md):
         if donde == "dirigio" and not t.startswith("##"):
             dirigio.append(t)
             continue
+        if donde is None:
+            preambulo.append(t)
+            continue
         {"campos": campos, "desarrollo": desarrollo,
-         "compromisos": compromisos, "cierre": cierre}.get(donde, cierre).append(t)
-    return campos, desarrollo, compromisos, cierre, dirigio
+         "compromisos": compromisos, "cierre": cierre}[donde].append(t)
+    return preambulo, campos, desarrollo, compromisos, cierre, dirigio
 
 
 def main():
@@ -172,7 +192,7 @@ def main():
     if escudo and not os.path.isabs(escudo):
         escudo = os.path.join(os.path.dirname(os.path.abspath(a.formato)), escudo)
 
-    campos, desarrollo, compromisos, cierre, dirigio = leer_acta(
+    preambulo, campos, desarrollo, compromisos, cierre, dirigio = leer_acta(
         io.open(a.acta, encoding="utf-8").read())
 
     doc = docx.Document()
@@ -199,6 +219,20 @@ def main():
             r.bold = negrita
             r.font.name, r.font.size = F["cuerpo"], Pt(F["tam_cuerpo"])
 
+    for linea in preambulo:
+        if not linea.strip():
+            continue
+        q = doc.add_paragraph()
+        q.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        q.paragraph_format.space_before = Pt(10)
+        q.paragraph_format.space_after = Pt(4)
+        for trozo, es_marca, neg, cur, mono in partir(linea.strip()):
+            r = q.add_run(trozo)
+            r.font.name = "Consolas" if mono else F["cuerpo"]
+            r.font.size = Pt(F["tam_cuerpo"])
+            r.bold = True
+            r.italic = cur
+
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_before = Pt(12)
@@ -213,12 +247,12 @@ def main():
         q.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
         cursiva = linea.startswith(">")
         texto = linea.lstrip("> ").strip()
-        for trozo, es_marca in partir(texto):
+        for trozo, es_marca, neg, cur, mono in partir(texto):
             r = q.add_run(trozo)
-            r.font.name, r.font.size = F["cuerpo"], Pt(F["tam_cuerpo"])
-            r.italic = cursiva
-            if es_marca:
-                r.bold = True
+            r.font.name = "Consolas" if mono else F["cuerpo"]
+            r.font.size = Pt(F["tam_cuerpo"])
+            r.italic = cursiva or cur
+            r.bold = es_marca or neg
 
     filas = [l for l in compromisos if l.strip().startswith("|")
              and not re.match(r"^\|[\s|:-]+\|$", l.strip())]
@@ -260,11 +294,12 @@ def main():
                 texto, estilo = linea[3:], "titulo"
             q = doc.add_paragraph()
             q.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-            for trozo, es_marca in partir(texto.lstrip("> ").strip()):
+            for trozo, es_marca, neg, cur, mono in partir(texto.lstrip("> ").strip()):
                 r = q.add_run(trozo)
-                r.font.name = F["cuerpo"]
+                r.font.name = "Consolas" if mono else F["cuerpo"]
                 r.font.size = Pt(F["tam_cuerpo"] if estilo else F["tam_cuerpo"] - 1)
-                r.bold = bool(estilo) or es_marca
+                r.bold = bool(estilo) or es_marca or neg
+                r.italic = cur
 
     doc.save(a.salida)
     huecos = sum(len(MARCA.findall(l)) for l in desarrollo + compromisos)
@@ -277,20 +312,49 @@ def main():
 
 
 def partir(texto):
-    """El texto, separando las marcas de hueco para poder resaltarlas."""
+    """El texto en trozos con su forma: (texto, marca, negrita, cursiva, mono).
+
+    Hasta el 2026-09-22 esta funcion BORRABA los asteriscos y dejaba pasar los
+    acentos graves, asi que el acta salia con `00:00:57` y *asi* impresos tal
+    cual en un documento que circula con el escudo de la entidad. Ahora el
+    marcado se APLICA: negrita, cursiva y monoespaciada.
+    """
     fuera, ultimo = [], 0
     for m in MARCA.finditer(texto):
         if m.start() > ultimo:
-            fuera.append((limpio(texto[ultimo:m.start()]), False))
-        fuera.append(("[[" + m.group(1) + "]]", True))
+            fuera.extend(_con_forma(texto[ultimo:m.start()]))
+        fuera.append(("[[" + m.group(1) + "]]", True, False, False, False))
         ultimo = m.end()
     if ultimo < len(texto):
-        fuera.append((limpio(texto[ultimo:]), False))
-    return fuera or [(limpio(texto), False)]
+        fuera.extend(_con_forma(texto[ultimo:]))
+    return fuera or _con_forma(texto)
+
+
+def _con_forma(t):
+    """Aplica **negrita**, *cursiva* y `monoespaciada` en vez de imprimirlas."""
+    trozos, ultimo = [], 0
+    for m in INLINE.finditer(t):
+        if m.start() > ultimo:
+            trozos.append((_sin_ruido(t[ultimo:m.start()]), False, False, False, False))
+        if m.group(1) is not None:
+            trozos.append((_sin_ruido(m.group(1)), False, True, False, False))
+        elif m.group(2) is not None:
+            trozos.append((_sin_ruido(m.group(2)), False, False, True, False))
+        else:
+            trozos.append((_sin_ruido(m.group(3)), False, False, False, True))
+        ultimo = m.end()
+    if ultimo < len(t):
+        trozos.append((_sin_ruido(t[ultimo:]), False, False, False, False))
+    return [x for x in trozos if x[0]]
 
 
 def limpio(t):
-    return t.replace("**", "").replace("⚠", "").strip() + (" " if t.endswith(" ") else "")
+    """Solo para las celdas de DATOS GENERALES, que no llevan marcado."""
+    return t.replace("**", "").strip()
+
+
+def _sin_ruido(t):
+    return t.replace("⚠", "")
 
 
 if __name__ == "__main__":
