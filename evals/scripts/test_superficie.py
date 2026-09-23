@@ -57,6 +57,18 @@ EXPUESTOS = {
     # primer metodo que la pide. Hasta hoy la pagina se hacia a mano.
     "md2html.py":              "la superficie de trabajo donde ella oye y marca (ADR-020)",
     "verificar_compromisos.py": "que cada compromiso señalado exista de verdad",
+    # Entra con la escala de atribución de `acta-de-reunion` §2.3: dice qué
+    # menciones de una entidad están bloqueadas para atribuir, y por qué.
+    # NUNCA aprueba una atribución -- las cuatro condiciones que quedan no
+    # son de máquina, y fingirlas seria el fallo que el programa existe para
+    # evitar.
+    "atribucion_posible.py":   "hasta dónde se puede decir quién dijo qué",
+    # Entra con la escala de atribución de `acta-de-reunion` §2.3: dice qué
+    # menciones de una entidad están bloqueadas para atribuir, y por qué.
+    # NUNCA aprueba una atribución -- las cuatro condiciones que quedan no
+    # son de máquina, y fingirlas seria el fallo que el programa existe para
+    # evitar.
+    "atribucion_posible.py":   "hasta dónde se puede decir quién dijo qué",
     "estado_transcripcion.py": "en qué estado está una transcripción",
     "verificar_fidelidad.py": "comprobar que el .docx dice lo que el .md",
 }

@@ -2,7 +2,7 @@
 name: acta-de-reunion
 version: 0.1.0
 description: "Método para levantar el acta de una reunión grabada, a partir de su transcripción y de un acta anterior que ella entrega como modelo. Copia del modelo la forma y ninguno de sus datos, escribe solo lo que la grabación sostiene, y deja marcado en su sitio exacto todo lo que el audio no puede decir. No le atribuye una frase a nadie que ella no haya declarado oyendo."
-allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/estado_transcripcion.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/esqueleto_de_modelo.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
+allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/estado_transcripcion.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/esqueleto_de_modelo.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/atribucion_posible.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py *), Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py *)
 ---
 
 # acta-de-reunion — lo que consta de una reunión grabada, con la forma que ella ya usa
@@ -87,6 +87,37 @@ Y la trampa es que **una frase inventada se lee exactamente igual de bien que un
 **Y una prohibición de cálculo, que aquí muerde porque un acta va llena de fechas:** nunca sumas ni restas días sobre una fecha para producir otra, aunque el resultado no sea un plazo. Si en la grabación alguien dice *«en quince días»*, el acta escribe *«en quince días»*, no una fecha.
 
 > **Esta prohibición no es nueva y no es otra:** `redactar-escrito` §2.2 la tiene desarrollada desde antes para su caso, y es la misma. Si alguna vez las dos redacciones dicen cosas distintas, manda la de `redactar-escrito` y esta se corrige.
+
+### 2.3 La escala de atribución, y por qué casi nunca se sube de nivel
+
+Un acta escribe «la Secretaría manifestó que…», y eso **afirma dos cosas de golpe**: que la Secretaría estuvo, y que dijo eso. El acta que ella entrega como modelo lo sostiene porque **la firma quien estuvo en la sala**. Un programa no estuvo.
+
+**Cuatro niveles. El acta declara en cuál está, y el defecto es el 0.**
+
+| | Cómo se escribe | Qué hace falta |
+|---|---|---|
+| **0 · impersonal** | «Se manifestó que…» | nada. **Siempre disponible** |
+| **1 · por entidad, marcada** | «La Alcaldía manifestó `[[ATRIBUCIÓN POR CONFIRMAR]]`…» | para que ella trabaje encima. **No se entrega así** |
+| **2 · por entidad, declarada** | «La Alcaldía manifestó…» | las siete condiciones de abajo, **todas** |
+| **3 · por persona y cargo** | «El Personero manifestó…» | lo anterior **más** planilla firmada y declaración expresa |
+
+**Las siete condiciones del nivel 2. Se exigen para ESE párrafo, no para la grabación. Falla una, baja a 1; fallan dos, baja a 0.**
+
+1. **Planilla de asistencia firmada**, en el expediente. Sin ella no hay universo de candidatos: atribuir es adivinar entre entidades que no se sabe si estaban.
+2. **Una sola persona de esa entidad** en la planilla. Con dos o más, el nivel 2 queda **prohibido** para esa entidad en todo párrafo de discusión.
+3. **Autorreferencia en primera persona dentro del mismo turno** — «nosotros como corporación», «desde la Secretaría vamos a». **La mención en tercera persona NUNCA atribuye.**
+4. **Una sola entidad nombrada** en la ventana del turno. Dos o más, y baja a 1.
+5. **El tramo no está en discordia**: si las lecturas automáticas coinciden por debajo del 80 %, el texto no es fiable como texto y **no puede sostener un sujeto**.
+6. **No es discurso referido ni de un ausente.** Si alguien cuenta lo que dijo un tercero, se escribe como lo que es, y el tercero **no entra como interviniente**.
+7. **Declaración de ella, párrafo por párrafo**: quién habla ahí, de qué entidad y **cómo lo sabe**. Se guarda con su nombre y la fecha.
+
+> **La condición 3 es la que sostiene todo lo demás, y la razón es contraintuitiva.** En una mesa interinstitucional, **el nombre de una entidad aparece casi siempre porque se le habla o se habla DE ella** — y la propia se dice «nosotros». Atribuir por mención hace exactamente lo contrario de lo que debe: dispara donde la entidad es el objeto, y calla donde es el sujeto.
+
+**Medido el 2026-09-22 sobre una mesa real:** de **72 menciones** de una entidad en una grabación, **69 quedaron bloqueadas** —65 por tercera persona, 42 por haber otra entidad en la ventana, 8 por discordia— y las tres restantes **también fallaban al leerlas**. El programa `atribucion_posible.py` da ese conteo y **nunca aprueba**: dice cuáles están bloqueadas y por qué.
+
+**Y la tabla de compromisos lleva el listón más alto que el cuerpo**, porque de ella salen requerimientos: un RESPONSABLE solo se escribe si **la entidad aceptó el compromiso en primera persona** y ella lo confirma oyendo. **Que otro diga que le corresponde a X no llena esa casilla nunca.**
+
+**Si se atribuye en nivel 2 o 3, el acta lo dice de sí misma**, en un párrafo visible antes del desarrollo: quién declaró las atribuciones, que asistió a la sesión, cuándo oyó la grabación, y que **ningún programa las comprobó**. Sin esa línea, la atribución vuelve al nivel 0.
 
 ## 3. La forma sale del modelo, y su contenido no sale de ninguna parte
 
@@ -179,7 +210,44 @@ Con los apartados de la Fase 2 —**los del modelo de ella, no unos que tú recu
 
 ### Fase 4 — Redactar solo lo que la grabación sostiene
 
-**Cada frase del desarrollo lleva detrás un pasaje concreto**, con su minuto. Si no lo tiene, no se escribe.
+**Un acta no se organiza por temas: se organiza por intervenciones.** Es la diferencia entre un acta y un resumen, y se nota a la primera línea.
+
+| | Un resumen | Un acta |
+|---|---|---|
+| Unidad del párrafo | un tema | **una intervención** |
+| Sujeto | «se expuso que…» | **el actor, cuando el nivel lo permita** |
+| Orden | las categorías de quien escribe | **la secuencia de la sesión** |
+| Cierre | la descripción | **la consecuencia o el compromiso** |
+
+**Prohibido inventar categorías.** Si escribes «sobre el primer componente» y en la reunión nadie dijo «componente», esa palabra es tuya: has puesto una categoría encima del material, y el documento deja de sonar a acta.
+
+**El molde de un párrafo, tal como lo usa el modelo:**
+
+```text
+«conector» + «actor, si el nivel lo permite» + «verbo de reporte» + qué dijo
+            + la consecuencia o el compromiso que de ahí sale
+```
+
+**Los conectores hacen tres trabajos distintos y no son intercambiables:**
+
+- **De orden** — abren la serie y la avanzan. No afirman relación entre un párrafo y otro.
+- **Referenciales** — dicen que este párrafo **contesta** al anterior. Son los que convierten una lista de intervenciones en una reunión.
+- **De cambio de tema** — avisan de que se cierra un bloque y se abre otro.
+
+**Los verbos de reporte tampoco son sinónimos**, y elegir mal cambia lo que el acta afirma:
+
+| Verbo | Para qué |
+|---|---|
+| **informó** | el dato de hecho, verificable y sin carga. **Nunca una opinión** |
+| **manifestó** | la posición o la disposición de quien habla |
+| **explicó** | lo que lleva un porqué: el alcance de algo, la razón de una limitación |
+| **indicó** | el dato secundario, o el matiz de algo ya dicho |
+| **solicitó** | crea una expectativa dirigida a otro |
+| **aclaró** | delimita una competencia: de quién es el asunto |
+
+> **Y un mecanismo del modelo que conviene copiar porque es de fondo, no de estilo:** tras una limitación o una negativa, el acta introduce **lo que sí se hizo o sí se ofrece** — «no es posible invertir… **No obstante**, se ejecutaron intervenciones preventivas». **Es el contrapeso que impide que una entidad quede retratada como obstructora** por el orden en que se cuentan las cosas. Un acta que recoge las negativas de una parte y no sus ofrecimientos toma partido con la selección, que es la forma de tomar partido que no se ve.
+
+**Cuando el nivel de atribución es 0** —que es lo habitual— el molde sigue sirviendo entero: se conserva el conector, el verbo de reporte y el cierre, y **solo desaparece el sujeto**. «Frente a este punto, se manifestó que…» es un acta; «sobre el segundo componente, hay un porcentaje destinado a…» es un resumen.
 
 | Mal | Por qué está mal | Bien |
 |---|---|---|
