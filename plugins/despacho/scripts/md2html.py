@@ -432,9 +432,20 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=N
     # SEGUNDO y las lineas empiezan con decimales, asi que exigir que el segundo
     # caiga dentro dejaba fuera uno de cada cuatro -- y en silencio, que es lo
     # peor: la pagina salia con menos etiquetas de las que habia y nadie lo veia.
+    #
+    # Y el minuto que se cita es el que la linea IMPRIME, que es su inicio
+    # truncado al segundo. Buscar primero «la linea que contiene ese segundo»
+    # pegaba la etiqueta a la ANTERIOR cuando esta acaba despues: en el Audio 2
+    # de Calarca, 5 de 10 cayeron una linea arriba, y el sello «asumido» quedo
+    # sobre «y listo» en vez de sobre «quedamos con el compromiso». Por eso gana
+    # primero la linea cuyo minuto impreso es exactamente el citado.
     _donde = {}
     for _k in compromisos:
         _mejor, _dist = None, None
+        _exacta = next((_s for _s in doc["segmentos"] if int(_s["inicio"]) == _k), None)
+        if _exacta is not None:
+            _donde.setdefault(_exacta["i"], []).append(_k)
+            continue
         for _s in doc["segmentos"]:
             if _s["inicio"] <= _k < _s["fin"]:
                 _mejor, _dist = _s["i"], 0.0

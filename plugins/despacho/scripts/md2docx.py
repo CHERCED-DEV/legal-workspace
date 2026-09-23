@@ -415,13 +415,20 @@ def convierte(doc, md):
                     i += 1
                 continue
 
+            # Dos espacios al final de la linea son un salto de renglon en
+            # Markdown. Ignorarlos fundia la cabecera de cada transcripcion
+            # -- «Duracion … La produjo un programa … Voces … Marca [?]» -- en
+            # un solo parrafo, con la fidelidad al 100 %: no faltaba texto,
+            # faltaba la forma.
             buf = [L]                                                  # parrafo
+            duro = lineas[i].endswith('  ')
             i += 1
-            while (i < len(lineas) and lineas[i].strip()
+            while (not duro and i < len(lineas) and lineas[i].strip()
                    and not re.match(r'^\s*[|>#]', lineas[i])
                    and not re.match(r'^\s*[-*·]\s', lineas[i])
                    and not RE_NUMERADA.match(lineas[i])
                    and not re.match(r'^---+$', lineas[i].strip())):
+                duro = lineas[i].endswith('  ')
                 buf.append(limpia(lineas[i]))
                 i += 1
             p(doc, ' '.join(buf))
