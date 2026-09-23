@@ -63,14 +63,15 @@ EXPUESTOS = {
     # son de máquina, y fingirlas seria el fallo que el programa existe para
     # evitar.
     "atribucion_posible.py":   "hasta dónde se puede decir quién dijo qué",
-    # Entra con la escala de atribución de `acta-de-reunion` §2.3: dice qué
-    # menciones de una entidad están bloqueadas para atribuir, y por qué.
-    # NUNCA aprueba una atribución -- las cuatro condiciones que quedan no
-    # son de máquina, y fingirlas seria el fallo que el programa existe para
-    # evitar.
-    "atribucion_posible.py":   "hasta dónde se puede decir quién dijo qué",
     "estado_transcripcion.py": "en qué estado está una transcripción",
     "verificar_fidelidad.py": "comprobar que el .docx dice lo que el .md",
+    # Decimoquinto, el 2026-09-23: `genoma-de-voz` lo declara (SPEC-15, el del
+    # genoma). Es el camino cuando la separacion automatica no aguanta y
+    # `nombrar-voces` se niega a etiquetar: propone quien dice cada linea por
+    # el parecido de la huella, y solo lo que ella declara oyendo sostiene una
+    # atribucion. No nombra a nadie, no toca el audio ni la transcripcion, y
+    # nunca sobrescribe. La biblioteca de voces la hace solo con lo declarado.
+    "genoma_de_voz.py":        "quién dice cada línea, con la huella de voz y lo que ella declara",
 }
 
 # El de clase ADMIN: existe en el disco y NO se expone.

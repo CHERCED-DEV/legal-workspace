@@ -154,6 +154,7 @@ Pasa, y hay que decirlo sin adornos: **en una grabación con varias personas, un
 2. **No etiquetar.** El programa se niega, y está bien que se niegue.
 3. Si aun así ella quiere una etiqueta —porque reconoce la voz y asume el riesgo—, se añade `"acepta_advertencia": true`, y entonces **la advertencia viaja pegada a la etiqueta en todos los documentos**. No se puede quitar.
 4. **Ofrecerle lo que sí funciona**: marcar los pasajes concretos que le importan oyéndolos, uno por uno, en la página de comprobación.
+5. **O ir línea por línea en vez de por grupo:** `genoma-de-voz` **no depende del agrupamiento automático** que aquí falló. Saca la huella de voz de cada línea, propone quién habla por parecido, y ella declara oyendo; solo lo declarado sostiene una atribución. Es el camino cuando hace falta saber quién dijo qué y este método se niega.
 
 ---
 

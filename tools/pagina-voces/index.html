@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="genoma_de_voz · SPEC-15">
+<title>Voces · {{TITULO}}</title>
+</head>
+<body>
+<header class="cab">
+  <div class="cab-titulo">
+    <div class="marca">Voces de la reunión · quién dice cada línea</div>
+    <h1 id="titulo">{{TITULO}}</h1>
+    <div class="generado" id="generado"></div>
+  </div>
+  <div class="cab-der">
+    <div class="cab-guardado" id="guardado"></div>
+  </div>
+</header>
+
+<div class="franja-aviso" role="note">
+  <b>≈</b> es lo que <b>propone la máquina</b> por el parecido de las voces: nadie lo ha oído.
+  <b>✔</b> es lo que <b>usted declaró oyendo</b>. Solo lo marcado ✔ sirve para decir quién habló.
+</div>
+
+<section class="claridad" id="claridad" aria-label="Claridad de las voces"></section>
+
+<main class="cuerpo">
+  <aside class="voces" id="voces" aria-label="Las voces"></aside>
+  <section class="centro">
+    <nav class="pestanas" id="pestanas">
+      <button type="button" data-p="revisar" class="activa">Revisar</button>
+      <button type="button" data-p="lineas">Todas las líneas</button>
+      <button type="button" data-p="mapa">Mapa de voces</button>
+      <button type="button" data-p="salida">Lo que se entrega</button>
+    </nav>
+    <div id="p-revisar" class="panel"></div>
+    <div id="p-lineas" class="panel" hidden></div>
+    <div id="p-mapa" class="panel" hidden></div>
+    <div id="p-salida" class="panel" hidden></div>
+  </section>
+</main>
+
+<footer class="franjas-caja">
+  <div class="franjas-t">Las grabaciones enteras — pulse para ir a ese minuto</div>
+  <div id="franjas"></div>
+  <p class="pie">Página generada por <code>genoma_de_voz</code>. Es material derivado: el original es la grabación. No se edita a mano.</p>
+</footer>
+
+<div id="modal" class="modal" hidden></div>
+<div id="aviso" class="toast" role="status" hidden></div>
+
+<script id="datos" type="application/json">{{DATOS}}</script>
+<script type="module" src="/src/principal.js"></script>
+</body>
+</html>

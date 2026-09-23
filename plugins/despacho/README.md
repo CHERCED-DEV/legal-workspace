@@ -13,12 +13,12 @@ decisión tomada sin confirmación, que puede resultar falsa.
 
 ## 1. Qué es Despacho
 
-Un plugin de Claude que aporta **quince métodos de trabajo jurídico**. No es un programa: es
+Un plugin de Claude que aporta **dieciséis métodos de trabajo jurídico**. No es un programa: es
 texto. Cada método le dice a Claude cómo hacer una tarea concreta del despacho con un
 procedimiento fijo, qué **no** puede hacer nunca dentro de esa tarea, y cómo tiene que
 entregar el resultado.
 
-La regla que comparten los quince: **todo sale del material del caso, y de dónde sale se
+La regla que comparten los dieciséis: **todo sale del material del caso, y de dónde sale se
 dice**. Ninguno valora prueba, ninguno calcula plazos, ninguno pone derecho. Lo que el
 material no da, se marca como faltante en vez de rellenarse.
 
@@ -30,6 +30,7 @@ material no da, se marca como faltante en vez de rellenarse.
 | `/buscar-en-el-caso` | **Llama a un programa:** dice en qué archivo y en qué renglón aparece un nombre, una cifra o una fecha, sin abrir ni leer nada. Marca los renglones que son basura del OCR. **No cita y no concluye ausencia**: cero resultados no significa que no esté en el papel. |
 | `/transcribir-audio` | **Llama a un programa:** convierte grabaciones —audiencias, reuniones, notas de voz— en texto con marca de tiempo, **sin que el audio salga del computador**. Decodifica varias veces con distintas condiciones y publica **la versión que más coincide con las demás**, no la que el modelo cree más segura; separa las voces **sin ponerles nombre**; y entrega la lista de minutos donde conviene oír antes de citar. No interpreta lo que se dijo. |
 | `/nombrar-voces` | **Llama a un programa:** pone nombre y cargo a las voces de una transcripción, **pero solo lo que ella afirme**: mide antes si la separación de esa grabación aguanta y **se niega a etiquetar si no aguanta**; prepara una ficha con muestras de cada voz enlazadas al minuto para reconocerla; y deja cada etiqueta pegada a **quién la afirmó y cuándo**. No deduce nombres y **no redacta actas**. |
+| `/genoma-de-voz` | **Llama a un programa:** dice **quién habla en cada línea** de una reunión cuando la separación automática no aguanta. Saca la **huella de voz** de cada línea, propone una voz por parecido, y le prepara a ella una página donde oye y declara; la página guarda cada decisión y mide **cuánto de cada grabación quedó claro contra una meta del 85 %**, que la máquina **no alcanza sola**: sus propuestas solo cuentan cuando ella ha revisado ocho de las que daba por seguras con un acierto del 90 %. **Solo lo que ella declara sostiene una atribución**, y así sale marcado. No nombra a nadie y no toca el audio. |
 | `/hechos-con-prueba` | Recorre el material del caso y devuelve **hechos candidatos**, cada uno emparejado con el fragmento concreto que lo apoya, lo contradice o lo sitúa; los que no tienen nada detrás quedan marcados como tales. No valora prueba ni decide estrategia. |
 | `/revisar-documento` | Lee **un** documento que llegó (escrito de contraparte, requerimiento, contrato, respuesta) y devuelve en una pasada qué es, qué afirma, qué pide, qué decide, qué referencias de tiempo trae **textualmente** y qué parece exigir actuación. No calcula plazos ni dice si algo está vencido. |
 | `/estado-del-caso` | Lee la carpeta del caso y reconstruye **solo con lo que dicen los archivos** qué documentos hay y de qué fecha, qué entró y qué se produjo, cuál es la última actuación que consta y qué quedó a medias o sin respuesta. Lista aparte **las salidas del propio sistema**, con qué comando las produjo y cuáles están revisadas. No pronostica ni valora solidez. **Llama a un programa** para escribir el resumen: reemplaza solo la cabecera y **lo que ella escribió bajo `NOTAS SUYAS` se conserva byte a byte**, sin volver a pasar por el modelo. |
@@ -37,7 +38,6 @@ material no da, se marca como faltante en vez de rellenarse.
 | `/inventario-de-anexos` | Produce la **tabla de anexos numerada** lista para pegar en un escrito —qué es cada documento, quién lo produjo, de qué fecha es, a qué afirmación sirve— y, en bloque aparte, **lo que falta**, separado en sus tres clases. No decide qué se aporta. |
 | `/inventario-de-bienes` | Recorre el material e inventaría **bienes y deudas**: qué documento respalda cada uno, a nombre de quién figura según ese documento, qué fecha trae y qué valor **transcrito**; más lo que falta y las contradicciones entre documentos. Señala el bien que aparece en un papel de un tercero y **en ninguna lista de las partes**. No decide qué bienes entran, no calcula, no reparte. |
 | `/revision-de-rigor` | Pone a prueba **una conclusión, un escrito propio o un expediente entero** con una sola pregunta: qué de esto no se sostiene con el material. Cada hallazgo lleva su localizador, **lo que lo refutaría** y su grado de soporte; y cuando hay dos partes, declara qué buscó en cada una y qué encontró en cada una, incluso donde no encontró nada. No valora prueba ni declara parcialidad. |
-| `/compromisos-de-una-reunion` | Señala sobre una transcripción **cada punto donde alguien se obligó a algo**, con su minuto exacto y la frase literal que lo sostiene, y lo pinta en rojo en la página para que ella lo compruebe oyendo. Marca también lo que se discutió y **no se cerró**. Un programa comprueba que cada cita esté literal: una cita que no está es una frase que nadie dijo. No dice quién se comprometió si ella no declaró las voces, y no convierte un plazo hablado en una fecha. |
 | `/compromisos-de-una-reunion` | Señala sobre una transcripción **cada punto donde alguien se obligó a algo**, con su minuto exacto y la frase literal que lo sostiene, y lo pinta en rojo en la página para que ella lo compruebe oyendo. Marca también lo que se discutió y **no se cerró**. Un programa comprueba que cada cita esté literal: una cita que no está es una frase que nadie dijo. No dice quién se comprometió si ella no declaró las voces, y no convierte un plazo hablado en una fecha. |
 | `/acta-de-reunion` | Levanta el acta de una reunión grabada a partir de su transcripción y de **un acta anterior que ella entrega como modelo**: copia del modelo la forma —apartados, orden, fórmulas— y **ninguno de sus datos**, escribe solo lo que la grabación sostiene y deja marcado en su sitio todo lo que el audio no puede decir (asistentes, lugar, hora, convocatoria). **No atribuye una frase a nadie que ella no haya declarado oyendo**, y un compromiso entra solo si alguien lo asume en la grabación. |
 | `/redactar-escrito` | A partir de material **que ella ya revisó**, arma un borrador en Word con la parte fáctica redactada, la estructura montada y **cada hueco marcado a la vista**; entrega aparte un segundo archivo con de dónde sale cada frase. No redacta fundamentos de derecho, no cita normas ni jurisprudencia, no califica jurídicamente nada. |
@@ -71,7 +71,7 @@ Lo que eso habilita y lo que no:
 **POR COMPROBAR — con material real de ella, antes de sentarse a trabajar.**
 
 - **Qué hace con un PDF escaneado sin capa de texto.** Es el formato en que llegan la mitad de
-  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los quince parten de
+  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los dieciséis parten de
   leer el material y citar página. Hay que saber si lo lee, si lo lee mal en silencio, o si avisa
   de que no puede — y las tres respuestas llevan a instrucciones distintas para ella.
 
@@ -242,7 +242,7 @@ Un Core local instalado bajo ese supuesto sin comprobarlo simplemente no aparece
    inexistente, hay que mirarlo en su cuenta. Lo que se encuentre se le dice a ella tal cual,
    incluido que no se encontró nada; y si no lo hay, el diseño del Core tiene que asumirlo,
    no desearlo.
-2. Verificar qué ve la sesión de la carpeta del caso en cada modo. Los quince métodos leen y
+2. Verificar qué ve la sesión de la carpeta del caso en cada modo. Los dieciséis métodos leen y
    escriben archivos de su carpeta; conviene saber con qué ruta trabaja realmente antes de
    apoyar nada encima.
 
@@ -265,18 +265,18 @@ legal-workspace/
 │     ├─ GUIA-PARA-LA-ABOGADA.md  <- lo que lee ella; viaja con el plugin
 │     ├─ INSTALACION.md         <- la hoja de instalacion (SPEC-11)
 │     ├─ scripts/               <- la oficina de programas. Python es OPCIONAL:
-│     │  │                         sin el los quince comandos funcionan igual,
+│     │  │                         sin el los dieciseis comandos funcionan igual,
 │     │  │                         mas lentos, y cada uno declara que no lo tuvo
 │     │  ├─ preparar_material.py      <- descomprime, ordena, extrae texto (OCR)
 │     │  ├─ transcribir_audio.py      <- grabaciones a texto, con voces y marcas
 │     │  ├─ nombrar_voces.py          <- que voz es quien, segun ella; nunca deduce
+│     │  ├─ genoma_de_voz.py          <- quien dice cada linea: la huella propone, ella declara
 │     │  ├─ estado_transcripcion.py   <- la puerta: que falta antes de producir
 │     │  ├─ verdad_de_referencia.py   <- quien habla de verdad, marcado a oido
 │     │  ├─ alinear_tiempos.py        <- que el minuto suene donde dice la linea
 │     │  ├─ construir_entrega.py      <- arma el paquete que recibe ella, y lo comprueba
 │     │  ├─ esqueleto_de_modelo.py    <- que forma tiene el documento que ella dio de ejemplo
 │     │  ├─ verificar_compromisos.py  <- que cada compromiso senalado exista de verdad
-│     │  ├─ atribucion_posible.py     <- hasta donde se puede decir quien dijo que
 │     │  ├─ separar_voces.py          <- separar otra vez las voces, sin re-transcribir
 │     │  ├─ acta_en_formato.py        <- el acta con el membrete del despacho
 │     │  ├─ atribucion_posible.py     <- hasta donde se puede decir quien dijo que
@@ -297,11 +297,13 @@ legal-workspace/
 │     │  ├─ modelos/PROCEDENCIA.md    <- de donde salen los modelos y con que licencia
 │     │  ├─ plantilla/pagina.html     <- ARTEFACTO COMPILADO: no se edita aqui.
 │     │  │                               Sale de tools/ (abajo) y lo vigila una prueba
+│     │  ├─ plantilla/voces.html      <- la pagina de genoma_de_voz; ARTEFACTO COMPILADO
+│     │  │                               desde tools/pagina-voces/
 │     │  └─ README-*.md               <- uno por programa que lo necesita
-│     └─ skills/                <- los QUINCE metodos. La carpeta es el nombre del comando
+│     └─ skills/                <- los DIECISEIS metodos. La carpeta es el nombre del comando
 │        ├─ acta-de-reunion/         ├─ inventario-de-bienes/
-│        ├─ compromisos-de-una-reunion/                       
-│        ├─ compromisos-de-una-reunion/                       
+│        ├─ compromisos-de-una-reunion/
+│        ├─ genoma-de-voz/
 │        ├─ buscar-en-el-caso/       ├─ nombrar-voces/
 │        ├─ cronologia/              ├─ preguntas-de-derecho/
 │        ├─ estado-del-caso/         ├─ preparar-material/
@@ -310,6 +312,7 @@ legal-workspace/
 │        │     <- apoyo del metodo   ├─ revision-de-rigor/
 │        ├─ inventario-de-anexos/   └─ transcribir-audio/
 ├─ tools/
+│  ├─ pagina-voces/            <- las FUENTES de plantilla/voces.html (ADR-020)
 │  └─ pagina-despacho/         <- las FUENTES de plantilla/pagina.html (ADR-020).
 │                                 Se compila aqui con Node; lo que viaja al plugin
 │                                 es el resultado. La maquina de ella NO necesita Node.
@@ -342,7 +345,7 @@ tener nada que hacer allí.
 
 1. Crear la carpeta `plugins/despacho/skills/<nombre-del-comando>/`. El nombre de la carpeta
    es el nombre del comando: `skills/contar-terminos/` -> `/contar-terminos`.
-2. Dentro, un `SKILL.md` que empiece por el bloque de metadatos, igual que los quince que ya
+2. Dentro, un `SKILL.md` que empiece por el bloque de metadatos, igual que los dieciséis que ya
    están:
    ```yaml
    ---

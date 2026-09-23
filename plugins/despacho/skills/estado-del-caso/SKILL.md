@@ -186,7 +186,6 @@ Recorres las tres carpetas y anotas, por cada archivo: **el nombre tal como est�
 | `Revisión de rigor - <qué se revisó> - <fecha>` | `/revision-de-rigor` |
 | `Acta - <reunión> - <fecha>` **y** `Acta - De dónde sale cada frase - <fecha>` | `/acta-de-reunion` — **el segundo dice de qué minuto sale cada frase del primero** |
 | `Compromisos senalados/<código> - compromisos.json` | `/compromisos-de-una-reunion` — **no es una salida que se lea**: es de donde salen las etiquetas rojas de la página |
-| `Compromisos senalados/<código> - compromisos.json` | `/compromisos-de-una-reunion` — **no es una salida que se lea**: es de donde salen las etiquetas rojas de la página |
 | **`<radicado> — Borrador — <clase de escrito> — <fecha>`** y **`<radicado> — De dónde sale cada frase — <fecha>`** | **`/redactar-escrito`** |
 | `0-Estado del caso — anterior (<fecha>)` | este mismo comando, en una pasada anterior |
 | `Texto de referencia - <fecha>` | `/preparar-material` — **y no es el documento** (§2) |
@@ -195,6 +194,8 @@ Recorres las tres carpetas y anotas, por cada archivo: **el nombre tal como est�
 | `Transcripcion - <grabación> - <fecha>` **con `.md`, `.txt`, `.srt` y `.vtt`** | `/transcribir-audio` — **cuatro archivos por grabación, y son el mismo texto**: cuéntalos como una salida y dilo |
 | `00 - REGISTRO DE TRANSCRIPCION - <fecha>` **y** `00 - PASAJES A VERIFICAR - <fecha>` | `/transcribir-audio` — el primero es la receta, el segundo los minutos donde conviene oír |
 | `datos/<código> - datos completos.json` | `/transcribir-audio` — cada palabra con su tiempo y su probabilidad. **No es una salida que se lea**: es de donde salen las demás |
+| `Voces - <reunión> - <fecha>.html` **y** `genoma - <reunión> - <fecha>.json` | `/genoma-de-voz` — la página donde ella oye y declara quién habla, y sus datos. **Lo que ella exporta de esa página** se llama `voces declaradas - <reunión>.json`: es **su declaración**, no una salida del sistema |
+| `Transcripcion con voces - <grabación> - <fecha>`, `Declaracion de voces - <reunión> - <fecha>` **y** `voces por linea - <reunión> - <fecha>.json` | `/genoma-de-voz` — la transcripción con quién dice cada línea (**✔** lo declaró ella, **≈** lo propone la máquina y nadie lo ha oído), el registro de la declaración, y lo mismo en datos |
 
 > **Y ojo con dos cosas de esta tabla, que si no se saben la vuelven inútil.**
 >

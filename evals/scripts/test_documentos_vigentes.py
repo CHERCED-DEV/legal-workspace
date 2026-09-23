@@ -59,18 +59,19 @@ class LosTitularesSiguenSiendoCiertos(unittest.TestCase):
                      if patron.search(p.read_text(encoding="utf-8"))]
         self.assertEqual([], culpables)
 
-    def test_2bis_son_quince_metodos(self):
+    def test_2bis_son_dieciseis_metodos(self):
         """El numero que mas veces se ha escrito mal en este repositorio."""
         metodos = sorted(p.parent.name for p in SKILLS.glob("*/SKILL.md"))
-        self.assertEqual(15, len(metodos), metodos)
-        self.assertIn(u"quince métodos", seccion0())
+        self.assertEqual(16, len(metodos), metodos)
+        self.assertIn(u"dieciséis métodos", seccion0())
 
-    def test_3_once_de_los_quince_estan_registrados_como_ejecutados(self):
+    def test_3_once_de_los_dieciseis_estan_registrados_como_ejecutados(self):
         """§0.3, y la excepcion se nombra en vez de esconderse.
 
-        Once tienen pasada escrita. Los otros dos -- `transcribir-audio` y
-        `nombrar-voces` -- SI se han corrido sobre material real en la
-        maquina del dueno, pero su registro no esta escrito aqui. Esta prueba fija las dos cosas -- que los once
+        Once tienen pasada escrita. De los otros, `transcribir-audio` y
+        `nombrar-voces` SI se han corrido sobre material real en la maquina del
+        dueno, y las cifras de `genoma-de-voz` (2026-09-23) salen de esa misma
+        maquina, pero ninguno tiene su registro escrito aqui. Esta prueba fija las dos cosas -- que los once
         siguen registrados, y que el que falta es exactamente ese y esta
         declarado en el §0. **Si un dia se corre, esta prueba falla**, y eso
         es lo que se quiere: obliga a escribir su registro y a borrar de aqui
@@ -81,11 +82,12 @@ class LosTitularesSiguenSiendoCiertos(unittest.TestCase):
                              for f in notas.glob("pasada-*.md"))
         sin_registrar = sorted(p.parent.name for p in SKILLS.glob("*/SKILL.md")
                                if p.parent.name not in registro)
-        self.assertEqual(["acta-de-reunion", "compromisos-de-una-reunion", "nombrar-voces",
+        self.assertEqual(["acta-de-reunion", "compromisos-de-una-reunion",
+                          "genoma-de-voz", "nombrar-voces",
                           "transcribir-audio"], sin_registrar,
-                         "el §0.3 dice que once de los quince se ejecutaron, y "
+                         "el §0.3 dice que once de los dieciséis se ejecutaron, y "
                          "la cuenta del disco ya no es esa")
-        self.assertIn(u"Once de los quince se han ejecutado", seccion0())
+        self.assertIn(u"Once de los dieciséis se han ejecutado", seccion0())
         self.assertIn(u"no se ha corrido aquí", seccion0())
 
     def test_6_la_cadena_esta_completa(self):
@@ -109,16 +111,16 @@ class LosTitularesSiguenSiendoCiertos(unittest.TestCase):
                          "el §0.7 dice 55 y en el disco hay %d" % cuantos)
 
     def test_8_el_plugin_ejecuta_los_programas_que_dice(self):
-        """§0.8: «veinticinco programas, de los cuales catorce se exponen».
+        """§0.8: «veintiséis programas, de los cuales quince se exponen».
 
-        Dos numeros y no uno, porque decir solo «catorce» sugeriria que el
-        modelo puede invocar catorce, y son ocho. Cual es cual lo decide
+        Dos numeros y no uno, porque decir solo el total sugeriria que el
+        modelo puede invocarlos todos, y son quince. Cual es cual lo decide
         `test_superficie.py`; aqui solo se fija que el documento no mienta.
         """
         programas = sorted(p.name for p in SCRIPTS.glob("*.py"))
-        self.assertEqual(25, len(programas), programas)
-        self.assertIn(u"veinticinco programas", seccion0())
-        self.assertIn(u"catorce se exponen al modelo", seccion0())
+        self.assertEqual(26, len(programas), programas)
+        self.assertIn(u"veintiséis programas", seccion0())
+        self.assertIn(u"quince se exponen al modelo", seccion0())
 
 
 class LoQueEsteArchivoNoComprueba(unittest.TestCase):
@@ -287,9 +289,9 @@ class ElArbolDelREADMEDiceLoQueHay(unittest.TestCase):
 
     def test_el_arbol_dice_cuantos_son_y_es_verdad(self):
         t = self.ARBOL.read_text(encoding="utf-8")
-        self.assertEqual(15, len(list(SKILLS.glob("*/SKILL.md"))))
-        self.assertIn(u"los QUINCE metodos", t)
-        self.assertIn(u"sin el los quince comandos funcionan igual", t)
+        self.assertEqual(16, len(list(SKILLS.glob("*/SKILL.md"))))
+        self.assertIn(u"los DIECISEIS metodos", t)
+        self.assertIn(u"sin el los dieciseis comandos funcionan igual", t)
 
 
 if __name__ == "__main__":

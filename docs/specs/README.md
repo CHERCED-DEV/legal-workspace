@@ -109,6 +109,7 @@ Las tres columnas son distintas a propósito. **Decidido no es construido, y con
 | [SPEC-12](SPEC-12-lo-que-la-pasada-atrapo.md) | Que cada pasada diga qué se corrigió a sí misma | defecto | `PM-M-1` (c) y (d) · G23 | **Ejecutada** en los once — falta una pasada real que produzca cifras |
 | [SPEC-13](SPEC-13-reindexar-por-pieza.md) | Abrir cada pieza una vez, no veintiuna | defecto | `PM-M-4` · G24 · §2 ítem 8 | **Ejecutada** en los dos que lo tenían vivo — los dos inventarios ya tenían la forma |
 | [SPEC-14](SPEC-14-el-conteo-lo-hace-un-programa.md) | El conteo que se pedía a ojo | defecto | **la primera pasada real sobre el `caso-03`** | **Ejecutada.** Es la única spec cuyo defecto no salió de leer nada: salió de correr el método |
+| [SPEC-15](SPEC-15-genoma-de-voz.md) | El genoma de voz: quién dice cada línea, con la última palabra de ella | capacidad | la separación automática le daba el 96,5 % de una grabación real a una sola voz | **Construida el 2026-09-23** — falta la primera sesión de ella con la página |
 
 > **Cuenta honesta, al final del 2026-09-05: doce escritas y ejecutadas, dos retiradas, ninguna pendiente de escribir.** Las dos retiradas —SPEC-02 y SPEC-07— lo fueron por la misma razón: **el defecto que iban a arreglar ya estaba arreglado**. «Pendiente» aquí significaba que el archivo no existía, y hoy no queda ninguna en ese estado.
 

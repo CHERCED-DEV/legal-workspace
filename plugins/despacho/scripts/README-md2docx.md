@@ -10,13 +10,13 @@
 
 `H-13` lo predijo: *«tablas de Markdown en `.txt` pegadas en Word son una hilera de tuberías; "lista para pegar" falla al primer intento»*. El pase real del 2026-08-27/28 lo confirmó y añadió lo que la predicción no decía: el problema no es el pegado, **es la forma del entregable**. La usuaria no abre Markdown.
 
-**Ocho de los quince `SKILL.md` prometen tablas «listas para pegar».** Esa promesa solo se cumple si sale una tabla de verdad.
+**Ocho de los dieciséis `SKILL.md` prometen tablas «listas para pegar».** Esa promesa solo se cumple si sale una tabla de verdad.
 
 ## Requisitos
 
 **Python con `python-docx`** (licencia MIT). Nada más: **un solo tiempo de ejecución, sin rutas fijas** (ADR-018).
 
-**Y es opcional.** Sin él los quince comandos funcionan igual: escriben el contenido en texto en la misma carpeta y **lo declaran**. Ningún comando exige el conversor para arrancar, y cada uno dice cuándo no lo tuvo. **Nunca se da por hecho un archivo que no se vio quedar.**
+**Y es opcional.** Sin él los dieciséis comandos funcionan igual: escriben el contenido en texto en la misma carpeta y **lo declaran**. Ningún comando exige el conversor para arrancar, y cada uno dice cuándo no lo tuvo. **Nunca se da por hecho un archivo que no se vio quedar.**
 
 ## Uso
 

@@ -1,0 +1,16 @@
+{
+  "name": "pagina-voces",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "La pagina del genoma de voz (SPEC-12): ella oye cada linea y dice quien habla. Se compila AQUI; el resultado viaja compilado. La maquina de la abogada NO necesita Node.",
+  "scripts": {
+    "build": "vite build --emptyOutDir",
+    "publicar": "vite build --emptyOutDir && node publicar.mjs",
+    "probar": "node prueba-genoma.mjs"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11",
+    "vite-plugin-singlefile": "^2.0.3"
+  }
+}

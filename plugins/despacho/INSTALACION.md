@@ -13,27 +13,27 @@ Esta hoja **es para quien instala**, no para quien usa. Termina exactamente dond
 | | |
 |---|---|
 | **Claude Code**, instalado y con sesión iniciada | Es la ventana donde se escribe |
-| **Conexión** | Solo para instalar y para trabajar. El plugin son quince métodos de texto más una carpeta de programas |
+| **Conexión** | Solo para instalar y para trabajar. El plugin son dieciséis métodos de texto más una carpeta de programas |
 | **Nada más** | No hay servidor, ni base de datos, ni clave que pedir, ni nada que pagar aparte de la suscripción de ella |
 
-**No hace falta** Git ni saber programar. **Python es opcional y hace la diferencia:** sin él los quince comandos funcionan igual —el modelo hace a mano el trabajo mecánico, más lento y gastando mucha más lectura—; con él, la oficina de programas del plugin prepara el material, busca dentro del expediente, produce los Word y **conserva intactas sus notas del archivo de estado**. **Ningún comando exige Python para arrancar, y todos declaran cuándo no lo tuvieron.**
+**No hace falta** Git ni saber programar. **Python es opcional y hace la diferencia:** sin él, catorce de los dieciséis comandos funcionan igual —el modelo hace a mano el trabajo mecánico, más lento y gastando mucha más lectura—, y **los dos que necesitan oír una grabación, `/transcribir-audio` y `/genoma-de-voz`, no lo fingen: dicen que no pueden**; con él, la oficina de programas del plugin prepara el material, busca dentro del expediente, produce los Word y **conserva intactas sus notas del archivo de estado**. **Ningún comando exige Python para arrancar, y todos declaran cuándo no lo tuvieron.**
 
-Si va a instalarlo: `python.org`, versión 3.9 o posterior, marcando «Add to PATH». Las bibliotecas las pide cada programa cuando le hacen falta, diciendo cuál — **y desde el 2026-09-21 eso es cierto en todos**: dos reventaban con un error de Python en pantalla, y se comprobó uno por uno. Los catorce programas de hoy lo cumplen, y hay una prueba que falla el día que uno deje de cumplirlo.
+Si va a instalarlo: `python.org`, versión 3.9 o posterior, marcando «Add to PATH». Las bibliotecas las pide cada programa cuando le hacen falta, diciendo cuál — **y desde el 2026-09-21 eso es cierto en todos**: dos reventaban con un error de Python en pantalla, y se comprobó uno por uno. Todos los programas de hoy lo cumplen, y hay una prueba que falla el día que uno deje de cumplirlo.
 
 ### Las bibliotecas, y qué se pierde sin cada una
 
-**No hace falta instalarlas todas, y ninguna hace falta para que los quince comandos arranquen.** La tabla está aquí para que quien instala pueda decidir, en vez de descubrirlo cuando un comando lo diga:
+**No hace falta instalarlas todas, y ninguna hace falta para que los dieciséis comandos arranquen.** La tabla está aquí para que quien instala pueda decidir, en vez de descubrirlo cuando un comando lo diga:
 
 | Si instala | Con qué | Qué gana | Qué pasa sin ella |
 |---|---|---|---|
 | **python-docx** | `pip install python-docx` | **Las entregas en Word** — y la comprobación de que el Word dice lo mismo que el `.md` | El comando entrega el contenido **en texto y lo declara**. La entrega existe, peor, y diciéndolo |
 | **pypdf** | `pip install pypdf` | Que la búsqueda mire **dentro de los PDF** | La búsqueda no ve esos PDF **y lo dice en su salida** |
 | **Pillow · numpy · rapidocr-onnxruntime** | `pip install pillow numpy rapidocr-onnxruntime` | **Sacar el texto de las fotografías y los escaneados** — es lo que convierte 23 fotos de un expediente en algo con lo que se puede trabajar | El preparador monta la carpeta y copia los originales igual, **sin extraer texto**. Los comandos leen las imágenes a mano: más lento y mucha más lectura |
-| **faster-whisper · av · numpy** | `pip install faster-whisper av numpy` | **Pasar una grabación a texto** en esta misma máquina, sin que el audio salga de ella | `/transcribir-audio` **no transcribe nada y lo dice**, nombrando la biblioteca que falta. Es la única de esta tabla sin camino degradado: el resto del caso sigue, la grabación se declara y no se usa |
-| **sherpa-onnx** | `pip install sherpa-onnx` | Que la transcripción **separe las voces** —«Hablante 1», «Hablante 2»— sin ponerles nombre | La transcripción sale igual, **sin números de hablante y avisando de ello**. Se pierde saber si dos frases seguidas son de la misma persona |
+| **faster-whisper · av · numpy** | `pip install faster-whisper av numpy` | **Pasar una grabación a texto** en esta misma máquina, sin que el audio salga de ella | `/transcribir-audio` **no transcribe nada y lo dice**, nombrando la biblioteca que falta. Junto con `/genoma-de-voz`, es lo único de esta tabla sin camino degradado —el modelo no puede oír ni calcular una huella de voz—: el resto del caso sigue, la grabación se declara y no se usa |
+| **sherpa-onnx** | `pip install sherpa-onnx` | Que la transcripción **separe las voces** —«Hablante 1», «Hablante 2»— sin ponerles nombre, y que `/genoma-de-voz` saque la **huella de voz** de cada línea | La transcripción sale igual, **sin números de hablante y avisando de ello**. Se pierde saber si dos frases seguidas son de la misma persona. `/genoma-de-voz` **no prepara nada y lo dice** |
 | **Tesseract** *(programa, no biblioteca)* | Ver lo que dice `segunda_opinion.py` al correrlo | Una **segunda opinión** sobre lo que el primer reconocedor leyó mal | Ese control no existe, y el programa lo dice con esas palabras |
 
-> **Lo que ninguna biblioteca cambia:** los quince métodos, sus reglas y lo que se niegan a hacer. Python no añade criterio — **añade que el trabajo mecánico lo haga un programa** en vez de gastarse la lectura del modelo en él.
+> **Lo que ninguna biblioteca cambia:** los dieciséis métodos, sus reglas y lo que se niegan a hacer. Python no añade criterio — **añade que el trabajo mecánico lo haga un programa** en vez de gastarse la lectura del modelo en él.
 
 **Y el orden si va a instalar solo una:** `python-docx`. Es la que produce el archivo que ella abre.
 
@@ -84,9 +84,9 @@ Cuatro cosas, y las cuatro están sin comprobar:
 | Qué | Por qué importa |
 |---|---|
 | **Con qué nombre aparecen los comandos** | Es el único paso que nadie ha visto nunca |
-| **Que aparezcan los quince**, no seis | Hasta el 2026-09-01 la documentación decía seis. Si salen menos de doce, algo no se instaló |
+| **Que aparezcan los dieciséis**, no seis | Hasta el 2026-09-01 la documentación decía seis. Si salen menos de dieciséis, algo no se instaló |
 | **Que no escriba en `1-Documentos recibidos/`** | Es la regla dura de todo el sistema. Se comprueba mirando la fecha de modificación de esa carpeta antes y después |
-| **Qué hace con un PDF escaneado sin texto** | Si no lo lee, no funciona ninguno de los quince con material fotografiado. **Con Python, `/preparar-material` lo resuelve antes**: extrae el texto una vez y los demás trabajan sobre él. Conviene probarlo con un archivo real **antes** de sentarse a trabajar |
+| **Qué hace con un PDF escaneado sin texto** | Si no lo lee, no funciona ninguno de los dieciséis con material fotografiado. **Con Python, `/preparar-material` lo resuelve antes**: extrae el texto una vez y los demás trabajan sobre él. Conviene probarlo con un archivo real **antes** de sentarse a trabajar |
 
 ---
 
@@ -96,7 +96,7 @@ Cuatro cosas, y las cuatro están sin comprobar:
 |---|---|
 | No encuentra el catálogo | Que el nombre esté bien escrito, y que haya conexión. El repositorio es público |
 | Instala pero no aparecen comandos | Probar en una **sesión nueva**: está sin comprobar si aparecen en una sesión ya abierta |
-| Aparecen menos de quince | Falta alguno de los `SKILL.md`. Se ve comparando con la lista del `README.md` |
+| Aparecen menos de dieciséis | Falta alguno de los `SKILL.md`. Se ve comparando con la lista del `README.md` |
 | Un comando arranca y no hace lo que dice | **Eso no es de instalación, es de método.** Mande la salida: se corrige el `SKILL.md` y se vuelve a instalar |
 
 **Y una regla que vale para todo lo anterior:** si el resultado no coincide con lo que dice esta hoja, **no lo dé por bueno «porque más o menos funciona»**. La primera instalación es la única oportunidad de ver el producto con ojos limpios, y lo que se anote aquí es lo que corrige la documentación para todos los demás.
