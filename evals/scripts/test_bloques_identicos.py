@@ -172,7 +172,7 @@ class LaSimetriaTieneUnDueno(unittest.TestCase):
         """
         clausula = ("nunca sumas ni restas días sobre una fecha para producir "
                     "otra, aunque el resultado no sea un plazo")
-        escriben_fechas = ["acta-de-reunion", "cronologia", "estado-del-caso", "hechos-con-prueba",
+        escriben_fechas = ["acta-de-reunion", "compromisos-de-una-reunion", "cronologia", "estado-del-caso", "hechos-con-prueba",
                            "inventario-de-anexos", "inventario-de-bienes",
                            "redactar-escrito", "revisar-documento"]
         for p in TODAS:

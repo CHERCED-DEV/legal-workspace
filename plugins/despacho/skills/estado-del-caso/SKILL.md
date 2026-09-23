@@ -185,6 +185,8 @@ Recorres las tres carpetas y anotas, por cada archivo: **el nombre tal como est�
 | `Inventario de bienes — <caso> — <fecha> — pasada <n>` | `/inventario-de-bienes` |
 | `Revisión de rigor - <qué se revisó> - <fecha>` | `/revision-de-rigor` |
 | `Acta - <reunión> - <fecha>` **y** `Acta - De dónde sale cada frase - <fecha>` | `/acta-de-reunion` — **el segundo dice de qué minuto sale cada frase del primero** |
+| `Compromisos senalados/<código> - compromisos.json` | `/compromisos-de-una-reunion` — **no es una salida que se lea**: es de donde salen las etiquetas rojas de la página |
+| `Compromisos senalados/<código> - compromisos.json` | `/compromisos-de-una-reunion` — **no es una salida que se lea**: es de donde salen las etiquetas rojas de la página |
 | **`<radicado> — Borrador — <clase de escrito> — <fecha>`** y **`<radicado> — De dónde sale cada frase — <fecha>`** | **`/redactar-escrito`** |
 | `0-Estado del caso — anterior (<fecha>)` | este mismo comando, en una pasada anterior |
 | `Texto de referencia - <fecha>` | `/preparar-material` — **y no es el documento** (§2) |

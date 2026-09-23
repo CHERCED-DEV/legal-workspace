@@ -53,6 +53,10 @@ EXPUESTOS = {
     # copia la forma de un documento modelo necesita leerla él mismo, y leer
     # una forma no produce nada para ella — mide si el modelo se entendió.
     "esqueleto_de_modelo.py":  "qué forma tiene el documento que ella dio de ejemplo",
+    # Sube a la superficie el 2026-09-22: `compromisos-de-una-reunion` es el
+    # primer metodo que la pide. Hasta hoy la pagina se hacia a mano.
+    "md2html.py":              "la superficie de trabajo donde ella oye y marca (ADR-020)",
+    "verificar_compromisos.py": "que cada compromiso señalado exista de verdad",
     "estado_transcripcion.py": "en qué estado está una transcripción",
     "verificar_fidelidad.py": "comprobar que el .docx dice lo que el .md",
 }
@@ -73,7 +77,6 @@ RESERVADOS = {
 A_MANO = {
     "medir_realce.py":         "instrumentación de desarrollo sobre material real",
     "comparar_iteraciones.py": "compara pasadas del mismo audio; no dice cuál es mejor",
-    "md2html.py":              "la superficie de trabajo (ADR-020); aún no la pide ningún método",
     "verificar_citas.py":      "comprueba citas contra transcripciones; aún no la pide ningún método",
     # El 2026-09-22, con la validacion 3 de ADR-017 por fin en marcha: saca la
     # hoja para que una PERSONA marque quien habla, y mide contra ella. No lo
@@ -89,6 +92,13 @@ A_MANO = {
     # al modelo porque BORRA Y REHACE la carpeta de salida: eso lo lanza una
     # persona que sabe lo que va a rehacer.
     "construir_entrega.py":    "arma el paquete que recibe ella, y lo comprueba",
+    # Separa otra vez las voces sin volver a transcribir. No se expone porque
+    # el resultado puede salir PEOR -- el 2026-09-22, en una grabacion, paso
+    # del 96 % al 97 % y no se instalo --: eso lo mira una persona antes.
+    "separar_voces.py":        "volver a separar las voces sin volver a transcribir",
+    # El acta con el membrete de la entidad. A mano porque necesita un
+    # `formato.json` que describe a ESE despacho y vive fuera del repositorio.
+    "acta_en_formato.py":      "el acta con el membrete y la forma del despacho",
 }
 
 # Y una tercera clase, que aparecio el 2026-09-07 cuando el canario disparo

@@ -349,6 +349,43 @@ def texto_con_dudas(seg, umbral_importante=0.70, umbral_resto=0.45):
     return armado
 
 
+def compromisos_de(ruta):
+    """{segundo de inicio: compromiso} leido del archivo que los senala.
+
+    Va en un archivo aparte y no en los datos de la transcripcion porque son
+    dos cosas distintas: la transcripcion dice lo que se oye, y esto dice
+    donde alguien se obligo. Lo segundo es una lectura, y las lecturas se
+    revisan.
+    """
+    if not ruta or not os.path.isfile(ruta):
+        return {}
+    try:
+        d = json.load(io.open(ruta, encoding="utf-8"))
+    except Exception:
+        return {}
+    fuera = {}
+    for c in (d.get("compromisos") or []):
+        m = re.match(r"(\d+):(\d\d):(\d\d)", (c.get("minuto") or "").strip())
+        if not m:
+            continue
+        seg = int(m.group(1)) * 3600 + int(m.group(2)) * 60 + int(m.group(3))
+        fuera[seg] = c
+    return fuera
+
+
+def etiqueta_compromiso(c):
+    """Lo que ella ve: una etiqueta roja que se lee de un vistazo, y debajo
+    de que va. El minuto ya lo lleva la linea; aqui no se repite."""
+    estado = "sin cerrar" if not c.get("cerrado", True) else "asumido"
+    plazo = (c.get("plazo") or "").strip()
+    detalle = html.escape(c.get("de_que_se_trata") or "")
+    if plazo and plazo.lower() not in ("no consta", ""):
+        detalle += ' <span class="compromiso-plazo">plazo: %s</span>' % html.escape(plazo)
+    return ('<p class="compromiso"><span class="compromiso-sello">COMPROMISO</span>'
+            '<span class="compromiso-estado">%s</span> %s</p>'
+            % (html.escape(estado), detalle))
+
+
 def _avisos_de_bucle(doc):
     """{indice de segmento: cartel} para abrir y cerrar cada tramo repetido.
 
@@ -381,7 +418,7 @@ def _avisos_de_bucle(doc):
     return abre, cierra
 
 
-def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None):
+def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=None):
     """Devuelve (html, bloques del contrato). El HTML se lee sin JavaScript;
     el contrato lleva los metadatos que la pagina necesita para trabajar.
 
@@ -390,6 +427,23 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None):
     ver quien habla ni que dice. Un turno se lee como una intervencion.
     """
     partes, bloques = [], []
+    compromisos = compromisos or {}
+    # A que linea se pega cada compromiso. Los minutos vienen con resolucion de
+    # SEGUNDO y las lineas empiezan con decimales, asi que exigir que el segundo
+    # caiga dentro dejaba fuera uno de cada cuatro -- y en silencio, que es lo
+    # peor: la pagina salia con menos etiquetas de las que habia y nadie lo veia.
+    _donde = {}
+    for _k in compromisos:
+        _mejor, _dist = None, None
+        for _s in doc["segmentos"]:
+            if _s["inicio"] <= _k < _s["fin"]:
+                _mejor, _dist = _s["i"], 0.0
+                break
+            _d = abs(_s["inicio"] - _k)
+            if _dist is None or _d < _dist:
+                _mejor, _dist = _s["i"], _d
+        if _mejor is not None and _dist is not None and _dist <= 2.0:
+            _donde.setdefault(_mejor, []).append(_k)
     abre_bucle, cierra_bucle = _avisos_de_bucle(doc)
     voz_previa = object()
     fin_previo = -99.0
@@ -438,6 +492,10 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None):
 
         if s['i'] in abre_bucle:
             partes.append(abre_bucle[s['i']])
+        # La etiqueta va DELANTE de la linea: asi el ojo la encuentra bajando
+        # por la pagina sin tener que leer el texto.
+        for _seg in _donde.get(s["i"], []):
+            partes.append(etiqueta_compromiso(compromisos[_seg]))
 
         cuerpo = [
             '<article class="seg%s" id="%s">' % (" dudoso" if mk else "", bid),
@@ -636,6 +694,8 @@ def main():
     ap.add_argument("entrada")
     ap.add_argument("salida")
     ap.add_argument("--datos", default=None)
+    ap.add_argument("--compromisos", default=None,
+                    help="el .json que señala dónde se habló de un compromiso")
     ap.add_argument("--audio", default=None)
     ap.add_argument("--sonda", default=None,
                     help="archivo que deberia estar junto a la pagina; si no carga, "
@@ -693,7 +753,8 @@ def main():
             titulo = "QUÉ COMPROBAR — " + re.sub(r"^TRANSCRIPCI[ÓO]N\s*[—-]\s*", "", titulo)
         else:
             contenido, bloques = construir_bloques(doc, marcas, d.get("ventanas"), gana,
-                                                   d.get("etiquetas"))
+                                                   d.get("etiquetas"),
+                                                   compromisos_de(a.compromisos))
             contenido = bloque_voces(d) + contenido
             n_hall = None
             tipo = "Transcripción · superficie de trabajo"

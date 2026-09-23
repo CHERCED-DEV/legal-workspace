@@ -13,12 +13,12 @@ decisión tomada sin confirmación, que puede resultar falsa.
 
 ## 1. Qué es Despacho
 
-Un plugin de Claude que aporta **catorce métodos de trabajo jurídico**. No es un programa: es
+Un plugin de Claude que aporta **quince métodos de trabajo jurídico**. No es un programa: es
 texto. Cada método le dice a Claude cómo hacer una tarea concreta del despacho con un
 procedimiento fijo, qué **no** puede hacer nunca dentro de esa tarea, y cómo tiene que
 entregar el resultado.
 
-La regla que comparten los catorce: **todo sale del material del caso, y de dónde sale se
+La regla que comparten los quince: **todo sale del material del caso, y de dónde sale se
 dice**. Ninguno valora prueba, ninguno calcula plazos, ninguno pone derecho. Lo que el
 material no da, se marca como faltante en vez de rellenarse.
 
@@ -37,6 +37,8 @@ material no da, se marca como faltante en vez de rellenarse.
 | `/inventario-de-anexos` | Produce la **tabla de anexos numerada** lista para pegar en un escrito —qué es cada documento, quién lo produjo, de qué fecha es, a qué afirmación sirve— y, en bloque aparte, **lo que falta**, separado en sus tres clases. No decide qué se aporta. |
 | `/inventario-de-bienes` | Recorre el material e inventaría **bienes y deudas**: qué documento respalda cada uno, a nombre de quién figura según ese documento, qué fecha trae y qué valor **transcrito**; más lo que falta y las contradicciones entre documentos. Señala el bien que aparece en un papel de un tercero y **en ninguna lista de las partes**. No decide qué bienes entran, no calcula, no reparte. |
 | `/revision-de-rigor` | Pone a prueba **una conclusión, un escrito propio o un expediente entero** con una sola pregunta: qué de esto no se sostiene con el material. Cada hallazgo lleva su localizador, **lo que lo refutaría** y su grado de soporte; y cuando hay dos partes, declara qué buscó en cada una y qué encontró en cada una, incluso donde no encontró nada. No valora prueba ni declara parcialidad. |
+| `/compromisos-de-una-reunion` | Señala sobre una transcripción **cada punto donde alguien se obligó a algo**, con su minuto exacto y la frase literal que lo sostiene, y lo pinta en rojo en la página para que ella lo compruebe oyendo. Marca también lo que se discutió y **no se cerró**. Un programa comprueba que cada cita esté literal: una cita que no está es una frase que nadie dijo. No dice quién se comprometió si ella no declaró las voces, y no convierte un plazo hablado en una fecha. |
+| `/compromisos-de-una-reunion` | Señala sobre una transcripción **cada punto donde alguien se obligó a algo**, con su minuto exacto y la frase literal que lo sostiene, y lo pinta en rojo en la página para que ella lo compruebe oyendo. Marca también lo que se discutió y **no se cerró**. Un programa comprueba que cada cita esté literal: una cita que no está es una frase que nadie dijo. No dice quién se comprometió si ella no declaró las voces, y no convierte un plazo hablado en una fecha. |
 | `/acta-de-reunion` | Levanta el acta de una reunión grabada a partir de su transcripción y de **un acta anterior que ella entrega como modelo**: copia del modelo la forma —apartados, orden, fórmulas— y **ninguno de sus datos**, escribe solo lo que la grabación sostiene y deja marcado en su sitio todo lo que el audio no puede decir (asistentes, lugar, hora, convocatoria). **No atribuye una frase a nadie que ella no haya declarado oyendo**, y un compromiso entra solo si alguien lo asume en la grabación. |
 | `/redactar-escrito` | A partir de material **que ella ya revisó**, arma un borrador en Word con la parte fáctica redactada, la estructura montada y **cada hueco marcado a la vista**; entrega aparte un segundo archivo con de dónde sale cada frase. No redacta fundamentos de derecho, no cita normas ni jurisprudencia, no califica jurídicamente nada. |
 | `preguntas-de-derecho` | **No se teclea: se activa solo.** Intercepta la pregunta que no se responde leyendo la carpeta —*«¿qué dice la ley sobre…?»*, *«¿esto caducó?»*, *«¿qué dijo la Corte?»*— y en vez de contestarla explica por qué no puede y ofrece lo que sí sale del material. Sin él, esa pregunta **no activa ningún comando** y contesta el modelo suelto, sin método y sin la regla de cero derecho. |
@@ -69,7 +71,7 @@ Lo que eso habilita y lo que no:
 **POR COMPROBAR — con material real de ella, antes de sentarse a trabajar.**
 
 - **Qué hace con un PDF escaneado sin capa de texto.** Es el formato en que llegan la mitad de
-  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los catorce parten de
+  los documentos de un despacho. Si no lo lee, **no hay método que funcione**: los quince parten de
   leer el material y citar página. Hay que saber si lo lee, si lo lee mal en silencio, o si avisa
   de que no puede — y las tres respuestas llevan a instrucciones distintas para ella.
 
@@ -240,7 +242,7 @@ Un Core local instalado bajo ese supuesto sin comprobarlo simplemente no aparece
    inexistente, hay que mirarlo en su cuenta. Lo que se encuentre se le dice a ella tal cual,
    incluido que no se encontró nada; y si no lo hay, el diseño del Core tiene que asumirlo,
    no desearlo.
-2. Verificar qué ve la sesión de la carpeta del caso en cada modo. Los catorce métodos leen y
+2. Verificar qué ve la sesión de la carpeta del caso en cada modo. Los quince métodos leen y
    escriben archivos de su carpeta; conviene saber con qué ruta trabaja realmente antes de
    apoyar nada encima.
 
@@ -263,7 +265,7 @@ legal-workspace/
 │     ├─ GUIA-PARA-LA-ABOGADA.md  <- lo que lee ella; viaja con el plugin
 │     ├─ INSTALACION.md         <- la hoja de instalacion (SPEC-11)
 │     ├─ scripts/               <- la oficina de programas. Python es OPCIONAL:
-│     │  │                         sin el los catorce comandos funcionan igual,
+│     │  │                         sin el los quince comandos funcionan igual,
 │     │  │                         mas lentos, y cada uno declara que no lo tuvo
 │     │  ├─ preparar_material.py      <- descomprime, ordena, extrae texto (OCR)
 │     │  ├─ transcribir_audio.py      <- grabaciones a texto, con voces y marcas
@@ -273,6 +275,12 @@ legal-workspace/
 │     │  ├─ alinear_tiempos.py        <- que el minuto suene donde dice la linea
 │     │  ├─ construir_entrega.py      <- arma el paquete que recibe ella, y lo comprueba
 │     │  ├─ esqueleto_de_modelo.py    <- que forma tiene el documento que ella dio de ejemplo
+│     │  ├─ verificar_compromisos.py  <- que cada compromiso senalado exista de verdad
+│     │  ├─ separar_voces.py          <- separar otra vez las voces, sin re-transcribir
+│     │  ├─ acta_en_formato.py        <- el acta con el membrete del despacho
+│     │  ├─ verificar_compromisos.py  <- que cada compromiso senalado exista de verdad
+│     │  ├─ separar_voces.py          <- separar otra vez las voces, sin re-transcribir
+│     │  ├─ acta_en_formato.py        <- el acta con el membrete del despacho
 │     │  ├─ alineacion_forzada.py     <- modulo: alinear por CTC; MEDIDO que aqui no sirve
 │     │  ├─ segunda_opinion.py        <- el segundo motor: detecta la omision silenciosa
 │     │  ├─ medir_realce.py           <- instrumentacion de la extraccion
@@ -291,8 +299,10 @@ legal-workspace/
 │     │  ├─ plantilla/pagina.html     <- ARTEFACTO COMPILADO: no se edita aqui.
 │     │  │                               Sale de tools/ (abajo) y lo vigila una prueba
 │     │  └─ README-*.md               <- uno por programa que lo necesita
-│     └─ skills/                <- los CATORCE metodos. La carpeta es el nombre del comando
+│     └─ skills/                <- los QUINCE metodos. La carpeta es el nombre del comando
 │        ├─ acta-de-reunion/         ├─ inventario-de-bienes/
+│        ├─ compromisos-de-una-reunion/                       
+│        ├─ compromisos-de-una-reunion/                       
 │        ├─ buscar-en-el-caso/       ├─ nombrar-voces/
 │        ├─ cronologia/              ├─ preguntas-de-derecho/
 │        ├─ estado-del-caso/         ├─ preparar-material/
@@ -333,7 +343,7 @@ tener nada que hacer allí.
 
 1. Crear la carpeta `plugins/despacho/skills/<nombre-del-comando>/`. El nombre de la carpeta
    es el nombre del comando: `skills/contar-terminos/` -> `/contar-terminos`.
-2. Dentro, un `SKILL.md` que empiece por el bloque de metadatos, igual que los catorce que ya
+2. Dentro, un `SKILL.md` que empiece por el bloque de metadatos, igual que los quince que ya
    están:
    ```yaml
    ---

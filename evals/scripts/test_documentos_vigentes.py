@@ -59,13 +59,13 @@ class LosTitularesSiguenSiendoCiertos(unittest.TestCase):
                      if patron.search(p.read_text(encoding="utf-8"))]
         self.assertEqual([], culpables)
 
-    def test_2bis_son_catorce_metodos(self):
+    def test_2bis_son_quince_metodos(self):
         """El numero que mas veces se ha escrito mal en este repositorio."""
         metodos = sorted(p.parent.name for p in SKILLS.glob("*/SKILL.md"))
-        self.assertEqual(14, len(metodos), metodos)
-        self.assertIn(u"catorce métodos", seccion0())
+        self.assertEqual(15, len(metodos), metodos)
+        self.assertIn(u"quince métodos", seccion0())
 
-    def test_3_once_de_los_catorce_estan_registrados_como_ejecutados(self):
+    def test_3_once_de_los_quince_estan_registrados_como_ejecutados(self):
         """§0.3, y la excepcion se nombra en vez de esconderse.
 
         Once tienen pasada escrita. Los otros dos -- `transcribir-audio` y
@@ -81,10 +81,11 @@ class LosTitularesSiguenSiendoCiertos(unittest.TestCase):
                              for f in notas.glob("pasada-*.md"))
         sin_registrar = sorted(p.parent.name for p in SKILLS.glob("*/SKILL.md")
                                if p.parent.name not in registro)
-        self.assertEqual(["acta-de-reunion", "nombrar-voces", "transcribir-audio"], sin_registrar,
-                         "el §0.3 dice que once de los catorce se ejecutaron, y "
+        self.assertEqual(["acta-de-reunion", "compromisos-de-una-reunion", "nombrar-voces",
+                          "transcribir-audio"], sin_registrar,
+                         "el §0.3 dice que once de los quince se ejecutaron, y "
                          "la cuenta del disco ya no es esa")
-        self.assertIn(u"Once de los catorce se han ejecutado", seccion0())
+        self.assertIn(u"Once de los quince se han ejecutado", seccion0())
         self.assertIn(u"no se ha corrido aquí", seccion0())
 
     def test_6_la_cadena_esta_completa(self):
@@ -108,16 +109,16 @@ class LosTitularesSiguenSiendoCiertos(unittest.TestCase):
                          "el §0.7 dice 55 y en el disco hay %d" % cuantos)
 
     def test_8_el_plugin_ejecuta_los_programas_que_dice(self):
-        """§0.8: «veintiún programas, de los cuales once se exponen».
+        """§0.8: «veinticuatro programas, de los cuales trece se exponen».
 
         Dos numeros y no uno, porque decir solo «catorce» sugeriria que el
         modelo puede invocar catorce, y son ocho. Cual es cual lo decide
         `test_superficie.py`; aqui solo se fija que el documento no mienta.
         """
         programas = sorted(p.name for p in SCRIPTS.glob("*.py"))
-        self.assertEqual(21, len(programas), programas)
-        self.assertIn(u"veintiún programas", seccion0())
-        self.assertIn(u"once se exponen al modelo", seccion0())
+        self.assertEqual(24, len(programas), programas)
+        self.assertIn(u"veinticuatro programas", seccion0())
+        self.assertIn(u"trece se exponen al modelo", seccion0())
 
 
 class LoQueEsteArchivoNoComprueba(unittest.TestCase):
@@ -286,9 +287,9 @@ class ElArbolDelREADMEDiceLoQueHay(unittest.TestCase):
 
     def test_el_arbol_dice_cuantos_son_y_es_verdad(self):
         t = self.ARBOL.read_text(encoding="utf-8")
-        self.assertEqual(14, len(list(SKILLS.glob("*/SKILL.md"))))
-        self.assertIn(u"los CATORCE metodos", t)
-        self.assertIn(u"sin el los catorce comandos funcionan igual", t)
+        self.assertEqual(15, len(list(SKILLS.glob("*/SKILL.md"))))
+        self.assertIn(u"los QUINCE metodos", t)
+        self.assertIn(u"sin el los quince comandos funcionan igual", t)
 
 
 if __name__ == "__main__":

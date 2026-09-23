@@ -11,6 +11,8 @@
   --acento: #7a5c00;
   --duda: #8a4b00;
   --duda-fondo: #fdf5e8;
+  --compromiso: #a01b1b;
+  --compromiso-fondo: #fdecec;
   --hecho: #1f5c3d;
   --hecho-fondo: #eef6f0;
   /* En rem, no en ch: el ch se mide con la letra de cada elemento, y la barra
@@ -120,6 +122,43 @@ body {
 }
 .aviso-bucle strong { color: var(--duda); }
 .aviso-bucle.cierre { padding: .5rem 1rem; }
+
+/* Donde alguien se obligo a algo. Va en ROJO y no en el ambar de las dudas
+   porque no es una duda: es lo que ella tiene que comprobar oyendo antes de
+   escribirlo en un acta. Un compromiso mal atribuido crea una obligacion que
+   alguien tendra que cumplir o explicar. */
+.compromiso {
+  margin: .8rem 0 .2rem; padding: .35rem .6rem;
+  border-left: 4px solid var(--compromiso); background: var(--compromiso-fondo);
+  border-radius: var(--radio);
+  font-family: ui-sans-serif, system-ui, sans-serif; font-size: .82rem;
+  color: var(--tinta);
+}
+.compromiso-sello {
+  display: inline-block; background: var(--compromiso); color: #fff;
+  font-weight: 700; font-size: .7rem; letter-spacing: .04em;
+  padding: .1rem .45rem; border-radius: 3px; margin-right: .45rem;
+}
+.compromiso-estado { color: var(--compromiso); font-weight: 600; margin-right: .3rem; }
+.compromiso-plazo { color: var(--tinta-suave); font-style: italic; }
+@media print { .compromiso { border-left-color: #000; background: #eee; }
+               .compromiso-sello { background: #000; } }
+
+.voces { padding: .6rem 0 .2rem; }
+.voces-titulo { margin: 0 0 .5rem; font-family: ui-sans-serif, system-ui, sans-serif; font-size: .82rem; }
+.voces-filas { display: flex; flex-direction: column; gap: .35rem; }
+.voz-fila {
+  display: flex; gap: .5rem; align-items: center; flex-wrap: wrap;
+  font-family: ui-sans-serif, system-ui, sans-serif; font-size: .82rem;
+}
+.voz-nombre { font-weight: 600; min-width: 11rem; }
+.voz-cuanto { color: var(--tinta-suave); min-width: 12rem; }
+.voz-quien {
+  font: inherit; padding: .25rem .5rem; flex: 1 1 14rem; min-width: 10rem;
+  border: 1px solid var(--linea); border-radius: var(--radio);
+  background: var(--papel-alto); color: var(--tinta);
+}
+@media print { .voces { display: none; } }
 
 .boton, .chip {
   font: inherit; cursor: pointer;

@@ -63,7 +63,7 @@ export function crearEstado(clave, alCambiar) {
       alCambiar?.(null)
     },
 
-    exportar(documento) {
+    exportar(documento, extra = {}) {
       const doc = {
         formato: 'despacho/estado-de-comprobacion',
         version: 1,
@@ -73,6 +73,10 @@ export function crearEstado(clave, alCambiar) {
         nota: 'Constancia de que una persona fue al original. NO es verificacion '
             + 'de que el texto sea correcto.',
         estado: datos,
+        // Quien dijo ELLA que es cada voz. Va aparte del estado de
+        // comprobacion porque son dos cosas distintas: una es «fui al
+        // original», la otra es «esta voz es esta persona».
+        voces: extra.voces || {},
       }
       const a = document.createElement('a')
       a.href = URL.createObjectURL(new Blob([JSON.stringify(doc, null, 1)],

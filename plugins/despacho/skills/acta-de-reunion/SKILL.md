@@ -108,11 +108,19 @@ Y la trampa es que **una frase inventada se lee exactamente igual de bien que un
 python ${CLAUDE_PLUGIN_ROOT}/scripts/esqueleto_de_modelo.py "<el acta modelo>" --ver
 ```
 
-Saca los apartados en su orden, qué párrafos son fórmula fija y qué trozos son dato variable. **Y dice cuánto del modelo reconstruye.** Si no reconstruye el 100 %, **la forma extraída no representa el documento** y copiarla dejaría fuera lo que falta: eso se dice y se para.
+Saca los apartados en su orden, qué párrafos son fórmula fija y qué trozos son dato variable, y aparta el membrete que se repite en cada página. **Abre el modelo en el formato en que llegue**: .docx, .md y .txt directamente; PDF, .doc, .rtf, .odt y .html convirtiéndolos con el Word instalado; imágenes y PDF escaneados, con el OCR local.
 
-**Dos cosas que el programa no puede hacer, y que te tocan a ti:**
+**Y da dos medidas, y hacen falta las dos:**
 
-- **Un PDF no tiene forma.** Si el modelo llega en PDF, el programa lee su texto pero **la estructura sale mal**: la cabecera de página se lee como apartado y las celdas de una tabla pasan por títulos. Se pide el original en Word y se espera.
+1. **Reconstrucción interna**: tiene que salir el 100 %. Sola **es circular**: compara lo extraído consigo mismo, y dio «100 %» sobre una lectura que repetía cada celda combinada cinco veces y tenía 22 apartados inventados.
+2. **Cobertura contra el original**: las palabras del documento leídas por otra vía (el XML crudo, o `pypdf` sobre el PDF) tienen que estar en lo extraído (≥ 98 %) y no sobrar. Lo que se lista como «faltan» hay que mirarlo: en un PDF suelen ser palabras que `pypdf` parte («ejecució» + «n»), no texto perdido; **si es texto de verdad, se para**.
+
+Si cualquiera de las dos falla, **la forma extraída no representa el documento**: eso se dice y se para.
+
+**Tres cosas que el programa no puede hacer, y que te tocan a ti:**
+
+- **Una lectura por OCR no tiene segunda vía.** Sale, pero **NO MEDIDA** (código 3): la forma se confirma mirando el original antes de usarla.
+- **Sin Word, un PDF sale sin tablas.** El programa lo dice («estructura APROXIMADA»). Entonces se pide el original en Word y se espera.
 - **Marcar un trozo como dato variable no es saber cuál va.** El valor que trae es el del otro caso. **No se copia ninguno.**
 
 ## 4. Lo que la grabación no puede decir, y hay que saberlo antes de empezar

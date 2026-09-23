@@ -307,6 +307,102 @@ function montarBloque(b) {
 // temporal: ni enlaces ni audio funcionan, y el aviso de «extraiga primero»
 // estaba dentro de la pagina que ya se abrio mal. Se prueba si un archivo que
 // deberia estar al lado carga; si no, se dice arriba y en grande.
+/* ------------------------------------------------------------------- voces */
+/* Reconocer a alguien obligaba a recorrer la pagina entera a ojo. Aqui cada voz
+ * trae sus turnos, se salta de uno al siguiente, y el nombre que ella escriba
+ * se ve al instante en todas las cabeceras. Nombrar sigue siendo suyo: la
+ * maquina agrupo el sonido, no dijo de quien es. */
+const LLAVE_VOCES = 'despacho:voces:' + C.clave
+
+function leerVoces() {
+  try { return JSON.parse(localStorage.getItem(LLAVE_VOCES) || '{}') } catch { return {} }
+}
+
+let nombres = leerVoces()
+
+function vozDe(b) {
+  const m = /Hablante ([^\s—-]+)/.exec(b.etiqueta || '')
+  return m ? m[1] : null
+}
+
+function turnosPorVoz() {
+  const mapa = new Map()
+  let previa = null
+  for (const b of C.bloques) {
+    const v = vozDe(b)
+    if (!v) { previa = null; continue }
+    if (!mapa.has(v)) mapa.set(v, { turnos: [], lineas: 0, segundos: 0 })
+    const d = mapa.get(v)
+    d.lineas += 1
+    d.segundos += Math.max(0, (b.ancla?.fin || 0) - (b.ancla?.inicio || 0))
+    if (v !== previa) d.turnos.push(b.id)
+    previa = v
+  }
+  return mapa
+}
+
+function pintarNombres() {
+  for (const s of $$('.turno-cab')) {
+    const q = s.querySelector('.quien')
+    if (!q) continue
+    const m = /Hablante ([^\s—-]+)/.exec(q.textContent || '')
+    if (!m) continue
+    let n = q.querySelector('.nombrada')
+    const nombre = (nombres[m[1]] || '').trim()
+    if (!nombre) { n?.remove(); continue }
+    if (!n) { n = document.createElement('span'); n.className = 'nombrada'; q.appendChild(n) }
+    n.textContent = nombre
+  }
+}
+
+function montarVoces() {
+  const caja = $('#voces')
+  if (!caja) return
+  const mapa = turnosPorVoz()
+  if (mapa.size < 2) return          // una sola voz: no hay entre que saltar
+  caja.hidden = false
+  const orden = [...mapa.entries()].sort((a, b) => b[1].segundos - a[1].segundos)
+  caja.innerHTML =
+    '<p class="voces-titulo"><strong>¿Quién es cada voz?</strong> Salte entre sus '
+    + 'intervenciones para reconocerla, y escriba quién es. '
+    + '<em>Lo que escriba aquí lo afirma usted, no la máquina.</em></p>'
+  const fila = document.createElement('div')
+  fila.className = 'voces-filas'
+  for (const [v, d] of orden) {
+    const f = document.createElement('div')
+    f.className = 'voz-fila'
+    const min = Math.round(d.segundos / 60)
+    f.innerHTML =
+      '<span class="voz-nombre">Hablante ' + v + '</span>'
+      + '<span class="voz-cuanto">' + d.turnos.length + ' intervenciones · '
+      + (min >= 1 ? min + ' min' : Math.round(d.segundos) + ' s') + '</span>'
+    const ir = document.createElement('button')
+    ir.type = 'button'; ir.className = 'boton tenue'; ir.textContent = 'oír la siguiente ▸'
+    let i = -1
+    ir.addEventListener('click', () => {
+      i = (i + 1) % d.turnos.length
+      enfocar(d.turnos[i], { llevarAlAudio: true })
+      ir.textContent = 'siguiente ▸ (' + (i + 1) + '/' + d.turnos.length + ')'
+    })
+    const caj = document.createElement('input')
+    caj.type = 'text'; caj.className = 'voz-quien'; caj.value = nombres[v] || ''
+    caj.placeholder = 'quién es, y su cargo'
+    caj.setAttribute('aria-label', 'Quién es el hablante ' + v)
+    caj.addEventListener('input', () => {
+      nombres[v] = caj.value
+      try { localStorage.setItem(LLAVE_VOCES, JSON.stringify(nombres)) } catch {}
+      f.querySelector('.voz-nombre').textContent =
+        'Hablante ' + v + (caj.value.trim() ? ' — ' + caj.value.trim() : '')
+      pintarNombres()
+    })
+    f.append(ir, caj)
+    fila.appendChild(f)
+    if (nombres[v]) f.querySelector('.voz-nombre').textContent = 'Hablante ' + v + ' — ' + nombres[v]
+  }
+  caja.appendChild(fila)
+  pintarNombres()
+}
+
 function avisarSola() {
   const el = $('#aviso-sola')
   if (el) el.hidden = false
@@ -321,6 +417,7 @@ function comprobarCompania() {
 }
 
 function iniciar() {
+  montarVoces()
   comprobarCompania()
   // Sin bloques es un documento para leer: ni filtros, ni contador, ni «Guardar
   // lo comprobado» sobre algo que no tiene nada que comprobar.
@@ -338,7 +435,8 @@ function iniciar() {
     aplicarFiltro()
   }))
   $('#btn-play')?.addEventListener('click', () => medios.alternar())
-  $('#btn-exportar')?.addEventListener('click', () => estado.exportar(C.documento))
+  $('#btn-exportar')?.addEventListener('click',
+    () => estado.exportar(C.documento, { voces: nombres }))
   $('#btn-importar')?.addEventListener('click', () => $('#archivo-estado').click())
   $('#archivo-estado')?.addEventListener('change', (e) => {
     if (e.target.files[0]) {

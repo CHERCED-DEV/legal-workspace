@@ -50,7 +50,11 @@ def _config():
 
 ANOTACION = re.compile(r"`\[\?\]` \*\(([^)]*)\)\*")
 
-LINEA = re.compile(r"^\*\*\[(\d\d:\d\d:\d\d)\]\*\*\s+(.*?)(?:\s+`\[\?\]`.*)?$")
+# La etiqueta del hablante va DENTRO de la negrita -- «**[00:00:00] · Hablante 1**» --,
+# asi que la expresion tiene que admitirla. Sin esto se descartaban justo las
+# lineas que llevan hablante, que son las que mas importan, y el programa
+# denunciaba como inventadas citas que si estaban.
+LINEA = re.compile(r"^\*\*\[(\d\d:\d\d:\d\d)\][^*]*\*\*\s+(.*?)(?:\s+`\[\?\]`.*)?$")
 
 
 def bucles_de(carpeta, n):
@@ -129,6 +133,19 @@ def nombre_audio(n, hora):
     return C["audio_destino"] % (n, hora)
 
 
+def _senalados(n):
+    """Los compromisos de esa grabacion, si el caso los tiene senalados.
+
+    Va aparte de los datos de la transcripcion porque son cosas distintas: la
+    transcripcion dice lo que se oye, y esto dice donde alguien se obligo --
+    que es una lectura, y las lecturas se revisan sin tocar el texto."""
+    carpeta = C.get("compromisos")
+    if not carpeta:
+        return []
+    ruta = os.path.join(DESPACHO, carpeta, "A%d - compromisos.json" % n)
+    return ["--compromisos", ruta] if os.path.isfile(ruta) else []
+
+
 def pagina_audio(n):
     return "Audio %d - oir y marcar.html" % n
 
@@ -179,14 +196,23 @@ def main():
     ORIGEN = os.path.join(DESPACHO, C["origen"])
     OTRAS = [os.path.join(DESPACHO, x) for x in C.get("otras") or []]
     NOMBRE = C["nombre"]
-    SALIDA = os.path.join(DESPACHO, NOMBRE)
+    SALIDA = os.path.join(DESPACHO, C.get("salida") or "", NOMBRE)
     RENDER = os.path.join(AQUI, "_generado")
     AUDIOS = [tuple(a) for a in C["audios"]]
     _s = C.get("audio_sonda") or AUDIOS[-1][0]
     _SONDA = next((n, h) for n, _f, h in AUDIOS if n == _s)
 
     # ------------------------------------------------------------------ 1. limpiar
-    if not (os.path.dirname(SALIDA) == DESPACHO and os.path.basename(SALIDA).startswith("ENTREGA - ")):
+    # El cerrojo: esto BORRA Y REHACE la carpeta de salida, asi que antes se
+    # comprueba que sea una carpeta de entrega y que este dentro del caso.
+    # Antes exigia que fuera hija DIRECTA de la raiz, y eso impedia guardarla
+    # donde le corresponde -- `3-Para presentar/` --, obligando a dejarla
+    # suelta al lado del material. La condicion nueva no afloja nada: sigue
+    # sin poder borrar nada de fuera del caso, ni nada que no se llame asi.
+    _raiz = os.path.normpath(DESPACHO)
+    _dest = os.path.normpath(SALIDA)
+    if not (_dest.startswith(_raiz + os.sep) and _dest != _raiz
+            and os.path.basename(SALIDA).startswith("ENTREGA - ")):
         falla("ruta de salida inesperada: %s" % SALIDA)
     for p in (SALIDA, RENDER):
         if os.path.isdir(p):
@@ -282,7 +308,7 @@ def main():
               "--datos", os.path.join(ORIGEN, "datos", "A%d - datos completos.json" % n),
               "--audio", os.path.join(SALIDA, "audio", nombre_audio(n, hora)),
               "--origen", "Transcripción automática del Audio %d (recibido por WhatsApp el %s a las %s)"
-              % (n, dia, hh))
+              % (n, dia, hh), *_senalados(n))
         py_ok(os.path.join(SCRIPTS, "md2docx.py"), md_nuevo,
               os.path.join(SALIDA, "Word", "Audio %d - transcripcion.docx" % n))
     print("Transcripciones: %d paginas y %d Word; texto transcrito identico al original"
