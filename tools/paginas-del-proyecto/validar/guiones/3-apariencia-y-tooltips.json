@@ -1,0 +1,31 @@
+{
+ "_que_prueba": "Que los tooltips anaden y no estorban (no salen sobre la descripcion, salen con retardo sobre el titulo, no tapan el boton Abrir y el clic llega), que el tema se recuerda entre paginas, los filtros de compromisos, y que en movil (390 px) nada desborda en horizontal. Variables: SALIDA, INICIO_URL, COMPROMISOS_URL.",
+ "salida": "{{SALIDA}}",
+ "pasos": [
+  {"tam": [1280, 900]},
+  {"ir": "{{INICIO_URL}}", "espera": 2000},
+  {"ver": "'ventana '+innerWidth+'x'+innerHeight"},
+  {"js": "document.querySelector('[data-poner-tema=noche]').click();(()=>{const h=[...document.querySelectorAll('h2')].find(e=>e.textContent.includes('Su recorrido'));window.scrollTo(0,h.getBoundingClientRect().top+scrollY-70)})()"},
+  {"sobre": "document.querySelectorAll('.tarjeta')[document.querySelectorAll('.tarjeta').length-1].querySelector('p')", "espera": 900},
+  {"ver": "'raton sobre la DESCRIPCION -> tooltips visibles (debe ser 0): '+[...document.querySelectorAll('.pop')].filter(p=>getComputedStyle(p).visibility==='visible').length"},
+  {"sobre": "document.querySelectorAll('.tarjeta')[document.querySelectorAll('.tarjeta').length-1].querySelector('h3')", "espera": 150},
+  {"ver": "'a los 0,15 s sobre el TITULO, opacidad (debe ser 0): '+getComputedStyle(document.querySelectorAll('.tarjeta')[document.querySelectorAll('.tarjeta').length-1].querySelector('.pop')).opacity"},
+  {"esperar": 700},
+  {"ver": "(()=>{const t=[...document.querySelectorAll('.tarjeta')].pop();const pop=t.querySelector('.pop');const a=t.querySelector('.boton').getBoundingClientRect();const el=document.elementFromPoint(a.left+a.width/2,a.top+a.height/2);return 'a los 0,85 s opacidad '+getComputedStyle(pop).opacity+' | el clic en Abrir llega a: '+(el&&el.closest('a')?el.closest('a').textContent.trim():'OTRA COSA')})()"},
+  {"ver": "(()=>{const r=[];document.querySelectorAll('.tarjeta').forEach((t,i)=>{const pop=t.querySelector('.pop');pop.style.visibility='visible';pop.style.opacity='1';const pr=pop.getBoundingClientRect(),ar=t.querySelector('.boton').getBoundingClientRect();r.push('tarjeta '+(i+1)+' tapa Abrir='+!(pr.bottom<=ar.top||pr.top>=ar.bottom||pr.right<=ar.left||pr.left>=ar.right));pop.style.visibility='';pop.style.opacity=''});return r.join(' | ')})()"},
+  {"sobre": "document.querySelector('footer')", "espera": 300},
+  {"ir": "{{COMPROMISOS_URL}}", "espera": 2000},
+  {"ver": "'tema recordado en compromisos (debe ser noche): '+document.documentElement.dataset.tema+' | '+document.getElementById('cuenta').textContent"},
+  {"js": "document.querySelectorAll('[data-filtro=estado]')[1].click()"},
+  {"ver": "'filtro Sin cerrar: '+document.getElementById('cuenta').textContent"},
+  {"js": "document.querySelectorAll('[data-filtro=estado]')[0].click();document.querySelector('[data-poner-tema=auto]').click()"},
+  {"tam": [390, 844]},
+  {"ir": "{{INICIO_URL}}", "espera": 2000},
+  {"ver": "'MOVIL inicio: desborda (debe ser false)='+(document.documentElement.scrollWidth>innerWidth)"},
+  {"js": "document.querySelector('.ajustes').open=true", "espera": 400},
+  {"ver": "'MOVIL con Apariencia abierta: desborda='+(document.documentElement.scrollWidth>innerWidth)"},
+  {"js": "document.querySelector('.ajustes').open=false"},
+  {"ir": "{{COMPROMISOS_URL}}", "espera": 2000},
+  {"ver": "'MOVIL compromisos: desborda='+(document.documentElement.scrollWidth>innerWidth)"}
+ ]
+}

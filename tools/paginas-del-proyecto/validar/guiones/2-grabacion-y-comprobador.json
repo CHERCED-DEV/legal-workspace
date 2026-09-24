@@ -1,0 +1,26 @@
+{
+ "_que_prueba": "Pagina de una grabacion abierta con file:// (el modo real: con http cambia de modo y guarda en otro sitio). Se marcan dos lineas, se comprueba el aviso de pendiente, se pulsa Guardar lo comprobado contra una carpeta simulada en memoria (con file:// no hay OPFS), se vuelca lo escrito, y el comprobador de INICIO lo lee junto con la declaracion de voces. Despues: probar_recoger.py sobre el volcado. Variables: SALIDA, AUDIO_URL, INICIO_URL, CARPETA_SIMULADA, PROYECTO (nombre de la carpeta del proyecto), ARBOL_DIR, DECLARACION.",
+ "salida": "{{SALIDA}}",
+ "pasos": [
+  {"tam": [1280, 900]},
+  {"ir": "{{AUDIO_URL}}", "espera": 4000},
+  {"inyectar": "{{CARPETA_SIMULADA}}", "variable": "__src"},
+  {"js": "eval(window.__src);(async()=>{const p=__carpeta('{{PROYECTO}}');await p.getDirectoryHandle('2-Borradores',{create:true});window.__proy=p;window.showDirectoryPicker=async()=>p;return true})()"},
+  {"ver": "'puede guardar en carpeta: '+(typeof window.showDirectoryPicker==='function'&&window.isSecureContext)"},
+  {"js": "(()=>{const b=[...document.querySelectorAll('button.primaria')].filter(x=>x.textContent.trim()==='Confirmado');b[2].click();b[3].click();return b.length})()", "espera": 800},
+  {"ver": "'tras marcar: '+(document.body.innerText.match(/Tiene marcas que aún no ha guardado[^\\n]*/)||['(SIN AVISO DE PENDIENTE)'])[0]"},
+  {"js": "document.getElementById('btn-exportar').click()", "espera": 3000},
+  {"ver": "'tras Guardar lo comprobado: '+(document.body.innerText.match(/Guardado en[^\\n]{0,200}/)||['(sin mensaje)'])[0]+' | escrituras: '+window.__escrituras"},
+  {"js": "(()=>{const b=[...document.querySelectorAll('button.primaria')].filter(x=>x.textContent.trim()==='Confirmado');b[4].click();return true})()", "espera": 2500},
+  {"ver": "'tras una marca mas (autoguardado): escrituras '+window.__escrituras+' | '+(document.body.innerText.match(/Tiene marcas que aún no ha guardado[^\\n]*/)||['sin aviso de pendiente'])[0]"},
+  {"volcar": "(async()=>{const o=await __serializar(window.__proy);return {'arbol.json':JSON.stringify(o)}})()", "a": "{{ARBOL_DIR}}"},
+  {"js": "window.onbeforeunload=null;true"},
+  {"ir": "{{INICIO_URL}}", "espera": 2500},
+  {"inyectar": "{{CARPETA_SIMULADA}}", "variable": "__src"},
+  {"inyectar": "{{ARBOL_DIR}}/arbol.json", "variable": "__arbol"},
+  {"inyectar": "{{DECLARACION}}", "variable": "__decl"},
+  {"js": "eval(window.__src);(async()=>{const o=JSON.parse(window.__arbol);o['2-Borradores']['Voces']={'voces declaradas - prueba.json':window.__decl};const p=await __reconstruir('{{PROYECTO}}',o);const arriba=__carpeta('Descargas');arriba._hijos.set('{{PROYECTO}}',p);window.showDirectoryPicker=async()=>arriba;return true})()"},
+  {"js": "document.getElementById('comprobar').click()", "espera": 2500},
+  {"ver": "'COMPROBADOR: '+document.getElementById('resultado').innerText.replace(/\\n+/g,' | ')"}
+ ]
+}

@@ -1,0 +1,23 @@
+{
+ "_que_prueba": "Pagina de voces, de punta a punta: pide el nombre, se oyen dos lineas completas, se deciden con Enter y se descarga la declaracion con su propio boton. Despues: genoma_de_voz.py aplicar <genoma> {{DESCARGAS}}/voces declaradas - <titulo>.json --salida <carpeta de prueba>. Variables: SALIDA, DESCARGAS, VOCES_URL.",
+ "salida": "{{SALIDA}}",
+ "pasos": [
+  {"tam": [1280, 900]},
+  {"ver": "'ventana: '+innerWidth+'x'+innerHeight"},
+  {"descargas": "{{DESCARGAS}}"},
+  {"ir": "{{VOCES_URL}}", "espera": 6000},
+  {"js": "(()=>{const i=document.querySelector('input[placeholder=\"Su nombre\"]');i.value='VALIDACION AUTOMATICA (no es una persona)';i.dispatchEvent(new Event('input',{bubbles:true}));[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Empezar').click()})()", "espera": 1200},
+  {"js": "document.querySelector('.btn-oir').click()", "espera": 500},
+  {"hasta": "[...document.querySelectorAll('audio')].some(a=>!a.paused)", "max": 8000, "nombre": "el audio suena"},
+  {"hasta": "[...document.querySelectorAll('audio')].every(a=>a.paused)", "max": 60000, "nombre": "termina de sonar la linea 1"},
+  {"tecla": "Enter", "espera": 1200},
+  {"js": "document.querySelector('.btn-oir').click()", "espera": 500},
+  {"hasta": "[...document.querySelectorAll('audio')].some(a=>!a.paused)", "max": 8000, "nombre": "el audio suena (linea 2)"},
+  {"hasta": "[...document.querySelectorAll('audio')].every(a=>a.paused)", "max": 60000, "nombre": "termina de sonar la linea 2"},
+  {"tecla": "Enter", "espera": 1200},
+  {"js": "[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Lo que se entrega').click()", "espera": 1200},
+  {"ver": "'LO QUE SE ENTREGA: '+[...document.querySelectorAll('li')].map(l=>l.innerText.trim()).filter(t=>/claridad|declara|oyendo|prueba/i.test(t)).join(' | ')"},
+  {"js": "[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Guardar mi declaración')).click()", "espera": 4000},
+  {"ver": "'aviso tras guardar: '+(document.body.innerText.match(/Se descargó[^\\n]*/)||['(sin aviso visible)'])[0]"}
+ ]
+}
