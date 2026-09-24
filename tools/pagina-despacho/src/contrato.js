@@ -47,6 +47,14 @@ export function leerContrato(nodo) {
     clave: crudo.clave || 'sin-clave',
     /** Un archivo que deberia estar junto a la pagina: si no carga, esta sola. */
     sonda: crudo.sonda || null,
+    /** Lo que la maquina no sabe leer: tramos para que ella los oiga y cuente. */
+    ilegibles: Array.isArray(crudo.ilegibles) ? crudo.ilegibles : [],
+    /** Cada compromiso senalado, con las lineas que lo sostienen. */
+    compromisos: Array.isArray(crudo.compromisos) ? crudo.compromisos : [],
+    /** Sugerencias de glosario (hipótesis, nadie las ha oído) y el caso al que
+     *  pertenece la página: el glosario de ella vale para todo el caso. */
+    glosario: Array.isArray(crudo.glosario) ? crudo.glosario : [],
+    caso: crudo.caso || null,
     porId: new Map(bloques.map((b) => [b.id, b])),
     /** La fuente navegable principal, si la hay. */
     audio: (crudo.fuentes || []).find((f) => f.tipo === 'audio') || null,
@@ -61,6 +69,16 @@ export function leerContrato(nodo) {
 /** El texto visible de un bloque sale del DOM, no del contrato: el contrato
  *  lleva metadatos, y el texto ya viene renderizado para que se lea sin JS. */
 export const nodoDe = (b) => document.getElementById(b.id)
+
+/** El texto TRANSCRITO de un nodo, sin lo que la página le puso encima (lo
+ *  que se dijo según el glosario). Copiar una cita tiene que dar la
+ *  transcripción tal cual, no una mezcla. */
+export function textoTranscrito(nodo) {
+  if (!nodo) return ''
+  const c = nodo.cloneNode(true)
+  c.querySelectorAll('.gl-dijo').forEach((n) => n.remove())
+  return c.textContent.trim()
+}
 
 export const hms = (s) => {
   s = Math.max(0, Math.floor(s || 0))

@@ -20,7 +20,7 @@ Lo que este programa NO hace:
 La plantilla se compila aparte, en tools/pagina-despacho, y viaja YA COMPILADA.
 **Esta maquina no necesita Node para nada.**
 """
-import argparse, hashlib, html, io, json, os, re, sys, urllib.parse
+import argparse, hashlib, html, io, json, os, re, sys, unicodedata, urllib.parse
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 PLANTILLA = os.path.join(AQUI, "plantilla", "pagina.html")
@@ -257,12 +257,28 @@ def _datos_duros(seg, umbral=0.85):
     return False
 
 
-def _alternativas(ventanas, inicio, gana, limite=3):
+VENTANA_S = 20.0
+
+
+def _corta(t, n=700):
+    """Hasta `n` caracteres, sin partir una palabra, y diciendo que sigue."""
+    t = t.strip()
+    if len(t) <= n:
+        return t
+    return t[:n].rsplit(" ", 1)[0] + " …"
+
+
+def _alternativas(ventanas, inicio, gana, limite=6):
     """Que escribieron las OTRAS decodificaciones en este punto. Es un dato que ya
     tenemos y que no estabamos usando: donde difieren, ahi hay algo.
-    Devuelve (lista, desacuerdo) donde desacuerdo va de 0 a 1."""
+    Devuelve (lista, desacuerdo) donde desacuerdo va de 0 a 1.
+
+    Cada texto es el de la VENTANA entera (20 s: esta linea y las de alrededor),
+    no el de la linea: por eso va con su tramo (desde, hasta) y con `pos`, donde
+    cae la linea dentro de la ventana; la pagina busca con eso la parte que
+    corresponde. Van todas: con tres se escondia justo la que mas decia."""
     for v in ventanas or []:
-        if not (v["t"] <= inicio < v["t"] + 20.0):
+        if not (v["t"] <= inicio < v["t"] + VENTANA_S):
             continue
         if v.get("medio", 1) >= 0.80:
             return [], 0.0
@@ -270,7 +286,9 @@ def _alternativas(ventanas, inicio, gana, limite=3):
         for k, t in (v.get("textos") or {}).items():
             if k == gana or not t.strip():
                 continue
-            out.append({"fuente": fuente_visible(k), "texto": t[:260]})
+            out.append({"fuente": fuente_visible(k), "texto": _corta(t),
+                        "desde": round(v["t"], 2), "hasta": round(v["t"] + VENTANA_S, 2),
+                        "pos": round(max(0.0, min(1.0, (inicio - v["t"]) / VENTANA_S)), 3)})
         return out[:limite], round(1.0 - v.get("medio", 1.0), 3)
     return [], 0.0
 
@@ -350,17 +368,22 @@ def texto_con_dudas(seg, umbral_importante=0.70, umbral_resto=0.45):
 
 
 def compromisos_de(ruta):
-    """{segundo de inicio: compromiso} leido del archivo que los senala.
+    """{segundo de inicio: [compromisos]} leido del archivo que los senala.
 
     Va en un archivo aparte y no en los datos de la transcripcion porque son
     dos cosas distintas: la transcripcion dice lo que se oye, y esto dice
     donde alguien se obligo. Lo segundo es una lectura, y las lecturas se
     revisan.
+
+    Una LISTA por segundo: dos obligaciones en la misma frase, o «0:01:00» y
+    «00:01:00», son dos compromisos. Con uno por segundo, el ultimo pisaba a
+    los demas sin decirlo.
     """
     if not ruta or not os.path.isfile(ruta):
         return {}
     try:
-        d = json.load(io.open(ruta, encoding="utf-8"))
+        with io.open(ruta, encoding="utf-8") as f:
+            d = json.load(f)
     except Exception:
         return {}
     fuera = {}
@@ -369,21 +392,332 @@ def compromisos_de(ruta):
         if not m:
             continue
         seg = int(m.group(1)) * 3600 + int(m.group(2)) * 60 + int(m.group(3))
-        fuera[seg] = c
+        fuera.setdefault(seg, []).append(c)
+    _poner_ids(fuera)
     return fuera
 
 
+def _lista(v):
+    """Los compromisos de un segundo. Admite tambien uno suelto (forma antigua)."""
+    return v if isinstance(v, list) else [v]
+
+
+def _plano(t):
+    """Para localizar una cita: sin tildes, sin puntuacion, palabras separadas
+    por un espacio. Una tilde perdida del reconocedor no hace fallar una cita."""
+    t = unicodedata.normalize("NFD", (t or "").lower())
+    t = "".join(ch for ch in t if unicodedata.category(ch) != "Mn")
+    return " ".join(re.sub(r"[^a-z0-9ñ]+", " ", t).split())
+
+
+def _poner_ids(compromisos):
+    """Cada compromiso con un id que sale de lo que ES -- su segundo y su
+    cita --, no de su sitio en la lista. Lo que ella declara se guarda por id:
+    con el numero de orden, rehacer la lectura pegaba su declaracion a otro
+    compromiso. Si dos coinciden en todo, el segundo lleva -2."""
+    usados = {c["_id"] for v in compromisos.values() for c in _lista(v) if c.get("_id")}
+    for seg in sorted(compromisos):
+        for c in _lista(compromisos[seg]):
+            if c.get("_id"):
+                continue
+            huella = hashlib.sha256(_plano(c.get("cita") or c.get("de_que_se_trata") or "")
+                                    .encode("utf-8")).hexdigest()[:6]
+            base = cid = "c-%d-%s" % (seg, huella)
+            n = 1
+            while cid in usados:
+                n += 1
+                cid = "%s-%d" % (base, n)
+            usados.add(cid)
+            c["_id"] = cid
+
+
+_TIPO_COMPROMISO = {"tarea": "una tarea", "propuesta": "una propuesta", "condicion": "una condición",
+                    "acuerdo": "un acuerdo", "peticion": "una petición",
+                    "no_es_compromiso": "según la lectura, no es un compromiso"}
+
+
+# Lo que tiene que saltar a la vista en un texto largo de la maquina: que algo
+# no se dice, que nadie lo asume, que la linea es dudosa. Pedido por el dueno
+# el 2026-09-23 al ver una ficha de compromiso: «resaltar esas cosas criticas».
+_CRITICAS = ("no se dice", "no consta", "no lo asume", "nadie", "no se entiende", "no es un compromiso",
+             "sin cerrar", "palabra dudosa", "puede no ser habla", "las pasadas no coinciden",
+             "voz dudosa", "conviene oír", "hay que oír", "probablemente", "no dice", "no sé",
+             "no se ponen de acuerdo", "no recoge nada", "no se sostienen")
+# La pagina tiene la misma lista en tools/pagina-despacho/src/resalte.js: si
+# cambia una, cambia la otra (lo comprueba test_lo_declarado).
+_CRITICAS_RE = re.compile(r"(?<![\w])(%s)(?![\w])" % "|".join(re.escape(x) for x in _CRITICAS), re.I)
+
+
+def resaltar(texto):
+    """El texto, escapado, con lo critico en negrita: la etiqueta o veredicto
+    corto del principio («Sin cerrar:», «no se dice.»), los minutos y las
+    alertas. Dentro de las citas entre « » no se toca nada: son texto literal.
+    **Negrita** escrita a mano tambien vale."""
+    t = html.escape(texto or "", quote=False)
+    t = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", t)
+    partes = re.split(r"(«[^»]*»)", t)
+    for k, p in enumerate(partes):
+        if p.startswith("«"):
+            continue
+        p = re.sub(r"(?<!\d)(\d\d:\d\d:\d\d)(?!\d)", r"<strong>\1</strong>", p)
+        partes[k] = _CRITICAS_RE.sub(r"<strong>\1</strong>", p)
+    t = "".join(partes)
+    # El principio, si es corto, es el veredicto. Una entidad (&amp;) no corta
+    # la frase aunque lleve punto y coma.
+    m = re.match(r"^((?:&#?\w+;|<[^>]*>|«[^»]*»|[^«.:;&<]){2,}?[.:;])(?=\s|$)", t)
+    if m and len(re.sub(r"<[^>]*>", "", m.group(1))) <= 60:
+        t = "<strong>%s</strong>%s" % (re.sub(r"</?strong>", "", m.group(1)), t[m.end(1):])
+    return t
+
+
+def _con_cita(texto, cita, minuto=""):
+    """«texto» y, si la hay, la cita literal que lo sostiene."""
+    t = resaltar(texto or "no se dice")
+    if cita:
+        t += ' <span class="compromiso-cita">«%s»%s</span>' % (
+            html.escape(cita), (" " + html.escape(minuto)) if minuto else "")
+    return t
+
+
+def estado_compromiso(c):
+    """Lo que la lectura dice del compromiso, o None si no lo dice: sin el
+    campo «cerrado» no se sabe, y poner «asumido» era inventarlo."""
+    if c.get("cerrado") is None:
+        return None
+    return "asumido" if c["cerrado"] else "sin cerrar"
+
+
 def etiqueta_compromiso(c):
-    """Lo que ella ve: una etiqueta roja que se lee de un vistazo, y debajo
-    de que va. El minuto ya lo lleva la linea; aqui no se repite."""
-    estado = "sin cerrar" if not c.get("cerrado", True) else "asumido"
+    """Lo que ella ve: una etiqueta roja que se lee de un vistazo, de que va,
+    y lo que hace falta saber para usarlo en un acta -- quien lo asume, plazo,
+    que falta para cerrarlo --, con la cita que lo sostiene.
+
+    Todo es una LECTURA de la transcripcion: nadie lo ha oido, y lo dice en la
+    cara visible de la tarjeta, no solo dentro de la ficha plegada (que ni se
+    imprime). El minuto ya lo lleva la linea; aqui no se repite. Los campos
+    que el archivo no trae no se inventan: simplemente no salen."""
+    estado = estado_compromiso(c)
     plazo = (c.get("plazo") or "").strip()
+    sin_plazo = not plazo or plazo.lower() in ("no consta", "")
+    # «Plazo: no se dice» solo si la lectura habla del plazo (aunque sea para
+    # decir que no consta); si no trae nada, no se escribe.
+    trae_plazo = bool(plazo) or "plazo_cita" in c
     detalle = html.escape(c.get("de_que_se_trata") or "")
-    if plazo and plazo.lower() not in ("no consta", ""):
+    if not sin_plazo:
         detalle += ' <span class="compromiso-plazo">plazo: %s</span>' % html.escape(plazo)
-    return ('<p class="compromiso"><span class="compromiso-sello">COMPROMISO</span>'
-            '<span class="compromiso-estado">%s</span> %s</p>'
-            % (html.escape(estado), detalle))
+    # Si la lectura cree que NO es un compromiso, la etiqueta no lo afirma: lo
+    # pregunta. Decide ella oyendo; no se borra.
+    dudoso = c.get("tipo") == "no_es_compromiso"
+    rotulo = "según la lectura, no lo es" if dudoso else estado
+    linea = ('<p class="compromiso-linea"><span class="compromiso-sello">%s</span>%s %s</p>'
+             % ("¿COMPROMISO?" if dudoso else "COMPROMISO",
+                '<span class="compromiso-estado">%s</span>' % html.escape(rotulo) if rotulo else "",
+                detalle))
+    aviso = ('<p class="compromiso-aviso">Según la lectura automática de la transcripción: '
+             'nadie lo ha oído todavía.</p>')
+
+    resumen, ficha = [], []
+    if "quien" in c:
+        resumen.append("<b>Quién lo asume:</b> %s" % resaltar(c.get("quien") or "no se dice"))
+        ficha.append(("Quién lo asume", _con_cita(c.get("quien"), c.get("quien_cita"), c.get("quien_minuto"))))
+    if trae_plazo and ("quien" in c or "plazo_cita" in c):
+        resumen.append("<b>Plazo:</b> %s" % resaltar("no se dice" if sin_plazo else plazo))
+        ficha.append(("Plazo", _con_cita("no se dice" if sin_plazo else plazo, c.get("plazo_cita"))))
+    if c.get("falta"):
+        resumen.append("<b>Falta:</b> %s" % resaltar(", ".join(c["falta"])))
+        ficha.append(("Qué falta para cerrarlo", resaltar("; ".join(c["falta"]))))
+    if c.get("ante_quien"):
+        ficha.append(("Ante quién", _con_cita(c.get("ante_quien"), c.get("ante_quien_cita"))))
+    if c.get("tipo"):
+        ficha.append(("Qué es", html.escape(_TIPO_COMPROMISO.get(c["tipo"], c["tipo"]))))
+    if c.get("por_que_estado"):
+        ficha.append(("Por qué está %s" % estado if estado else "Por qué, según la lectura",
+                      resaltar(c["por_que_estado"])))
+    if c.get("cita"):
+        ficha.append(("Dicho así", "«%s»" % html.escape(c["cita"])))
+    if c.get("nota"):
+        ficha.append(("Ojo", resaltar(c["nota"])))
+
+    partes = ['<div class="compromiso%s" data-minuto="%s"%s>' % (
+        " dudoso" if dudoso else "", html.escape(c.get("minuto") or ""),
+        ' data-id="%s"' % html.escape(c["_id"]) if c.get("_id") else ""), linea, aviso]
+    if resumen:
+        partes.append('<p class="compromiso-resumen">%s</p>' % " · ".join(resumen))
+    if ficha:
+        partes.append('<details class="compromiso-mas"><summary>Ver la ficha del compromiso</summary><dl>%s</dl>'
+                      '</details>'
+                      % "".join("<dt>%s</dt><dd>%s</dd>" % (html.escape(k), v) for k, v in ficha))
+    partes.append("</div>")
+    return "".join(partes)
+
+
+# Hasta donde se busca cada parte de una cita, alrededor de la linea del minuto.
+CITA_CERCA_S = 120.0
+
+
+def partes_de_cita(cita):
+    """Los trozos literales de una cita: van separados por « / » o por una
+    elision (…, […]). Una barra sin espacios («3/4») es parte del texto."""
+    return [p.strip() for p in re.split(r"\s+/\s+|\s*\[(?:…|\.\.\.)\]\s*|\s*…\s*", cita or "") if _plano(p)]
+
+
+def localizar_cita(partes, segs, j):
+    """(indices de las lineas donde esta cada parte, partes que no estan).
+
+    Cada parte se busca en una linea o en dos o tres seguidas (una frase puede
+    quedar partida), dentro de CITA_CERCA_S de la linea j, y gana la mas
+    cercana. La cita puede estar en lineas ANTERIORES a la del minuto, o
+    salteada: contar n lineas hacia abajo dejaba sin oir justo donde se dice."""
+    planos = [_plano(s.get("texto")) for s in segs]
+    t0 = segs[j]["inicio"]
+    cerca = [abs(s["inicio"] - t0) <= CITA_CERCA_S for s in segs]
+    donde, faltan = {j}, []
+    for p in partes:
+        q = " %s " % _plano(p)
+        mejor = None
+        for largo in (1, 2, 3):
+            for k in range(len(segs) - largo + 1):
+                if not all(cerca[k:k + largo]):
+                    continue
+                if q not in " %s " % " ".join(planos[k:k + largo]):
+                    continue
+                dist = 0 if k <= j < k + largo else min(abs(k - j), abs(k + largo - 1 - j))
+                if mejor is None or (dist, largo) < mejor[0]:
+                    mejor = ((dist, largo), range(k, k + largo))
+        if mejor is None:
+            faltan.append(p)
+        else:
+            donde.update(mejor[1])
+    return sorted(donde), faltan
+
+
+def contrato_compromisos(compromisos, doc):
+    """Para la pagina: cada compromiso con las lineas que hay que oir antes de
+    que ella lo declare: desde la primera hasta la ultima de las que llevan
+    su cita y la de su minuto. Si una parte de la cita no esta en ninguna
+    linea, va en «sin_localizar»: la pagina no deja declarar sin haberla oido,
+    y oirla no se puede. Solo los que se colocaron en una linea."""
+    segs = doc.get("segmentos") or []
+    ids = [s["i"] for s in segs]
+    _poner_ids(compromisos)
+    out = []
+    for seg in sorted(compromisos):
+        for c in _lista(compromisos[seg]):
+            if "_i" not in c or c["_i"] not in ids:
+                continue
+            j = ids.index(c["_i"])
+            donde, faltan = localizar_cita(partes_de_cita(c.get("cita")), segs, j)
+            out.append({"id": c["_id"], "minuto": c.get("minuto") or "",
+                        "bloques": ["b%d" % x for x in ids[donde[0]:donde[-1] + 1]],
+                        "sin_localizar": faltan,
+                        "estado": estado_compromiso(c),
+                        "de_que_se_trata": c.get("de_que_se_trata") or "",
+                        "quien": c.get("quien"), "plazo": c.get("plazo"), "tipo": c.get("tipo")})
+    return out
+
+
+# Lo que la maquina no sabe leer y conviene que una persona oiga y cuente.
+HUECO_ILEGIBLE_S = 8.0
+ACUERDO_ILEGIBLE = 0.40
+
+
+def _a_segundos(v):
+    h, m, s = (int(x) for x in v.split(":"))
+    return h * 3600 + m * 60 + s
+
+
+def duracion_de(doc):
+    """La duracion REAL del audio, si los datos la traen (transcribir_audio la
+    escribe en «duracion_s»). None si no: el fin de la ultima linea no es el
+    fin de la grabacion."""
+    try:
+        d = float(doc.get("duracion_s") or 0)
+    except (TypeError, ValueError):
+        return None
+    return d if d > 0 else None
+
+
+def _num(x):
+    return ("%.2f" % x).rstrip("0").rstrip(".")
+
+
+def ilegibles_de(doc, ventanas, gana, tramos=None, rescates=None):
+    """Los tramos donde la maquina no sabe que se dice, para que una persona los
+    oiga y cuente la idea principal y quien la dijo.
+
+    Tres fuentes, y ninguna afirma que alli se hable: (1) huecos de al menos
+    8 s sin transcribir -- entre lineas, antes de la primera y, si se sabe
+    cuanto dura el audio, despues de la ultima; la transcripcion no recoge
+    nada, y a veces es porque la voz estaba lejos --; (2) tramos de 20 s donde
+    las lecturas automaticas coinciden menos del 40 %; (3) los tramos que la
+    entrega senala a mano. Los que se tocan se juntan. Lo que la maquina creyo
+    oir va como pista, con su fuente: no es lo que se dijo.
+
+    El id sale del tramo (desde-hasta), no de su orden: lo que ella cuenta se
+    guarda por id, y con el orden quedaba pegado a otro tramo en cuanto
+    cambiaba uno anterior."""
+    segs = doc.get("segmentos") or []
+    fin_lineas = max([s["fin"] for s in segs] or [0])
+    dur = duracion_de(doc)
+    # Sin la duracion real, nada pasa del fin de la ultima linea: no se sabe
+    # si ahi sigue habiendo grabacion.
+    tope = dur if dur else fin_lineas
+    cand = []
+    primero = segs[0]["inicio"] if segs else tope
+    if primero >= HUECO_ILEGIBLE_S:
+        cand.append({"desde": 0.0, "hasta": primero, "motivos": ["hueco"]})
+    for a, b in zip(segs, segs[1:]):
+        if b["inicio"] - a["fin"] >= HUECO_ILEGIBLE_S:
+            cand.append({"desde": a["fin"], "hasta": b["inicio"], "motivos": ["hueco"]})
+    if segs and dur and dur - fin_lineas >= HUECO_ILEGIBLE_S:
+        cand.append({"desde": fin_lineas, "hasta": dur, "motivos": ["hueco"]})
+    for v in ventanas or []:
+        if v.get("medio", 1) < ACUERDO_ILEGIBLE:
+            hasta = min(tope, v["t"] + VENTANA_S)
+            if hasta - v["t"] < 1.0:
+                continue
+            cand.append({"desde": v["t"], "hasta": hasta, "motivos": ["discordia"],
+                         "acuerdo": round(v["medio"], 3)})
+    for t in tramos or []:
+        a = [s for s in segs if hms(s["inicio"]) == t["desde"]]
+        b = [s for s in segs if hms(s["inicio"]) == t["hasta"]]
+        if a and b:
+            cand.append({"desde": a[0]["inicio"], "hasta": b[-1]["fin"], "motivos": ["senalado"]})
+    cand.sort(key=lambda c: c["desde"])
+    juntos = []
+    for c in cand:
+        if juntos and c["desde"] <= juntos[-1]["hasta"] + 2.0:
+            j = juntos[-1]
+            j["hasta"] = max(j["hasta"], c["hasta"])
+            j["motivos"] = sorted(set(j["motivos"]) | set(c["motivos"]))
+            if "acuerdo" in c:
+                j["acuerdo"] = min(j.get("acuerdo", 1.0), c["acuerdo"])
+        else:
+            juntos.append(dict(c))
+    out = []
+    for j in juntos:
+        a, b = j["desde"], j["hasta"]
+        if b - a < 1.0:
+            continue
+        dentro = [s for s in segs if s["fin"] > a and s["inicio"] < b]
+        lecturas = []
+        for v in ventanas or []:
+            if v["t"] < b and v["t"] + 20.0 > a and v.get("medio", 1) < 0.80:
+                for kk, tx in (v.get("textos") or {}).items():
+                    if kk != gana and tx.strip():
+                        lecturas.append({"fuente": fuente_visible(kk), "texto": tx.strip()[:300]})
+        for r in rescates or []:
+            if r.get("ini", 0) < b and r.get("fin", 0) > a and (r.get("texto") or "").strip():
+                lecturas.append({"fuente": "Lectura aislada de ese trozo" + (" (posible invención)"
+                                 if r.get("invencion") else ""), "texto": r["texto"].strip()[:300]})
+        out.append({
+            "id": "i-%s-%s" % (_num(a), _num(b)), "desde": round(a, 2), "hasta": round(b, 2),
+            "motivos": j["motivos"],
+            "acuerdo": j.get("acuerdo"),
+            "transcripcion": [{"id": "b%d" % s["i"], "hora": hms(s["inicio"]), "texto": s["texto"]} for s in dentro][:12],
+            "lecturas": lecturas[:4],
+        })
+    return out
 
 
 def _avisos_de_bucle(doc):
@@ -399,8 +733,11 @@ def _avisos_de_bucle(doc):
     """
     try:
         from estado_transcripcion import bucles as detectar
-    except Exception:
-        return {}, {}
+    except ImportError as e:
+        # Callarlo dejaba la pagina sin los carteles de «la maquina se repitio»
+        # y el programa decia OK.
+        raise SystemExit("NO SE PUDO GENERAR: falta estado_transcripcion (%s); sin el no se "
+                         "pueden senalar los tramos repetidos." % e)
     abre, cierra = {}, {}
     for b in detectar(doc):
         n = b['veces']
@@ -416,6 +753,16 @@ def _avisos_de_bucle(doc):
         cierra[b['lineas'][-1]] = ('<div class="aviso-bucle cierre">'
                                    '<strong>&#9888; Fin del tramo repetido.</strong></div>')
     return abre, cierra
+
+
+def rescates_de(ruta, audio):
+    """Los huecos que se volvieron a oir (genoma de voz), de ESTA grabacion."""
+    if not ruta or not audio:
+        return []
+    if not os.path.isfile(ruta):
+        raise SystemExit("NO SE PUDO GENERAR: no esta el archivo de rescates %s" % ruta)
+    g = json.load(io.open(ruta, encoding="utf-8"))
+    return [r for r in (g.get("rescates") or []) if r.get("audio") == audio]
 
 
 def tramos_de(ruta):
@@ -468,6 +815,7 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=N
     """
     partes, bloques = [], []
     compromisos = compromisos or {}
+    _poner_ids(compromisos)
     # A que linea se pega cada compromiso. Los minutos vienen con resolucion de
     # SEGUNDO y las lineas empiezan con decimales, asi que exigir que el segundo
     # caiga dentro dejaba fuera uno de cada cuatro -- y en silencio, que es lo
@@ -476,7 +824,7 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=N
     # Y el minuto que se cita es el que la linea IMPRIME, que es su inicio
     # truncado al segundo. Buscar primero «la linea que contiene ese segundo»
     # pegaba la etiqueta a la ANTERIOR cuando esta acaba despues: en el Audio 2
-    # de Calarca, 5 de 10 cayeron una linea arriba, y el sello «asumido» quedo
+    # de un caso real, 5 de 10 cayeron una linea arriba, y el sello «asumido» quedo
     # sobre «y listo» en vez de sobre «quedamos con el compromiso». Por eso gana
     # primero la linea cuyo minuto impreso es exactamente el citado.
     _donde = {}
@@ -504,7 +852,7 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=N
     for _k, _v in cierra_t.items():
         cierra_bucle[_k] = cierra_bucle.get(_k, "") + _v
     voz_previa = object()
-    fin_previo = -99.0
+    fin_previo = None
     abierto = False
 
     def cerrar():
@@ -512,6 +860,10 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=N
         if abierto:
             partes.append("</section>")
             abierto = False
+
+    def pausa(desde, hasta):
+        return ('<p class="pausa hueco" data-desde="%.2f" data-hasta="%.2f">— %d s sin '
+                'transcribir —</p>' % (desde, hasta, round(hasta - desde)))
 
     for s in doc["segmentos"]:
         bid = "b%d" % s["i"]
@@ -525,7 +877,17 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=N
         # misma voz es una pausa, no otra intervencion: cortar ahi fragmentaba
         # la lectura en turnos consecutivos del mismo hablante.
         # Si hay un silencio muy largo se marca la pausa, sin abrir turno.
-        hueco = s["inicio"] - fin_previo
+        # El principio de la grabacion cuenta: antes de la primera linea
+        # tambien puede haber audio sin transcribir.
+        desde_h = 0.0 if fin_previo is None else fin_previo
+        hueco = s["inicio"] - desde_h
+        # Un hueco largo se marca SIEMPRE, cambie o no la voz. Decia «sin habla
+        # detectada», y en un caso real una lectura aislada oyo habla en un hueco
+        # de 46 s: lo unico que se sabe es que no hay transcripcion.
+        if hueco >= HUECO_ILEGIBLE_S:
+            if voz != voz_previa:
+                cerrar()
+            partes.append(pausa(desde_h, s["inicio"]))
         if voz != voz_previa:
             cerrar()
             quien = ("Hablante %s" % html.escape(str(voz))) if voz is not None else "Hablante ?"
@@ -544,8 +906,6 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=N
                 '<span class="quien">%s</span>%s'
                 '<span class="desde">desde %s</span></h3>' % (quien, segun, hms(s["inicio"])))
             abierto = True
-        elif hueco > 10.0 and abierto:
-            partes.append('<p class="pausa">— %d segundos sin habla detectada —</p>' % round(hueco))
         voz_previa, fin_previo = voz, s["fin"]
 
         if s['i'] in abre_bucle:
@@ -553,7 +913,9 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=N
         # La etiqueta va DELANTE de la linea: asi el ojo la encuentra bajando
         # por la pagina sin tener que leer el texto.
         for _seg in _donde.get(s["i"], []):
-            partes.append(etiqueta_compromiso(compromisos[_seg]))
+            for _c in _lista(compromisos[_seg]):
+                _c["_i"] = s["i"]
+                partes.append(etiqueta_compromiso(_c))
 
         cuerpo = [
             '<article class="seg%s" id="%s">' % (" dudoso" if mk else "", bid),
@@ -599,6 +961,12 @@ def construir_bloques(doc, marcas, ventanas, gana, etiquetas=None, compromisos=N
             "alternativas": alts,
         })
     cerrar()
+    # Y el final: lo que queda de grabacion tras la ultima linea, si se sabe
+    # cuanto dura. Son los mismos huecos que pregunta «Lo que no se entiende».
+    dur = duracion_de(doc)
+    ultimo = max([s["fin"] for s in doc["segmentos"]] or [0.0])
+    if dur and dur - ultimo >= HUECO_ILEGIBLE_S:
+        partes.append(pausa(ultimo, dur))
     return "\n".join(partes), bloques
 
 
@@ -709,7 +1077,7 @@ def construir_lista(d, doc, marcas):
             '<button type="button" class="hora" disabled>%s</button>' % hms(h["t"]),
             '<span class="clase r-%s">%s</span></div>' % (h["riesgo"], html.escape(h["clase"])),
             '<p class="texto">%s</p>' % _linea(texto),
-            '<p class="motivos">%s</p>' % _linea(h["detalle"]),
+            '<p class="motivos">%s</p>' % (resaltar(h["detalle"]) if "**" not in h["detalle"] and "`" not in h["detalle"] else _linea(h["detalle"])),
         ]
         if h["variantes"]:
             cuerpo.append('<details class="alternativas"><summary>Qué escribió cada lectura automática</summary>')
@@ -729,6 +1097,16 @@ def construir_lista(d, doc, marcas):
     return "\n".join(partes), bloques, len(hallazgos)
 
 
+def datos_en_script(datos):
+    """El contrato, listo para ir dentro de <script type="application/json">.
+
+    Un texto con «</script>» -- en una nota del glosario, una lectura o una
+    linea transcrita -- cortaba el bloque, y lo que venia detras entraba en la
+    pagina como HTML vivo. En JSON un «<» solo puede ir dentro de una cadena,
+    y ahi \\u003c es el mismo caracter: JSON.parse y json.loads lo leen igual."""
+    return json.dumps(datos, ensure_ascii=False).replace("<", "\\u003c")
+
+
 def partir(md):
     """Encabezado (antes del primer ---) y cuerpo."""
     m = re.search(r"\n---+\n", md)
@@ -736,14 +1114,24 @@ def partir(md):
 
 
 def ficha_desde(cabecera):
-    """Las lineas «**Campo:** valor» del encabezado se convierten en lista de definicion."""
-    filas, resto = [], []
+    """Las lineas «**Campo:** valor» del encabezado se convierten en lista de definicion.
+
+    Un valor que sigue en la linea de abajo -- sin linea en blanco en medio y
+    sin empezar por otra marca -- es del mismo campo: antes se partia y la
+    continuacion quedaba suelta, sin su campo."""
+    campos, resto = [], []
+    abierto = False
     for l in cabecera.split("\n"):
         m = re.match(r"^\*\*(.+?):\*\*\s*(.*?)\s*$", l.strip())
         if m and not l.strip().startswith("# "):
-            filas.append(f"<dt>{_linea(m.group(1))}</dt><dd>{_linea(m.group(2).rstrip())}</dd>")
+            campos.append([m.group(1), m.group(2).rstrip()])
+            abierto = True
+        elif abierto and l.strip() and not re.match(r"^\s*(\*\*|>|#|-|\||\d+\.|<!--)", l):
+            campos[-1][1] += " " + l.strip()
         else:
+            abierto = False
             resto.append(l)
+    filas = [f"<dt>{_linea(c)}</dt><dd>{_linea(v)}</dd>" for c, v in campos]
     return "".join(filas), "\n".join(resto)
 
 
@@ -757,6 +1145,16 @@ def main():
     ap.add_argument("--tramos", default=None,
                     help="el .json de tramos que la entrega senala a mano, con su aviso "
                          "ya redactado: [{desde, hasta, abre, cierra}]")
+    ap.add_argument("--glosario", default=None,
+                    help="sugerencias de glosario del caso (.json): [{oye, dijo, nota}]. Son "
+                         "hipotesis: la pagina las ensena aparte y solo cuentan si ella las acepta")
+    ap.add_argument("--caso", default=None,
+                    help="identificador del caso: el glosario que ella escribe vale para todas "
+                         "las paginas con el mismo")
+    ap.add_argument("--rescates", default=None,
+                    help="el genoma de voz (.json) con los huecos que se volvieron a oir: sus "
+                         "lecturas van como pista en «lo que no se entiende»")
+    ap.add_argument("--rescates-audio", default=None, help="que audio del genoma es este (p. ej. A2)")
     ap.add_argument("--audio", default=None)
     ap.add_argument("--sonda", default=None,
                     help="archivo que deberia estar junto a la pagina; si no carga, "
@@ -786,7 +1184,23 @@ def main():
     m = re.search(r"^#\s+(.*)$", cabecera, re.M)
     if m:
         titulo = re.sub(r"[*`]", "", m.group(1)).strip()
-    ficha, _ = ficha_desde(cabecera)
+    ficha, resto_cabecera = ficha_desde(cabecera)
+    # Lo que la cabecera trae y no es «**Campo:** valor» -- un aviso, un parrafo
+    # que dice que esta entrega sustituye a otra -- se tiraba en silencio: el
+    # Word lo llevaba y la pagina no. Asi, el enlace a una correccion no salio
+    # nunca en la portada. Va ahora al principio del contenido.
+    _lineas, _titulo_visto = [], False
+    for l in resto_cabecera.split("\n"):
+        if not _titulo_visto and re.match(r"^\s*#\s", l):
+            _titulo_visto = True
+            continue
+        if re.match(r"^\s*<!--.*-->\s*$", l):
+            continue
+        _lineas.append(l)
+    sueltas = "\n".join(_lineas).strip()
+    # Solo si hubo separador: sin el, todo el Markdown ya es contenido (y, con
+    # --datos, se pintaria la transcripcion entera dos veces).
+    cabecera_html = md_a_html(sueltas) if sueltas and cuerpo else ""
 
     advertencia = ("El original es la grabación o el documento del que salió esto. "
                    "Ninguna cita debería usarse sin comprobarla contra él.")
@@ -813,14 +1227,26 @@ def main():
             tipo = "Cola de comprobación"
             titulo = "QUÉ COMPROBAR — " + re.sub(r"^TRANSCRIPCI[ÓO]N\s*[—-]\s*", "", titulo)
         else:
+            comps = compromisos_de(a.compromisos)
             contenido, bloques = construir_bloques(doc, marcas, d.get("ventanas"), gana,
-                                                   d.get("etiquetas"),
-                                                   compromisos_de(a.compromisos),
+                                                   d.get("etiquetas"), comps,
                                                    tramos_de(a.tramos))
+            datos["compromisos"] = contrato_compromisos(comps, doc)
             contenido = bloque_voces(d) + contenido
             n_hall = None
             tipo = "Transcripción · superficie de trabajo"
         datos["bloques"] = bloques
+        if a.caso:
+            datos["caso"] = a.caso
+        if a.glosario:
+            if not os.path.isfile(a.glosario):
+                raise SystemExit("NO SE PUDO GENERAR: no esta el glosario %s" % a.glosario)
+            g = json.load(io.open(a.glosario, encoding="utf-8"))
+            datos["glosario"] = [{"oye": s["oye"], "dijo": s["dijo"], "nota": s.get("nota", "")}
+                                 for s in (g.get("sugerencias") or []) if s.get("oye") and s.get("dijo")]
+        if not a.lista:
+            datos["ilegibles"] = ilegibles_de(doc, d.get("ventanas"), gana, tramos_de(a.tramos),
+                                              rescates_de(a.rescates, a.rescates_audio))
         datos["vistas"] = ["lectura", "resumen", "comprobacion"]
         datos["documento"]["tipo"] = tipo
         datos["documento"]["origen"] = a.origen or titulo
@@ -862,6 +1288,13 @@ def main():
             tipo = datos["documento"]["tipo"] = a.tipo
         if a.advertencia:
             advertencia = _linea(a.advertencia)
+    if cabecera_html and a.datos and not a.lista:
+        # En la transcripcion, el aviso de su cabecera va al recuadro de arriba,
+        # que es lo primero que se ve: al principio del contenido quedaba debajo
+        # del pliegue y de la barra fija.
+        advertencia += '<div class="propuesta-mas">%s</div>' % cabecera_html
+    elif cabecera_html and not a.lista:
+        contenido = cabecera_html + contenido
 
     if a.sonda:
         try:
@@ -889,7 +1322,7 @@ def main():
     for k, v in (("{{TITULO}}", html.escape(titulo)), ("{{TIPO}}", html.escape(tipo)),
                  ("{{FICHA}}", ficha), ("{{ADVERTENCIA}}", advertencia),
                  ("{{CONTENIDO}}", contenido), ("{{PIE}}", pie),
-                 ("{{DATOS}}", json.dumps(datos, ensure_ascii=False))):
+                 ("{{DATOS}}", datos_en_script(datos))):
         out = out.replace(k, v)
 
     io.open(a.salida, "w", encoding="utf-8").write(out)

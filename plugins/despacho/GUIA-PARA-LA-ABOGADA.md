@@ -68,7 +68,13 @@ López / Constructora Meridiano
 
 En `1-Documentos recibidos` va todo lo que llega de afuera, tal como llegó: él lo lee y **nunca escribe ahí ni cambia nada**. En `2-Borradores` va lo que usted está produciendo, y es la única carpeta donde él deja archivos nuevos. En `3-Para presentar` pone usted lo que ya dio por terminado; él no mueve nada para allá ni de allá. El archivo `0-Estado del caso` es un resumen corto que él reescribe cada vez que le pide ponerse al día — por eso dice "no editar": si usted escribe algo dentro, se conserva palabra por palabra en el bloque de notas, pero el resto se rehace.
 
-Si su carpeta hoy no se parece a esto, no pasa nada: trabaja con lo que hay y le dice qué encontró en su lugar. No le reorganiza los archivos.
+Dentro de `2-Borradores`, lo que él produce va siempre al mismo sitio, en carpetas con nombre fijo: `Transcripciones`, `Resumenes`, `Actas`, `Compromisos`, `Voces`, `Glosario` y `Entregas`. Cuando algo se rehace, la versión nueva va en una carpeta nueva con la fecha en que se hizo, y la anterior no se toca. Lo que usted guarda en las páginas para oír y marcar queda en `Lo que declaré`; lo que se reemplaza, en `_anteriores`; y `_intermedios (se puede borrar)` es trabajo de máquina que usted puede borrar sin perder nada.
+
+Una entrega —el paquete con las transcripciones, los Word y las páginas para oír— queda en `2-Borradores/Entregas` aunque esté lista. **Pasarla a `3-Para presentar` es decisión suya**: ningún programa escribe en esa carpeta.
+
+Si su oficina tiene un formato propio de actas —membrete, escudo—, se guarda una sola vez al lado de los casos, no dentro de uno, en `Papelería de la oficina/formato de actas/`.
+
+Si su carpeta hoy no se parece a esto, no pasa nada: trabaja con lo que hay y le dice qué encontró en su lugar. No le reorganiza los archivos. Para llevar una carpeta que ya existe a esta forma hay un programa aparte, que no corre solo: primero escribe un plan de qué movería y por qué, no borra nada, y deja registro para deshacerlo.
 
 ---
 

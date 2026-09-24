@@ -15,6 +15,9 @@ export function crearEstado(clave, alCambiar) {
   let almacenOK = true
   let sucio = false
   let datos = {}
+  // Cuenta los cambios: el autoguardado solo da por guardado lo que escribió.
+  // Sin esto, una marca hecha MIENTRAS se escribía quedaba como guardada.
+  let version = 0
 
   const leer = () => JSON.parse(localStorage.getItem(llave) || '{}')
 
@@ -42,31 +45,68 @@ export function crearEstado(clave, alCambiar) {
   return {
     get almacenOK() { return almacenOK },
     get sucio() { return sucio },
+    get version() { return version },
     get todo() { return datos },
     de: (id) => datos[id] || null,
     cuantos: () => Object.keys(datos).length,
 
-    marcar(id, tipo, correccion) {
+    /** `origen` (opcional, solo en correcciones): de qué lectura automática
+     *  partió ella, { partio_de, sugerido }. Queda dicho: no es lo mismo
+     *  escribirlo que aceptar y ajustar lo que leyó otra máquina. */
+    marcar(id, tipo, correccion, origen = null) {
       if (almacenOK) { try { datos = leer() } catch { /* sigue con lo que tiene */ } }
-      if (tipo === 'corregido') datos[id] = { estado: tipo, fecha: hoy(), correccion }
+      if (tipo === 'corregido') datos[id] = { estado: tipo, fecha: hoy(), correccion, ...(origen || {}) }
       else if (datos[id]?.estado === tipo) delete datos[id]
       else datos[id] = { estado: tipo, fecha: hoy() }
       sucio = true
+      version++
       persistir()
       alCambiar?.(id)
+    },
+
+    /** Algo que se guarda aparte (las voces) tambien cuenta como «sin guardar
+     *  en un archivo»: si no, el aviso callaba justo lo que mas trabajo cuesta. */
+    tocar() {
+      sucio = true
+      version++
+      alCambiar?.('voces')
     },
 
     reemplazar(nuevos) {
       datos = nuevos || {}
       sucio = false
+      version++
       persistir()
       alCambiar?.(null)
+    },
+
+    /** Lo que se ha hecho en esta página, como documento: lo que se guarda. */
+    documento(documento, extra = {}) {
+      return {
+        formato: 'despacho/estado-de-comprobacion',
+        version: 2,
+        documento: documento.titulo || '',
+        clave,
+        exportado: new Date().toISOString(),
+        nota: 'Constancia de lo que una persona hizo oyendo el original. NO es verificacion '
+            + 'de que el texto sea correcto.',
+        estado: datos,
+        ...extra,
+      }
+    },
+
+    /** Ya está en un archivo: no hay nada sin guardar. `hasta` = la versión que
+     *  se escribió; si después cambió algo, sigue habiendo algo sin guardar. */
+    limpiar(hasta = null) {
+      if (hasta != null && hasta !== version) return
+      sucio = false
+      alCambiar?.('guardado')
     },
 
     exportar(documento, extra = {}) {
       const doc = {
         formato: 'despacho/estado-de-comprobacion',
-        version: 1,
+        version: 2,
         documento: documento.titulo || '',
         clave,
         exportado: new Date().toISOString(),
@@ -77,11 +117,20 @@ export function crearEstado(clave, alCambiar) {
         // comprobacion porque son dos cosas distintas: una es «fui al
         // original», la otra es «esta voz es esta persona».
         voces: extra.voces || {},
+        // Quien habla, fragmento a fragmento, segun ELLA oyendolo. La maquina
+        // solo propuso la voz; lo que va aqui lo afirmo ella.
+        atribucion: extra.atribucion || {},
+        resumen_voces: extra.resumen_voces || {},
+        ...extra,
       }
       const a = document.createElement('a')
       a.href = URL.createObjectURL(new Blob([JSON.stringify(doc, null, 1)],
         { type: 'application/json' }))
-      a.download = `comprobado - ${(documento.titulo || 'documento').replace(/[\\/:*?"<>|]/g, '')}.json`
+      // Con la fecha en el nombre: si no, Descargas los numeraba «(1)», «(2)»…
+      // y no se sabía cuál era el último.
+      const d = new Date(), p = (n) => String(n).padStart(2, '0')
+      const sello = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}.${p(d.getMinutes())}.${p(d.getSeconds())}`
+      a.download = `comprobado - ${(documento.titulo || 'documento').replace(/[\\/:*?"<>|]/g, '')} - ${sello}.json`
       a.click()
       URL.revokeObjectURL(a.href)
       sucio = false
@@ -94,10 +143,15 @@ export function crearEstado(clave, alCambiar) {
         fr.onload = () => {
           try {
             const d = JSON.parse(fr.result)
-            if (d.clave && claveEsperada && d.clave !== claveEsperada &&
-                !confirm('Ese archivo es de otro documento. ¿Cargarlo de todos modos?')) return res(false)
+            // De otra transcripción (u otra versión de esta), no se carga NADA:
+            // las líneas, tramos y compromisos se nombran por su sitio, y lo
+            // que declaró quedaría pegado a otra cosa. Sigue en su archivo.
+            if (!d.clave || (claveEsperada && d.clave !== claveEsperada)) {
+              return rej(new Error('Ese archivo es de otra transcripción, o de otra versión de esta: no se carga, '
+                + 'para no pegar lo que usted declaró a líneas que no son. Lo que declaró sigue en ese archivo.'))
+            }
             this.reemplazar(d.estado || {})
-            res(true)
+            res(d)
           } catch { rej(new Error('No se pudo leer ese archivo.')) }
         }
         fr.readAsText(file)

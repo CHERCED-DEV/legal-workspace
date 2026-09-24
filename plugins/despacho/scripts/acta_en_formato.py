@@ -13,7 +13,9 @@ es lo que hace que el documento se reconozca como suyo.
 DE DONDE SALE LA FORMA. De un `formato.json` que describe el membrete de ESA
 entidad: que dice el titulo, que direccion va al pie, que tipografias usa. Ese
 archivo se escribe UNA vez por despacho y **no vive en el repositorio**, porque
-nombra a la entidad.
+nombra a la entidad. En el Despacho vive al lado de los proyectos, en
+«<cliente u oficina>/Papelería de la oficina/formato de actas/formato.json»
+(ADR-023), con el escudo en esa misma carpeta.
 
 LO QUE NO HACE. No redacta, no rellena huecos y no inventa un membrete: si el
 formato no trae escudo, sale sin escudo y lo dice. Los datos del acta salen del

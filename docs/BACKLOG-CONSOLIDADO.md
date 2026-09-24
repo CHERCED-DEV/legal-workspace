@@ -305,7 +305,7 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 
 ---
 
-## §7 · Los ADR, leídos por fin — dieciocho entonces, veintidós hoy
+## §7 · Los ADR, leídos por fin — dieciocho entonces, veintitrés hoy
 
 **Añadido el 2026-09-05.** El §0.3 de este documento declara, desde el 28 de agosto, que **los ADR no se leyeron** —*«el lector asignado cayó por un error de conexión a mitad de trabajo»*— y que sus preguntas pendientes *«son de los ítems mejor formulados del repositorio»*. Aquí están.
 
@@ -318,6 +318,7 @@ No son tareas: son decisiones sin las cuales el trabajo se hace dos veces.
 | **001 a 011** | La frontera de confianza, el modelo epistémico tipado, la memoria del caso, el log de eventos con hash-chain, las propuestas y autorizaciones, la superficie MCP, SQLite, el anclaje de fragmentos | **No.** Diseñan **el Core**, que no existe. Lo construido son doce `SKILL.md` y catorce programas |
 | **012 a 018** | Distribución y actualización, respaldo, entrega en Word, revisión de rigor, límite del OCR, límite del audio, la oficina de programas | **Sí.** Cada uno describe algo que hoy está en el disco |
 | **019 a 022** | El audio transcrito de verdad, la superficie de trabajo, los enlaces normativos, la comprobación barata | **Todavía no, y a propósito: los cuatro son `CANDIDATO`.** Ver 7.5 |
+| **023 a 023** | La forma de un proyecto: dónde deja cada cosa cada programa | **Sí, desde el 2026-09-23.** `ACEPTADO` en sus tres puntos en disputa (las entregas en `2-Borradores/Entregas/`, `_fuentes` dentro de ellas, migrar con manifiesto); lo aplican `estructura.py`, `ordenar_proyecto.py` y la página «oír y marcar» |
 
 > **El corte no es una opinión mía: lo hace ADR-018**, cuya decisión 1 dice con todas las letras: *«**El Core deja de ser dependencia de nada que ya funcione.** Si algún día existe, será para otra cosa; **ninguna capacidad construida vuelve a esperarlo.»*
 >

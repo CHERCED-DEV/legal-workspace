@@ -348,6 +348,8 @@ Título y subtítulo son opcionales; sin ellos toma el primer `#` del archivo y 
 
 `2-Borradores/Revisión de rigor - <qué se revisó> - <AAAA-MM-DD>.md`
 
+Si lo que se revisó es un acta, la revisión va con ella, en `2-Borradores/Actas/` (ADR-023).
+
 **Nunca en `1-Documentos recibidos/`** ni en `0-Estado del caso`. **No se sobrescribe:** la pasada nueva añade un número al final.
 
 **Este comando NO exige hechos aprobados.** A diferencia de `redactar-escrito`, aquí no hay compuerta: revisar es justamente lo que se hace **antes** de aprobar. Pero cuando trabaja sobre material que nadie ha revisado, **lo dice en el encabezado**, porque sus hallazgos citan localizadores que nadie ha comprobado.

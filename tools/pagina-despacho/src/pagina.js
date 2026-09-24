@@ -11,11 +11,17 @@
  *  - Una correccion es anotacion, nunca edicion del texto derivado (§5).
  */
 import './estilo.css'
-import { leerContrato, nodoDe, hms } from './contrato.js'
+import { leerContrato, nodoDe, hms, textoTranscrito } from './contrato.js'
 import { crearEstado, ETIQUETA } from './estado.js'
 import { crearMedios } from './medios.js'
 import { crearFranja } from './franja.js'
 import { montarTeclado } from './teclado.js'
+import { montarVoces } from './voces.js'
+import { montarIlegibles } from './ilegibles.js'
+import { montarCompromisos } from './compromisos.js'
+import { crearGuardado } from './guardado.js'
+import { crearOirLinea, montarOtrasLecturas } from './otras-lecturas.js'
+import { montarGlosario } from './glosario.js'
 
 const $ = (s, r = document) => r.querySelector(s)
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s))
@@ -24,6 +30,18 @@ const C = leerContrato($('#datos'))
 let filtro = 'todo'
 let foco = null
 let franja = null
+let voces = null
+let ilegibles = null
+let compromisos = null
+let guardado = null
+let glosario = null
+/** Todo lo que ella declara en esta página, junto: lo que se guarda. */
+const extra = () => ({
+  ...(voces?.paraGuardar() || {}),
+  ...(ilegibles?.paraGuardar() || {}),
+  ...(compromisos?.paraGuardar() || {}),
+  ...(glosario?.paraGuardar() || {}),
+})
 
 /* --------------------------------------------------------------- utilidades */
 const visibles = () => C.bloques.filter((b) => pasaFiltro(b))
@@ -75,13 +93,15 @@ function procedencia(b) {
 function textoDe(b) {
   const e = estado.de(b.id)
   if (e?.estado === 'corregido' && e.correccion) return e.correccion
-  return $('.texto', nodoDe(b)).textContent.trim()
+  return textoTranscrito($('.texto', nodoDe(b)))
 }
 
 /* -------------------------------------------------------------------- estado */
 const estado = crearEstado(C.clave, (id) => {
   if (id === null) { C.bloques.forEach(pintarBloque); aplicarFiltro() }
   pintarProgreso(); pintarAviso(); franja?.refrescar()
+  if (id !== 'guardado') guardado?.cambio()
+  pintarPestanas()
 })
 
 /* --------------------------------------------------------------------- foco */
@@ -108,14 +128,15 @@ function mover(paso) {
   enfocar(lista[j].id)
 }
 
-function marcarFoco(tipo) {
+function marcarFoco(tipo, sugerido = '', partioDe = '') {
   if (!foco) { mover(1); return }
   if (tipo === 'corregido') {
     const previo = estado.de(foco)?.correccion || ''
     const v = prompt('Escriba lo que SÍ dice el original.\n\n'
-      + 'No se modifica la transcripción: queda como anotación suya, con la fecha.', previo)
+      + (sugerido ? 'Viene escrito lo que leyó otra máquina: cámbielo por lo que usted oyó.\n\n' : '')
+      + 'No se modifica la transcripción: queda como anotación suya, con la fecha.', sugerido || previo)
     if (v === null) return
-    estado.marcar(foco, 'corregido', v.trim())
+    estado.marcar(foco, 'corregido', v.trim(), sugerido && partioDe ? { partio_de: partioDe, sugerido } : null)
   } else {
     estado.marcar(foco, tipo)
   }
@@ -137,8 +158,8 @@ function pintarBloque(b) {
 
   const s = document.createElement('p')
   s.className = 'sello'
-  s.textContent = `${ETIQUETA[e.estado]} por usted el ${e.fecha}. `
-    + 'Es constancia de que fue al original, no de que el texto sea correcto.'
+  s.innerHTML = `<strong>${ETIQUETA[e.estado]} por usted</strong> el ${String(e.fecha).replace(/[&<>"']/g, '')}. `
+    + 'Es constancia de que fue al original, <strong>no de que el texto sea correcto</strong>.'
   n.insertBefore(s, $('.acciones', n))
 
   if (e.estado === 'corregido' && e.correccion) {
@@ -175,8 +196,8 @@ function pintarAviso() {
   if (!el) return
   const p = []
   if (!estado.almacenOK) p.push('Este navegador no conserva lo marcado al cerrar la página.')
-  if (estado.sucio) p.push('Tiene marcas que aún no ha guardado en un archivo: use «Guardar lo comprobado».')
-  el.textContent = p.join(' ')
+  if (estado.sucio) p.push('Tiene marcas que <strong>aún no ha guardado</strong> en un archivo: use «Guardar lo comprobado».')
+  el.innerHTML = p.join(' ')
   el.hidden = !p.length
 }
 
@@ -185,6 +206,10 @@ const medios = crearMedios($('#audio'), C.audio, {
   alTiempo(t) {
     $('#reloj-actual').textContent = hms(t)
     franja?.playhead(t)
+    voces?.alTiempo(t)
+    ilegibles?.alTiempo(t)
+    compromisos?.alTiempo(t)
+    oirLinea?.alTiempo(t)
     const b = C.bloques.find((x) => x.ancla.tipo === 'tiempo'
       && t >= x.ancla.inicio && t < x.ancla.fin)
     if (b && b.id !== sonando) {
@@ -195,6 +220,9 @@ const medios = crearMedios($('#audio'), C.audio, {
   },
   alEstado(s) {
     if (s.sonando !== undefined) $('#btn-play').textContent = s.sonando ? '❚❚' : '▶'
+    voces?.alEstado()
+    ilegibles?.alEstado()
+    compromisos?.alEstado()
     if (s.listo === undefined) return
     if (s.motivo === 'no-encontrada') avisarSola()
     $('#reproductor').hidden = !s.listo
@@ -204,6 +232,16 @@ const medios = crearMedios($('#audio'), C.audio, {
   },
 })
 let sonando = null
+
+/* Oír una sola línea (y compararla con las otras lecturas). Se para al final. */
+const lecturasDe = new Map()
+const oirLinea = crearOirLinea(medios, {
+  alCambiar(b) {
+    lecturasDe.get(b.id)?.pintar()
+    const x = $('.acciones .oir-linea', nodoDe(b))
+    if (x) x.textContent = oirLinea.sonandoEn(b) ? '❚❚' : '▶ Oír'
+  },
+})
 
 /* ------------------------------------------------------------ enlace directo */
 // «pagina.html#t=1140» o «#t=00:19:00» llega a ese punto y lo enfoca. NO lo hace
@@ -260,6 +298,7 @@ function montarBloque(b) {
   const acc = document.createElement('div')
   acc.className = 'acciones'
   acc.innerHTML = `
+    <button type="button" data-a="oir-linea" class="oir-linea" title="Oír solo esta línea">▶ Oír</button>
     <button type="button" data-a="confirmado" class="primaria">Confirmado</button>
     <details class="mas"><summary>más</summary>
       <button type="button" data-a="oido">Oído</button>
@@ -274,6 +313,7 @@ function montarBloque(b) {
     if (!x) return
     ev.stopPropagation()
     const a = x.dataset.a
+    if (a === 'oir-linea') { oirLinea.oir(b); return }
     if (a === 'copiar' || a === 'copiar-solo') {
       const txt = textoDe(b)
       const ok = await copiar(a === 'copiar' ? `«${txt}»\n${procedencia(b)}` : txt)
@@ -287,16 +327,13 @@ function montarBloque(b) {
   })
 
   if (b.alternativas.length) {
-    const d = document.createElement('details')
-    d.className = 'alternativas'
-    d.innerHTML = `<summary>Otras lecturas automáticas escribieron algo distinto</summary>`
-    b.alternativas.forEach((alt) => {
-      const p = document.createElement('p')
-      p.innerHTML = `<span class="et">${alt.fuente}</span>`
-      p.append(document.createTextNode(alt.texto))
-      d.appendChild(p)
+    const ol = montarOtrasLecturas(b, {
+      oir: oirLinea,
+      texto: () => textoTranscrito($('.texto', n)),
+      alCorregir(bb, sugerido, partioDe) { foco = bb.id; marcarFoco('corregido', sugerido, partioDe) },
     })
-    n.insertBefore(d, acc)
+    lecturasDe.set(b.id, ol)
+    n.insertBefore(ol.nodo, acc)
   }
 
   pintarBloque(b)
@@ -307,100 +344,114 @@ function montarBloque(b) {
 // temporal: ni enlaces ni audio funcionan, y el aviso de «extraiga primero»
 // estaba dentro de la pagina que ya se abrio mal. Se prueba si un archivo que
 // deberia estar al lado carga; si no, se dice arriba y en grande.
-/* ------------------------------------------------------------------- voces */
-/* Reconocer a alguien obligaba a recorrer la pagina entera a ojo. Aqui cada voz
- * trae sus turnos, se salta de uno al siguiente, y el nombre que ella escriba
- * se ve al instante en todas las cabeceras. Nombrar sigue siendo suyo: la
- * maquina agrupo el sonido, no dijo de quien es. */
-const LLAVE_VOCES = 'despacho:voces:' + C.clave
-
-function leerVoces() {
-  try { return JSON.parse(localStorage.getItem(LLAVE_VOCES) || '{}') } catch { return {} }
-}
-
-let nombres = leerVoces()
-
-function vozDe(b) {
-  const m = /Hablante ([^\s—-]+)/.exec(b.etiqueta || '')
-  return m ? m[1] : null
-}
-
-function turnosPorVoz() {
-  const mapa = new Map()
-  let previa = null
-  for (const b of C.bloques) {
-    const v = vozDe(b)
-    if (!v) { previa = null; continue }
-    if (!mapa.has(v)) mapa.set(v, { turnos: [], lineas: 0, segundos: 0 })
-    const d = mapa.get(v)
-    d.lineas += 1
-    d.segundos += Math.max(0, (b.ancla?.fin || 0) - (b.ancla?.inicio || 0))
-    if (v !== previa) d.turnos.push(b.id)
-    previa = v
+/* La velocidad del audio: más lento para entender lo que se dice mal, y la
+   página la recuerda. Oír más despacio o más deprisa sigue contando como oír. */
+const VELOCIDADES = [0.5, 0.75, 1, 1.25, 1.5]
+function montarVelocidad() {
+  const s = $('#velocidad')
+  if (!s) return
+  const poner = (v) => {
+    if (!VELOCIDADES.includes(v)) v = 1
+    medios.velocidad = v
+    s.value = String(v)
+    try { localStorage.setItem('despacho:velocidad', String(v)) } catch { /* se aplica igual */ }
   }
-  return mapa
-}
-
-function pintarNombres() {
-  for (const s of $$('.turno-cab')) {
-    const q = s.querySelector('.quien')
-    if (!q) continue
-    const m = /Hablante ([^\s—-]+)/.exec(q.textContent || '')
-    if (!m) continue
-    let n = q.querySelector('.nombrada')
-    const nombre = (nombres[m[1]] || '').trim()
-    if (!nombre) { n?.remove(); continue }
-    if (!n) { n = document.createElement('span'); n.className = 'nombrada'; q.appendChild(n) }
-    n.textContent = nombre
+  let inicial = 1
+  try { inicial = Number(localStorage.getItem('despacho:velocidad')) || 1 } catch {}
+  poner(inicial)
+  s.addEventListener('change', () => poner(Number(s.value)))
+  velocidadPaso = (paso) => {
+    const i = VELOCIDADES.indexOf(Number(s.value))
+    const v = VELOCIDADES[Math.max(0, Math.min(VELOCIDADES.length - 1, (i < 0 ? 2 : i) + paso))]
+    poner(v)
+    voces?.avisar(`Velocidad: ${String(v).replace('.', ',')}×`, 1500)
   }
 }
+let velocidadPaso = () => {}
 
-function montarVoces() {
-  const caja = $('#voces')
-  if (!caja) return
-  const mapa = turnosPorVoz()
-  if (mapa.size < 2) return          // una sola voz: no hay entre que saltar
-  caja.hidden = false
-  const orden = [...mapa.entries()].sort((a, b) => b[1].segundos - a[1].segundos)
-  caja.innerHTML =
-    '<p class="voces-titulo"><strong>¿Quién es cada voz?</strong> Salte entre sus '
-    + 'intervenciones para reconocerla, y escriba quién es. '
-    + '<em>Lo que escriba aquí lo afirma usted, no la máquina.</em></p>'
-  const fila = document.createElement('div')
-  fila.className = 'voces-filas'
-  for (const [v, d] of orden) {
-    const f = document.createElement('div')
-    f.className = 'voz-fila'
-    const min = Math.round(d.segundos / 60)
-    f.innerHTML =
-      '<span class="voz-nombre">Hablante ' + v + '</span>'
-      + '<span class="voz-cuanto">' + d.turnos.length + ' intervenciones · '
-      + (min >= 1 ? min + ' min' : Math.round(d.segundos) + ' s') + '</span>'
-    const ir = document.createElement('button')
-    ir.type = 'button'; ir.className = 'boton tenue'; ir.textContent = 'oír la siguiente ▸'
-    let i = -1
-    ir.addEventListener('click', () => {
-      i = (i + 1) % d.turnos.length
-      enfocar(d.turnos[i], { llevarAlAudio: true })
-      ir.textContent = 'siguiente ▸ (' + (i + 1) + '/' + d.turnos.length + ')'
-    })
-    const caj = document.createElement('input')
-    caj.type = 'text'; caj.className = 'voz-quien'; caj.value = nombres[v] || ''
-    caj.placeholder = 'quién es, y su cargo'
-    caj.setAttribute('aria-label', 'Quién es el hablante ' + v)
-    caj.addEventListener('input', () => {
-      nombres[v] = caj.value
-      try { localStorage.setItem(LLAVE_VOCES, JSON.stringify(nombres)) } catch {}
-      f.querySelector('.voz-nombre').textContent =
-        'Hablante ' + v + (caj.value.trim() ? ' — ' + caj.value.trim() : '')
-      pintarNombres()
-    })
-    f.append(ir, caj)
-    fila.appendChild(f)
-    if (nombres[v]) f.querySelector('.voz-nombre').textContent = 'Hablante ' + v + ' — ' + nombres[v]
+/* Los tres paneles de trabajo en pestañas: uno a la vista. Apilados, los tres
+   empujaban la transcripción una pantalla hacia abajo. */
+const PESTANAS = [['voces', 'Quién habla'], ['ilegibles', 'Lo que no se entiende'], ['glosario', 'Glosario']]
+function montarPestanas() {
+  const hay = PESTANAS.filter(([id]) => $('#' + id) && !$('#' + id).hidden)
+  if (!hay.length) return
+  const barra = document.createElement('div')
+  barra.className = 'pestanas envoltura'
+  barra.setAttribute('role', 'tablist')
+  barra.setAttribute('aria-label', 'Paneles de trabajo')
+  barra.innerHTML = hay.map(([id, t]) =>
+    `<button type="button" role="tab" class="pestana" data-p="${id}" aria-controls="${id}">${t} <span class="p-cifra"></span></button>`).join('')
+    + '<button type="button" class="boton tenue p-ocultar" aria-expanded="true">Ocultar</button>'
+  $('#' + hay[0][0]).before(barra)
+  document.body.classList.add('con-pestanas')
+  barra.addEventListener('click', (e) => {
+    const b = e.target.closest('button')
+    if (!b) return
+    if (b.classList.contains('p-ocultar')) return ocultarPaneles(!document.body.classList.contains('paneles-ocultos'))
+    abrirPestana(b.dataset.p)
+  })
+  // Las flechas cambian de pestaña, como en cualquier lista de pestañas.
+  barra.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+    const ps = [...barra.querySelectorAll('.pestana')]
+    const i = ps.indexOf(document.activeElement)
+    if (i < 0) return
+    e.preventDefault()
+    const sig = ps[(i + (e.key === 'ArrowRight' ? 1 : -1) + ps.length) % ps.length]
+    abrirPestana(sig.dataset.p); sig.focus()
+  })
+  hay.forEach(([id]) => $('#' + id)?.setAttribute('role', 'tabpanel'))
+  let inicial = hay[0][0]
+  try { const g = localStorage.getItem('despacho:pestana'); if (hay.some(([id]) => id === g)) inicial = g } catch {}
+  abrirPestana(inicial, false)
+  try { ocultarPaneles(localStorage.getItem('despacho:paneles-ocultos:' + C.clave) === '1', false) } catch {}
+  if (glosario) glosario.abrirPestana = () => abrirPestana('glosario')
+  pintarPestanas()
+}
+function abrirPestana(id, recordar = true) {
+  $$('.pestana').forEach((b) => {
+    const si = b.dataset.p === id
+    b.classList.toggle('activa', si)
+    b.setAttribute('aria-selected', String(si))
+    const s = $('#' + b.dataset.p)
+    if (s) s.classList.toggle('pestana-oculta', !si)
+  })
+  if (document.body.classList.contains('paneles-ocultos')) ocultarPaneles(false)
+  if (recordar) try { localStorage.setItem('despacho:pestana', id) } catch {}
+}
+function ocultarPaneles(si, recordar = true) {
+  document.body.classList.toggle('paneles-ocultos', si)
+  const b = $('.p-ocultar')
+  if (b) { b.textContent = si ? 'Mostrar' : 'Ocultar'; b.setAttribute('aria-expanded', String(!si)) }
+  if (recordar) try { localStorage.setItem('despacho:paneles-ocultos:' + C.clave, si ? '1' : '0') } catch {}
+}
+function pintarPestanas() {
+  const cifra = { voces: voces?.cifra?.(), ilegibles: ilegibles?.cifra?.(), glosario: glosario ? String(glosario.cuantas()) : '' }
+  $$('.pestana').forEach((b) => { const c = b.querySelector('.p-cifra'); if (c) c.textContent = cifra[b.dataset.p] || '' })
+}
+
+/* El tema: el del sistema, o el que ella elija, y se recuerda. Cambiar de
+   golpe porque el sistema cambio a oscuro a media tarde desorienta. */
+function montarTema() {
+  const b = $('#btn-tema')
+  if (!b) return
+  const ORDEN = ['auto', 'claro', 'oscuro']
+  const NOMBRE = { auto: '◐ automático', claro: '☀ claro', oscuro: '☾ oscuro' }
+  const aplicar = (t) => {
+    if (t === 'auto') delete document.documentElement.dataset.tema
+    else document.documentElement.dataset.tema = t
+    b.textContent = NOMBRE[t]
+    b.title = 'Colores de la página: ' + NOMBRE[t].slice(2) + '. Pulse para cambiar.'
   }
-  caja.appendChild(fila)
-  pintarNombres()
+  let actual = 'auto'
+  try { actual = localStorage.getItem('despacho:tema') || 'auto' } catch { /* sin almacen: automatico */ }
+  if (!ORDEN.includes(actual)) actual = 'auto'
+  aplicar(actual)
+  b.addEventListener('click', () => {
+    actual = ORDEN[(ORDEN.indexOf(actual) + 1) % ORDEN.length]
+    aplicar(actual)
+    try { localStorage.setItem('despacho:tema', actual) } catch { /* se aplica igual */ }
+  })
 }
 
 function avisarSola() {
@@ -417,13 +468,35 @@ function comprobarCompania() {
 }
 
 function iniciar() {
-  montarVoces()
   comprobarCompania()
   // Sin bloques es un documento para leer: ni filtros, ni contador, ni «Guardar
   // lo comprobado» sobre algo que no tiene nada que comprobar.
   if (!C.bloques.length) return
   $('#barra').hidden = false
   C.bloques.forEach(montarBloque)
+  // Quien habla: despues de los bloques, porque pone su marca encima de ellos.
+  voces = montarVoces({ C, medios, nodoDe, enfocar, estado })
+  ilegibles = montarIlegibles({ C, medios, enfocar, estado, voces })
+  compromisos = montarCompromisos({ C, medios, estado, voces })
+  glosario = montarGlosario({ C, caja: $('#glosario'), avisar: (t, ms) => voces?.avisar(t, ms), alIrA: (id) => enfocar(id),
+    oirLinea, bloqueDe: (id) => C.porId.get(id) })
+  if (glosario) glosario.alCambiar = () => { estado.tocar(); pintarPestanas() }
+  montarPestanas()
+  guardado = crearGuardado({
+    titulo: C.documento.titulo,
+    documento: () => estado.documento(C.documento, extra()),
+    version: () => estado.version,
+    clave: C.clave,
+    alEstado: (s) => {
+      const el = $('#aviso-guardado')
+      if (!el) return
+      el.textContent = s.texto
+      el.classList.toggle('mal', !s.bien)
+      el.hidden = !s.texto
+      if (s.escrito) estado.limpiar(s.version)
+    },
+  })
+  guardado.iniciar()
 
   franja = crearFranja($('#franja'), C, estado, (id) =>
     enfocar(id, { llevarAlAudio: true }))
@@ -435,15 +508,53 @@ function iniciar() {
     aplicarFiltro()
   }))
   $('#btn-play')?.addEventListener('click', () => medios.alternar())
-  $('#btn-exportar')?.addEventListener('click',
-    () => estado.exportar(C.documento, { voces: nombres }))
+  montarVelocidad()
+  // Guardar: en la carpeta de la entrega si el navegador lo permite; si no,
+  // o si ella no elige carpeta, se descarga como antes, y se le dice dónde.
+  $('#btn-exportar')?.addEventListener('click', async () => {
+    if (guardado?.disponible) {
+      const r = await guardado.guardar()
+      if (r === true) return
+      // Si ella canceló, no se descarga nada a sus espaldas.
+      if (r === 'cancelado') { voces?.avisar('No se guardó: no eligió carpeta.', 5000); return }
+    }
+    estado.exportar(C.documento, extra())
+    voces?.avisar(`Guardado en su carpeta de Descargas como «comprobado - ${C.documento.titulo} - <fecha y hora>.json». `
+      + 'Para seguir otro día, use «Cargar» con ese archivo.', 7000)
+  })
   $('#btn-importar')?.addEventListener('click', () => $('#archivo-estado').click())
   $('#archivo-estado')?.addEventListener('change', (e) => {
-    if (e.target.files[0]) {
-      estado.importar(e.target.files[0], C.clave)
-        .then(() => { C.bloques.forEach(pintarBloque); aplicarFiltro() })
-        .catch((err) => alert(err.message))
-    }
+    const f = e.target.files[0]
+    e.target.value = ''
+    if (!f) return
+    // Cargar SUSTITUYE lo de esta página en este navegador: se pregunta SIEMPRE
+    // que haya algo declarado en cualquier panel, y antes se deja una copia.
+    const cuenta = (o) => (o && typeof o === 'object' ? Object.keys(o).length : 0)
+    const x = extra()
+    const hay = estado.cuantos() + (voces?.cuantos || 0) + cuenta(x.ilegibles) + cuenta(x.compromisos)
+    if (hay && !confirm('Al cargar ese archivo se sustituye lo que tiene declarado en esta página, en este navegador '
+          + '(líneas, quién habla, lo que no se entiende y compromisos; el glosario se junta, no se sustituye).'
+          + (guardado?.activo ? '\n\nAntes se guarda una copia fechada «antes de cargar» en su carpeta.'
+            : estado.sucio ? '\n\nTiene cosas sin guardar en un archivo: si las quiere, cancele y pulse antes «Guardar lo comprobado».' : '')
+          + '\n\n¿Cargar de todos modos?')) return
+    const antes = hay && guardado?.activo ? guardado.copia('antes de cargar') : Promise.resolve(false)
+    antes.then(() => estado.importar(f, C.clave))
+      .then((d) => {
+        if (!d) return
+        const v = voces?.cargar(d)
+        ilegibles?.cargar(d)
+        compromisos?.cargar(d)
+        const nGl = glosario?.cargar(d) || 0
+        C.bloques.forEach(pintarBloque); aplicarFiltro(); pintarPestanas()
+        const partes = [`${cuenta(d.estado)} líneas marcadas`]
+        if (v?.cargado) partes.push(`${v.voces} fragmentos con quién habla y ${v.nombres} nombres`)
+        if (cuenta(d.ilegibles)) partes.push(`${cuenta(d.ilegibles)} tramos contados`)
+        if (cuenta(d.compromisos)) partes.push(`${cuenta(d.compromisos)} compromisos`)
+        if (nGl) partes.push(`${nGl} ${nGl === 1 ? 'entrada' : 'entradas'} de glosario, juntadas con las de este navegador`)
+        voces?.avisar(`Cargado: ${partes.join(', ')}`
+          + (d.exportado ? ` (guardado el ${new Date(d.exportado).toLocaleString('es-CO')})` : '') + '.', 8000)
+      })
+      .catch((err) => alert(err.message))
   })
 
   const atajos = montarTeclado({
@@ -468,10 +579,15 @@ function iniciar() {
     } },
     d: { desc: 'Ver solo lo que tiene motivo de duda', fn: () => $('[data-filtro="pendiente"]')?.click() },
     t: { desc: 'Ver todo', fn: () => $('[data-filtro="todo"]')?.click() },
+    '-': { desc: 'Audio más lento', fn: () => velocidadPaso(-1) },
+    '+': { desc: 'Audio más rápido', fn: () => velocidadPaso(1) },
+    v: { desc: 'Quién habla: seguir confirmando voces donde lo dejó', fn: () => { abrirPestana('voces'); voces?.seguir() } },
+    l: { desc: 'Lo que no se entiende: el siguiente tramo por contar', fn: () => { abrirPestana('ilegibles'); document.querySelector('.il-empezar')?.click() } },
     Escape: { desc: 'Quitar el foco', fn: () => { foco = null; $$('.seg.enfocado').forEach((n) => n.classList.remove('enfocado')) } },
     '?': { desc: 'Esta ayuda', fn: () => atajos.ayuda() },
   })
   $('#btn-ayuda')?.addEventListener('click', () => atajos.ayuda())
+  montarTema()
 
   window.addEventListener('beforeunload', (e) => {
     if (estado.sucio) { e.preventDefault(); e.returnValue = '' }

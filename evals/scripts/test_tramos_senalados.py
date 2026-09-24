@@ -19,6 +19,7 @@ Todo sintetico: nada de ningun caso.
     python3 evals/scripts/test_tramos_senalados.py
 """
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -147,7 +148,8 @@ class LaPagina(unittest.TestCase):
     def generar(self, *extra):
         return subprocess.run([sys.executable, str(SCRIPTS / "md2html.py"), str(self.md), str(self.html),
                                "--datos", str(self.datos)] + list(extra),
-                              capture_output=True, text=True, encoding="utf-8")
+                              capture_output=True, text=True, encoding="utf-8",
+                              env=dict(os.environ, PYTHONIOENCODING="utf-8"))
 
     def cuerpo(self):
         t = self.html.read_text(encoding="utf-8")

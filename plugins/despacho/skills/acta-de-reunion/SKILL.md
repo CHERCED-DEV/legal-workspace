@@ -192,6 +192,27 @@ La puerta dice tres cosas —qué hay, quién habla, qué comprobó ella oyendo�
 
 **Si la puerta señala un tramo repetido** —el reconocedor enganchado diciendo la misma frase— **ese tramo no entra en el acta hasta que alguien lo oiga**. No es una duda: es texto que probablemente nadie dijo.
 
+#### Lo que ella ya declaró oyendo, en las páginas
+
+Las páginas de «oír y marcar» de la entrega guardan lo que ella hace en una carpeta `Lo que declaré`: **en el proyecto** (`2-Borradores/Lo que declaré/<entrega>/`) si la entrega se abrió desde `2-Borradores/Entregas/` de un proyecto del Despacho —o desde `3-Para presentar/`, donde estaban antes de ADR-023, mientras quede alguna—, y **dentro de la entrega** si se abrió suelta. Quien opera el arnés lo junta con `recoger_lo_declarado.py` (se corre a mano) y queda en `2-Borradores/Lo que declaró ella/` como **`Lo que declaró ella - <fecha>.md`**. **Si existe, léelo antes de redactar: es la mejor fuente que hay después del audio**, y cambia lo que el acta puede afirmar:
+
+| Lo que declaró | Qué permite en el acta | Qué NO permite |
+|---|---|---|
+| **Las líneas**: confirmada, oída o **corregida** («lo que sí dice el original, según ella»; si partió de una lectura automática, el informe dice de cuál) | Citar la línea confirmada; en la prosa, usar su corrección como lo que se dijo **según quien oyó la grabación** | Presentar su corrección como si fuera la transcripción, o dar por confirmado lo que solo marcó como «oído» |
+| **Quién habla**: una voz **identificada** (≥ 85 % confirmado oyendo) y **con nombre** | Atribuir a esa persona las frases de esa voz que ella confirmó, subiendo el nivel de la escala (§2.3), **con la procedencia**: «según identificó quien oyó la grabación» | Atribuirle frases de fragmentos que ella no confirmó, ni las de una voz que no llegó al 85 % |
+| **Lo que no se entendía**, contado por ella (idea principal y quién) | Recoger esa idea en el desarrollo como lo que **ella** oyó: «según quien oyó la grabación, en ese punto se plantea…» | Citarlo entre « »: no es la transcripción, es su resumen |
+| **Compromisos**: si lo son, quién lo asume, plazo que oyó | Llenar la columna de responsables y el plazo **con lo que ella declaró**, y descartar los que ella dijo que no son compromisos | Poner un plazo que ella no oyó, o un responsable por el número de hablante |
+| **Glosario**: «la transcripción dice X, se dijo Y» | Escribir en la prosa del acta el nombre correcto (Y) | **Cambiar una cita**: entre « » va el texto transcrito tal cual; si hace falta, se aclara después: «la alcaldía de Popayan» *[Popayán, según el glosario de quien oyó la grabación]* |
+
+Lo que la máquina propuso y ella no confirmó —voces propuestas, sugerencias de glosario sin aceptar, la ficha de un compromiso— **sigue siendo una lectura**, con el mismo peso que tenía antes.
+
+**Cuando digan «ya terminé»** —«ya oí el caso X», «ya terminé la transcripción de…»—, el orden es este, y no se salta:
+
+1. **Localizar** el proyecto y la entrega que ella trabajó (`<proyecto>/2-Borradores/Entregas/ENTREGA - …`; en un proyecto sin ordenar, `<proyecto>/3-Para presentar/ENTREGA - …`).
+2. **Recoger**: `recoger_lo_declarado.py "<entrega>" --salida "<proyecto>/2-Borradores/Lo que declaró ella"`. Mira dentro de la entrega y, si la entrega está en `3-Para presentar/`, en `2-Borradores/Lo que declaré/<entrega>/`. **Con la entrega en `2-Borradores/Entregas/` todavía no mira la carpeta del proyecto**: los `.json` de `2-Borradores/Lo que declaré/<entrega>/` se le pasan como archivos sueltos, detrás de la entrega. Descarta lo que sea de otra versión de la transcripción (lo dice).
+3. **Leer el informe entero y contarlo antes de redactar**: cuántas líneas confirmó y corrigió, qué voces quedaron identificadas y con qué nombre, qué compromisos confirmó o descartó, qué tramos contó, qué entró en el glosario. Es su trabajo: se le devuelve dicho, no resumido en «ya lo tengo».
+4. **Rehacer la fuente de la verdad con eso** —resumen, lo que hay que oír, el acta— **en versión nueva**, nunca encima de la anterior (el resumen, en una carpeta nueva con fecha dentro de `2-Borradores/Resumenes/`; el acta, en `2-Borradores/Actas/`, §8), y diciendo en cada afirmación si sale de la grabación, de lo que ella declaró oyendo, o de una lectura que nadie ha oído.
+
 ### Fase 2 — Leer la forma del modelo, y medir que se leyó entera
 
 Corre `esqueleto_de_modelo.py` (§3.2). **Si no reconstruye el 100 %, se para y se dice.**
@@ -296,16 +317,18 @@ Junto al acta se entrega un segundo archivo con **una fila por frase del desarro
 
 ## 8. Dónde se escribe, y con qué nombre
 
-El acta se escribe en `2-Borradores/`, **nunca sobre un archivo que ya esté**, con estos nombres:
+El acta se escribe en `2-Borradores/Actas/` (ADR-023), **nunca sobre un archivo que ya esté**, con estos nombres:
 
 - `Acta - <reunión> - <fecha>` — el documento.
 - `Acta - De dónde sale cada frase - <fecha>` — el archivo de §7.
+
+En esa misma carpeta va lo que acompaña al acta: la revisión de rigor que se le haga y, si se guarda, la forma leída del acta modelo (el `--salida` de `esqueleto_de_modelo.py`).
 
 **Y el encabezado que lleva mientras sea de este método:** `BORRADOR — propuesta para su revisión, no revisado por una persona`.
 
 ### La entrega en Word la produce un programa, no la escribes tú
 
-**Escribe primero el `.md` en `2-Borradores/`, y después conviértelo:**
+**Escribe primero el `.md` en `2-Borradores/Actas/`, y después conviértelo:**
 
 ```
 python ${CLAUDE_PLUGIN_ROOT}/scripts/md2docx.py "<el .md>" "<el .docx>" "«titulo»" "«subtitulo»"
@@ -318,6 +341,16 @@ Título y subtítulo son opcionales; sin ellos toma el primer `#` del archivo y 
 **Si el conversor no está o falla:** escribe el contenido en texto en esa misma carpeta y **dilo con todas las letras**. **Nunca des por hecho un archivo que no viste quedar.** El comando funciona sin el conversor, peor, y diciéndolo.
 
 **Comprobación, cuando importe:** `python ${CLAUDE_PLUGIN_ROOT}/scripts/verificar_fidelidad.py "<el .docx>" "<el .md>"` mide cuánto texto sobrevivió. **≥99 % ok · 95-99 % revisar · <95 % pérdida.**
+
+### Con el membrete de la oficina, se hace a mano
+
+Si ella quiere el acta con la cara de su oficina —escudo, título en cada página, dirección al pie—, quien opera el arnés la convierte **a mano** con otro programa:
+
+```
+python ${CLAUDE_PLUGIN_ROOT}/scripts/acta_en_formato.py "<el .md>" "<el .docx>" --formato "<cliente u oficina>/Papelería de la oficina/formato de actas/formato.json"
+```
+
+Ese `formato.json` describe el membrete de esa oficina, se escribe una sola vez y vive ahí, al lado de los proyectos y no dentro de uno (ADR-023); el escudo que nombre se busca en esa misma carpeta. **Si no existe, no se inventa**: el acta va como sale de la conversión de arriba, y se dice.
 
 ## 9. El cierre obligatorio de toda entrega
 

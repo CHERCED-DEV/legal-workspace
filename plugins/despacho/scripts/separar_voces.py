@@ -37,6 +37,39 @@ def hms(s):
     return "%02d:%02d:%02d" % (s // 3600, (s % 3600) // 60, s % 60)
 
 
+# Los avisos que dependen de la separacion. Los demas -- palabra dudosa, las
+# pasadas no coinciden... -- son del texto y no se tocan.
+AVISOS_DE_VOZ = ("voz dudosa", "sin voz asignada")
+
+
+def rehacer_avisos_de_voz(d, doc, umbral_pureza):
+    """Recalcula «voz dudosa» y «sin voz asignada» con la separacion NUEVA.
+
+    Hasta el 2026-09-23 no se hacia: se rehacian las voces y los avisos se
+    quedaban con la separacion vieja. En un caso real eso dejo 20 lineas
+    marcadas «voz dudosa» donde la separacion nueva da 46, y una pagina que
+    avisaba de dudas sobre voces que ya no eran las que mostraba.
+
+    La regla es la de `transcribir_audio.marcar`, y en el mismo orden: los
+    avisos de voz van al final. Devuelve cuantas lineas cambian de avisos."""
+    marcas = d.get("marcas") or {}
+    cambian = 0
+    for s in doc["segmentos"]:
+        k = str(s["i"])
+        antes = list(marcas.get(k) or marcas.get(s["i"]) or [])
+        mk = [m for m in antes if m not in AVISOS_DE_VOZ]
+        if s.get("voz") is None:
+            mk.append("sin voz asignada")
+        elif s.get("pureza", 0.0) < umbral_pureza:
+            mk.append("voz dudosa")
+        if mk != antes:
+            cambian += 1
+        marcas.pop(s["i"], None)
+        marcas[k] = mk
+    d["marcas"] = marcas
+    return cambian
+
+
 def reparto(doc):
     """Cuanto habla cada voz, y cuantas lineas se quedan sin voz."""
     v = {}
@@ -101,8 +134,11 @@ def main():
 
     if [s.get("texto") for s in doc["segmentos"]] != texto_antes:
         falla("la separación cambió el texto transcrito, y eso no puede pasar")
+    n_avisos = rehacer_avisos_de_voz(d, doc, T.UMBRAL_PUREZA_VOZ)
 
     dom, n = enseñar("DESPUÉS", doc, dia)
+    print("Avisos de voz («voz dudosa», «sin voz asignada») recalculados: cambian en %d líneas."
+          % n_avisos)
 
     print("\nQué cambió: de %d voces a %d; la mayor pasa del %d %% al %d %%."
           % (antes_n, n, round(100 * antes_dom), round(100 * dom)))

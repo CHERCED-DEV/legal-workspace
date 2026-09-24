@@ -70,8 +70,10 @@ Pregunta o averigua tres cosas, y **no supongas ninguna**: dónde está lo que l
 ### Fase 2 — Correr el programa
 
 ```
-python ${CLAUDE_PLUGIN_ROOT}/scripts/preparar_material.py <entradas...> --caso "<nombre>" --destino "<ruta>"
+python ${CLAUDE_PLUGIN_ROOT}/scripts/preparar_material.py <entradas...> --caso "<nombre>" --destino "<carpeta del cliente o del área>"
 ```
+
+`--destino` es la carpeta del cliente o del área, y el proyecto se crea dentro con la forma de ADR-023: los originales van a `1-Documentos recibidos/`, y el registro de ingesta, el texto de referencia y el PDF consolidado quedan sueltos en `2-Borradores/`.
 
 | Opción | Cuándo |
 |---|---|

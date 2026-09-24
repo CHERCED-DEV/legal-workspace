@@ -33,7 +33,7 @@ from urllib.parse import unquote
 SCRIPTS = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPTS)
 from estado_transcripcion import bucles as detectar_bucles, hms as a_hms  # noqa: E402
-from md2html import _ORDEN_MOTIVOS, visible as VISIBLE_DE  # noqa: E402
+from md2html import _ORDEN_MOTIVOS, visible as VISIBLE_DE, hms as hms_pagina  # noqa: E402
 
 
 def _config():
@@ -58,6 +58,99 @@ ANOTACION = re.compile(r"`\[\?\]` \*\(([^)]*)\)\*")
 # lineas que llevan hablante, que son las que mas importan, y el programa
 # denunciaba como inventadas citas que si estaban.
 LINEA = re.compile(r"^\*\*\[(\d\d:\d\d:\d\d)\][^*]*\*\*\s+(.*?)(?:\s+`\[\?\]`.*)?$")
+
+# La misma linea, con la etiqueta de voz aparte para poder rehacerla.
+ETIQUETA = re.compile(r"^(\*\*\[(\d\d:\d\d:\d\d)\])( · Hablante [^*]+)?(\*\*)(\s+.*)$")
+
+
+def voces(segmentos):
+    """Cuantas voces distintas tienen los datos (sin contar las lineas sin voz)."""
+    return len({s.get("voz") for s in segmentos if s.get("voz") is not None})
+
+
+def voces_desde_datos(cuerpo, segmentos, etiquetas=None):
+    """Solo las etiquetas de voz; los avisos de cada linea quedan como estan."""
+    return lineas_desde_datos(cuerpo, segmentos, None, etiquetas)
+
+
+def rotulo_de_voz(v, etiquetas=None):
+    """« · Hablante N», o « · Hablante N — Nombre» si una persona la nombro:
+    el mismo formato que escribe nombrar_voces y que pinta la pagina."""
+    if v is None:
+        return " · Hablante ?"
+    nombre = ((etiquetas or {}).get(str(v)) or {}).get("texto")
+    return " · Hablante %s%s" % (v, " — %s" % nombre if nombre else "")
+
+
+def lineas_desde_datos(cuerpo, segmentos, marcas, etiquetas=None):
+    """Rehace las etiquetas de hablante del Markdown -- y, si se dan `marcas`,
+    los avisos `[?]` de cada linea -- desde los MISMOS datos que usa la pagina
+    de oir y marcar.
+
+    Los avisos, por lo mismo que las voces: «voz dudosa» y «sin voz asignada»
+    dependen de la separacion de voces. Cuando se rehizo, el Markdown se quedo
+    con los avisos de la separacion vieja, y el Word marcaba como dudosa una voz
+    que la pagina daba por clara, y al reves.
+
+    Existe porque se separaron: cuando se rehizo la separacion de voces de una
+    grabacion, los datos cambiaron y el Markdown no. El Word salia con la
+    numeracion vieja y la pagina con la nueva, y la misma linea era «Hablante 2»
+    en uno y «Hablante 4» en la otra. Dos numeraciones de la misma grabacion en
+    la misma entrega no son una duda: son una contradiccion.
+
+    La convencion es la del Markdown: la etiqueta va solo donde cambia la voz,
+    y una linea sin voz es «Hablante ?». Aplicada a los datos de los que salio
+    un Markdown, lo reproduce identico.
+
+    Se detiene si las lineas no casan una a una con los segmentos, por hora
+    impresa y por texto: rehacer etiquetas a ciegas pondria la voz de una
+    linea en otra. Y si una etiqueta lleva, con el MISMO numero, algo que los
+    datos no permiten rehacer -- un nombre que no esta en `etiquetas` --: se
+    tiraria una atribucion que hizo una persona.
+
+    Una transcripcion sin voces (ninguna etiqueta en el Markdown y ninguna voz
+    en los datos) se deja como esta: no hay nada que rehacer, y ponerle
+    «Hablante ?» a todo seria inventar una atribucion.
+
+    Devuelve (cuerpo, lineas que cambian)."""
+    lineas = cuerpo.split("\n")
+    sin_voces = voces(segmentos) == 0 and not any(
+        (ETIQUETA.match(l) or [None, None, None, None])[3] for l in lineas)
+    k, previa, cambiadas = 0, object(), 0
+    for j, l in enumerate(lineas):
+        m = ETIQUETA.match(l)
+        if not m:
+            continue
+        if k >= len(segmentos):
+            falla("la transcripcion tiene mas lineas que segmentos los datos (%d)" % len(segmentos))
+        s = segmentos[k]
+        texto = LINEA.match(l).group(2).strip()
+        if hms_pagina(s["inicio"]) != m.group(2) or texto != (s.get("texto") or "").strip():
+            falla("la linea de las %s no casa con el segmento %d de los datos (%s, «%s»): "
+                  "no se rehacen las voces a ciegas"
+                  % (m.group(2), k, hms_pagina(s["inicio"]), (s.get("texto") or "")[:60]))
+        v = s.get("voz")
+        et = "" if (v == previa or sin_voces) else rotulo_de_voz(v, etiquetas)
+        previa = v
+        viejo = m.group(3) or ""
+        numero = re.match(r" · Hablante (\S+)", viejo)
+        if et and numero and numero.group(1) == str("?" if v is None else v) and viejo != et:
+            falla("la etiqueta «%s» de las %s lleva algo que los datos no permiten rehacer "
+                  "(saldria «%s»): no se tira una atribucion que hizo una persona"
+                  % (viejo.strip(" ·"), m.group(2), et.strip(" ·")))
+        resto = m.group(5)
+        if marcas is not None:
+            # El mismo formato con que lo escribe transcribir_audio.
+            mk = marcas.get(str(s.get("i", k))) or marcas.get(s.get("i", k)) or []
+            resto = " %s%s" % (s["texto"], "  `[?]` *(%s)*" % "; ".join(mk) if mk else "")
+        nueva = m.group(1) + et + m.group(4) + resto
+        if nueva != l:
+            cambiadas += 1
+        lineas[j] = nueva
+        k += 1
+    if k != len(segmentos):
+        falla("la transcripcion tiene %d lineas y los datos %d segmentos" % (k, len(segmentos)))
+    return "\n".join(lineas), cambiadas
 
 
 def bucles_de(carpeta, n):
@@ -220,8 +313,46 @@ def _senalados(n):
     return ["--compromisos", ruta] if os.path.isfile(ruta) else []
 
 
+def _de_caso(n):
+    """Lo que las paginas de una misma entrega comparten o reciben del caso:
+    el identificador del caso (el glosario de ella vale para todas), las
+    sugerencias de glosario (hipotesis) y las lecturas de los huecos que se
+    volvieron a oir (pistas para «lo que no se entiende»)."""
+    extra = ["--caso", hashlib.sha256(os.path.normpath(DESPACHO).lower().encode("utf-8")).hexdigest()[:12]]
+    g = C.get("glosario")
+    if g:
+        ruta = os.path.join(DESPACHO, g)
+        if not os.path.isfile(ruta):
+            falla("no esta el glosario %s" % ruta)
+        extra += ["--glosario", ruta]
+    r = C.get("genoma")
+    if r:
+        ruta = os.path.join(DESPACHO, r)
+        if not os.path.isfile(ruta):
+            falla("no esta el genoma de voz %s" % ruta)
+        extra += ["--rescates", ruta, "--rescates-audio", "A%d" % n]
+    return extra
+
+
 def pagina_audio(n):
     return "Audio %d - oir y marcar.html" % n
+
+
+# Donde la pagina guarda lo que ella declara, DENTRO de la entrega (guardado.js
+# y recoger_lo_declarado usan el mismo nombre).
+LO_QUE_DECLARO = "Lo que declaré"
+
+
+def lo_suyo_dentro(salida):
+    """Los archivos que ella ha guardado dentro de una entrega, en una carpeta
+    «Lo que declaré» de CUALQUIER nivel: si al guardar eligio «Transcripciones»,
+    la carpeta queda ahi dentro. Rehacer la entrega borra la carpeta entera:
+    con esto dentro, seria borrar su trabajo."""
+    if not os.path.isdir(salida):
+        return []
+    return sorted(os.path.relpath(os.path.join(r, f), salida)
+                  for r, _, fs in os.walk(salida)
+                  if LO_QUE_DECLARO in os.path.relpath(r, salida).split(os.sep) for f in fs)
 
 
 def falla(msg):
@@ -270,7 +401,9 @@ def main():
     ORIGEN = os.path.join(DESPACHO, C["origen"])
     OTRAS = [os.path.join(DESPACHO, x) for x in C.get("otras") or []]
     NOMBRE = C["nombre"]
-    SALIDA = os.path.join(DESPACHO, C.get("salida") or "", NOMBRE)
+    # Sin «salida», donde dice ADR-023: 2-Borradores/Entregas. En 3-Para
+    # presentar no escribe ningun programa: esa carpeta es de ella.
+    SALIDA = os.path.join(DESPACHO, *(C.get("salida") or "2-Borradores/Entregas").split("/"), NOMBRE)
     RENDER = os.path.join(AQUI, "_generado")
     AUDIOS = [tuple(a) for a in C["audios"]]
     _s = C.get("audio_sonda") or AUDIOS[-1][0]
@@ -280,7 +413,8 @@ def main():
     # El cerrojo: esto BORRA Y REHACE la carpeta de salida, asi que antes se
     # comprueba que sea una carpeta de entrega y que este dentro del caso.
     # Antes exigia que fuera hija DIRECTA de la raiz, y eso impedia guardarla
-    # donde le corresponde -- `3-Para presentar/` --, obligando a dejarla
+    # donde le corresponde -- hoy `2-Borradores/Entregas/` (ADR-023); antes
+    # `3-Para presentar/` --, obligando a dejarla
     # suelta al lado del material. La condicion nueva no afloja nada: sigue
     # sin poder borrar nada de fuera del caso, ni nada que no se llame asi.
     _raiz = os.path.normpath(DESPACHO)
@@ -288,6 +422,11 @@ def main():
     if not (_dest.startswith(_raiz + os.sep) and _dest != _raiz
             and os.path.basename(SALIDA).startswith("ENTREGA - ")):
         falla("ruta de salida inesperada: %s" % SALIDA)
+    suyo = lo_suyo_dentro(SALIDA)
+    if suyo:
+        falla("la entrega «%s» ya tiene %d archivo(s) que ella guardo en «%s» (%s). Rehacerla los "
+              "borraria. Recojalos (recoger_lo_declarado.py) y ponga otro nombre a la entrega: "
+              "version nueva, ADR-011 §8." % (os.path.basename(SALIDA), len(suyo), LO_QUE_DECLARO, suyo[0]))
     for p in (SALIDA, RENDER):
         if os.path.isdir(p):
             shutil.rmtree(p)
@@ -320,9 +459,51 @@ def main():
         if not sep:
             falla("la transcripcion %d no tiene separador de cabecera" % n)
         dur = re.search(r"\*\*Duración:\*\*\s*(\S+)", cab).group(1)
-        hab = re.search(r"\*\*(\d+) hablantes\*\*", cab).group(1)
         aviso = re.search(r"^> .*$", cab, re.M).group(0)
         dia, hh = C["audio_recibido"], hora.replace(".", ":")
+
+        # Las voces salen de los datos que usa la pagina, no del Markdown: asi el
+        # Word y la pagina numeran igual. Y la cuenta de la cabecera, tambien.
+        ruta_datos = os.path.join(ORIGEN, "datos", "A%d - datos completos.json" % n)
+        _d = json.load(io.open(ruta_datos, encoding="utf-8"))
+        segmentos = (_d.get("publicada") or _d.get("principal") or {}).get("segmentos") or []
+        etiquetas = _d.get("etiquetas") or {}
+        antes = cuerpo
+        cuerpo, n_cambian = lineas_desde_datos(cuerpo, segmentos, _d.get("marcas"), etiquetas)
+        if [m.group(2) for m in (LINEA.match(l) for l in antes.split("\n")) if m] != \
+                [m.group(2) for m in (LINEA.match(l) for l in cuerpo.split("\n")) if m]:
+            falla("al rehacer las voces del Audio %d cambio texto transcrito" % n)
+        # Que el Word cambie de voces respecto de su transcripcion de origen no
+        # puede pasar callado: quien anoto «Hablante 2 dice...» sobre la entrega
+        # anterior tiene que saberlo. Lo correcto es regenerar la transcripcion
+        # vigente desde sus datos, como version nueva; si no, declararlo.
+        if n_cambian and not C.get("rehacer_voces"):
+            falla("Audio %d: %d lineas de la transcripcion de origen no llevan la voz o los avisos "
+                  "de los datos que usa la pagina. Regenere la transcripcion vigente desde sus datos "
+                  "(version nueva), o ponga \"rehacer_voces\": true en la configuracion y digalo en "
+                  "la entrega." % (n, n_cambian))
+        if n_cambian:
+            print("  Audio %d: %d lineas rehechas desde los datos de la pagina (voz o avisos)"
+                  % (n, n_cambian))
+        hab = voces(segmentos)
+        if not hab:
+            texto_voces = "**Voces:** no se distinguen: ninguna línea está atribuida a nadie.  \n"
+        else:
+            tope = max(s["voz"] for s in segmentos if isinstance(s.get("voz"), int)) \
+                if any(isinstance(s.get("voz"), int) for s in segmentos) else hab
+            texto_voces = (
+                "**Voces:** separadas automáticamente en **%d hablantes**, numerados por cuánto hablan. "
+                % hab if tope <= hab else
+                "**Voces:** separadas automáticamente: **%d voces** con alguna línea, numeradas hasta el "
+                "%d por el tiempo que les dio la separación; los números que faltan son voces que la "
+                "separación detectó sin quedarse con ninguna línea. " % (hab, tope))
+            texto_voces += ("**Los nombres que acompañan a algunas voces los declaró una persona; las "
+                            "demás son voces sin identificar.**  \n"
+                            if any((e or {}).get("texto") for e in etiquetas.values()) else
+                            "**«Hablante 1» es una voz, no una persona identificada.**  \n")
+        # Quien nombro las voces, si alguien lo hizo: lo escribe nombrar_voces en
+        # la cabecera, y rehacer la cabecera lo tiraba.
+        declaradas = re.search(r"^\*\*Quién es cada voz:\*\*.*(?:\n- .*)*", cab, re.M)
 
         nueva = (
             "# Transcripción del Audio %d\n\n"
@@ -332,14 +513,15 @@ def main():
             "**Quién la hizo:** un programa de reconocimiento de voz, **no una persona**. El audio se "
             "leyó varias veces de formas distintas y se publica la lectura que **más coincide con las "
             "demás**, no la que la máquina daba por más segura.  \n"
-            "**Voces:** separadas automáticamente en **%s hablantes**, numerados por cuánto hablan. "
-            "**«Hablante 1» es una voz, no una persona identificada.**  \n"
+            "%s"
             "**Marca `[?]`:** hay algún motivo para dudar de esa línea. Al final, entre "
             "paréntesis, va **el más grave**, y cuántos más hay. La página de «oír y marcar» "
             "los muestra todos.  \n"
             "**Comprobación:** nadie ha oído todavía la grabación para cotejar esta transcripción.\n\n"
             "%s\n"
-        ) % (n, dia, hh, nombre_audio(n, hora), dur, hab, aviso)
+        ) % (n, dia, hh, nombre_audio(n, hora), dur, texto_voces, aviso)
+        if declaradas:
+            nueva += "\n" + declaradas.group(0) + "\n"
         # Un campo por parrafo: md2docx no respeta el salto de linea de dos espacios
         # y en Word los fundia en uno solo.
         nueva = nueva.replace("  \n**", "\n\n**")
@@ -399,10 +581,10 @@ def main():
 
         py_ok(os.path.join(SCRIPTS, "md2html.py"), md_nuevo,
               os.path.join(SALIDA, "Transcripciones", pagina_audio(n)),
-              "--datos", os.path.join(ORIGEN, "datos", "A%d - datos completos.json" % n),
+              "--datos", ruta_datos,
               "--audio", os.path.join(SALIDA, "audio", nombre_audio(n, hora)),
               "--origen", "Transcripción automática del Audio %d (recibido por WhatsApp el %s a las %s)"
-              % (n, dia, hh), *(_senalados(n) + con_tramos))
+              % (n, dia, hh), *(_senalados(n) + con_tramos + _de_caso(n)))
         py_ok(os.path.join(SCRIPTS, "md2docx.py"), md_nuevo,
               os.path.join(SALIDA, "Word", "Audio %d - transcripcion.docx" % n))
     print("Transcripciones: %d paginas y %d Word; texto transcrito identico al original"

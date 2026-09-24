@@ -33,6 +33,8 @@ De ahí salen tres consecuencias que no se negocian:
 
 ## 3. El procedimiento
 
+**Dónde está cada cosa, en un proyecto del Despacho (ADR-023).** Las rutas sin carpeta de los ejemplos son las de la versión de la transcripción, `2-Borradores/Transcripciones/<AAAA-MM-DD> - <qué cambió>/`. **Lo que este método produce** —la ficha, la declaración, la transcripción y los datos con nombres— va en `2-Borradores/Voces/`, que en los ejemplos se escribe `<Voces>`. El programa no crea carpetas: si `Voces/` no existe todavía, se crea antes.
+
 ### Fase 1 — Mirar en qué estado está esa transcripción
 
 Antes de preguntar nada, **la puerta**: qué hay, quién habla, y qué comprobó ella oyendo.
@@ -48,9 +50,11 @@ nombrar voces, se sigue con la ficha:
 
 ```bash
 python ${CLAUDE_PLUGIN_ROOT}/scripts/nombrar_voces.py ficha "<datos completos>.json" \
-  --titulo "Audio 2" --pagina "Transcripciones/Audio 2 - oir y marcar.html" \
-  --salida "Quien es cada voz - Audio 2.md"
+  --titulo "Audio 2" --pagina "../Entregas/<entrega>/Transcripciones/Audio 2 - oir y marcar.html" \
+  --salida "<Voces>/Quien es cada voz - Audio 2.md"
 ```
+
+`--pagina` se copia tal cual en los enlaces de la ficha, así que se escribe **relativa a donde queda la ficha**: desde `Voces/`, la página de una entrega está en `../Entregas/<entrega>/Transcripciones/`.
 
 El programa devuelve un **veredicto** y los números en que se apoya: cuántas voces pasan de quince segundos, qué parte del habla se lleva la que más habla, cuántas líneas quedaron sin voz.
 
@@ -74,7 +78,7 @@ La tercera no es burocracia: es lo que separa «la reconozco, estuve en la reuni
 
 ### Fase 3 — Escribir lo que declaró
 
-Se guarda en un archivo `declaracion de voces - <grabación>.json`:
+Se guarda en `<Voces>`, en un archivo `declaracion de voces - <grabación>.json`:
 
 ```json
 {
@@ -97,9 +101,9 @@ Se guarda en un archivo `declaracion de voces - <grabación>.json`:
 
 ```bash
 python ${CLAUDE_PLUGIN_ROOT}/scripts/nombrar_voces.py aplicar \
-  "Transcripcion - Audio 2.md" "datos/A2 - datos completos.json" "declaracion de voces - A2.json" \
-  --md-salida "Transcripcion - Audio 2 - con nombres.md" \
-  --datos-salida "datos/A2 - con nombres.json"
+  "Transcripcion - Audio 2.md" "datos/A2 - datos completos.json" "<Voces>/declaracion de voces - A2.json" \
+  --md-salida "<Voces>/Transcripcion - Audio 2 - con nombres.md" \
+  --datos-salida "<Voces>/A2 - con nombres.json"
 ```
 
 Produce **archivos nuevos**: la transcripción anterior se queda donde estaba (`ADR-011` §8). El programa comprueba que **no cambió ni una palabra del texto transcrito** y se detiene si cambió.

@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{TITULO}}</title>
 <meta name="generator" content="despacho/pagina 0.1.0">
+<script>try { var t = localStorage.getItem('despacho:tema'); if (t === 'claro' || t === 'oscuro') document.documentElement.dataset.tema = t } catch (e) {}</script>
 </head>
 <body>
 
@@ -38,6 +39,13 @@
       <audio id="audio" preload="metadata"></audio>
       <button type="button" id="btn-play" class="boton" aria-label="Reproducir o pausar">▶</button>
       <span class="reloj"><span id="reloj-actual">00:00:00</span> / <span id="reloj-total">—</span></span>
+      <select id="velocidad" class="velocidad" aria-label="Velocidad del audio" title="Velocidad del audio (teclas − y +)">
+        <option value="0.5">0,5× lento</option>
+        <option value="0.75">0,75×</option>
+        <option value="1" selected>1× normal</option>
+        <option value="1.25">1,25×</option>
+        <option value="1.5">1,5×</option>
+      </select>
     </div>
     <p class="sin-audio" id="sin-audio" hidden>
       <strong>No se encontró la grabación</strong> junto a esta página, así que no se puede comprobar oyendo.
@@ -50,21 +58,29 @@
     </div>
     <div class="progreso">
       <span id="progreso-texto">—</span>
+      <button type="button" class="boton tenue vz-indicador" id="btn-voces" hidden></button>
       <button type="button" class="boton tenue" id="btn-exportar">Guardar lo comprobado</button>
       <button type="button" class="boton tenue" id="btn-importar">Cargar</button>
       <button type="button" class="boton tenue" id="btn-ayuda" title="Atajos de teclado">⌨ atajos</button>
+      <button type="button" class="boton tenue" id="btn-tema" title="Colores de la página">◐ automático</button>
       <input type="file" id="archivo-estado" accept="application/json" hidden>
     </div>
   </div>
   <!-- La franja responde de un vistazo «donde invierto el tiempo», que una lista
        de trescientos elementos no responde. -->
   <div class="franja envoltura" id="franja"></div>
-  <!-- Saltar de una voz a la siguiente y ponerle nombre aqui mismo. Sin esto,
-       reconocer a alguien obligaba a recorrer la pagina entera a ojo. -->
-  <div class="voces envoltura" id="voces" hidden></div>
   <p class="aviso-persistencia envoltura" id="aviso-persistencia" hidden></p>
+  <p class="aviso-guardado envoltura" id="aviso-guardado" role="status" hidden></p>
   <p class="aviso-enlace envoltura" id="aviso-enlace" role="status" hidden></p>
 </div>
+
+<!-- Quien habla: ella lo confirma oyendo, voz por voz. Va FUERA de la barra fija:
+     dentro, crecia hasta tapar la transcripcion que tenia que acompanar. -->
+<section class="voces envoltura" id="voces" aria-label="Quién habla" hidden></section>
+<!-- Lo que la maquina no sabe leer: que ella lo oiga y cuente la idea y quien la dijo. -->
+<section class="voces envoltura" id="ilegibles" aria-label="Lo que no se entiende" hidden></section>
+<!-- Lo que la maquina oye mal y lo que se dijo: vale para todo el caso. -->
+<section class="voces envoltura" id="glosario" aria-label="Glosario" hidden></section>
 
 <main class="envoltura" id="contenido">
 {{CONTENIDO}}

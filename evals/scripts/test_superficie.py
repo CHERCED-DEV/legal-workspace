@@ -112,6 +112,16 @@ A_MANO = {
     # El acta con el membrete de la entidad. A mano porque necesita un
     # `formato.json` que describe a ESE despacho y vive fuera del repositorio.
     "acta_en_formato.py":      "el acta con el membrete y la forma del despacho",
+    # El 2026-09-23: recoge de la carpeta de la entrega lo que ella declaró
+    # oyendo en las páginas (texto, quién habla, lo que no se entendía,
+    # compromisos, glosario) y lo junta para refinar el resumen y el acta. A
+    # mano porque se corre cuando ella ha trabajado, y eso lo sabe una persona.
+    "recoger_lo_declarado.py": "junta lo que ella declaró oyendo, para refinar con ello",
+    "ordenar_proyecto.py": "lleva un proyecto a la forma de ADR-023, con plan, manifiesto y deshacer",
+    # El 2026-09-23: vuelve a leer UN tramo dudoso de muchas maneras y cuenta en
+    # cuántas sale una palabra. A mano porque usa la GPU y se lanza sobre un
+    # tramo que alguien eligió mirando: no decide qué se dijo.
+    "releer_tramo.py":         "volver a leer un tramo dudoso de muchas maneras, y contar",
 }
 
 # Y una tercera clase, que aparecio el 2026-09-07 cuando el canario disparo
@@ -122,6 +132,7 @@ A_MANO = {
 # un modulo de esta clase NO trae `if __name__ == "__main__"`.
 MODULOS = {
     "marca.py": "la regla de la marca ` - REVISADO`, compartida",
+    "estructura.py": "la forma de un proyecto (ADR-023): dónde deja cada cosa cada programa",
     # Alineación forzada por CTC. Vive aquí y no en la superficie porque
     # está MEDIDO que sobre este material no sirve (CER mediana 0,60): se
     # niega justo en los tramos difíciles, que son los que harían falta.

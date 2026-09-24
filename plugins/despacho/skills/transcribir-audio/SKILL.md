@@ -63,12 +63,12 @@ Tres consecuencias que no se negocian:
 
 ### Fase 1 — Antes de correr nada
 
-Averigua **dónde está el audio** y **dónde va el resultado**. No inventes un destino: es la carpeta de trabajo de una persona. Si el material pertenece a un caso, el destino natural es la carpeta de ese caso; si no, una carpeta propia.
+Averigua **dónde está el audio** y **dónde va el resultado**. No inventes un destino: es la carpeta de trabajo de una persona. Si el material pertenece a un proyecto del Despacho, el destino no se elige, lo fija ADR-023: `2-Borradores/Transcripciones/<AAAA-MM-DD> - <qué cambió>/` de ese proyecto —una carpeta por versión, con la fecha de hoy (la de producción, no la de la reunión) y sin las palabras «vigente» ni «previa»—. **Si ya hay una versión, la nueva va en carpeta nueva** y la anterior no se toca. Si el material no es de un proyecto, una carpeta propia.
 
 ### Fase 2 — Correr el programa
 
 ```
-python ${CLAUDE_PLUGIN_ROOT}/scripts/transcribir_audio.py <audios...> --destino "<ruta>"
+python ${CLAUDE_PLUGIN_ROOT}/scripts/transcribir_audio.py <audios...> --destino "<proyecto>/2-Borradores/Transcripciones/<AAAA-MM-DD> - <qué cambió>"
 ```
 
 | Opción | Cuándo |
@@ -126,6 +126,7 @@ En la carpeta de destino:
 - **`00 - REGISTRO DE TRANSCRIPCIÓN`**: la receta exacta y reproducible, el estado del audio de origen y la instrumentación.
 - **`00 - PASAJES A VERIFICAR`**: la lista corta de minutos donde conviene oír — tramos donde las pasadas no coincidieron, cifras y nombres propios con poca confianza, avisos del glosario y líneas con voz dudosa.
 - **`datos/`**: cada palabra con su tiempo de inicio, de fin y su probabilidad, en todas las pasadas.
+- **`.trabajo/`**: los WAV intermedios. **No es una salida** y se puede borrar; en un proyecto ordenado con `ordenar_proyecto.py` pasa a `2-Borradores/_intermedios (se puede borrar)/` (ADR-023).
 
 **Y cierra siempre con lo que el material no permite:**
 

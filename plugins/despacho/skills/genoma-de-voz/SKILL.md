@@ -94,8 +94,10 @@ Medido el 2026-09-23 sobre una mesa de trabajo real de tres grabaciones (`SPEC-1
 python ${CLAUDE_PLUGIN_ROOT}/scripts/genoma_de_voz.py preparar \
   --par A1 "datos/A1 - datos completos.json" "<grabación 1>" \
   --par A2 "datos/A2 - datos completos.json" "<grabación 2>" \
-  --titulo "<reunión>" --salida "<carpeta>"
+  --titulo "<reunión>" --salida "<proyecto>/2-Borradores/Voces"
 ```
+
+Los `datos/` son los de la versión de la transcripción que se va a usar, en `2-Borradores/Transcripciones/<AAAA-MM-DD> - <qué cambió>/datos/`. **La salida, en un proyecto del Despacho, es `2-Borradores/Voces/`** (ADR-023), y ahí van también las de `aplicar`.
 
 | Opción | Cuándo |
 |---|---|
@@ -162,7 +164,7 @@ Al terminar, exporta `voces declaradas - <reunión>.json`. **La página exige el
 ```
 python ${CLAUDE_PLUGIN_ROOT}/scripts/genoma_de_voz.py aplicar \
   "genoma - <reunión> - <fecha>.json" "voces declaradas - <reunión>.json" \
-  --salida "<carpeta>"
+  --salida "<proyecto>/2-Borradores/Voces"
 ```
 
 | Opción | Cuándo |
@@ -204,6 +206,8 @@ claridad de una grabación = segundos claros / segundos de todas sus líneas
 ---
 
 ## 5. Qué entrega
+
+Lo que escriben `preparar` y `aplicar` va en `2-Borradores/Voces/` (ADR-023), y ese es también el sitio de la declaración que ella exporta. La biblioteca de voces no: no es de un proyecto, es de la máquina de ella (ver la advertencia de abajo).
 
 | Archivo | Qué es |
 |---|---|

@@ -29,6 +29,16 @@ export function crearMedios(nodoAudio, fuente, { alTiempo, alEstado } = {}) {
       nodoAudio.paused ? nodoAudio.play() : nodoAudio.pause()
     },
     pausar() { if (listo) nodoAudio.pause() },
+    /** La velocidad: más lento para entender lo que se oye mal. El navegador
+     *  conserva el tono de la voz al cambiarla. */
+    get velocidad() { return nodoAudio?.playbackRate ?? 1 },
+    set velocidad(v) {
+      if (!nodoAudio) return
+      nodoAudio.playbackRate = v
+      nodoAudio.defaultPlaybackRate = v
+    },
+    /** Sigue desde donde está, sin retroceder. */
+    reanudar() { if (listo) nodoAudio.play() },
   }
 
   if (!nodoAudio || !fuente?.ruta) {

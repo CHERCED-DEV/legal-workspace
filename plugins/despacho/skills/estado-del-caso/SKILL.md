@@ -11,7 +11,7 @@ allowed-tools: Bash(python ${CLAUDE_PLUGIN_ROOT}/scripts/estado_del_caso.py *)
 
 **Propósito.** Ella vuelve a un caso que no toca hace tres semanas y necesita saber, en dos minutos, **dónde está, qué hay y qué falta**. Hoy eso se hace releyendo la carpeta entera. Este método hace esa lectura y entrega una foto del estado construida **solo con lo que dicen los archivos** — nunca con lo que se recuerda, se supone o suele pasar.
 
-**Qué necesita.** La carpeta del caso con la forma acordada: `0-Estado del caso (no editar).txt`, `1-Documentos recibidos/` (lo que entró), `2-Borradores/` (lo que ella está produciendo) y `3-Para presentar/` (lo que ella dio por terminado). Si la carpeta no tiene esta forma, **no la reorganices**: trabaja con lo que hay y di en la salida qué encontraste en su lugar.
+**Qué necesita.** La carpeta del caso con la forma acordada: `0-Estado del caso (no editar).txt`, `1-Documentos recibidos/` (lo que entró), `2-Borradores/` (lo que ella está produciendo) y `3-Para presentar/` (lo que ella dio por terminado). Dentro de `2-Borradores/`, lo que produce la máquina va en carpetas fijas (ADR-023); cuáles son, en la Fase 2. Si la carpeta no tiene esta forma, **no la reorganices**: trabaja con lo que hay y di en la salida qué encontraste en su lugar.
 
 **Regla de escritura, dura.** Este método **no mueve, no renombra, no borra y no corrige ningún archivo**. Escribe en dos sitios y en ninguno más: `0-Estado del caso (no editar).txt`, **del que reemplaza solo la cabecera**, y —antes de tocarlo— una copia de su contenido anterior dentro de `2-Borradores/` (§3, Fase 6). Nunca escribe dentro de `1-Documentos recibidos/`: eso es el material tal como llegó y es lo único que no se puede reconstruir.
 
@@ -175,6 +175,26 @@ Recorres las tres carpetas y anotas, por cada archivo: **el nombre tal como est�
 
 **Y la cuarta, que hoy se cuenta mal: lo que produjo este sistema.** Una hoja de hechos, una cronología, un inventario — **no los produjo ella**. Listarlos como suyos es atribuirle un trabajo que no hizo y, peor, darle a una propuesta el peso de una decisión suya. **Van en su propia lista**, y de cada uno se dice **qué comando lo produjo, de qué pasada es y si lleva la marca de revisada**.
 
+**La carpeta ya dice mucho de dónde salió.** Desde el 2026-09-23 (ADR-023), todo lo que produce la máquina vive en `2-Borradores/`, cada cosa en su carpeta:
+
+| Dentro de `2-Borradores/` | Qué guarda |
+|---|---|
+| `Transcripciones/<AAAA-MM-DD> - <qué cambió>/` | Una versión de las transcripciones de `/transcribir-audio`, con su `datos/` |
+| `Resumenes/<AAAA-MM-DD> - <qué cambió>/` | Una versión de los resúmenes |
+| `Actas/` | Lo de `/acta-de-reunion`: el acta, «De dónde sale cada frase», la revisión de rigor del acta y la forma del acta modelo |
+| `Compromisos/<AAAA-MM-DD> - <qué cambió>/` | Lo de `/compromisos-de-una-reunion`: un `.json` por grabación |
+| `Voces/` | Lo de `/genoma-de-voz` y `/nombrar-voces`, y la verdad de referencia de las voces |
+| `Glosario/` | Sugerencias de glosario de la máquina: **hipótesis**, no lo que ella aceptó |
+| `Entregas/` | Las entregas que arma `construir_entrega.py` (carpeta y `.zip`), con `_fuentes (no enviar)/` y `_anteriores/` dentro |
+| `Lo que declaré/<entrega>/` | Lo que ella guarda en las páginas de «oír y marcar». **Es suyo**, no una salida |
+| `Lo que declaró ella/` | Lo que junta `recoger_lo_declarado.py`: **su declaración**, recogida y fechada |
+| `_anteriores/` | Lo sustituido que no vive en una carpeta con fecha |
+| `_intermedios (se puede borrar)/` | WAV y demás trabajo de máquina que se regenera. **No es una salida**: no se lista como producción |
+
+Las piezas sueltas —hechos, cronología, inventarios, escritos, revisiones— siguen en `2-Borradores/` mismo, con los nombres de la tabla de abajo. Una versión se llama `<AAAA-MM-DD> - <qué cambió>`, con la fecha en que se produjo, no la de la reunión.
+
+**Un proyecto ordenado con `ordenar_proyecto.py` tiene esta forma**, y uno nuevo debería tenerla. **Uno viejo puede no tenerla**: entregas dentro de `3-Para presentar/`, `_fuentes (no enviar)` en la raíz, carpetas `vigente - …` o `previa N - …`, `Compromisos senalados/`. Eso no lo arregla este método —no mueve nada—: se lee donde está, se dice en la salida qué forma tiene la carpeta, y se le menciona que `ordenar_proyecto.py` la lleva a esta forma. **Ese programa se corre a mano**: primero escribe un plan de qué movería y por qué, sin mover nada; no borra; y deja un manifiesto para deshacerlo.
+
 **El nombre del archivo dice cuál comando fue.** Estas son las convenciones que escriben los comandos de este plugin:
 
 | El nombre lleva | Lo produjo |
@@ -185,7 +205,7 @@ Recorres las tres carpetas y anotas, por cada archivo: **el nombre tal como est�
 | `Inventario de bienes — <caso> — <fecha> — pasada <n>` | `/inventario-de-bienes` |
 | `Revisión de rigor - <qué se revisó> - <fecha>` | `/revision-de-rigor` |
 | `Acta - <reunión> - <fecha>` **y** `Acta - De dónde sale cada frase - <fecha>` | `/acta-de-reunion` — **el segundo dice de qué minuto sale cada frase del primero** |
-| `Compromisos senalados/<código> - compromisos.json` | `/compromisos-de-una-reunion` — **no es una salida que se lea**: es de donde salen las etiquetas rojas de la página |
+| `Compromisos/<AAAA-MM-DD> - <qué cambió>/<código> - compromisos.json` (en un proyecto sin ordenar, `Compromisos senalados/<código> - compromisos.json`) | `/compromisos-de-una-reunion` — **no es una salida que se lea**: es de donde salen las etiquetas rojas de la página |
 | **`<radicado> — Borrador — <clase de escrito> — <fecha>`** y **`<radicado> — De dónde sale cada frase — <fecha>`** | **`/redactar-escrito`** |
 | `0-Estado del caso — anterior (<fecha>)` | este mismo comando, en una pasada anterior |
 | `Texto de referencia - <fecha>` | `/preparar-material` — **y no es el documento** (§2) |
@@ -193,9 +213,13 @@ Recorres las tres carpetas y anotas, por cada archivo: **el nombre tal como est�
 | `Revisión de documento - <cuál> - <fecha>` | `/revisar-documento`, **solo si ella pidió el resultado como archivo** |
 | `Transcripcion - <grabación> - <fecha>` **con `.md`, `.txt`, `.srt` y `.vtt`** | `/transcribir-audio` — **cuatro archivos por grabación, y son el mismo texto**: cuéntalos como una salida y dilo |
 | `00 - REGISTRO DE TRANSCRIPCION - <fecha>` **y** `00 - PASAJES A VERIFICAR - <fecha>` | `/transcribir-audio` — el primero es la receta, el segundo los minutos donde conviene oír |
-| `datos/<código> - datos completos.json` | `/transcribir-audio` — cada palabra con su tiempo y su probabilidad. **No es una salida que se lea**: es de donde salen las demás |
+| `datos/<código> - datos completos.json`, dentro de la carpeta de su versión (`Transcripciones/<AAAA-MM-DD> - <qué cambió>/datos/`) | `/transcribir-audio` — cada palabra con su tiempo y su probabilidad. **No es una salida que se lea**: es de donde salen las demás |
 | `Voces - <reunión> - <fecha>.html` **y** `genoma - <reunión> - <fecha>.json` | `/genoma-de-voz` — la página donde ella oye y declara quién habla, y sus datos. **Lo que ella exporta de esa página** se llama `voces declaradas - <reunión>.json`: es **su declaración**, no una salida del sistema |
+| `Lo que declaró ella - <fecha>` **con `.md` y `.json`**, en `Lo que declaró ella/` | `recoger_lo_declarado.py`, a mano — **es lo que ELLA declaró oyendo** en las páginas de «oír y marcar» (texto, quién habla, lo que no se entendía, compromisos, glosario), recogido de las carpetas `Lo que declaré` (la del proyecto y la de la entrega). **Es la fuente para refinar el resumen y el acta**, no una salida del sistema |
+| `Lo que declaré/<documento> - en curso.json` **y** `<documento> - <fecha>.json` — en el proyecto, en `2-Borradores/Lo que declaré/<entrega>/`, o dentro de la entrega si se abrió suelta | **las páginas de «oír y marcar»**, cuando ella guarda — su declaración tal cual; la fechada no se sobrescribe nunca |
 | `Transcripcion con voces - <grabación> - <fecha>`, `Declaracion de voces - <reunión> - <fecha>` **y** `voces por linea - <reunión> - <fecha>.json` | `/genoma-de-voz` — la transcripción con quién dice cada línea (**✔** lo declaró ella, **≈** lo propone la máquina y nadie lo ha oído), el registro de la declaración, y lo mismo en datos |
+| `ENTREGA - <proyecto> - <AAAA-MM-DD>` (carpeta **y** `.zip`), en `Entregas/`; lo que la acompaña, en `Entregas/_fuentes (no enviar)/`, y las sustituidas, en `Entregas/_anteriores/` | `construir_entrega.py`, a mano — el paquete que se le envía a ella: transcripciones, Word, páginas de «oír y marcar» y audio. **No es algo que ella dio por terminado**: lo armó la máquina, y pasarlo a `3-Para presentar/` es un acto suyo. En un proyecto sin ordenar puede estar todavía en `3-Para presentar/`, y **se cuenta igual como salida de la máquina** |
+| `ordenado - <fecha>/`, con su `manifiesto.json`, en `_anteriores/` | `ordenar_proyecto.py`, a mano — qué se movió de dónde a dónde al ordenar el proyecto, para poder deshacerlo |
 
 > **Y ojo con dos cosas de esta tabla, que si no se saben la vuelven inútil.**
 >

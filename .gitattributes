@@ -15,3 +15,10 @@ tools/pagina-despacho/src/*  text eol=lf
 # meta retornos de carro las separaria para siempre.
 tools/pagina-voces/*       text eol=lf
 tools/pagina-voces/src/*   text eol=lf
+
+# Y el resto de lo que entra en las huellas de la pagina de oir y marcar.
+tools/pagina-despacho/*.mjs              text eol=lf
+tools/pagina-despacho/package.json       text eol=lf
+tools/pagina-despacho/package-lock.json  text eol=lf
+tools/pagina-despacho/vite.config.js     text eol=lf
+tools/pagina-despacho/HUELLAS.json       text eol=lf

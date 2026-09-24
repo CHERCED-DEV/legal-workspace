@@ -15,18 +15,37 @@
   --compromiso-fondo: #fdecec;
   --hecho: #1f5c3d;
   --hecho-fondo: #eef6f0;
+  /* El texto que va encima de un color lleno (el sello de un compromiso, el
+     boton «Si»): blanco en claro, oscuro en oscuro. Con #fff fijo, en oscuro
+     quedaba blanco sobre verde claro, ilegible. */
+  --sobre-color: #ffffff;
+  color-scheme: light;
   /* En rem, no en ch: el ch se mide con la letra de cada elemento, y la barra
      usa letra menor, asi que su columna salia 170 px mas estrecha y se apilaba
      en cinco filas. Ademas el ch cambia con la fuente serif de cada equipo. */
   --medida: 45.4rem;
   --radio: 6px;
 }
+/* Oscuro: el del sistema, salvo que ella elija otro con el boton de tema.
+   Antes el fondo de los compromisos no tenia version oscura: en oscuro salia
+   texto claro sobre rosa claro, y no se leia. Todo color va aqui, en las dos. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-tema="claro"]) {
     --tinta: #e9e6df; --tinta-suave: #a8a49a; --papel: #16171a; --papel-alto: #1e2025;
     --linea: #33363d; --acento: #d8b25a; --duda: #e0a260; --duda-fondo: #2a221a;
     --hecho: #7fc9a0; --hecho-fondo: #182620;
+    --compromiso: #f0908a; --compromiso-fondo: #2c1a1a;
+    --sobre-color: #16171a;
+    color-scheme: dark;
   }
+}
+:root[data-tema="oscuro"] {
+    --tinta: #e9e6df; --tinta-suave: #a8a49a; --papel: #16171a; --papel-alto: #1e2025;
+    --linea: #33363d; --acento: #d8b25a; --duda: #e0a260; --duda-fondo: #2a221a;
+    --hecho: #7fc9a0; --hecho-fondo: #182620;
+    --compromiso: #f0908a; --compromiso-fondo: #2c1a1a;
+    --sobre-color: #16171a;
+    color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -67,6 +86,9 @@ body {
 /* Solo el primer resaltado hace de titulillo. Con el selector generico, cada
    <strong> del parrafo partia la linea. */
 .propuesta > strong:first-child { display: block; margin-bottom: .3rem; }
+/* El aviso que la transcripcion trae en su cabecera, dentro del mismo recuadro. */
+.propuesta-mas { margin-top: .55rem; padding-top: .5rem; border-top: 1px solid var(--duda); }
+.propuesta-mas blockquote, .propuesta-mas p { margin: 0; padding: 0; border: 0; color: inherit; }
 
 /* ------------------------------------------------------------------- barra */
 .barra {
@@ -79,9 +101,12 @@ body {
 .barra-fila { display: flex; flex-wrap: wrap; gap: .75rem 1rem; align-items: center; padding-top: .6rem; padding-bottom: .6rem; }
 .reproductor { display: flex; align-items: center; gap: .5rem; }
 .reloj { color: var(--tinta-suave); font-variant-numeric: tabular-nums; }
+.velocidad { font: .8rem ui-sans-serif, system-ui, sans-serif; color: var(--tinta); background: var(--papel);
+  border: 1px solid var(--linea); border-radius: var(--radio); padding: .2rem .3rem; }
 .sin-audio { margin: 0; color: var(--duda); }
 .filtros { display: flex; flex-wrap: wrap; gap: .35rem; }
-.progreso { margin-left: auto; display: flex; align-items: center; gap: .5rem; color: var(--tinta-suave); }
+.progreso { margin-left: auto; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: .5rem; color: var(--tinta-suave); }
+#progreso-texto { white-space: nowrap; }
 .aviso-persistencia { margin: 0 auto .6rem; color: var(--duda); font-size: .82rem; }
 .aviso-enlace { margin: 0 auto .6rem; font-size: .85rem; font-weight: 600; }
 
@@ -135,7 +160,7 @@ body {
   color: var(--tinta);
 }
 .compromiso-sello {
-  display: inline-block; background: var(--compromiso); color: #fff;
+  display: inline-block; background: var(--compromiso); color: var(--sobre-color);
   font-weight: 700; font-size: .7rem; letter-spacing: .04em;
   padding: .1rem .45rem; border-radius: 3px; margin-right: .45rem;
 }
@@ -144,21 +169,219 @@ body {
 @media print { .compromiso { border-left-color: #000; background: #eee; }
                .compromiso-sello { background: #000; } }
 
-.voces { padding: .6rem 0 .2rem; }
-.voces-titulo { margin: 0 0 .5rem; font-family: ui-sans-serif, system-ui, sans-serif; font-size: .82rem; }
-.voces-filas { display: flex; flex-direction: column; gap: .35rem; }
-.voz-fila {
-  display: flex; gap: .5rem; align-items: center; flex-wrap: wrap;
-  font-family: ui-sans-serif, system-ui, sans-serif; font-size: .82rem;
+/* ------------------------------------------------------------ quién habla */
+/* Ella confirma oyendo quién dice cada fragmento. Va fuera de la barra fija:
+   dentro crecía hasta tapar la transcripción. */
+.voces.vz {
+  margin-top: 1.25rem; padding: 1rem 1.1rem 1.1rem;
+  background: var(--papel-alto); border: 1px solid var(--linea);
+  border-radius: calc(var(--radio) * 2);
+  font-family: ui-sans-serif, system-ui, sans-serif; font-size: .88rem;
 }
-.voz-nombre { font-weight: 600; min-width: 11rem; }
-.voz-cuanto { color: var(--tinta-suave); min-width: 12rem; }
-.voz-quien {
-  font: inherit; padding: .25rem .5rem; flex: 1 1 14rem; min-width: 10rem;
+.vz-cab { display: flex; gap: 1rem; align-items: flex-start; }
+.vz-cab-texto { flex: 1; }
+.vz-cab h2 { margin: 0 0 .15rem; font-size: 1.15rem; font-family: ui-serif, Georgia, serif; }
+.vz-sub { font: 400 .8rem ui-sans-serif, system-ui, sans-serif; color: var(--tinta-suave); margin-left: .35rem; }
+.vz-global-texto { margin: 0 0 .45rem; color: var(--tinta-suave); }
+.vz-global-texto strong { color: var(--tinta); }
+.voces.vz.plegado .vz-cuerpo { display: none; }
+.vz-cuerpo { margin-top: .9rem; }
+.vz-tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr)); gap: .7rem; }
+.vz-nota { margin: .8rem 0 0; font-size: .78rem; color: var(--tinta-suave); line-height: 1.5; }
+
+/* La barra de avance. La marca vertical es la meta; al pasarla se pone verde. */
+.vz-barra {
+  position: relative; height: .6rem; border-radius: 99px;
+  background: var(--linea); overflow: visible;
+}
+.vz-barra > i {
+  display: block; height: 100%; width: 0; border-radius: 99px;
+  background: var(--voz, var(--acento));
+  transition: width .6s cubic-bezier(.2, .8, .2, 1), background-color .4s;
+}
+.vz-barra.llega > i { background: var(--hecho); }
+.vz-barra .vz-meta {
+  position: absolute; left: 85%; top: -.22rem; bottom: -.22rem; width: 2px;
+  background: var(--tinta); opacity: .55; border-radius: 1px;
+}
+.vz-barra.oir .vz-meta { left: 70%; }
+.vz-barra.grande { height: .8rem; }
+.vz-barra.grande > i { background: var(--acento); }
+.vz-barra.grande.llega > i { background: var(--hecho); }
+.vz-barra.mini { display: inline-block; width: 3.2rem; height: .38rem; vertical-align: middle; }
+.vz-barra.mini > i { background: var(--hecho); }
+
+.vz-tarjeta {
+  --voz: var(--acento);
+  border: 1px solid var(--linea); border-top: 4px solid var(--voz);
+  border-radius: calc(var(--radio) * 1.5); padding: .7rem .8rem .75rem;
+  background: var(--papel); display: flex; flex-direction: column; gap: .45rem;
+  transition: box-shadow .3s, border-color .3s;
+}
+.vz-tarjeta:hover { box-shadow: 0 2px 10px rgba(0, 0, 0, .06); }
+.vz-tarjeta.identificada { border-color: var(--hecho); border-top-color: var(--voz); }
+.vz-t-cab { display: flex; align-items: center; gap: .45rem; }
+.vz-punto { width: .7rem; height: .7rem; border-radius: 50%; background: var(--voz, var(--acento)); flex: none; display: inline-block; }
+.vz-t-nombre { font-weight: 700; font-size: .95rem; }
+.vz-pct { margin-left: auto; font-weight: 700; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.vz-tarjeta.identificada .vz-pct { color: var(--hecho); }
+.vz-sello {
+  font-size: .7rem; font-weight: 700; color: var(--hecho); background: var(--hecho-fondo);
+  border: 1px solid var(--hecho);
+  padding: .05rem .45rem; border-radius: 99px;
+}
+.vz-tarjeta.recien .vz-sello { animation: vz-latido .9s ease-out 2; }
+.vz-tarjeta.recien { animation: vz-brillo 1.4s ease-out; }
+@keyframes vz-latido { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+@keyframes vz-brillo { 0% { box-shadow: 0 0 0 0 rgba(31, 92, 61, .45); } 100% { box-shadow: 0 0 0 14px rgba(31, 92, 61, 0); } }
+.vz-quien {
+  font: inherit; font-size: .8rem; padding: .18rem .45rem; flex: 1 1 6rem; min-width: 5rem;
   border: 1px solid var(--linea); border-radius: var(--radio);
   background: var(--papel-alto); color: var(--tinta);
 }
-@media print { .voces { display: none; } }
+.vz-quien-hueco { flex: 1; }
+.vz-t-pie { display: flex; align-items: center; gap: .6rem; }
+.vz-t-pie .vz-mapa-caja { flex: 1; min-width: 0; }
+.vz-t-pie .boton { font-size: .82rem; white-space: nowrap; }
+/* Las voces con muy poca habla: una fila cada una, plegadas. */
+.vz-menores { margin-top: .7rem; }
+.vz-menores > summary { cursor: pointer; color: var(--tinta-suave); font-size: .8rem; padding: .3rem 0; }
+.vz-filas { display: flex; flex-direction: column; gap: .3rem; margin-top: .3rem; }
+.vz-tarjeta.menor {
+  flex-direction: row; align-items: center; gap: .7rem; flex-wrap: wrap;
+  border-top-width: 1px; border-left: 4px solid var(--voz); padding: .35rem .6rem;
+}
+.vz-tarjeta.menor .vz-t-cab { flex: 1 1 16rem; }
+.vz-tarjeta.menor .vz-pct { font-size: .9rem; }
+.vz-tarjeta.menor .vz-barra { width: 6rem; flex: none; height: .45rem; }
+.vz-tarjeta.menor .vz-cuenta, .vz-tarjeta.menor .vz-mapa-caja { display: none; }
+.vz-tarjeta.menor .vz-t-pie .boton { font-size: .78rem; padding: .2rem .55rem; }
+.vz-tarjeta.identificada .vz-quien:placeholder-shown { border-color: var(--hecho); }
+.vz-cuenta { margin: 0; font-size: .76rem; color: var(--tinta-suave); line-height: 1.45; }
+.vz-t-acciones { display: flex; gap: .4rem; }
+.vz-t-acciones .boton { font-size: .82rem; }
+.boton.primaria { background: var(--tinta); color: var(--papel); border-color: var(--tinta); font-weight: 600; }
+.boton.primaria:hover { opacity: .88; }
+.boton:disabled { opacity: .45; cursor: default; }
+
+/* La grabación entera, con lo de esta voz. */
+.vz-mapa { width: 100%; height: 16px; display: block; cursor: pointer; }
+.vz-mapa-fondo { fill: var(--linea); }
+.vz-f { fill: var(--voz); opacity: .38; transition: fill .4s, opacity .4s; }
+.vz-f:hover { opacity: 1; }
+.vz-f-confirmado { fill: var(--hecho); opacity: 1; }
+.vz-f-no_se, .vz-f-varios { fill: var(--duda); opacity: .8; }
+.vz-f-movido-fuera { fill: transparent; opacity: 1; stroke: var(--tinta-suave); stroke-width: 1px; stroke-dasharray: 2 2; vector-effect: non-scaling-stroke; }
+.vz-f-activo { stroke: var(--tinta); stroke-width: 2px; vector-effect: non-scaling-stroke; opacity: 1; }
+.vz-mapa-cabeza { fill: var(--tinta); }
+
+/* El indicador compacto en la barra fija. */
+.vz-indicador { display: inline-flex; align-items: center; gap: .35rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.barra .boton { white-space: nowrap; }
+.vz-ind-t { font-weight: 600; }
+
+/* Encima de cada fragmento decidido, en la transcripción: qué dijo ella. */
+.vz-chip {
+  display: inline-flex; align-items: center; gap: .3rem; margin: .45rem 0 .1rem .9rem;
+  font: 600 .72rem ui-sans-serif, system-ui, sans-serif; cursor: pointer;
+  padding: .12rem .55rem; border-radius: 99px; border: 1px solid var(--linea);
+  background: var(--papel-alto); color: var(--tinta-suave);
+}
+.vz-chip-confirmado, .vz-chip-movido { color: var(--hecho); border-color: var(--hecho); background: var(--hecho-fondo); }
+.vz-chip-no_se, .vz-chip-varios { color: var(--duda); border-color: var(--duda); background: var(--duda-fondo); }
+.vz-chip:hover { text-decoration: underline; }
+.seg.vz-activo { outline: 2px solid var(--acento); outline-offset: 2px; background: var(--papel-alto); }
+
+/* El panel de abajo: suena el fragmento y se pregunta. Mientras está abierto,
+   la barra de arriba no se queda fija: entre las dos tapaban la transcripción. */
+body.con-dock { padding-bottom: max(17rem, 46vh); }
+body.con-dock .barra { position: static; }
+.vz-dock {
+  --voz: var(--acento);
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+  background: var(--papel-alto); border-top: 3px solid var(--voz);
+  box-shadow: 0 -8px 28px rgba(0, 0, 0, .12);
+  font-family: ui-sans-serif, system-ui, sans-serif; font-size: .9rem;
+  animation: vz-sube .28s ease-out;
+}
+@keyframes vz-sube { from { transform: translateY(100%); } to { transform: none; } }
+.vz-d-in { padding-top: .75rem; padding-bottom: .8rem; display: flex; flex-direction: column; gap: .55rem; }
+.vz-d-cab { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.vz-d-preg { font-size: 1.02rem; }
+.vz-d-preg em, .vz-d-preg strong { font-style: normal; color: var(--tinta); border-bottom: 3px solid var(--voz); }
+.vz-d-sub { font-weight: 400; color: var(--tinta-suave); font-size: .82rem; }
+.vz-d-donde { color: var(--tinta-suave); font-size: .78rem; font-variant-numeric: tabular-nums; }
+.vz-cerrar { margin-left: auto; border: 0; background: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--tinta-suave); padding: 0 .2rem; }
+.vz-d-texto { margin: 0; font: italic .92rem/1.45 ui-serif, Georgia, serif; color: var(--tinta); max-height: 2.9em; overflow: hidden; }
+.vz-d-oir { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.vz-d-oir .vz-barra { flex: 1; min-width: 8rem; max-width: 18rem; }
+.vz-d-oir .vz-barra > i { transition: width .25s linear; }
+.vz-d-oido { font-size: .78rem; color: var(--tinta-suave); }
+.vz-d-botones { display: flex; flex-wrap: wrap; gap: .45rem; }
+.vz-b {
+  display: inline-flex; align-items: center; gap: .45rem; cursor: pointer;
+  font: 600 .9rem ui-sans-serif, system-ui, sans-serif; padding: .5rem .85rem;
+  border-radius: calc(var(--radio) * 1.4); border: 1.5px solid var(--linea);
+  background: var(--papel); color: var(--tinta);
+  transition: transform .12s, background-color .2s, border-color .2s, opacity .2s;
+}
+.vz-b:not(:disabled):hover { transform: translateY(-1px); border-color: var(--tinta-suave); }
+.vz-b:not(:disabled):active { transform: translateY(1px); }
+.vz-b:disabled { opacity: .4; cursor: not-allowed; }
+.vz-b kbd { font-size: .72rem; }
+.vz-si:not(:disabled) { background: var(--hecho); border-color: var(--hecho); color: var(--sobre-color); }
+.vz-si:not(:disabled) kbd { background: transparent; color: var(--sobre-color); border-color: var(--sobre-color); opacity: .8; }
+.vz-nose:not(:disabled) { border-color: var(--duda); color: var(--duda); }
+.vz-saltar { margin-left: auto; font-weight: 400; color: var(--tinta-suave); }
+.vz-b.elegido { box-shadow: 0 0 0 3px var(--acento); }
+.vz-dock.listo .vz-si:not(:disabled) { animation: vz-latido .5s ease-out; }
+.vz-d-otras { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; padding: .5rem; border-radius: var(--radio); background: var(--papel); }
+.vz-d-otras.bloqueado { opacity: .45; pointer-events: none; }
+.vz-d-otras-t { margin: 0 .3rem 0 0; font-size: .78rem; color: var(--tinta-suave); flex-basis: 100%; }
+.vz-voz {
+  display: inline-flex; align-items: center; gap: .35rem; cursor: pointer;
+  font: 600 .82rem ui-sans-serif, system-ui, sans-serif; padding: .3rem .6rem;
+  border: 1px solid var(--linea); border-radius: 99px; background: var(--papel-alto); color: var(--tinta);
+}
+.vz-voz:hover { border-color: var(--voz, var(--tinta-suave)); }
+.vz-voz-nueva, .vz-voz-varios { font-weight: 400; color: var(--tinta-suave); }
+.vz-d-fin { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.vz-d-fin p { margin: 0; flex-basis: 100%; }
+.vz-d-pie { display: flex; align-items: center; gap: .6rem; font-size: .78rem; color: var(--tinta-suave); border-top: 1px solid var(--linea); padding-top: .5rem; }
+.vz-d-pie-nombre { font-weight: 600; color: var(--tinta); }
+.vz-d-pie .vz-barra { flex: 1; max-width: 16rem; }
+.vz-dock.guardado .vz-d-pie .vz-barra { animation: vz-latido .45s ease-out; }
+
+.vz-toast {
+  position: fixed; left: 50%; bottom: 18.5rem; transform: translateX(-50%); z-index: 40;
+  background: var(--tinta); color: var(--papel); padding: .45rem .9rem; border-radius: 99px;
+  font: 600 .82rem ui-sans-serif, system-ui, sans-serif; box-shadow: 0 4px 16px rgba(0, 0, 0, .2);
+  max-width: calc(100vw - 2rem); text-align: center;
+}
+body:not(.con-dock) .vz-toast { bottom: 1.5rem; }
+.vz-toast.sale { animation: vz-toast .3s ease-out; }
+@keyframes vz-toast { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+@media (max-width: 640px) {
+  .vz-tarjetas { grid-template-columns: 1fr; }
+  .vz-b { flex: 1 1 auto; justify-content: center; }
+  .vz-saltar { margin-left: 0; }
+  body.con-dock { padding-bottom: max(22rem, 61vh); }
+  body.con-dock .vz-toast { bottom: 23rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vz-barra > i, .vz-f, .vz-b { transition: none; }
+  .vz-dock, .vz-tarjeta.recien, .vz-tarjeta.recien .vz-sello, .vz-toast.sale,
+  .vz-dock.listo .vz-si, .vz-dock.guardado .vz-d-pie .vz-barra { animation: none; }
+}
+/* [0] Al filtrar, la marca de quién habla se va con su línea. */
+.vz-chip:has(+ .seg.oculto) { display: none; }
+@media print {
+  .voces, .vz-dock, .vz-toast, .vz-indicador { display: none !important; }
+  body.con-dock { padding-bottom: 0; }
+  .seg.vz-activo { outline: none; background: none; }
+  .vz-chip { border: 1px solid #000; background: none; color: #000; }
+}
 
 .boton, .chip {
   font: inherit; cursor: pointer;
@@ -409,3 +632,207 @@ kbd {
   margin: .4rem 0; font-family: ui-sans-serif, system-ui, sans-serif;
   font-size: .72rem; color: var(--tinta-suave); font-style: italic;
 }
+
+/* ---------------------------------------------- quién habla, segunda vuelta */
+.vz-fuera { margin: .4rem 0 0; font-size: .78rem; color: var(--tinta-suave); }
+.vz-fuera:empty { display: none; }
+.vz-vivo { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.vz-d-texto { max-height: 6.2em; overflow-y: auto; }
+.vz-d-pista { margin: 0; flex-basis: 100%; font-size: .74rem; color: var(--tinta-suave); }
+.vz-d-otras-t { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.vz-volver { border: 1px solid var(--linea); background: var(--papel-alto); color: var(--tinta); border-radius: 99px;
+  font: 600 .74rem ui-sans-serif, system-ui, sans-serif; padding: .15rem .6rem; cursor: pointer; }
+.vz-voz.elegida { border-color: var(--tinta); box-shadow: 0 0 0 2px var(--acento); }
+.vz-tarjeta.anadida { border-style: dashed; }
+/* Las líneas que ella ya atribuyó, con el color de la voz que dijo. */
+.seg.vz-decidido { box-shadow: inset 3px 0 0 var(--voz-suya, var(--hecho)); }
+.vz-ind-corto { display: none; }
+@media (max-width: 640px) {
+  .vz-ind-largo { display: none; }
+  .vz-ind-corto { display: inline; }
+  .vz-indicador .vz-barra.mini { display: none; }
+}
+.aviso-guardado { margin: 0 auto .5rem; font-size: .8rem; color: var(--hecho); }
+.aviso-guardado.mal { color: var(--duda); }
+.vz-chip-otra_version { color: var(--duda); border-color: var(--duda); background: var(--duda-fondo); }
+
+/* --------------------------------------------- lo que no se entiende */
+.voces.il { margin-top: .9rem; }
+.il .vz-cab { align-items: center; }
+.il-filas { display: flex; flex-direction: column; gap: .3rem; margin-top: .8rem; max-height: 22rem; overflow-y: auto; }
+.il-fila {
+  display: grid; grid-template-columns: 9.5rem 3.5rem 1fr; gap: .6rem; align-items: baseline; text-align: left;
+  font: .82rem ui-sans-serif, system-ui, sans-serif; color: var(--tinta); cursor: pointer;
+  border: 1px solid var(--linea); border-left: 4px solid var(--duda); border-radius: var(--radio);
+  background: var(--papel); padding: .35rem .6rem;
+}
+.il-fila:hover { border-color: var(--tinta-suave); border-left-color: var(--duda); }
+.il-fila.hecha { border-left-color: var(--hecho); }
+.il-cuando { font-variant-numeric: tabular-nums; font-weight: 600; }
+.il-dur { color: var(--tinta-suave); font-variant-numeric: tabular-nums; }
+.il-que { color: var(--tinta-suave); }
+.il-fila.hecha .il-que { color: var(--hecho); }
+/* En la transcripción, donde ocurre. */
+.il-marca {
+  display: block; width: 100%; text-align: left; margin: .5rem 0; cursor: pointer;
+  font: 600 .78rem ui-sans-serif, system-ui, sans-serif; color: var(--duda);
+  background: var(--duda-fondo); border: 1px dashed var(--duda); border-radius: var(--radio); padding: .4rem .7rem;
+}
+.il-marca.hecha { color: var(--hecho); background: var(--hecho-fondo); border-color: var(--hecho); border-style: solid; }
+.il-marca:hover { text-decoration: underline; }
+.pausa.hueco.con-marca { display: none; }
+.il-motivo { margin: 0; font-size: .82rem; color: var(--tinta-suave); }
+.il-pistas { font-size: .8rem; }
+.il-pistas > summary { cursor: pointer; color: var(--tinta-suave); }
+.il-pistas > div { max-height: 7.5em; overflow-y: auto; }
+.il-pistas p { margin: .3rem 0 0; padding-left: .6rem; border-left: 2px solid var(--linea); }
+.il-pistas .et { display: block; font-size: .7rem; color: var(--tinta-suave); }
+.il-form { display: flex; flex-direction: column; gap: .5rem; }
+.il-entiende { display: flex; flex-wrap: wrap; gap: .35rem; }
+.il-campo { display: flex; flex-direction: column; gap: .2rem; font-size: .8rem; color: var(--tinta-suave); }
+.il-campo textarea {
+  font: .9rem/1.4 ui-sans-serif, system-ui, sans-serif; color: var(--tinta); background: var(--papel-alto);
+  border: 1px solid var(--linea); border-radius: var(--radio); padding: .4rem .5rem; resize: vertical;
+}
+.il-quien { display: flex; flex-wrap: wrap; gap: .3rem; }
+.il-opcional { font-style: italic; }
+/* El panel no pasa de media pantalla: encima tiene que verse lo que suena.
+   Guardar queda siempre a la vista al pie, aunque se desplace por dentro. */
+.il-dock .vz-d-in { max-height: 45vh; overflow-y: auto; scroll-padding-bottom: 3.5rem; }
+.il-dock .vz-d-botones { position: sticky; bottom: 0; z-index: 1; background: var(--papel-alto);
+  padding: .45rem 0 .15rem; border-top: 1px solid var(--linea); }
+@media (max-width: 640px) { .il-dock .vz-d-in { max-height: 60vh; } }
+@media (hover: none) and (pointer: coarse) { .il-dock kbd { display: none; } }
+
+/* --------------------------------------------- compromisos: la ficha y lo suyo */
+.compromiso-linea { margin: 0; }
+.compromiso-resumen { margin: .35rem 0 0; font-size: .78rem; color: var(--tinta); }
+.compromiso-resumen b { font-weight: 600; color: var(--compromiso); }
+.compromiso-mas { margin-top: .35rem; }
+.compromiso-mas > summary { cursor: pointer; font-size: .76rem; color: var(--tinta-suave); }
+.compromiso-mas dl { display: grid; grid-template-columns: max-content 1fr; gap: .25rem .9rem; margin: .45rem 0 .2rem; font-size: .8rem; }
+.compromiso-mas dt { color: var(--tinta-suave); }
+.compromiso-mas dd { margin: 0; }
+.compromiso-cita { display: block; color: var(--tinta-suave); font-style: italic; font-size: .76rem; }
+.compromiso-aviso { margin: .2rem 0 0; font-size: .72rem; color: var(--tinta-suave); font-style: italic; }
+/* ------------------------------------ otras lecturas: oír la línea y comparar */
+.acciones .oir-linea { font-weight: 600; }
+.ol-oir { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: .45rem 0; }
+.ol-oir .boton.elegida { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+.ol-oir .ol-barra { width: 7rem; }
+.ol-estado { font-size: .76rem; color: var(--tinta-suave); }
+.ol-discordias { margin: .3rem 0 .5rem; padding: .45rem .6rem; border: 1px solid var(--linea); border-radius: var(--radio); background: var(--papel); }
+.ol-discordias ul { margin: .3rem 0 0; padding-left: 1.1rem; }
+.ol-discordias li { margin: .2rem 0; }
+.ol-t { margin: 0; font-size: .82rem; }
+.ol-sub { color: var(--tinta-suave); font-size: .76rem; }
+.ol-dice { font-size: .85rem; }
+.ol-flecha { color: var(--tinta-suave); margin: 0 .15rem; }
+.ol-usar { font: inherit; font-size: .85rem; padding: .05rem .4rem; border: 1px solid var(--linea); border-radius: var(--radio);
+  background: var(--papel); color: var(--tinta); cursor: pointer; }
+.ol-usar:not(:disabled):hover { border-color: var(--tinta); }
+.ol-usar:disabled { opacity: .55; cursor: not-allowed; }
+.ol-fuente { font-size: .72rem; color: var(--tinta-suave); margin-right: .5rem; }
+.ol-lectura { margin: .35rem 0; }
+.ol-ctx { color: var(--tinta-suave); opacity: .75; }
+.ol-tramo strong, .ol-t strong, .ol-dice strong, .ol-nota strong { color: var(--tinta); font-weight: 700; }
+.ol-igual { font-size: .72rem; color: var(--hecho); white-space: nowrap; }
+.ol-sin { font-size: .76rem; color: var(--tinta-suave); }
+.ol-nota { margin: .4rem 0 0; font-size: .74rem; color: var(--tinta-suave); }
+@media print { .ol-oir, .acciones .oir-linea { display: none; } }
+/* Lo critico en negrita (resalte.js / md2html.resaltar): con el color de la
+   tinta, no el suave, para que se lea tambien en oscuro. */
+.compromiso-mas dd strong, .compromiso-resumen strong, .cp-dicho strong, .il-motivo strong,
+.il-que strong, .il-marca strong, .gl-nota-t strong, .motivos strong, .sello strong,
+#aviso-persistencia strong { font-weight: 700; color: var(--tinta); }
+.cp-suyo { margin-top: .5rem; padding-top: .45rem; border-top: 1px dashed var(--compromiso); display: flex; flex-direction: column; gap: .4rem; }
+.cp-fila { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.cp-fila .boton { font-size: .78rem; padding: .2rem .6rem; }
+.cp-barra { width: 7rem; height: .4rem; }
+.cp-oido { font-size: .74rem; color: var(--tinta-suave); }
+.cp-form { display: flex; flex-direction: column; gap: .35rem; }
+.cp-form.bloqueado { opacity: .45; pointer-events: none; }
+.cp-grupo { display: flex; align-items: center; gap: .3rem; flex-wrap: wrap; }
+.cp-et { font-size: .74rem; color: var(--tinta-suave); min-width: 9rem; }
+.cp-quien { display: inline-flex; flex-wrap: wrap; gap: .25rem; }
+.cp-form .vz-voz { font-size: .74rem; padding: .15rem .5rem; }
+.cp-form input {
+  font: .78rem ui-sans-serif, system-ui, sans-serif; color: var(--tinta); background: var(--papel-alto);
+  border: 1px solid var(--linea); border-radius: var(--radio); padding: .2rem .45rem; min-width: 12rem;
+}
+.cp-dicho { margin: 0; font-size: .78rem; font-weight: 600; color: var(--hecho); }
+.cp-dicho:empty { display: none; }
+.compromiso.declarado { border-left-color: var(--hecho); }
+@media (max-width: 640px) {
+  .compromiso-mas dl { grid-template-columns: 1fr; }
+  .il-fila { grid-template-columns: 1fr; gap: .1rem; }
+  .cp-et { min-width: 0; flex-basis: 100%; }
+}
+@media print { .cp-suyo, .il-marca { display: none !important; } }
+/* En papel no hay marca de «Lo que no se entiende»: el aviso del hueco vuelve
+   a salir, para que se vea que ahí falta texto. */
+@media print { .pausa.hueco.con-marca { display: block !important; } }
+
+/* ----------------------------------------------------------- pestañas */
+.pestanas { display: flex; flex-wrap: wrap; gap: .3rem; align-items: flex-end; margin-top: 1.1rem;
+  font-family: ui-sans-serif, system-ui, sans-serif; border-bottom: 1px solid var(--linea); }
+.pestana { font: 600 .86rem ui-sans-serif, system-ui, sans-serif; color: var(--tinta-suave); cursor: pointer;
+  background: none; border: 1px solid transparent; border-bottom: 0; border-radius: var(--radio) var(--radio) 0 0;
+  padding: .45rem .8rem; margin-bottom: -1px; }
+.pestana:hover { color: var(--tinta); }
+.pestana.activa { color: var(--tinta); background: var(--papel-alto); border-color: var(--linea); }
+.p-cifra { font-weight: 400; font-size: .76rem; color: var(--tinta-suave); margin-left: .2rem; font-variant-numeric: tabular-nums; }
+.p-ocultar { margin-left: auto; margin-bottom: .3rem; font-size: .78rem; }
+.con-pestanas .voces.vz { margin-top: 0; border-top-left-radius: 0; }
+.con-pestanas .vz-plegar { display: none; }
+.pestana-oculta, .paneles-ocultos .voces.vz { display: none !important; }
+
+/* ----------------------------------------------------------- glosario */
+.gl-form { display: flex; flex-wrap: wrap; gap: .5rem .7rem; align-items: flex-end; margin-top: .8rem; }
+.gl-form label { display: flex; flex-direction: column; gap: .15rem; font-size: .76rem; color: var(--tinta-suave); }
+.gl-form input { font: .9rem ui-sans-serif, system-ui, sans-serif; color: var(--tinta); background: var(--papel-alto);
+  border: 1px solid var(--linea); border-radius: var(--radio); padding: .35rem .5rem; min-width: 10rem; }
+.gl-form .gl-nota input { min-width: 14rem; }
+.gl-flecha { color: var(--tinta-suave); padding-bottom: .4rem; }
+.gl-cuenta { font-size: .76rem; color: var(--tinta-suave); padding-bottom: .45rem; }
+.gl-t { font-size: .92rem; margin: 1rem 0 .3rem; }
+.gl-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .3rem; }
+.gl-fila { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; font-size: .84rem;
+  border: 1px solid var(--linea); border-radius: var(--radio); padding: .35rem .6rem; background: var(--papel); }
+.gl-fila.aceptada { border-left: 4px solid var(--hecho); }
+.gl-fila.rechazada { border-style: dashed; }
+.gl-fila.rechazada .gl-oye, .gl-fila.rechazada .gl-dijo-t { color: var(--tinta-suave); }
+.gl-oye { color: var(--duda); font-weight: 600; }
+.gl-dijo-t { color: var(--hecho); font-weight: 600; }
+.gl-n, .gl-nota-t, .gl-origen, .gl-nota-maq { color: var(--tinta-suave); font-size: .76rem; }
+.gl-nota-maq { font-style: italic; }
+.gl-estado { font-size: .76rem; font-weight: 600; color: var(--tinta); }
+.gl-acc { margin-left: auto; display: inline-flex; gap: .3rem; }
+.gl-acc .boton, .gl-excs .boton, .gl-exc .boton { font-size: .76rem; padding: .15rem .55rem; }
+.gl-excs { flex-basis: 100%; list-style: none; margin: .2rem 0 0; padding: .3rem 0 0; border-top: 1px dashed var(--linea);
+  display: flex; flex-direction: column; gap: .25rem; font-size: .78rem; color: var(--tinta-suave); }
+.gl-excs .boton { margin-left: .3rem; }
+.gl-vacia { font-size: .8rem; color: var(--tinta-suave); font-style: italic; }
+/* En la transcripción: lo que escribió la máquina, y al lado lo que se dijo según ella.
+   La palabra transcrita NO se tacha (parecería borrada): se subraya. Lo suyo va
+   en un <span> vacío y el texto lo pone el CSS, así no entra al copiar. */
+mark.gl { background: none; color: inherit; text-decoration: underline wavy var(--duda); text-underline-offset: 3px; cursor: help; }
+mark.gl-suya { text-decoration-color: var(--hecho); cursor: pointer; }
+mark.gl-foco { outline: 2px solid var(--acento); outline-offset: 1px; }
+.gl-dijo { display: inline-block; margin-left: .25rem; padding: 0 .3rem; border-radius: 3px; font: 600 .82em ui-sans-serif, system-ui, sans-serif;
+  color: var(--hecho); background: var(--hecho-fondo); border: 1px solid var(--hecho); cursor: pointer; user-select: none; }
+.gl-dijo::before { content: "según usted: "; font-weight: 400; color: var(--tinta-suave); }
+.gl-dijo::after { content: attr(data-dijo); }
+.gl-exc { margin: .3rem 0 0; font: .76rem ui-sans-serif, system-ui, sans-serif; color: var(--hecho); user-select: none; }
+.gl-exc .boton { margin-left: .3rem; }
+.gl-flota { position: absolute; z-index: 50; font: 600 .78rem ui-sans-serif, system-ui, sans-serif; cursor: pointer;
+  background: var(--tinta); color: var(--papel); border: 0; border-radius: 99px; padding: .3rem .7rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .2); }
+@media print { .pestanas, .gl-flota, .gl-exc .boton { display: none !important; } mark.gl { text-decoration: none; } }
+
+/* Un compromiso que la lectura cree que NO lo es: la etiqueta pregunta, no afirma. */
+.compromiso.dudoso { border-left-style: dashed; }
+.compromiso.dudoso .compromiso-sello { background: transparent; color: var(--compromiso); border: 1px dashed var(--compromiso); }
+
+.cp-form select { font: .78rem ui-sans-serif, system-ui, sans-serif; color: var(--tinta); background: var(--papel-alto);
+  border: 1px solid var(--linea); border-radius: var(--radio); padding: .2rem .4rem; max-width: 22rem; }

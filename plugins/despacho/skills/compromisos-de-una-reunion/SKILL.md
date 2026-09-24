@@ -108,7 +108,7 @@ Qué cuenta: entregar un informe, remitir un documento, convocar una reunión, s
 
 ### Fase 3 — Escribir el archivo, uno por grabación
 
-`Compromisos senalados/A<N> - compromisos.json`:
+`2-Borradores/Compromisos/<AAAA-MM-DD> - <qué cambió>/A<N> - compromisos.json` —una carpeta por versión, con la fecha en que se hace la lectura (ADR-023); **si se rehace la lectura, carpeta nueva**, y la anterior no se toca—:
 
 ```text
 {

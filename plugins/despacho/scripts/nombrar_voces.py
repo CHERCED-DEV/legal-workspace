@@ -234,6 +234,23 @@ def aplicar(args):
     if not sep:
         falla("esa transcripción no tiene separador de cabecera")
 
+    # El nombre se pone por el NUMERO del Markdown y se guarda por el numero de
+    # los datos. Si los dos no numeran igual -- se rehizo la separacion y el
+    # Markdown se quedo viejo --, el nombre caeria en el Word sobre lineas de
+    # otra persona. Se comprueba linea a linea antes de escribir nada.
+    efectivas, cur = [], None
+    for m in re.finditer(r"^\*\*\[\d\d:\d\d:\d\d\]( · Hablante ([^\s*]+)[^*]*)?\*\*", cuerpo, re.M):
+        if m.group(2):
+            cur = m.group(2)
+        efectivas.append(cur)
+    de_datos = ["?" if s.get("voz") is None else str(s.get("voz")) for s in doc["segmentos"]]
+    if len(efectivas) != len(de_datos) or efectivas != de_datos:
+        distintas = sum(1 for a, b in zip(efectivas, de_datos) if a != b)
+        falla("la transcripción y los datos no numeran igual las voces (%d de %d líneas distintas, "
+              "%d líneas frente a %d segmentos). Regenere la transcripción desde esos datos antes de "
+              "poner nombres: si no, el nombre caería sobre líneas de otra voz. No se escribió nada."
+              % (distintas, len(de_datos), len(efectivas), len(de_datos)))
+
     lineas = ["**Quién es cada voz:** lo declaró **%s** el **%s**. **No lo comprobó ningún "
               "programa**: la máquina agrupó las voces, y el nombre lo puso una persona."
               % (quien_declara, fecha)]

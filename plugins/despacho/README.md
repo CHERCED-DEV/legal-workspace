@@ -166,6 +166,12 @@ Después de instalar hay una segunda mitad que esta guía no cubre y que es la q
 decide si esto sirve: **explicarle a ella cómo pedir las cosas**, y dejar montada la carpeta
 del caso con la estructura que los métodos esperan (`1-Documentos recibidos/`,
 `2-Borradores/`, `3-Para presentar/`). Eso está en la guía de carpetas del proyecto, no aquí.
+La forma completa —qué carpeta de `2-Borradores/` recibe cada salida, y que en
+`3-Para presentar/` no escribe ningún programa— es `ADR-023`
+(`docs/architecture/adrs/ADR-023-la-forma-de-un-proyecto.md`), y sus rutas viven en un solo
+sitio: `scripts/estructura.py`. Un proyecto que ya existe se lleva a esa forma con
+`scripts/ordenar_proyecto.py`, **a mano**: primero un plan que no mueve nada, y después un
+manifiesto para deshacerlo.
 
 ---
 
@@ -278,6 +284,10 @@ legal-workspace/
 │     │  ├─ esqueleto_de_modelo.py    <- que forma tiene el documento que ella dio de ejemplo
 │     │  ├─ verificar_compromisos.py  <- que cada compromiso senalado exista de verdad
 │     │  ├─ separar_voces.py          <- separar otra vez las voces, sin re-transcribir
+│     │  ├─ releer_tramo.py           <- volver a leer un tramo dudoso de muchas maneras, y contar
+│     │  ├─ recoger_lo_declarado.py   <- junta lo que ella declaro oyendo, para refinar el acta
+│     │  ├─ ordenar_proyecto.py       <- lleva un proyecto a la forma de ADR-023 (plan, manifiesto, deshacer)
+│     │  ├─ estructura.py             <- modulo: la forma de un proyecto, en un solo sitio
 │     │  ├─ acta_en_formato.py        <- el acta con el membrete del despacho
 │     │  ├─ atribucion_posible.py     <- hasta donde se puede decir quien dijo que
 │     │  ├─ alineacion_forzada.py     <- modulo: alinear por CTC; MEDIDO que aqui no sirve

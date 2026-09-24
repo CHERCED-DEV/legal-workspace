@@ -240,9 +240,9 @@ class ElCorteDelBacklogCubreTodosLosADR(unittest.TestCase):
     def test_el_titulo_del_7_dice_cuantos_hay(self):
         """Y que el numero escrito sea el del disco, no el de septiembre."""
         t = self.BACKLOG.read_text(encoding="utf-8")
-        self.assertEqual(22, len(self._numeros_en_disco()),
+        self.assertEqual(23, len(self._numeros_en_disco()),
                          u"cambió el número de ADR: actualice el título de §7")
-        self.assertIn(u"dieciocho entonces, veintidós hoy", t)
+        self.assertIn(u"dieciocho entonces, veintitrés hoy", t)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
