@@ -44,6 +44,31 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: .92em; }
 .guardado.mal { background: #fbe7e7; color: var(--mal); font-weight: 600; }
 .guardado.pendiente { background: #fff3df; color: var(--aviso); }
 .quien { background: #e9eef5; color: var(--acento); }
+.cab-guardado { align-items: center; }
+.grab { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: #eceae4; color: var(--suave); }
+.grab.ok { background: #e7f1ea; color: var(--ok); }
+.grab.mal { background: #fbe7e7; color: var(--mal); font-weight: 600; }
+.btn.guardar { font-size: 14px; padding: 6px 14px; }
+/* Cuando hay decisiones que aún no están en el proyecto, el botón se deja ver. */
+.btn.guardar.llama { box-shadow: 0 0 0 3px #f3c98b; }
+@media (prefers-reduced-motion: no-preference) {
+  .btn.guardar.llama { animation: llama 2.4s ease-in-out infinite; }
+  @keyframes llama { 50% { box-shadow: 0 0 0 6px #f3c98b88; } }
+}
+.bienvenida-guardar { background: #eef4fa; border-left: 4px solid var(--acento); padding: 8px 12px; border-radius: 6px; margin: 0; }
+
+/* --- abierta desde un .zip, o sin las grabaciones a su lado ---
+   Arriba, pegado, y por encima incluso de una ventana abierta: si no suena
+   nada, es lo primero que tiene que saber. */
+.aviso-sola {
+  position: sticky; top: 0; z-index: 70;
+  margin: 0 -16px; padding: 12px 16px;
+  background: #fff3df; color: #4a2c00; border-bottom: 3px solid var(--aviso);
+  font-size: 14.5px; line-height: 1.45;
+}
+.aviso-sola.grave { background: var(--mal); color: #fff; border-bottom-color: #6e0f0f; }
+.aviso-sola .envoltura { max-width: 1100px; margin: 0 auto; }
+.aviso-sola strong { display: block; font-size: 16.5px; margin-bottom: 3px; }
 
 .franja-aviso {
   background: #fffaf0; border: 1px solid #ecd9b4; border-left: 4px solid var(--aviso);
@@ -271,6 +296,10 @@ span.chip { cursor: default; }
 .franja-pct { font-size: 13px; font-weight: 600; width: 50px; color: var(--aviso); }
 .franja-pct.ok { color: var(--ok); }
 .franja-ley { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11.5px; color: var(--suave); margin-top: 6px; }
+#franjas.estrecha .franja-fila { flex-wrap: wrap; gap: 2px 10px; margin: 8px 0; }
+#franjas.estrecha .franja-rot { width: auto; }
+#franjas.estrecha .franja-pct { width: auto; }
+#franjas.estrecha .franja { order: 3; }
 .franja-ley i { display: inline-block; width: 18px; height: 9px; margin-right: 4px; vertical-align: -1px; border-radius: 2px; }
 .ley-llena { background: var(--acento); }
 .ley-rayada { background: repeating-linear-gradient(45deg, #9db8d3 0 3px, #fff 3px 6px); border: 1px solid #9db8d3; }
@@ -296,7 +325,24 @@ span.chip { cursor: default; }
 .como-rapido { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
 .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #22262c; color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.25); z-index: 60; max-width: min(640px, 92vw); }
 
+/* --- móvil: nada se sale de la pantalla, y lo que se toca se puede tocar --- */
+@media (max-width: 640px) {
+  body { padding: 0 10px 20px; font-size: 15.5px; }
+  .aviso-sola { margin: 0 -10px; padding: 10px; }
+  .cab { align-items: flex-start; padding-top: 12px; }
+  .cab h1 { font-size: 19px; }
+  .cab-der, .cab-guardado { width: 100%; justify-content: flex-start; }
+  .btn { min-height: 38px; }
+  .btn.mini { min-height: 32px; }
+  .pestanas { overflow-x: auto; scrollbar-width: thin; }
+  .modal { padding: 4vh 10px; }
+  .modal-caja { padding: 18px 16px; }
+  .toast { bottom: 12px; font-size: 13.5px; }
+  canvas { max-width: 100%; }
+}
+
 @media print {
+  .aviso-sola { display: none !important; }
   .voces, .pestanas, .oir, .decidir, .franjas-caja, .toast { display: none !important; }
   .chip-declarada { background: none !important; color: #000 !important; border: 2px solid #000 !important; }
   .chip-propuesta { border: 2px dashed #000 !important; }

@@ -983,5 +983,62 @@ class PrepararDeHumo(unittest.TestCase):
             callado(G.main, args)
 
 
+@unittest.skipIf(np is None, "numpy no está instalado")
+class RehacerSoloLaPagina(unittest.TestCase):
+    """`pagina`: la plantilla nueva sobre una reunión ya preparada, sin volver a
+    calcular nada. La clave no cambia, así que lo que ella declaró sigue valiendo."""
+
+    GENOMA = {
+        "formato": "despacho/genoma-de-voz", "version": 1, "clave": "abc123def4567890",
+        "titulo": "Mesa <de> prueba", "generado": "2026-01-10",
+        "audios": [{"id": "A1", "nombre": "Audio 1", "ruta": "a.mp4", "duracion": 10.0}],
+        "voces": [], "lineas": [{"id": "A1-1", "audio": "A1", "ini": 0, "fin": 1, "texto": "hola </script> adiós"}],
+        "huecos": [], "rescates": [],
+    }
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+        plantilla = self.tmp / "voces.html"
+        plantilla.write_text('<title>{{TITULO}}</title><script id="datos" type="application/json">{{DATOS}}</script>',
+                             encoding="utf-8")
+        self._pl = mock.patch.object(G, "PLANTILLA", str(plantilla))
+        self._pl.start()
+        self._hoy = mock.patch.object(G, "hoy", lambda: "2026-09-24")
+        self._hoy.start()
+        self.genoma = self.tmp / "genoma.json"
+        self.genoma.write_text(json.dumps(self.GENOMA, ensure_ascii=False), encoding="utf-8")
+        self.salida = self.tmp / "salida"
+
+    def tearDown(self):
+        self._pl.stop()
+        self._hoy.stop()
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def test_escribe_la_pagina_con_los_mismos_datos(self):
+        self.assertEqual(0, callado(G.main, ["pagina", str(self.genoma), "--salida", str(self.salida)]))
+        t = (self.salida / "Voces - Mesa de prueba - 2026-01-10.html").read_text(encoding="utf-8")
+        self.assertIn("<title>Mesa &lt;de&gt; prueba</title>", t)
+        dentro = t.split('type="application/json">', 1)[1].rsplit("</script>", 1)[0]
+        self.assertNotIn("</", dentro, "un «</script>» en el texto cerraría el bloque de datos")
+        self.assertEqual(self.GENOMA, json.loads(dentro.replace("<\\/", "</")))
+
+    def test_el_nombre_lleva_la_fecha_de_la_preparacion(self):
+        """Los enlaces de INICIO a la página siguen llegando."""
+        callado(G.main, ["pagina", str(self.genoma), "--salida", str(self.salida)])
+        self.assertEqual(["Voces - Mesa de prueba - 2026-01-10.html"], sorted(os.listdir(self.salida)))
+
+    def test_no_sobrescribe(self):
+        callado(G.main, ["pagina", str(self.genoma), "--salida", str(self.salida)])
+        with self.assertRaises(SystemExit):
+            callado(G.main, ["pagina", str(self.genoma), "--salida", str(self.salida)])
+
+    def test_rechaza_lo_que_no_es_un_genoma(self):
+        otro = self.tmp / "otro.json"
+        otro.write_text(json.dumps({"formato": "despacho/voces-linea-a-linea"}), encoding="utf-8")
+        with self.assertRaises(SystemExit):
+            callado(G.main, ["pagina", str(otro), "--salida", str(self.salida)])
+        self.assertFalse(self.salida.exists() and os.listdir(self.salida))
+
+
 if __name__ == "__main__":
     unittest.main()

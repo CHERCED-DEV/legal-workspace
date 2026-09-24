@@ -22,6 +22,7 @@ import { montarCompromisos } from './compromisos.js'
 import { crearGuardado } from './guardado.js'
 import { crearOirLinea, montarOtrasLecturas } from './otras-lecturas.js'
 import { montarGlosario } from './glosario.js'
+import { abiertaDesdeZip, pasosExtraer, navegador } from './sola.js'
 
 const $ = (s, r = document) => r.querySelector(s)
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s))
@@ -443,31 +444,56 @@ function montarTema() {
     b.textContent = NOMBRE[t]
     b.title = 'Colores de la página: ' + NOMBRE[t].slice(2) + '. Pulse para cambiar.'
   }
+  // El tema es UNO para todas las páginas del proyecto: el que se elige en
+  // INICIO («despacho-apariencia», con más temas) manda; sus temas oscuros son
+  // «oscuro» aquí y los claros, «claro». Lo que se elija aquí vuelve a INICIO.
+  const deInicio = () => {
+    try {
+      const t = (JSON.parse(localStorage.getItem('despacho-apariencia')) || {}).tema
+      return t === 'noche' ? 'oscuro' : t === 'papel' || t === 'contraste' ? 'claro' : t
+    } catch { return null }
+  }
   let actual = 'auto'
-  try { actual = localStorage.getItem('despacho:tema') || 'auto' } catch { /* sin almacen: automatico */ }
+  try { actual = deInicio() || localStorage.getItem('despacho:tema') || 'auto' } catch { /* sin almacen: automatico */ }
   if (!ORDEN.includes(actual)) actual = 'auto'
   aplicar(actual)
   b.addEventListener('click', () => {
     actual = ORDEN[(ORDEN.indexOf(actual) + 1) % ORDEN.length]
     aplicar(actual)
-    try { localStorage.setItem('despacho:tema', actual) } catch { /* se aplica igual */ }
+    try {
+      localStorage.setItem('despacho:tema', actual)
+      let p = {}
+      try { p = JSON.parse(localStorage.getItem('despacho-apariencia')) || {} } catch { p = {} }
+      p.tema = actual
+      localStorage.setItem('despacho-apariencia', JSON.stringify(p))
+    } catch { /* se aplica igual */ }
   })
 }
 
-function avisarSola() {
+/* La página sola: abierta desde dentro de un .zip, o sin la entrega a su lado.
+ * Los pasos son los del sistema de quien la abre: el Mac no tiene «Extraer
+ * todo…», basta un doble clic sobre el .zip (2026-09-24: ella usa un Mac). */
+function avisarSola(zip = false) {
   const el = $('#aviso-sola')
-  if (el) el.hidden = false
+  if (!el) return
+  if (zip) {
+    $('#aviso-sola-titulo').textContent = 'Está abriendo esta página desde dentro del archivo .zip.'
+    $('#aviso-sola-porque').textContent = 'Así se abre sola: no funcionan ni el audio ni los enlaces a las demás páginas, y no se puede guardar en el proyecto.'
+  }
+  $('#aviso-sola-pasos').textContent = pasosExtraer()
+  el.hidden = false
 }
 
 function comprobarCompania() {
   if (C.audio || !C.sonda) return   // las paginas con grabacion avisan al fallar el audio
   const a = document.createElement('audio')
   a.preload = 'metadata'
-  a.addEventListener('error', avisarSola)
+  a.addEventListener('error', () => avisarSola())
   a.src = encodeURI(C.sonda)
 }
 
 function iniciar() {
+  if (abiertaDesdeZip(location.href)) avisarSola(true)
   comprobarCompania()
   // Sin bloques es un documento para leer: ni filtros, ni contador, ni «Guardar
   // lo comprobado» sobre algo que no tiene nada que comprobar.
@@ -519,8 +545,11 @@ function iniciar() {
       if (r === 'cancelado') { voces?.avisar('No se guardó: no eligió carpeta.', 5000); return }
     }
     estado.exportar(C.documento, extra())
-    voces?.avisar(`Guardado en su carpeta de Descargas como «comprobado - ${C.documento.titulo} - <fecha y hora>.json». `
-      + 'Para seguir otro día, use «Cargar» con ese archivo.', 7000)
+    // Una sola regla para todo lo descargado, venga de la página que venga:
+    // a «Lo que declaré», dentro de 2-Borradores. De ahí lo recoge la etapa 2.
+    voces?.avisar(`Se descargó en Descargas como “comprobado - ${C.documento.titulo} - <fecha y hora>.json”`
+      + (guardado?.disponible ? '' : ` (${navegador()} no deja que la página guarde en la carpeta)`)
+      + '. Al terminar, arrástrelo a la carpeta “Lo que declaré” del proyecto (dentro de “2-Borradores”).', 12000)
   })
   $('#btn-importar')?.addEventListener('click', () => $('#archivo-estado').click())
   $('#archivo-estado')?.addEventListener('change', (e) => {

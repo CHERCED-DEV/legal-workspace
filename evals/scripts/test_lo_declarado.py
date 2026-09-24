@@ -17,6 +17,7 @@ datos sintéticos (nada de ningún caso):
 
     python3 evals/scripts/test_lo_declarado.py
 """
+import contextlib
 import io
 import json
 import os
@@ -441,6 +442,29 @@ class RecogerLoDeclarado(unittest.TestCase):
             "estado": {"b1": {"estado": "corregido", "correccion": "EN LA FORMA NUEVA"}}}), encoding="utf-8")
         self.assertEqual(0, R.main([str(ent), "--salida", str(self.sal)]))
         self.assertIn("EN LA FORMA NUEVA", self.informe())
+
+    def test_lo_arrastrado_a_lo_que_declare_a_secas_tambien_se_recoge(self):
+        """Safari, en el Mac, no deja escribir en carpetas: lo guardado se descarga y
+        ella lo ARRASTRA a «2-Borradores/Lo que declaré», sin la subcarpeta de la
+        entrega. Tiene que recogerse sin pasarlo a mano; y la declaración de voces,
+        que puede caer en la misma carpeta, no es un error (2026-09-24)."""
+        proyecto = self.tmp / "Proyecto"
+        ent = proyecto / "2-Borradores" / "Entregas" / self.ent.name
+        ent.parent.mkdir(parents=True)
+        shutil.move(str(self.ent), str(ent))
+        c = proyecto.joinpath(*R.EN_PROYECTO)
+        c.mkdir(parents=True)
+        (c / "comprobado - Audio 1 - 2026-09-24 10.00.json").write_text(json.dumps({
+            "formato": "despacho/estado-de-comprobacion", "clave": self.clave, "exportado": "2026-09-24T10:00:00Z",
+            "estado": {"b1": {"estado": "corregido", "correccion": "ARRASTRADO DESDE DESCARGAS"}}}), encoding="utf-8")
+        (c / "voces declaradas - Reunion.json").write_text(json.dumps({
+            "formato": "despacho/voces-linea-a-linea", "clave": "otra", "lineas": {}}), encoding="utf-8")
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            self.assertEqual(0, R.main([str(ent), "--salida", str(self.sal)]))
+        self.assertIn("ARRASTRADO DESDE DESCARGAS", self.informe())
+        self.assertIn("es la declaración de voces", err.getvalue())
+        self.assertNotIn("se ignora", err.getvalue())
 
     def test_lo_pasado_a_mano_dice_de_donde_vino(self):
         """La cabecera no puede decir «de Lo que declaré» de un archivo de Descargas."""

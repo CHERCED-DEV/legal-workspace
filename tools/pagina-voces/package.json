@@ -7,7 +7,7 @@
   "scripts": {
     "build": "vite build --emptyOutDir",
     "publicar": "vite build --emptyOutDir && node publicar.mjs",
-    "probar": "node prueba-genoma.mjs"
+    "probar": "node prueba-genoma.mjs && node prueba-sola.mjs"
   },
   "devDependencies": {
     "vite": "^5.4.11",

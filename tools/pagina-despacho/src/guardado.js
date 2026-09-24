@@ -193,6 +193,12 @@ export function crearGuardado({ titulo, documento, alEstado, clave = '', version
     }
     await escribir(enCurso(), texto)
     previo = texto
+    // Desde la primera escritura de la sesión, lo que hay en «en curso» lo
+    // escribió ESTA página: no se vuelve a apartar. Antes se apartaba como
+    // «en curso anterior» su propio guardado de un minuto antes, en cada
+    // sesión, y la carpeta se llenaba de copias que nadie necesitaba
+    // (SPEC-16 §7.4, visto el 2026-09-24).
+    apartado = true
   }
 
   function explicar() {

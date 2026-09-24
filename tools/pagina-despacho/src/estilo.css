@@ -486,6 +486,13 @@ main blockquote { border-left: 4px solid var(--linea); margin: 1rem 0; padding: 
   .cabecera h1 { font-size: 1.4rem; }
   .ficha { grid-template-columns: 1fr; gap: 0 0; }
   .ficha dt { margin-top: .4rem; }
+  /* Las tablas de los documentos (resumen, manual, anexo) se salían de la
+     pantalla del móvil: hasta 704 px en 375 con una huella SHA-256 en una
+     celda. Las palabras largas se parten, y si aun así no cabe, la tabla se
+     desplaza por dentro: la página no. */
+  main table { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; font-size: .84rem; }
+  main th, main td { overflow-wrap: anywhere; padding: .35rem .45rem; }
+  main td code, main th code { overflow-wrap: anywhere; word-break: break-all; }
 }
 
 /* ---------------------------------------------------------------- impresion */

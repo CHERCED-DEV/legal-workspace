@@ -22,3 +22,7 @@ tools/pagina-despacho/package.json       text eol=lf
 tools/pagina-despacho/package-lock.json  text eol=lf
 tools/pagina-despacho/vite.config.js     text eol=lf
 tools/pagina-despacho/HUELLAS.json       text eol=lf
+
+# Las paginas del proyecto (SPEC-16): con CRLF de un checkout de Windows, los parches y
+# las huellas dejan de cuadrar (paso el 2026-09-24).
+tools/paginas-del-proyecto/**  text eol=lf

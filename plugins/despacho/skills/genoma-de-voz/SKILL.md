@@ -151,13 +151,25 @@ Se le entrega la página y se le dice, en pocas frases, qué va a encontrar. La 
 
 **Cada decisión recalcula la huella de cada voz y las propuestas de todas las líneas que ella no ha decidido**, y la página dice **cuántas líneas cambiaron de voz** con esa decisión. Mientras una voz tenga menos de dos líneas declaradas, se usa la huella inicial de la propuesta. Las líneas que se pisan, las de «varios» y las de «no se distingue» **no entran en la huella de ninguna voz**.
 
-**Se guarda sola, en cada acción**, en el almacenamiento del navegador, y la página dice «guardado». Ella puede cerrarla y volver: sigue donde iba, **en ese navegador y en esa máquina**. Si el almacenamiento falla, la página lo dice y pide exportar. **Guardar en el navegador no es entregar: lo que vale es el archivo exportado** (ADR-022).
+**Se guarda sola, en cada acción**, en el almacenamiento del navegador, y la página dice «guardado». Ella puede cerrarla y volver: sigue donde iba, **en ese navegador y en esa máquina**. Si el almacenamiento falla, la página lo dice y pide guardar. **Guardar en el navegador no es entregar: lo que vale es el archivo** (ADR-022).
+
+**Y en la carpeta del proyecto, sin pasar por Descargas** (desde 2026-09-24). El botón **“💾 Guardar”** va en la cabecera, siempre a la vista. La primera vez ella elige la carpeta del proyecto (vale una por encima: la página baja sola por el camino que conoce). Desde ahí la página escribe `voces declaradas - <reunión>.json` en `2-Borradores/Voces` con cada decisión, y una copia fechada cada vez que pulsa. **Nunca escribe encima de lo que otro navegador dejó**: si ella está vacía y la carpeta tiene decisiones, le ofrece cargarlas; si la carpeta tiene algo que la página no tiene, lo aparta con fecha. **Donde el navegador no deja escribir en carpetas** (Safari en el Mac, Firefox), “💾 Guardar” descarga, y la página le dice que arrastre el archivo a `2-Borradores/Lo que declaré`: **una sola carpeta para todo lo descargado**, venga de la página que venga.
+
+**La cabecera dice también si suenan las grabaciones** («🔊 3 de 3 grabaciones listas»). Si la página se abre desde dentro de un `.zip` —Windows la copia sola a una carpeta temporal— o sin las grabaciones a su lado, un aviso arriba, en rojo, lo dice con los pasos **del sistema que ella tiene**: en el Mac, doble clic sobre el `.zip`; en Windows, «Extraer todo…». Pasó el 2026-09-24: abierta desde el `.zip`, no sonaba nada y la página no lo decía.
+
+**Si se arregla la página después de preparar**, no se vuelve a preparar —eso recalcula todas las huellas en la GPU—:
+
+```
+python ${CLAUDE_PLUGIN_ROOT}/scripts/genoma_de_voz.py pagina "genoma - <reunión> - <fecha>.json" --salida "<proyecto>/2-Borradores/Voces"
+```
+
+Rehace solo la página, con la plantilla de ahora y **la misma clave**: lo que ella ya declaró se carga igual. La anterior se mueve antes a `_anteriores/` (nunca se sobrescribe).
 
 ### Fase 3 — Revisar hasta la claridad, y exportar
 
 La página enseña la claridad **por grabación y por voz**, contra la meta del 85 %, y la descompone: **cuánto declaró ella, cuánto suma la máquina y cuánto queda dudoso** (§4). Ella decide cuándo parar; lo que se le dice es cuánto falta y qué líneas lo reducen más.
 
-Al terminar, exporta `voces declaradas - <reunión>.json`. **La página exige el nombre de quien declara**: sin él no hay declaración, hay una propuesta sin autor.
+Al terminar, su declaración `voces declaradas - <reunión>.json` está en `2-Borradores/Voces` (o, con Safari, la que arrastró a `2-Borradores/Lo que declaré`). **La página exige el nombre de quien declara**: sin él no hay declaración, hay una propuesta sin autor.
 
 ### Fase 4 — Aplicar lo que ella declaró
 
@@ -213,7 +225,7 @@ Lo que escriben `preparar` y `aplicar` va en `2-Borradores/Voces/` (ADR-023), y 
 |---|---|
 | `Voces - <reunión> - <fecha>.html` | La página donde ella oye y declara. Sale de `preparar` |
 | `genoma - <reunión> - <fecha>.json` | Los datos de la preparación: huellas, voces propuestas, bandas. `aplicar` lo necesita |
-| `voces declaradas - <reunión>.json` | Lo que ella exportó de la página: **su declaración** |
+| `voces declaradas - <reunión>.json` | Lo que ella guardó desde la página —la escribe la página en `2-Borradores/Voces`, o ella la arrastra a `2-Borradores/Lo que declaré` si su navegador descarga—: **su declaración**. Las copias con fecha al lado no se tocan |
 | `Transcripcion con voces - <grabación> - <fecha>.md` | Una por grabación: cada línea con quién habla y su marca |
 | `Declaracion de voces - <reunión> - <fecha>.md` | El registro: quién declaró, quién es cada voz y cómo lo sabe, la claridad de cada grabación contra el 85 %, el acierto medido de la máquina y lo que ella le corrigió |
 | `voces por linea - <reunión> - <fecha>.json` | Lo mismo, para otro programa o para un chat |

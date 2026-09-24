@@ -24,7 +24,12 @@ function rayas(ctx, color, alfa) {
 export function renderFranjas(app, caja) {
   caja.replaceChildren()
   const E = app.estado.todo
-  const ancho = Math.max(400, (caja.clientWidth || 1200) - 150)
+  // En un móvil la franja va sola en su fila, a lo ancho, con el nombre y el %
+  // encima: con 400 px de mínimo se salía de la pantalla.
+  const w = caja.clientWidth || 1200
+  const estrecha = w < 560
+  caja.classList.toggle('estrecha', estrecha)
+  const ancho = estrecha ? Math.max(160, w - 2) : Math.max(300, w - 150)
   for (const au of app.modelo.datos.audios) {
     const c = lienzo(ancho, 26, 'franja')
     const r = window.devicePixelRatio || 1

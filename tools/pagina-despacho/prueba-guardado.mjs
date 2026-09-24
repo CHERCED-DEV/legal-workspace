@@ -56,5 +56,56 @@ r = await bajar(carpeta('Asunto B'), d)
 ok(r.error && r.error.includes('2-Borradores'), 'un homónimo sin «2-Borradores» no vale: ' + r.error)
 ok(cuantoHay({ estado: {}, glosario: [] }) === 0, 'un documento vacío no cuenta')
 ok(cuantoHay({ estado: { b1: {} }, compromisos: { 'c-1-a': {} }, voces: { 1: 'Ana', 2: ' ' }, glosario: [{}] }) === 4, 'cuenta lo declarado')
+
+// «En curso anterior»: se aparta lo que había en la carpeta ANTES de la sesión (otro
+// navegador, otro equipo), una vez; nunca lo que esta página acaba de escribir. Antes se
+// apartaba su propio guardado de un minuto antes (SPEC-16 §7.4, 2026-09-24).
+function disco2(previo) {
+  const archivos = new Map()
+  function dir(nombre, hijos = {}) {
+    return {
+      name: nombre, kind: 'directory', hijos,
+      async getDirectoryHandle(k, o = {}) {
+        if (!this.hijos[k]) { if (!o.create) throw new Error('NotFound'); this.hijos[k] = dir(k) }
+        return this.hijos[k]
+      },
+      async getFileHandle(k, o = {}) {
+        const clave = nombre + '/' + k
+        if (!archivos.has(clave)) { if (!o.create) throw new Error('NotFound'); archivos.set(clave, '') }
+        return {
+          async getFile() { return { text: async () => archivos.get(clave), lastModified: 0 } },
+          async createWritable() { let b = ''; return { write: async (x) => { b += x }, close: async () => { archivos.set(clave, b) } } },
+        }
+      },
+      async queryPermission() { return 'granted' }, async requestPermission() { return 'granted' },
+    }
+  }
+  const raiz = dir('Asunto B', { '2-Borradores': dir('2-Borradores') })
+  if (previo) archivos.set('ENTREGA - Asunto B - 2026-02-02/Audio 1 - en curso.json', previo)
+  return { raiz, archivos, nombres: () => [...archivos.keys()].map((k) => k.split('/').pop()) }
+}
+globalThis.window = globalThis
+globalThis.isSecureContext = true
+globalThis.confirm = () => true
+globalThis.alert = () => {}
+const { crearGuardado } = await import('./src/guardado.js')
+const dormir = (ms) => new Promise((r) => setTimeout(r, ms))
+async function sesion(previo) {
+  const D = disco2(previo)
+  globalThis.showDirectoryPicker = async () => D.raiz
+  let doc = { estado: { b1: { estado: 'confirmado' } } }
+  const g = crearGuardado({ titulo: 'Audio 1', documento: () => doc, href: N })
+  ok((await g.guardar()) === true, 'guarda en la carpeta del proyecto')
+  doc = { estado: { b1: { estado: 'confirmado' }, b2: { estado: 'oido' } } }
+  g.cambio()
+  await dormir(2800)
+  return D
+}
+let D = await sesion(null)
+ok(!D.nombres().some((x) => x.includes('en curso anterior')), 'lo que la página acaba de guardar no se aparta: ' + D.nombres().join(' ; '))
+ok(D.nombres().includes('Audio 1 - en curso.json'), 'el en curso existe')
+D = await sesion(JSON.stringify({ estado: { b9: { estado: 'confirmado' } } }))
+ok(D.nombres().filter((x) => x.includes('en curso anterior')).length === 1, 'lo de otra sesión se aparta, UNA vez: ' + D.nombres().join(' ; '))
+
 console.log(fallos ? fallos + ' de ' + n + ' FALLAN' : n + ' comprobaciones, todas bien')
 process.exit(fallos ? 1 : 0)

@@ -6,16 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{TITULO}}</title>
 <meta name="generator" content="despacho/pagina 0.1.0">
-<script>try { var t = localStorage.getItem('despacho:tema'); if (t === 'claro' || t === 'oscuro') document.documentElement.dataset.tema = t } catch (e) {}</script>
+<script>try { var t; try { t = (JSON.parse(localStorage.getItem('despacho-apariencia')) || {}).tema } catch (e) {} if (t === 'noche') t = 'oscuro'; if (t === 'papel' || t === 'contraste') t = 'claro'; if (t !== 'claro' && t !== 'oscuro' && t !== 'auto') t = localStorage.getItem('despacho:tema'); if (t === 'claro' || t === 'oscuro') document.documentElement.dataset.tema = t } catch (e) {}</script>
 </head>
 <body>
 
 <div class="aviso-sola" id="aviso-sola" role="alert" hidden>
   <div class="envoltura">
-    <strong>Esta página está sola: no encuentra el resto de la entrega a su lado.</strong>
-    Así no funcionan ni los enlaces a las demás páginas ni el audio. Suele pasar al abrirla
-    desde dentro del archivo <b>.zip</b>. Cierre esta página, haga clic derecho sobre el .zip,
-    elija <b>«Extraer&nbsp;todo…»</b> y vuelva a abrirla desde la carpeta extraída.
+    <strong id="aviso-sola-titulo">Esta página está sola: no encuentra el resto de la entrega a su lado.</strong>
+    <span id="aviso-sola-porque">Así no funcionan ni los enlaces a las demás páginas ni el audio. Suele pasar al abrirla
+    desde dentro del archivo <b>.zip</b>.</span>
+    <span id="aviso-sola-pasos">Cierre esta página, extraiga el .zip entero y vuelva a abrirla desde la carpeta extraída.</span>
   </div>
 </div>
 

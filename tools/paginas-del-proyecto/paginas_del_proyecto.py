@@ -7,7 +7,10 @@ el genoma de voz, los datos de cada grabacion y las fuentes .md de la entrega. A
 solo se le dan el nombre largo de la reunion, el corto y la fecha de produccion.
 
 Prototipo validado en un caso real (2026-09-24). Especificacion: docs/specs/SPEC-16.
-Llevarlo a plugins/despacho es la tarea pendiente; aqui no se toca plugins/.
+INICIO comprueba al abrirse el sitio (abierta desde un .zip, grabaciones, navegador) y su
+comprobador funciona tambien en Safari (<input webkitdirectory>), que no escribe en carpetas.
+Se genera DESPUES de la entrega: lee la clave de cada pagina de grabacion ya construida.
+Llevarlo a plugins/despacho es la tarea pendiente.
 
 Uso:
   python paginas_del_proyecto.py <proyecto> <entrega.json> --reunion "<nombre largo>" --corto "<corto>" --fecha AAAA-MM-DD
@@ -107,11 +110,21 @@ dl.ficha dt{color:var(--suave);font-size:.88rem}dl.ficha dd{margin:0}
 .con-ayuda .pop b{color:inherit}
 .con-ayuda:hover .pop,.con-ayuda:focus-visible .pop,.con-ayuda:focus-within .pop{visibility:visible;opacity:1;transition:opacity .15s ease .35s,visibility 0s linear .35s}
 .navega .con-ayuda .pop{top:calc(100% + 10px)}
+/* Oculto, el recuadro de la barra no ocupa sitio (a 768 y 1024 px los del borde derecho
+   daban 40 px de desplazamiento lateral, 2026-09-24); visible, se abre hacia donde cabe. */
+.navega .con-ayuda:not(:hover):not(:focus-within) .pop{left:-9999px}
+.navega .con-ayuda.pop-izq .pop{left:auto;right:0}.navega .con-ayuda.pop-izq .pop::before{left:auto;right:1.2rem}
 .fila-titulo.con-ayuda .pop{left:0;right:0;width:auto;top:calc(100% + 6px)}
 .info{font-size:.75rem;color:var(--suave);border:1px solid var(--borde);border-radius:999px;width:1.25rem;height:1.25rem;display:inline-flex;align-items:center;justify-content:center;flex:none;cursor:help}
 .tarjeta .fila-titulo{display:flex;align-items:center;gap:.55rem;cursor:help}
 .tarjeta .fila-titulo h3{margin:0;flex:1}
 .guardar{border:2px solid var(--acento);background:var(--acento-suave);border-radius:var(--r);padding:1rem 1.2rem;margin:1.2rem 0}
+.sitio{border:1px solid var(--borde);background:var(--superficie);border-radius:var(--r);padding:.8rem 1rem;margin:1rem 0 .6rem;border-left-width:6px}
+.sitio.ok{border-color:var(--verde);background:var(--verde-suave)}
+.sitio.mal{border-color:var(--rojo);background:var(--rojo-suave);font-size:1.05rem}
+.sitio.aviso{border-color:var(--ambar);background:var(--ambar-suave)}
+.sitio b{display:inline}
+.sitio.mal b{display:block;font-size:1.15rem;margin-bottom:.2rem;color:var(--rojo)}
 .guardar h2{margin:.1rem 0 .6rem;font-size:1.2rem}
 .guardar code{white-space:nowrap}.guardar ol{margin:.2rem 0 0;padding-left:1.3rem}.guardar li{margin:.35rem 0}
 @media (hover:none){.con-ayuda .pop{display:none!important}}
@@ -139,6 +152,7 @@ JS_COMUN = r"""
   document.querySelectorAll('[data-poner-tema]').forEach(function(b){b.addEventListener('click',function(){var p=leer();p.tema=b.getAttribute('data-poner-tema');guardar(p);document.documentElement.setAttribute('data-tema',p.tema);marcar()})});
   document.querySelectorAll('[data-poner-letra]').forEach(function(b){b.addEventListener('click',function(){var p=leer();p.letra=b.getAttribute('data-poner-letra');guardar(p);document.documentElement.setAttribute('data-letra',p.letra);marcar()})});
   marcar();
+  document.querySelectorAll('.navega .con-ayuda').forEach(function(c){function ajustar(){var r=c.getBoundingClientRect(),w=Math.min(304,window.innerWidth*0.86);c.classList.toggle('pop-izq',r.left+w>document.documentElement.clientWidth-8)}c.addEventListener('mouseenter',ajustar);c.addEventListener('focusin',ajustar)});
   var a=document.getElementById('arriba');if(a){a.addEventListener('click',function(){window.scrollTo(0,0)})}
 })();
 """
@@ -160,48 +174,122 @@ JS_COMPROMISOS = r"""
 """
 
 JS_COMPROBADOR = r"""
-var PROYECTO=@@PROYECTO@@, ENTREGA=@@ENTREGA@@, CLAVE=@@CLAVE@@, META=@@META@@;
+// Comprobar lo guardado. SOLO LEE. Dos maneras de elegir la carpeta, la misma lectura:
+//  - Chrome y Edge: el selector de carpetas (showDirectoryPicker, solo lectura);
+//  - Safari (el Mac de ella, 2026-09-24) y Firefox: <input webkitdirectory>, que
+//    entrega la lista de archivos; se envuelve con la misma forma que el selector.
+// Lo guardado se reconoce por su CLAVE, no por el nombre del archivo: vale lo que la
+// página escribió sola en la carpeta y lo que se descargó y ella arrastró.
+var PROYECTO=@@PROYECTO@@, ENTREGA=@@ENTREGA@@, CLAVE=@@CLAVE@@, META=@@META@@, PAGINAS=@@PAGINAS@@;
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function fecha(ms){try{return new Date(ms).toLocaleString('es-CO',{dateStyle:'medium',timeStyle:'short'})}catch(e){return ''}}
+function igual(a,b){return String(a||'').normalize('NFC')===String(b||'').normalize('NFC')}
+function pl(n,uno,varios){return n===1?'1 '+uno:n+' '+varios}
 function cuantoHay(d){if(!d||typeof d!=='object')return 0;function n(o){return o&&typeof o==='object'?Object.keys(o).length:0}
   return n(d.estado)+n(d.atribucion)+n(d.ilegibles)+n(d.compromisos)+Object.values(d.voces||{}).filter(function(x){return String(x||'').trim()}).length+(Array.isArray(d.glosario)?d.glosario.length:0)}
-async function hijo(dir,nombre){try{return await dir.getDirectoryHandle(nombre)}catch(e){return null}}
+async function hijo(dir,nombre){try{return await dir.getDirectoryHandle(nombre)}catch(e){
+  try{for await (var par of dir.entries()){if(par[1].kind==='directory'&&igual(par[0],nombre))return par[1]}}catch(e2){}
+  return null}}
 async function hallarProyecto(h){
   if(await hijo(h,'2-Borradores'))return h;
   var p=await hijo(h,PROYECTO);if(p&&await hijo(p,'2-Borradores'))return p;
   for await (var par of h.entries()){if(par[1].kind!=='directory')continue;var q=await hijo(par[1],PROYECTO);if(q&&await hijo(q,'2-Borradores'))return q}
   return null}
+/* La lista de archivos de <input webkitdirectory>, con la forma del selector de carpetas. */
+function arbolDeArchivos(files){
+  var raiz={kind:'directory',name:'',h:{}};
+  for(var i=0;i<files.length;i++){var f=files[i],partes=String(f.webkitRelativePath||f.name).split('/'),d=raiz;
+    for(var j=0;j<partes.length-1;j++){var n=partes[j];if(!d.h[n])d.h[n]={kind:'directory',name:n,h:{}};d=d.h[n]}
+    d.h[partes[partes.length-1]]={kind:'file',name:partes[partes.length-1],f:f}}
+  function carpeta(d){return {kind:'directory',name:d.name,
+    getDirectoryHandle:async function(n){var x=d.h[n];if(!x||x.kind!=='directory')throw new Error('no existe '+n);return carpeta(x)},
+    entries:async function*(){for(var k in d.h){var x=d.h[k];yield [k,x.kind==='directory'?carpeta(x):archivo(x)]}}}}
+  function archivo(x){return {kind:'file',name:x.name,getFile:async function(){return x.f}}}
+  var primera=Object.keys(raiz.h)[0];
+  return primera?carpeta(raiz.h[primera]):null}
+async function jsons(dir,ruta,out,prof){if(!dir||prof>6)return;
+  for await (var p of dir.entries()){var n=p[0],h=p[1];
+    if(h.kind==='directory')await jsons(h,ruta.concat(n),out,prof+1);
+    else if(/[.]json$/i.test(n))out.push({nombre:n,ruta:ruta.concat(n).join(' › '),h:h})}}
 async function analizarProyecto(raiz){
-  var filas=[];var b=await hijo(raiz,'2-Borradores');
-  var voces=b?await hijo(b,'Voces'):null;var decl=[];
-  if(voces){for await (var par of voces.entries()){var n=par[0],h=par[1];if(h.kind==='file'&&/^voces declaradas/i.test(n)&&/[.]json$/i.test(n))decl.push(h)}}
-  if(!decl.length){filas.push({ok:false,t:'No está su declaración de voces en 2-Borradores\\Voces.',d:'Si ya pulsó “⤓ Guardar mi declaración (.json)” en la página de voces, el archivo está en Descargas: muévalo a 2-Borradores\\Voces y vuelva a comprobar.'})}
-  for(var i=0;i<decl.length;i++){var f=await decl[i].getFile(),j=null;try{j=JSON.parse(await f.text())}catch(e){}
-    if(!j||j.formato!=='despacho/voces-linea-a-linea'){filas.push({ok:false,t:esc(f.name)+': no es una declaración de voces legible.',d:''});continue}
-    if(j.clave!==CLAVE){filas.push({ok:false,t:esc(f.name)+': es de otra preparación de voces.',d:'No sirve para esta reunión.'});continue}
-    var nl=Object.keys(j.lineas||{}).length,cl=(j.resumen&&j.resumen.claridad)||{},partes=[],llega=true;
-    Object.keys(cl).sort().forEach(function(k){var v=Math.round(cl[k]*100);if(v<META)llega=false;partes.push(k.replace('A','Audio ')+': '+v+' %')});
-    filas.push({ok:!!j.declarado_por&&nl>0&&llega,t:esc(f.name)+' — declarado por '+esc(j.declarado_por||'(sin nombre)')+', '+nl+' líneas decididas.',d:'Guardado el '+fecha(f.lastModified)+' · Claridad según la página: '+esc(partes.join(' · ')||'sin datos')+(llega?' — llega a la meta en todas.':' — todavía no llega: la meta es '+META+' % en cada grabación.')})}
-  var ld=b?await hijo(b,'Lo que declaré'):null,de=ld?await hijo(ld,ENTREGA):null;
-  if(!de){filas.push({ok:false,t:'Todavía no hay nada guardado de las páginas de cada grabación.',d:'En cada página pulse una vez “Guardar lo comprobado” y elija la carpeta del proyecto. Se crea 2-Borradores\\Lo que declaré.'})}
-  else{var grupos={};for await (var p2 of de.entries()){var nn=p2[0],hh=p2[1];if(hh.kind!=='file'||!/[.]json$/i.test(nn))continue;
-      var m=nn.match(/^(.*?) - (en curso|\d{4}-\d\d-\d\d.*)[.]json$/);var base=m?m[1]:nn;grupos[base]=grupos[base]||{curso:null,copias:0};
-      if(m&&m[2]==='en curso')grupos[base].curso=hh;else grupos[base].copias++}
-    var bases=Object.keys(grupos).sort();if(!bases.length)filas.push({ok:false,t:'La carpeta de lo declarado existe pero está vacía.',d:''});
-    for(var k=0;k<bases.length;k++){var g=grupos[bases[k]];if(!g.curso){filas.push({ok:true,t:esc(bases[k])+': '+g.copias+' copia(s) fechada(s).',d:''});continue}
-      var ff=await g.curso.getFile(),dd=null;try{dd=JSON.parse(await ff.text())}catch(e){}
-      var c=cuantoHay(dd);filas.push({ok:c>0,t:esc(bases[k])+': '+c+' declaraciones guardadas.',d:'Última vez: '+fecha(ff.lastModified)+' · copias fechadas: '+g.copias+(g.copias?'':' — pulse “Guardar lo comprobado” para dejar una copia fechada que no se borra.')})}}
+  var filas=[],b=await hijo(raiz,'2-Borradores');
+  if(!b)return [{ok:false,t:'Esa carpeta no tiene “2-Borradores”: no es el proyecto.',d:'Elija la carpeta “'+esc(PROYECTO)+'”.'}];
+  var lista=[];await jsons(await hijo(b,'Voces'),['2-Borradores','Voces'],lista,0);await jsons(await hijo(b,'Lo que declaré'),['2-Borradores','Lo que declaré'],lista,0);
+  var voces=[],grab={},ajenas=[];
+  for(var i=0;i<lista.length;i++){var it=lista[i],f=await it.h.getFile(),j=null;try{j=JSON.parse(await f.text())}catch(e){}
+    if(!j||typeof j!=='object')continue;
+    if(j.formato==='despacho/voces-linea-a-linea'){if(j.clave===CLAVE)voces.push({j:j,f:f,ruta:it.ruta});else ajenas.push(it.nombre);continue}
+    if(j.formato==='despacho/estado-de-comprobacion'){var q=PAGINAS[j.clave];if(!q){ajenas.push(it.nombre);continue}
+      var g=grab[j.clave]=grab[j.clave]||{copias:0,ultimo:null};g.copias++;
+      if(!g.ultimo||f.lastModified>g.ultimo.f.lastModified)g.ultimo={j:j,f:f,ruta:it.ruta}}}
+  if(!voces.length){filas.push({ok:false,t:'Todavía no está su declaración de voces.',d:'En la página de voces pulse “💾 Guardar”. Con Chrome o Edge se guarda sola en “2-Borradores › Voces”. Con Safari se descarga: arrástrela desde Descargas a “2-Borradores › Lo que declaré” y vuelva a comprobar.'})}
+  else{voces.sort(function(a,b){return b.f.lastModified-a.f.lastModified});var v=voces[0],j2=v.j;
+    var nl=Object.keys(j2.lineas||{}).length,cl=(j2.resumen&&j2.resumen.claridad)||{},partes=[],llega=Object.keys(cl).length>0;
+    Object.keys(cl).sort().forEach(function(k){var x=Math.round(cl[k]*100);if(x<META)llega=false;partes.push(k.replace('A','Audio ')+': '+x+' %')});
+    filas.push({ok:!!j2.declarado_por&&nl>0&&llega,t:'Declaración de voces de '+esc(j2.declarado_por||'(sin nombre)')+': '+pl(nl,'línea decidida.','líneas decididas.'),
+      d:'Guardada el '+fecha(v.f.lastModified)+' en '+esc(v.ruta)+(voces.length>1?' (y '+pl(voces.length-1,'copia más','copias más')+')':'')+' · Claridad: '+esc(partes.join(' · ')||'sin datos')+(llega?' — llega a la meta en todas.':' — todavía no llega: la meta es '+META+' % en cada grabación.')})}
+  Object.keys(PAGINAS).forEach(function(k){var nombre=PAGINAS[k],g=grab[k];
+    if(!g){filas.push({ok:false,t:esc(nombre)+': todavía no hay nada guardado.',d:'En su página pulse “Guardar lo comprobado”. Con Chrome o Edge, la primera vez elija la carpeta del proyecto y desde ahí se guarda sola. Con Safari se descarga: arrástrelo a “2-Borradores › Lo que declaré”.'});return}
+    var c=cuantoHay(g.ultimo.j);
+    filas.push({ok:c>0,t:esc(nombre)+': '+pl(c,'declaración guardada.','declaraciones guardadas.'),d:'Lo último, del '+fecha(g.ultimo.f.lastModified)+', en '+esc(g.ultimo.ruta)+' · '+pl(g.copias,'archivo de esta página.','archivos de esta página.')})});
+  if(ajenas.length)filas.push({ok:false,t:(ajenas.length===1?'1 archivo es de otra versión de las páginas y no sirve para esta: ':ajenas.length+' archivos son de otra versión de las páginas y no sirven para esta: ')+esc(ajenas.slice(0,4).join(', '))+(ajenas.length>4?'…':''),d:'No los borre; avísenos al devolver el proyecto.'});
   return filas}
-async function comprobar(){
-  var out=document.getElementById('resultado');
-  if(!('showDirectoryPicker' in window)){out.innerHTML='<div class="fila mal"><span class="ico">!</span><div>Este navegador no permite comprobarlo desde aquí. Abra esta página con Edge o Chrome.</div></div>';return}
-  var h;try{h=await window.showDirectoryPicker({id:'despacho-proyecto',mode:'read'})}catch(e){return}
-  var raiz=await hallarProyecto(h);
-  if(!raiz){out.innerHTML='<div class="fila mal"><span class="ico">!</span><div>Esa carpeta no es el proyecto. Elija la carpeta “'+esc(PROYECTO)+'”.</div></div>';return}
+async function analizarElegida(h){
+  var raiz=h?await hallarProyecto(h):null;
+  if(!raiz){pintar([{ok:false,t:'Esa carpeta no es el proyecto.',d:'Elija la carpeta “'+esc(PROYECTO)+'” (o la que la contiene).'}]);return}
   pintar(await analizarProyecto(raiz))}
+async function comprobar(){
+  if(typeof window.showDirectoryPicker==='function'){var h;try{h=await window.showDirectoryPicker({id:'despacho-proyecto',mode:'read'})}catch(e){return}
+    return analizarElegida(h)}
+  document.getElementById('carpeta-a-leer').click()}
+document.getElementById('carpeta-a-leer').addEventListener('change',function(e){var fs=e.target.files;if(!fs||!fs.length)return;
+  document.getElementById('resultado').innerHTML='<div class="fila"><span class="ico">…</span><div>Leyendo '+fs.length+' archivos…</div></div>';
+  analizarElegida(arbolDeArchivos(fs)).then(function(){e.target.value=''})});
 function pintar(filas){document.getElementById('resultado').innerHTML=filas.map(function(r){return '<div class="fila '+(r.ok?'ok':'mal')+'"><span class="ico">'+(r.ok?'✓':'!')+'</span><div>'+r.t+(r.d?'<br><small>'+r.d+'</small>':'')+'</div></div>'}).join('')}
 document.getElementById('comprobar').addEventListener('click',comprobar);
+window.__comprobador={arbolDeArchivos:arbolDeArchivos,analizarElegida:analizarElegida};
 """
+
+JS_SITIO = r"""
+// ¿Está todo en su sitio? Al abrir INICIO: si se abrió desde dentro de un .zip (Windows
+// copia la página sola a una carpeta temporal: pasó el 2026-09-24 y no sonaba nada), si
+// las grabaciones están donde las buscan las páginas, y qué puede hacer este navegador.
+(function(){
+var AUDIOS=@@AUDIOS@@;
+var caja=document.getElementById('sitio'),nav=document.getElementById('navegador');
+function so(){var u=navigator.userAgent||'',p=navigator.platform||'';if(/Mac/i.test(p)||/Macintosh|Mac OS X/i.test(u))return 'mac';if(/Win/i.test(p)||/Windows/i.test(u))return 'windows';return 'otro'}
+function nombre(){var u=navigator.userAgent||'';if(/Edg\//.test(u))return 'Edge';if(/Firefox\//.test(u))return 'Firefox';if(/Chrome\/|Chromium\//.test(u))return 'Chrome';if(/Safari\//.test(u))return 'Safari';return 'este navegador'}
+var ZIP=[/\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}_[^/]*\.zip\.[0-9a-z]{1,8}\//i,/\/Temp\d*_[^/]*\.zip\//i,/\/7zO[0-9A-F]{4,}\//i,/\/Rar\$[A-Z]{2}[0-9a-z.]+\//i,/\.zip\//i];
+function desdeZip(){try{if(location.protocol!=='file:')return false;var c=decodeURIComponent(location.pathname);return ZIP.some(function(r){return r.test(c)})}catch(e){return false}}
+function pasos(){return so()==='mac'
+  ?'Cierre esta pestaña. En el Finder, haga doble clic sobre el archivo .zip: el Mac crea al lado una carpeta con el mismo nombre. Abra esa carpeta y, dentro, esta misma página “INICIO”.'
+  :'Cierre esta pestaña. En la carpeta donde está el .zip, haga clic derecho sobre él, elija “Extraer todo…” y después “Extraer”. Abra la carpeta que se crea y, dentro, esta misma página “INICIO”.'}
+function pintar(clase,titulo,texto){caja.className='sitio '+clase;caja.innerHTML='<b>'+titulo+'</b> '+texto}
+function consejo(){var n=nombre();
+  if(typeof window.showDirectoryPicker==='function'&&window.isSecureContext){nav.className='sitio ok';
+    nav.innerHTML='<b>✓ '+n+' puede guardar directamente en la carpeta del proyecto.</b> La primera vez que pulse guardar en cada página, elija la carpeta del proyecto; desde ahí se guarda sola.';return}
+  var abrir=so()==='mac'?'En el Finder: clic derecho sobre “INICIO” → Abrir con → Google Chrome.':'Clic derecho sobre “INICIO” → Abrir con → Google Chrome o Microsoft Edge.';
+  nav.className='sitio aviso';
+  nav.innerHTML='<b>Está usando '+n+'.</b> Puede leer, oír y decidir igual, pero '+n+' no deja que las páginas guarden en la carpeta: cada vez que guarde, se descarga un archivo. '
+    +'<b>Al terminar cada sesión, arrastre lo descargado</b> (los archivos que empiezan por “voces declaradas” y por “comprobado”) <b>desde Descargas a la carpeta “Lo que declaré”</b>, dentro de “2-Borradores”. '
+    +'Si tiene Google Chrome es más cómodo, porque se guarda solo. '+abrir}
+consejo();
+if(desdeZip()){pintar('mal','Está abriendo esta página desde dentro del archivo .zip.','Así las páginas no encuentran las grabaciones y no se puede guardar nada. '+pasos());return}
+var pend=AUDIOS.length,mal=[],listo=false;
+function fin(tiempo){if(listo)return;listo=true;
+  if(!mal.length&&!tiempo){pintar('ok','✓ Todo en su sitio.','Las '+AUDIOS.length/2+' grabaciones están donde las buscan las páginas: la de voces y las de cada grabación. Abra lo que necesite desde aquí.');return}
+  if(!mal.length){pintar('aviso','No se pudo comprobar del todo.','El navegador no cargó las grabaciones a tiempo (Safari a veces no las carga hasta que se pulsa ▶). Si al pulsar ▶ en una página suena, todo está bien.');return}
+  var todas=mal.length>=AUDIOS.length;
+  pintar('mal',todas?'Las páginas no encuentran ninguna grabación.':'Falta'+(mal.length>1?'n '+mal.length+' grabaciones':' una grabación')+' junto a las páginas.',
+    (todas?'Suele pasar al abrir sin haber extraído el .zip entero, o al mover esta página de su carpeta. '+pasos():'No se encuentra'+(mal.length>1?'n':'')+': '+mal.map(function(m){return '“'+m+'”'}).join(', ')+'. Compruebe que extrajo el .zip entero y que no movió ni renombró nada.'))}
+AUDIOS.forEach(function(a){var el=document.createElement('audio');el.preload='metadata';
+  el.addEventListener('loadedmetadata',function(){if(--pend===0)fin()});
+  el.addEventListener('error',function(){mal.push(a[0]);if(--pend===0)fin()});
+  el.src=a[1];try{el.load()}catch(e){}});
+setTimeout(function(){fin(true)},9000);
+})();
+"""
+
 
 TEMAS = [("auto", "Automático", "linear-gradient(90deg,#f6f5f2 50%,#15171a 50%)"),
          ("claro", "Claro", "#f6f5f2"), ("papel", "Papel", "#f3ead6"),
@@ -250,6 +338,25 @@ def main():
     guia = sorted(glob.glob(os.path.join(P, "2-Borradores", "Guia ilustrada - *.docx")))
     ruta_guia = os.path.relpath(guia[-1], P) if guia else None
     nombre_inicio = "INICIO - %s.html" % a.corto
+    # Las grabaciones que buscan las paginas: la de voces usa las originales y las de
+    # cada grabacion su copia en la entrega. INICIO comprueba las dos al abrirse.
+    sondas = []
+    for n, original, hora in C["audios"]:
+        sondas.append([os.path.basename(original), url("", original)])
+    for n, original, hora in C["audios"]:
+        copia = E + "/audio/" + C["audio_destino"] % (n, hora)
+        if not os.path.isfile(os.path.join(P, *copia.split("/"))):
+            raise SystemExit("DETENIDO: falta %s: construya la entrega antes que INICIO" % copia)
+        sondas.append([os.path.basename(copia), url("", copia)])
+    # La clave de cada pagina de grabacion: lo guardado se reconoce por ella, no por el nombre.
+    claves_paginas = {}
+    for n in audios:
+        ph = os.path.join(P, *E.split("/"), "Transcripciones", "Audio %d - oir y marcar.html" % n)
+        m = re.search(r'<script type="application/json" id="datos">(.*?)</script>', io.open(ph, encoding="utf-8").read(), re.S)
+        clave = json.loads(m.group(1)).get("clave") if m else None
+        if not clave:
+            raise SystemExit("DETENIDO: la pagina %s no trae clave" % ph)
+        claves_paginas[clave] = "Audio %d" % n
     ruta_comp = "2-Borradores/Compromisos/Compromisos - %s - %s.html" % (a.corto, a.fecha)
     proyecto = os.path.basename(os.path.normpath(P))
 
@@ -353,12 +460,12 @@ def main():
                     % (i + 1, i + 1, html.escape(t), i + 1, AYUDA.get(claves[i], ""), d, url(b0, r), html.escape(tm))
                     for i, (t, d, r, tm) in enumerate(tarjetas))
     carpetas = [
-        ("1-Documentos recibidos", "Lo que llegó, tal cual.", "No. Es de solo lectura"),
-        ("2-Borradores\\Transcripciones", "La transcripción de cada grabación en texto, subtítulos y datos.", "No hace falta"),
-        ("2-Borradores\\Voces", "La página de voces. Aquí deja su declaración de voces.", "Sí: aquí deja su declaración"),
-        ("2-Borradores\\Compromisos", "La página de compromisos y los datos de donde sale.", "Solo para leer"),
-        ("2-Borradores\\Entregas", "Resumen, lo que hay que oír, manual, páginas de cada grabación y sus Word.", "Aquí trabaja"),
-        ("2-Borradores\\Lo que declaré", "Lo que usted guarda en las páginas de cada grabación. Aparece al guardar por primera vez.", "Lo escribe la página por usted"),
+        ("1-Documentos recibidos", "Lo que llegó, tal cual: las grabaciones, el acta anterior y las fotos.", "No. Es de solo lectura"),
+        ("2-Borradores › Transcripciones", "La transcripción de cada grabación en texto, subtítulos y datos.", "No hace falta"),
+        ("2-Borradores › Voces", "La página de voces. Con Chrome o Edge, aquí se guarda sola su declaración de voces.", "La escribe la página por usted"),
+        ("2-Borradores › Compromisos", "La página de compromisos y los datos de donde sale.", "Solo para leer"),
+        ("2-Borradores › Entregas", "Resumen, lo que hay que oír, manual, páginas de cada grabación y sus Word.", "Aquí trabaja"),
+        ("2-Borradores › Lo que declaré", "Lo que guarda en las páginas de cada grabación. Y, si usa Safari, aquí arrastra todo lo que se descargue al guardar.", "Con Safari, sí: arrastre aquí lo descargado"),
         ("3-Para presentar", "Vacía. Solo usted pone aquí lo que dé por terminado.", "Cuando usted decida"),
     ]
     tabla = "".join("<tr><td><code>%s</code></td><td>%s</td><td>%s</td></tr>" % (html.escape(c), html.escape(q), html.escape(t)) for c, q, t in carpetas)
@@ -366,26 +473,29 @@ def main():
 <section class="cabeza"><div class="etiqueta">Proyecto · inicio</div><h1>Bienvenida — %s</h1>
 <p>Aquí está todo lo que se preparó a partir de %d grabaciones recibidas el %s (%s). <b>La máquina transcribió, propuso quién habla y señaló lo que parecen compromisos. Usted lo aclara oyendo</b>: lo que usted declara es la fuente de verdad, y con eso se hacen después el acta y la lista de compromisos con sus responsables.</p>
 <div class="chips"><span class="chip aviso">Nadie ha oído todavía las grabaciones</span><span class="chip">Las voces van sin nombre</span><span class="chip">Los compromisos van sin responsable</span><span class="chip">La fecha de la reunión está por llenar</span></div></section>
-<div class="nota"><b>Abra todo desde esta carpeta, con Edge o Chrome, y no mueva ni renombre nada.</b> Las páginas se buscan unas a otras y a las grabaciones por su sitio. Use siempre el mismo navegador y el mismo computador.</div>
+<div class="sitio" id="sitio" aria-live="polite"><b>Comprobando que todo esté en su sitio…</b></div>
+<div class="sitio" id="navegador" aria-live="polite"></div>
+<div class="nota"><b>No mueva ni renombre nada dentro de esta carpeta.</b> Las páginas se buscan unas a otras y a las grabaciones por su sitio. Mejor con <b>Google Chrome</b> (o Edge): guardan solos en la carpeta. En el Mac también sirve <b>Safari</b>, pero al guardar descarga archivos que luego hay que arrastrar (vea abajo). Use siempre el mismo navegador y el mismo computador.</div>
 <section class="guardar" aria-labelledby="cuando-guardar"><h2 id="cuando-guardar">💾 Cuándo guardar</h2>
-<p>Lo que usted marca se guarda solo en el navegador, pero <b>eso no es entregar</b>: si se borran los datos del navegador, se pierde. Al terminar <b>cada</b> sesión de trabajo:</p>
-<ol><li><b>Página de voces</b> → pestaña <b>Lo que se entrega</b> → <b>⤓ Guardar mi declaración (.json)</b>. El archivo va a Descargas: muévalo a <code>2-Borradores\\Voces</code>. Si ya hay uno anterior, déjelo: se usa el más reciente.</li>
-<li><b>Cada grabación</b> → <b>Guardar lo comprobado</b>. La primera vez elija la carpeta del proyecto; desde entonces se guarda sola cada vez que marca algo, y cada vez que pulse el botón deja además una copia con fecha. Si la página dice <i>“Tiene marcas que aún no ha guardado”</i>, púlselo.</li>
+<p>Lo que usted marca se recuerda en el navegador, pero <b>eso no es entregar</b>: si se borran los datos del navegador, se pierde. Lo que vale es lo que queda <b>en la carpeta del proyecto</b>.</p>
+<ol><li><b>Página de voces</b> → botón <b>💾 Guardar</b>, arriba a la derecha, siempre a la vista. Púlselo <b>al empezar</b>: la primera vez elija la carpeta del proyecto (<b>%s</b>) y, desde ahí, se guarda sola con cada decisión en <code>2-Borradores › Voces</code>.</li>
+<li><b>Cada grabación</b> → <b>Guardar lo comprobado</b>. Igual: la primera vez elija la carpeta del proyecto; desde ahí se guarda sola en <code>2-Borradores › Lo que declaré</code>, y cada vez que lo pulse deja además una copia con fecha. Si la página dice <i>“Tiene marcas que aún no ha guardado”</i>, púlselo.</li>
+<li><b>Si usa Safari</b> (el navegador del Mac): cada “Guardar” <b>descarga</b> un archivo en Descargas. <b>Al terminar cada sesión, arrastre esos archivos</b> (empiezan por “voces declaradas” o por “comprobado”) <b>a la carpeta <code>2-Borradores › Lo que declaré</code></b> del proyecto. Una sola carpeta para todo.</li>
 <li>Antes de devolvernos el proyecto: <a href="#comprobar-titulo">🔎 Comprobar lo que he guardado</a>.</li></ol></section>
 <h2>Su recorrido</h2><div class="rejilla">%s</div>
 <p>Grabaciones: %s. ¿Dudas? El <a href="%s">manual de uso</a>%s.</p>
-<h2>Dos herramientas, dos maneras de guardar</h2>
-<table><tr><th>Herramienta</th><th>Cómo se guarda</th><th>Dónde tiene que quedar</th></tr>
-<tr><td><b>Página de voces</b></td><td>Se guarda sola en el navegador. Para entregarlo, pestaña <b>Lo que se entrega</b> → <b>⤓ Guardar mi declaración (.json)</b>: va a <b>Descargas</b>.</td><td>Muévalo a <code>2-Borradores\\Voces</code></td></tr>
-<tr><td><b>Páginas de cada grabación</b></td><td>Pulse una vez <b>Guardar lo comprobado</b> y elija la carpeta del proyecto: desde entonces se guarda sola. Cada vez que lo pulse deja además una copia con fecha que no se borra.</td><td>Queda en <code>2-Borradores\\Lo que declaré</code></td></tr></table>
+<h2>Dos herramientas: dónde queda lo que guarda</h2>
+<table><tr><th>Herramienta</th><th>Con Chrome o Edge</th><th>Con Safari</th></tr>
+<tr><td><b>Página de voces</b></td><td><b>💾 Guardar</b> una vez y elija la carpeta del proyecto: se guarda sola en <code>2-Borradores › Voces</code>.</td><td><b>💾 Guardar</b> descarga “voces declaradas - …”. Arrástrelo a <code>2-Borradores › Lo que declaré</code>.</td></tr>
+<tr><td><b>Páginas de cada grabación</b></td><td><b>Guardar lo comprobado</b> una vez y elija la carpeta del proyecto: se guarda sola en <code>2-Borradores › Lo que declaré</code>.</td><td><b>Guardar lo comprobado</b> descarga “comprobado - …”. Arrástrelo a <code>2-Borradores › Lo que declaré</code>.</td></tr></table>
 <h2 id="comprobar-titulo">Comprobar lo que he guardado</h2>
-<p>Antes de devolvernos el proyecto, pulse el botón y elija la carpeta <b>%s</b>. La página <b>solo lee</b>: no escribe, no mueve ni borra nada. Le dice si su declaración de voces está donde tiene que estar, cuánto llega cada grabación a la meta, y qué hay guardado de cada página.</p>
-<button class="boton" id="comprobar" type="button">🔎 Comprobar lo que he guardado</button><div class="resultado" id="resultado" aria-live="polite"></div>
+<p>Antes de devolvernos el proyecto, pulse el botón y elija la carpeta <b>%s</b>. La página <b>solo lee</b>: no escribe, no mueve ni borra nada. Le dice si está su declaración de voces, cuánto llega cada grabación a la meta, y qué hay guardado de cada grabación. <b>En Safari</b> el cuadro para elegir la carpeta dice “Subir” o “Cargar”: no se sube nada a internet, todo se queda en su computador.</p>
+<button class="boton" id="comprobar" type="button">🔎 Comprobar lo que he guardado</button><input type="file" id="carpeta-a-leer" webkitdirectory multiple hidden><div class="resultado" id="resultado" aria-live="polite"></div>
 <h2>Qué hay en cada carpeta</h2>
 <table><tr><th>Carpeta</th><th>Qué guarda</th><th>¿La toca usted?</th></tr>%s</table>
 <h2>Cuándo ha terminado, y qué nos devuelve</h2>
 <ol class="pasos"><li>La página de voces dice que <b>cada grabación llega al %d %%</b>, y ha revisado los compromisos.</li>
-<li>Guardó su declaración de voces y la movió de Descargas a <code>2-Borradores\\Voces</code>.</li>
+<li>Guardó su declaración de voces con <b>💾 Guardar</b> (con Safari: arrastró lo descargado a <code>2-Borradores › Lo que declaré</code>).</li>
 <li>El botón <b>Comprobar lo que he guardado</b> sale todo en verde.</li>
 <li>Nos avisa con un “ya terminé” y nos devuelve <b>la carpeta del proyecto entera</b>.</li></ol>
 <h2>Antes de citar nada</h2>
@@ -394,12 +504,15 @@ def main():
 <li>Lo que usted marca es <b>constancia suya</b>, no una verificación del sistema.</li></ol>
 """ % (html.escape(a.reunion), len(audios), html.escape(C.get("audio_recibido", "")),
        "unos %d minutos" % round(segs / 60),
+       html.escape(proyecto),
        cards, fila_audios, url(b0, E + "/3 - Manual de uso.html"),
        (' y la <a href="%s">guía ilustrada en Word</a> lo explican paso a paso' % url(b0, ruta_guia)) if ruta_guia else " lo explica paso a paso",
        html.escape(proyecto), tabla, round(100 * (G or {}).get("meta_claridad", 0.85)))
     js = (JS_COMPROBADOR.replace("@@PROYECTO@@", json.dumps(proyecto, ensure_ascii=False))
           .replace("@@ENTREGA@@", json.dumps(C["nombre"], ensure_ascii=False))
-          .replace("@@CLAVE@@", json.dumps((G or {}).get("clave", ""))).replace("@@META@@", str(round(100 * (G or {}).get("meta_claridad", 0.85)))))
+          .replace("@@CLAVE@@", json.dumps((G or {}).get("clave", ""))).replace("@@META@@", str(round(100 * (G or {}).get("meta_claridad", 0.85))))
+          .replace("@@PAGINAS@@", json.dumps(claves_paginas, ensure_ascii=False)))
+    js += JS_SITIO.replace("@@AUDIOS@@", json.dumps(sondas, ensure_ascii=False))
     salida_inicio = os.path.join(P, nombre_inicio)
 
     # ------------------------------------------------------------- COMPROMISOS

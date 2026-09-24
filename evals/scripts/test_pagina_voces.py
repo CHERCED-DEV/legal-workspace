@@ -81,6 +81,18 @@ class LaPlantillaViajaSola(unittest.TestCase):
         self.assertIsNone(re.search(r'<link[^>]+stylesheet', self.t), "un estilo se carga de fuera")
 
 
+class ElAvisoDeSitioEsElMismoEnLasDosPaginas(unittest.TestCase):
+    """`sola.js` (abierta desde un .zip, los pasos del Mac o de Windows) va copiado
+    en las dos paginas: cada una se compila y se vigila por separado. Si una copia
+    cambia y la otra no, una pagina avisaria distinto que la otra."""
+
+    def test_las_dos_copias_son_iguales(self):
+        a = TOOLS / "src" / "sola.js"
+        b = RAIZ / "tools" / "pagina-despacho" / "src" / "sola.js"
+        self.assertTrue(a.is_file() and b.is_file(), "falta una de las dos copias de sola.js")
+        self.assertEqual(huella(a), huella(b), "las dos copias de sola.js difieren: copie la buena en las dos y publique las dos")
+
+
 class ElMotorDeLaPagina(unittest.TestCase):
 
     def test_prueba_genoma(self):
@@ -88,6 +100,17 @@ class ElMotorDeLaPagina(unittest.TestCase):
         if not node:
             self.skipTest("no hay Node en esta maquina: el motor de la pagina NO se comprobo")
         r = subprocess.run([node, "prueba-genoma.mjs"], cwd=str(TOOLS), capture_output=True,
+                           text=True, encoding="utf-8", errors="replace", timeout=120)
+        self.assertEqual(0, r.returncode, r.stdout + r.stderr)
+
+    def test_prueba_sola(self):
+        """La pagina en su sitio y el guardado en la carpeta del proyecto: abierta
+        desde un .zip se dice, en el Mac con sus pasos, y escribir en la carpeta no
+        pierde nada de lo que habia (2026-09-24: la abrio desde el .zip y no sono nada)."""
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("no hay Node en esta maquina: el aviso y el guardado NO se comprobaron")
+        r = subprocess.run([node, "prueba-sola.mjs"], cwd=str(TOOLS), capture_output=True,
                            text=True, encoding="utf-8", errors="replace", timeout=120)
         self.assertEqual(0, r.returncode, r.stdout + r.stderr)
 

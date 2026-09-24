@@ -8,6 +8,8 @@
     python genoma_de_voz.py aplicar  <genoma.json> <voces declaradas.json> --salida <carpeta>
                                      [--biblioteca <json>] [--word]
 
+    python genoma_de_voz.py pagina   <genoma.json> --salida <carpeta>
+
 `preparar` saca de cada línea de la transcripción su HUELLA DE VOZ —un vector de
 512 números que calcula el mismo modelo que ya usa el arnés, `wespeaker-voxceleb-
 CAMPP.onnx`—, propone unas voces agrupando las huellas, y escribe una página donde
@@ -17,6 +19,10 @@ van JUNTAS: la misma persona es la misma voz en el Audio 1 y en el Audio 3.
 `aplicar` toma lo que ella exportó de esa página y produce la transcripción con
 quién dijo cada línea, el registro de su declaración, y la biblioteca de voces que
 servirá en la reunión siguiente.
+
+`pagina` rehace SOLO la página de un genoma ya preparado, con la plantilla de
+ahora. No vuelve a oír nada ni a calcular huellas: cuando se arregla la página,
+lo que ella ya declaró sigue valiendo, porque la clave no cambia.
 
 POR QUE EXISTE. Medido el 2026-09-23 sobre una mesa de trabajo real de tres
 grabaciones: la separación de voces del arnés le atribuía al Audio 1 el 96,5 % de
@@ -781,6 +787,46 @@ def _clara(dc):
     return False
 
 
+def pagina(a):
+    """Rehace la página con la plantilla ACTUAL a partir del genoma ya preparado.
+
+    Pasó el 2026-09-24: la página no avisaba cuando se abría desde dentro de un
+    .zip, y la abogada no oía nada. Arreglada la plantilla, había que llevarla a
+    la reunión ya preparada, y `preparar` vuelve a calcular todas las huellas en
+    la GPU (y los rescates, con otra pasada del reconocedor). Aquí se escribe la
+    página exactamente como la escribe `preparar` —los mismos datos, la misma
+    clave—, así que lo que ella haya declarado sobre la versión anterior se carga
+    igual. El nombre lleva la fecha de la preparación, no la de hoy: los enlaces
+    de otras páginas a esta siguen llegando. Nunca sobrescribe (ADR-011 §8)."""
+    try:
+        with io.open(a.genoma, encoding="utf-8") as f:
+            datos = json.loads(f.read())
+    except (OSError, ValueError) as e:
+        falla("no se pudo leer el genoma %s: %s" % (a.genoma, e))
+    if not isinstance(datos, dict) or datos.get("formato") != "despacho/genoma-de-voz":
+        falla("%s no es un genoma de voz (formato despacho/genoma-de-voz)" % a.genoma)
+    for k in ("titulo", "clave", "audios", "lineas"):
+        if k not in datos:
+            falla("al genoma %s le falta «%s»: no se puede rehacer la página" % (a.genoma, k))
+    if not os.path.isfile(PLANTILLA):
+        falla("falta la plantilla compilada de la página en %s. Se compila en "
+              "tools/pagina-voces con: npm run publicar" % PLANTILLA)
+    with io.open(PLANTILLA, encoding="utf-8") as f:
+        plantilla = f.read()
+    if "{{DATOS}}" not in plantilla:
+        falla("la plantilla %s no tiene el hueco {{DATOS}}" % PLANTILLA)
+    if not os.path.isdir(a.salida):
+        os.makedirs(a.salida)
+    base = "%s - %s" % (seguro(datos["titulo"]), datos.get("generado") or hoy())
+    ruta_html = nuevo(os.path.join(a.salida, "Voces - %s.html" % base))
+    incrustado = json.dumps(datos, ensure_ascii=False, separators=(",", ":"), default=_json).replace("</", "<\\/")
+    out = plantilla.replace("{{TITULO}}", html.escape(datos["titulo"])).replace("{{DATOS}}", incrustado)
+    _escribir(ruta_html, out)
+    print("OK  %s  -  %d líneas, %d grabaciones, clave %s (la misma: lo ya declarado sigue valiendo)"
+          % (os.path.basename(ruta_html), len(datos["lineas"]), len(datos["audios"]), datos["clave"]))
+    return 0
+
+
 def aplicar(a):
     np = _numpy()
     g = cargar(a.genoma, "el genoma")
@@ -1220,11 +1266,16 @@ def main(argv=None):
     q.add_argument("--salida", required=True)
     q.add_argument("--biblioteca")
     q.add_argument("--word", action="store_true")
+    g = sub.add_parser("pagina", help="rehace solo la página de un genoma ya preparado, con la plantilla de ahora")
+    g.add_argument("genoma")
+    g.add_argument("--salida", required=True)
     a = ap.parse_args(argv)
     if a.orden == "preparar":
         return preparar(a)
     if a.orden == "aplicar":
         return aplicar(a)
+    if a.orden == "pagina":
+        return pagina(a)
     ap.print_help()
     return 1
 

@@ -16,8 +16,14 @@ import { renderLineas } from './lineas.js'
 import { renderMapa } from './mapa.js'
 import { renderFranjas } from './franjas.js'
 import { renderSalida, declaracion, leerDeclaracion } from './salida.js'
+import { crearCarpetaVoces, nombreVigente, decididas } from './carpeta.js'
+import { abiertaDesdeZip, avisoDeSitio, navegador } from './sola.js'
 
 const $ = (s) => document.querySelector(s)
+
+// Lo descargado va SIEMPRE al mismo sitio, venga de la página que venga: una
+// sola regla que recordar (Safari, en el Mac, no deja escribir en carpetas).
+const DESCARGADO = 'Al terminar, arrástrela desde Descargas a la carpeta “Lo que declaré” del proyecto (dentro de “2-Borradores”).'
 
 function arrancar() {
   let datos
@@ -38,11 +44,16 @@ function arrancar() {
     props: new Map(),
     propsPrevias: null,
   }
-  app.estado = crearEstado(datos.clave, (info) => { recalcular(app); if (info?.externo) app.toast('Se actualizó desde otra pestaña'); render(app) })
+  app.estado = crearEstado(datos.clave, (info) => {
+    recalcular(app)
+    if (info?.externo) app.toast('Se actualizó desde otra pestaña')
+    render(app)
+    app.carpeta?.cambio()
+  })
   app.cober = {}
   app.sonido = crearSonido(datos.audios, {
     alEstado: (id, e) => {
-      if (e === 'falta' || e === 'lista' || e === 'otra') render(app)
+      if (e === 'falta' || e === 'lista' || e === 'otra') { render(app); pintarSitio(app) }
       if (e === 'otra') app.toast('Ese archivo no es la grabación de esta página: dura distinto. No se usa.')
       if (e === 'bloqueado') app.toast('El navegador no dejó reproducir: pulse «Oír» otra vez.')
     },
@@ -55,6 +66,16 @@ function arrancar() {
   app.sonido.fijarVelocidad(v0)
 
   Object.assign(app, acciones(app))
+  app.carpeta = crearCarpetaVoces({
+    titulo: datos.titulo,
+    clave: datos.clave,
+    documento: () => declaracion(app),
+    alEstado: (s) => {
+      app.estadoCarpeta = s
+      if (s.escrito) app.estado.marcarExportado()
+      renderGuardado(app)
+    },
+  })
   document.title = `Voces · ${datos.titulo}`
   $('#titulo').textContent = datos.titulo
   $('#generado').textContent = `Preparada el ${datos.generado} · ${datos.lineas.length} líneas · ${datos.audios.length} grabaciones`
@@ -68,7 +89,26 @@ function arrancar() {
     if (app.estado.pendiente && !app.estado.almacenOK) { e.preventDefault(); e.returnValue = '' }
   })
   render(app)
-  if (!app.estado.todo.declarado_por) app.modalBienvenida()
+  pintarSitio(app)
+  app.carpeta.iniciar()
+  // Abierta desde un .zip, lo primero es el aviso: la bienvenida lo taparía.
+  if (!app.estado.todo.declarado_por && !app.carpeta.zip) app.modalBienvenida()
+}
+
+/** El aviso de arriba: abierta desde un .zip, o sin las grabaciones a su lado. */
+function pintarSitio(app) {
+  const caja = $('#aviso-sola')
+  if (!caja) return
+  const faltan = app.modelo.datos.audios
+    .filter((a) => ['falta', 'otra'].includes(app.sonido.estado(a.id)))
+    .map((a) => a.archivo || a.nombre)
+  const a = avisoDeSitio({ zip: abiertaDesdeZip(location.href), faltan, total: app.modelo.datos.audios.length })
+  if (!a) { caja.hidden = true; caja.replaceChildren(); return }
+  caja.className = 'aviso-sola' + (a.grave ? ' grave' : '')
+  caja.replaceChildren(el('div', { class: 'envoltura' },
+    el('strong', { text: a.titulo }),
+    el('span', { text: a.texto })))
+  caja.hidden = false
 }
 
 function anotarOido(app, actual, t) {
@@ -138,7 +178,9 @@ function acciones(app) {
     const cambian = cambiadas(antes, app.props, E())
     if (esFoco) avanzar(l)
     render(app)
-    let msg = app.estado.almacenOK ? 'Guardado en este navegador.' : '⚠ No se pudo guardar en este navegador: guarde su declaración antes de cerrar.'
+    let msg = app.carpeta?.activo ? 'Guardado: se escribe solo en la carpeta del proyecto.'
+      : app.estado.almacenOK ? 'Guardado en este navegador (pulse “💾 Guardar” para dejarlo en el proyecto).'
+        : '⚠ No se pudo guardar en este navegador: pulse “💾 Guardar” antes de cerrar.'
     if (!oida && !l.rescate) msg += ' Anotada como «sin oír»: no cuenta para la claridad.'
     if (cambian.length) msg += ` Con esto, ${cambian.length} línea${cambian.length === 1 ? '' : 's'} cambi${cambian.length === 1 ? 'ó' : 'aron'} de voz propuesta.`
     app.toast(msg)
@@ -247,12 +289,59 @@ function acciones(app) {
       app.modalNombrar(null, false, (vid) => registrar(l, { decision: 'corregida', voz: vid }))
     },
 
-    exportar() {
+    /** «💾 Guardar»: en la carpeta del proyecto si el navegador deja; si no, se descarga. */
+    async exportar() {
       if (!E().declarado_por) return app.modalDeclarante(() => app.exportar())
+      if (app.carpeta?.disponible) {
+        const r = await app.carpeta.guardar()
+        if (r === true) {
+          app.toast('Guardada en la carpeta del proyecto. Desde ahora se guarda sola con cada decisión.')
+          render(app)
+          return
+        }
+        if (r && r.previo) { app.modalCargarPrevio(r); return }
+        if (r && r.error) { app.toast(`No se guardó: ${r.error} Pulse “💾 Guardar” otra vez.`, 9000); return }
+        if (r === 'cancelado') {
+          app.toast('No eligió carpeta, así que no se guardó nada. Pulse “💾 Guardar” otra vez, o descargue una copia en “Lo que se entrega”.')
+          return
+        }
+      }
+      app.descargarDeclaracion()
+    },
+
+    /** La descarga: el respaldo, y lo único donde el navegador no deja escribir en una carpeta. */
+    descargarDeclaracion() {
+      if (!E().declarado_por) return app.modalDeclarante(() => app.descargarDeclaracion())
       const d = declaracion(app)
-      descargar(`voces declaradas - ${app.modelo.datos.titulo}.json`, JSON.stringify(d, null, 1))
+      descargar(nombreVigente(app.modelo.datos.titulo), JSON.stringify(d, null, 1))
       app.estado.marcarExportado()
-      app.toast('Se descargó su declaración. Compruebe que está en Descargas y póngala junto a la grabación.')
+      app.toast(`Se descargó en Descargas como “${nombreVigente(app.modelo.datos.titulo)}”. ${DESCARGADO}`, 9000)
+      render(app)
+    },
+
+    /** En la carpeta hay decisiones y esta página está vacía (otro navegador, otro equipo). */
+    modalCargarPrevio(r) {
+      const cuando = r.cuando ? r.cuando.toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' }) : 'antes'
+      abrirModal(app, el('div', {},
+        el('h2', { text: 'Ya hay una declaración guardada' }),
+        el('p', { text: `En la carpeta del proyecto hay una declaración de ${r.previo.declarado_por || 'alguien'}, guardada el ${cuando}, con ${decididas(r.previo)} líneas decididas. Este navegador no la tiene (quizá la hizo en otro navegador o en otro equipo).` }),
+        el('p', { text: 'Lo normal es cargarla y seguir con ella. Si empieza de cero, la de la carpeta no se borra: se aparta con la fecha en el nombre.' }),
+        el('div', { class: 'modal-botones' },
+          el('button', { class: 'btn primario', type: 'button', text: 'Cargarla y seguir con ella', onclick: async () => {
+            cerrarModal()
+            app.cargarDeclaracion(r.previo)
+            if ((await app.carpeta.guardar()) === true) app.toast('Cargada. Siga donde lo dejó: se guarda sola en la carpeta del proyecto.')
+          } }),
+          el('button', { class: 'btn', type: 'button', text: 'Empezar de cero', onclick: async () => {
+            cerrarModal()
+            if ((await app.carpeta.guardar({ forzar: true })) === true) app.toast('Guardada. La declaración anterior quedó apartada con fecha en la misma carpeta.')
+            render(app)
+          } }))))
+    },
+
+    cargarDeclaracion(d) {
+      app.estado.reemplazar({ declarado_por: d.declarado_por || '', voces: d.voces || {}, lineas: d.lineas || {} })
+      app.foco = siguiente(app.modelo, E(), app.props)
       render(app)
     },
 
@@ -275,19 +364,17 @@ function acciones(app) {
         cargar(d)
       } catch (e) { app.toast(e.message) }
       function cargar(d) {
-        app.estado.reemplazar({ declarado_por: d.declarado_por || '', voces: d.voces || {}, lineas: d.lineas || {} })
-        app.foco = siguiente(app.modelo, E(), app.props)
+        app.cargarDeclaracion(d)
         app.toast('Declaración cargada.')
-        render(app)
       }
     },
 
-    toast(msg) {
+    toast(msg, ms = 4200) {
       const t = $('#aviso')
       t.textContent = msg
       t.hidden = false
       clearTimeout(app._t)
-      app._t = setTimeout(() => { t.hidden = true }, 4200)
+      app._t = setTimeout(() => { t.hidden = true }, ms)
     },
 
     modalBienvenida() {
@@ -298,6 +385,10 @@ function acciones(app) {
           el('li', {}, el('b', { text: 'Conozca las voces. ' }), 'Óigalas y dígales quién es cada una.'),
           el('li', {}, el('b', { text: 'Ponga a prueba a la máquina. ' }), 'Unas líneas al azar miden cuánto acierta. Sus propuestas solo cuentan si acierta el 90 %.'),
           el('li', {}, el('b', { text: 'Aclare lo dudoso ' }), `hasta que cada grabación llegue al ${pct(app.modelo.datos.meta_claridad)} de claridad.`)),
+        el('p', { class: 'bienvenida-guardar' }, el('b', { text: 'Guardar: ' }),
+          app.carpeta?.disponible
+            ? 'al empezar, pulse “💾 Guardar” (arriba a la derecha) y elija la carpeta del proyecto. Desde ahí se guarda sola con cada decisión, en “2-Borradores › Voces”.'
+            : `${navegador()} no deja que la página escriba en una carpeta. Pulse “💾 Guardar” al terminar cada sesión: se descarga en Descargas, y hay que arrastrarla a la carpeta “Lo que declaré” del proyecto (dentro de “2-Borradores”).`),
         el('p', { class: 'nota', html: '<b>Teclas:</b> <kbd>Espacio</kbd> oír · <kbd>Enter</kbd> sí, es esa voz · <kbd>1</kbd>–<kbd>9</kbd> es esa otra voz · <kbd>N</kbd> otra persona · <kbd>V</kbd> varios · <kbd>X</kbd> no se distingue · <kbd>→</kbd> saltar · <kbd>Z</kbd> deshacer' }),
         el('p', { class: 'nota', text: 'Una línea cuenta como oída cuando ha oído al menos el 70 % de ella. Lo que decida sin oírla queda anotado así y no cuenta para la claridad.' }),
         campoDeclarante(app, () => cerrarModal())))
@@ -429,17 +520,52 @@ function render(app) {
   renderGuardado(app)
 }
 
+/** La cabecera dice tres cosas, siempre a la vista: si suenan las grabaciones,
+ *  si lo suyo está guardado EN EL PROYECTO (no solo en el navegador), y cómo
+ *  guardarlo. Antes el botón vivía en la última pestaña. */
 function renderGuardado(app) {
   const g = $('#guardado')
+  if (!g || !app.carpeta) return
   const E = app.estado.todo
   const n = Object.keys(E.lineas).length
   g.replaceChildren()
+
+  const audios = app.modelo.datos.audios
+  const est = audios.map((a) => app.sonido.estado(a.id))
+  const mal = est.filter((e) => e === 'falta' || e === 'otra').length
+  const listas = est.filter((e) => e === 'lista').length
+  g.append(el('span', {
+    class: 'grab' + (mal ? ' mal' : listas === audios.length ? ' ok' : ''),
+    title: audios.map((a, i) => `${a.nombre}: ${est[i] === 'lista' ? 'suena' : est[i] === 'cargando' ? 'cargando' : 'no se encuentra'}`).join(' · '),
+    text: mal ? `⚠ ${mal} de ${audios.length} grabaciones no suenan`
+      : listas === audios.length ? `🔊 ${listas} de ${audios.length} grabaciones listas`
+        : `Cargando grabaciones… (${listas} de ${audios.length})`,
+  }))
+
+  const s = app.estadoCarpeta
   if (!app.estado.almacenOK) {
-    g.append(el('span', { class: 'guardado mal', text: '⚠ Este navegador no deja guardar aquí: guarde su declaración antes de cerrar' }))
-  } else if (n) {
-    g.append(el('span', { class: 'guardado', text: `✔ ${n} decisiones guardadas en este navegador` }))
+    g.append(el('span', { class: 'guardado mal', text: '⚠ Este navegador no guarda por su cuenta: pulse “💾 Guardar” antes de cerrar' }))
   }
-  if (app.estado.pendiente && n) g.append(el('span', { class: 'guardado pendiente', text: 'Aún no ha guardado su declaración (en «Lo que se entrega»)' }))
+  if (app.carpeta.activo && s?.bien) {
+    g.append(el('span', { class: 'guardado', title: s.texto,
+      text: s.escrito ? `✔ Guardado en el proyecto · ${new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })}` : '✔ Se guarda sola en el proyecto' }))
+  } else if (s && !s.bien) {
+    g.append(el('span', { class: 'guardado pendiente', text: s.texto }))
+  } else if (n && app.estado.pendiente) {
+    g.append(el('span', { class: 'guardado pendiente', text: n === 1 ? '1 decisión solo en este navegador: aún no está en el proyecto' : `${n} decisiones solo en este navegador: aún no están en el proyecto` }))
+  } else if (n) {
+    g.append(el('span', { class: 'guardado', text: n === 1 ? '✔ 1 decisión guardada' : `✔ ${n} decisiones guardadas` }))
+  }
+
+  const falta = !app.carpeta.activo && (n > 0 || !!E.declarado_por)
+  g.append(el('button', {
+    class: 'btn primario guardar' + (falta && app.estado.pendiente ? ' llama' : ''),
+    type: 'button',
+    title: app.carpeta.disponible
+      ? 'Guarda su declaración en la carpeta del proyecto (2-Borradores › Voces). La primera vez pide elegir la carpeta; después se guarda sola.'
+      : `${navegador()} no deja escribir en una carpeta: se descarga en Descargas. ${DESCARGADO}`,
+    onclick: () => app.exportar(),
+  }, '💾 Guardar'))
   if (E.declarado_por) g.append(el('span', { class: 'quien', text: `Declara: ${E.declarado_por}` }))
 }
 
@@ -468,7 +594,7 @@ function renderClaridad(app) {
   for (const a of app.modelo.datos.audios) caja.append(barra(app.clar.audios[a.id], a.nombre))
   caja.append(el('div', { class: 'clar-falta' + (faltan.length ? '' : ' ok') },
     faltan.length ? `Para terminar, cada grabación debe llegar al ${pct(meta)}. Faltan: ${faltan.map((a) => `${a.nombre} (${pct(app.clar.audios[a.id]?.claridad)})`).join(', ')}.`
-      : `✔ Las ${app.modelo.datos.audios.length} grabaciones llegan al ${pct(meta)}. Guarde su declaración en «Lo que se entrega».`))
+      : `✔ Las ${app.modelo.datos.audios.length} grabaciones llegan al ${pct(meta)}. Pulse “💾 Guardar” para dejar su declaración en el proyecto.`))
   const { n, ok } = app.acierto
   const req = app.modelo.cal.revisiones_minimas
   const txt = n < req
@@ -583,7 +709,8 @@ function montarTeclado(app) {
     } else if (k === 'n' || k === 'N') { e.preventDefault(); app.nuevaPersona(l) }
     else if (k === 'v' || k === 'V') { if (!l.rescate) { app.varios = l.id; render(app) } }
     else if (k === 'x' || k === 'X') app.noSeDistingue(l)
-    else if (k === 'Delete') { if (l.rescate) app.descartar(l) }
+    // En el Mac la tecla que borra se llama «Backspace».
+    else if (k === 'Delete' || k === 'Backspace') { if (l.rescate) { e.preventDefault(); app.descartar(l) } }
     else if (k === 'd' || k === 'D') { if (l.cambio && l.partes) { app.dividiendo = l.id; render(app) } }
     else if (k === 'a' || k === 'A') app.oir(l, { antes: 3 })
     else if (k === 'ArrowRight') { e.preventDefault(); app.saltar(l) }

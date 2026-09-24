@@ -1,7 +1,7 @@
 {
   "name": "despacho",
   "displayName": "Despacho",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Dieciseis metodos de trabajo juridico sobre el material de un caso: preparar el material que llega (descomprimir, ordenar, extraer texto de fotografias sin gastar lectura), buscar donde aparece algo sin abrir los documentos, pasar grabaciones a texto con marca de tiempo y voces separadas sin que el audio salga del computador, ponerle nombre a esas voces solo cuando una persona lo afirma y dejando escrito quien lo afirmo, saber quien dice cada linea con la huella de voz cuando la separacion automatica no aguanta, contando solo lo que ella declara oyendo, hechos con su prueba, revision de un documento recibido, estado de la carpeta, cronologia con el grado de certeza de cada fecha, inventario de anexos, inventario de bienes y deudas, revision de rigor de una conclusion propia, borrador de escrito en Word, senalar sobre una transcripcion donde alguien se obligo a algo con su minuto y su cita literal, el acta de una reunion grabada con la forma de un acta anterior que ella entrega como modelo, y la regla de que no se responde derecho de memoria. Todo sale del material, y de donde sale se dice.",
   "author": {
     "name": "camilo hernandez"

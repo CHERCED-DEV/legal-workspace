@@ -151,12 +151,15 @@ class LaCompilacionDeVerdad(unittest.TestCase):
     """
 
     def test_compilar_otra_vez_da_el_mismo_archivo(self):
-        if not shutil.which("npm"):
+        # En Windows npm es «npm.cmd»: con el nombre a secas, CreateProcess no lo
+        # encuentra y la prueba reventaba (ERROR, no FALLO) en vez de compilar.
+        npm = shutil.which("npm")
+        if not npm:
             self.skipTest("sin npm: la comprobacion fuerte no se hizo")
         if not (TOOLS / "node_modules").is_dir():
             self.skipTest("sin node_modules (hace falta red): "
                           "corra `cd tools/pagina-despacho && npm ci`")
-        r = subprocess.run(["npm", "run", "build"], cwd=str(TOOLS),
+        r = subprocess.run([npm, "run", "build"], cwd=str(TOOLS),
                            capture_output=True, text=True)
         self.assertEqual(0, r.returncode, r.stderr[-600:])
         salida = TOOLS / "dist" / "index.html"

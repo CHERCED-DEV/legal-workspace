@@ -1,22 +1,24 @@
 {
   "_que_es": "Huellas de las fuentes y de la pagina de voces publicada. Las comprueba evals/scripts/test_pagina_publicada.py, sin Node. Si no cuadran, la plantilla del plugin no corresponde a estas fuentes: publique.",
-  "publicado": "2026-09-23",
+  "publicado": "2026-09-24",
   "artefacto": "plugins/despacho/scripts/plantilla/voces.html",
-  "huella_del_artefacto": "ff533aba1f0d00a797baad8f9f557f97046d1942785fe3f002156cefcf7d800f",
+  "huella_del_artefacto": "80f5dbc40cef67ac228ae59c9be96068ba15eddbbb46ad0df371cc6d3df35a9d",
   "fuentes": {
+    "src/carpeta.js": "a09d9ff42ca2ff5a7f59c004a6e4a9ce441dfc816237da799677b1d84b5c9d03",
     "src/estado.js": "813d04b405f2447a5005656dcb40ea93528d3e89164d5a0d29bd2d89ffede5f7",
-    "src/estilo.css": "ed6885522376239e2270e63b818d76378f1b20a067d004a327b6748156ad837a",
-    "src/franjas.js": "99b58ce6700745e528c2aba3acd960c84ad29b4e33fc0dd1b3a41d5be61a5a16",
+    "src/estilo.css": "703588e8e55bb5903b85fb1022a7400cce3769ced7c16102b2412f0832e67ed6",
+    "src/franjas.js": "0e4a1e4597f0373b093a8ba6225c3a817d3a5d630833ff1fdcf8436edc431dae",
     "src/genoma.js": "dfe8fe68266d74f8928e35ffd4723f2e51bed31d053ce4e9e9a87a7a34ffe815",
     "src/lineas.js": "7dcf485e7fc41476edb1f3bbce3f4ef16fe3d847aacac0b9843db68e9cf5ab6d",
     "src/mapa.js": "0e3e4f1a27589fd7466d4f37c5ce2b0ce8e930c03f9c35429addd394d588866c",
-    "src/principal.js": "4905c7a0a0c9ca2055eae01319293eb4f67cb87d3893e7ce683889fa7a6565ea",
+    "src/principal.js": "3e33865fe71905927c3e456c90460dbe98a9477be711b907bb47c484fdd55994",
     "src/revision.js": "7cf998c27009e2548677c1be50c402b4f61b36e4b44d67a4935fa7c04252b4af",
-    "src/salida.js": "2e23ef3185c630bb66f90bebfff5aa4fee4b02c4b82c16bdadbec82d45d42734",
+    "src/salida.js": "9159ec926673fa32c0d9c5946c3188e014fbce5118d9e0f50bdfc4a0b9ac2a76",
+    "src/sola.js": "b5e677d7e0affc18f9c1a89406bcd50987a0f970b89e8c2929624558fd7c0f5a",
     "src/sonido.js": "d1212734749d93325ad4ab074aa1b6a7085ed1ecd771c9cc89e4e827511ccfdd",
     "src/util.js": "4339d7e5cb4b2ec1fed6dbf7d31a26f0eaaadcfdc40fb38f4db93e3e8442427c",
-    "index.html": "5f12ec7207cb3c13cade2970ae5c7be8aa91527f776998e9d02970e3c61f4230",
+    "index.html": "4faf18b08a16b02d2917f1468ab19e4bbf0d48a0eecc5702109cdbbc4289c8b4",
     "vite.config.js": "65ad0ca4d978e0f2cce84921ce2f0c9a0177e60c74bb50004d4b6fc3d8e42b06",
-    "package.json": "18d77ad03a9979d008e16d14eb2f3b2d5d2f2b14f54eaa990a92aead0a8fa9cd"
+    "package.json": "9f89ba14e9fda9534f43bea34a62e90caed5bfed778f492ba94f0cf53128e5c9"
   }
 }

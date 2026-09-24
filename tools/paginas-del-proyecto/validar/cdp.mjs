@@ -9,7 +9,15 @@
 //        {"tecla":"Enter"|" "} {"sobre":expresion-elemento} (mueve el raton encima)
 //        {"descargas":"C:/ruta"} (a nivel de NAVEGADOR: la orden a nivel de pagina se ignora)
 //        {"inyectar":archivo,"variable":nombre} {"volcar":codigo,"a":carpeta} {"foto":png}
+//        {"agente":ua,"plataforma":"MacIntel"} hacerse pasar por otro navegador/sistema
+//        {"antes_de_cargar":codigo} corre en cada pagina ANTES que sus scripts (p. ej.
+//          quitar showDirectoryPicker para portarse como Safari); {"olvidar_antes":true} lo quita
 // Los dialogos (alert/confirm) se aceptan solos y se imprimen.
+//
+// Lo que NO es: Safari. Con "agente" + "antes_de_cargar" se prueba la LOGICA de las
+// paginas sin la capacidad que le falta a Safari (escribir en carpetas); el motor sigue
+// siendo el de Edge. Lo propio de WebKit (formatos, permisos de file://) se comprueba
+// en un Mac de verdad.
 //
 // Lecciones que ya costaron (no quitar):
 //  - Se abre SIEMPRE una pestaña propia: la primera de la lista puede ser un dialogo del
@@ -41,6 +49,11 @@ const pendientes = new Map();
 ws.addEventListener("message", ev => {
   const m = JSON.parse(ev.data);
   if (m.id && pendientes.has(m.id)) { pendientes.get(m.id)(m); pendientes.delete(m.id); return; }
+  if (m.method === "Page.fileChooserOpened") {
+    // El cuadro de elegir archivos no se abre (se intercepta): se dice que se pidio.
+    console.log("SELECTOR DE ARCHIVOS pedido por la pagina (modo " + m.params.mode + ")");
+    return;
+  }
   if (m.method === "Page.javascriptDialogOpening") {
     console.log("DIALOGO (" + m.params.type + "): " + m.params.message.replace(/\s+/g, " ").slice(0, 300));
     enviar("Page.handleJavaScriptDialog", { accept: true, promptText: guion.respuesta_prompt || "" });
@@ -56,6 +69,7 @@ const evaluar = async (codigo) => {
 
 await enviar("Page.enable");
 await enviar("Runtime.enable");
+await enviar("Page.setInterceptFileChooserDialog", { enabled: true });
 for (const paso of guion.pasos) {
   if (paso.tam) {
     await enviar("Emulation.setDeviceMetricsOverride", { width: paso.tam[0], height: paso.tam[1], deviceScaleFactor: 1, mobile: false });
@@ -101,8 +115,28 @@ for (const paso of guion.pasos) {
     if (r.error) { console.log("ERROR volcar:", r.error.slice(0, 300)); continue; }
     fs.mkdirSync(paso.a, { recursive: true });
     for (const [n, t] of Object.entries(r.valor || {})) { fs.writeFileSync(path.join(paso.a, n), t, "utf8"); console.log("volcado", n, t.length, "bytes"); }
+  } else if (paso.agente) {
+    await enviar("Emulation.setUserAgentOverride", { userAgent: paso.agente, platform: paso.plataforma || "" });
+    console.log("agente:", paso.agente.slice(0, 60) + "…", paso.plataforma || "");
+  } else if (paso.antes_de_cargar) {
+    const r = await enviar("Page.addScriptToEvaluateOnNewDocument", { source: paso.antes_de_cargar });
+    (globalThis.__antes ||= []).push(r.result && r.result.identifier);
+  } else if (paso.olvidar_antes) {
+    for (const identifier of globalThis.__antes || []) await enviar("Page.removeScriptToEvaluateOnNewDocument", { identifier });
+    globalThis.__antes = [];
   } else if (paso.esperar) {
     await dormir(paso.esperar);
+  } else if (paso.foto && paso.elemento) {
+    // Solo un elemento (y un margen): para las capturas de una guía.
+    const m = paso.margen ?? 10;
+    const q = await evaluar("(()=>{const e=" + paso.elemento + ";if(!e)return null;e.scrollIntoView({block:'center'});const b=e.getBoundingClientRect();return [b.left+scrollX,b.top+scrollY,b.width,b.height]})()");
+    if (!q.valor) { console.log("ERROR foto: no está el elemento " + paso.elemento.slice(0, 80)); continue; }
+    await dormir(300);
+    const [x, y, w, h] = q.valor;
+    const r = await enviar("Page.captureScreenshot", { format: "png", captureBeyondViewport: true,
+      clip: { x: Math.max(0, x - m), y: Math.max(0, y - m), width: w + 2 * m, height: Math.min(h + 2 * m, paso.alto_max || 4000), scale: 1 } });
+    fs.writeFileSync(path.join(SALIDA, paso.foto), Buffer.from(r.result.data, "base64"));
+    console.log("foto", paso.foto, "(elemento)");
   } else if (paso.foto) {
     const r = await enviar("Page.captureScreenshot", { format: "png" });
     fs.writeFileSync(path.join(SALIDA, paso.foto), Buffer.from(r.result.data, "base64"));

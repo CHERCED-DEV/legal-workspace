@@ -7,6 +7,7 @@
  *     refinar actas y resumenes. Lleva ✔ / ≈ / ? en cada linea.
  */
 import { el, hms, pct, descargar, copiar } from './util.js'
+import { nombreVigente } from './carpeta.js'
 import { DECLARADAS, resolver, oyendo } from './genoma.js'
 
 export function declaracion(app) {
@@ -125,7 +126,10 @@ export function renderSalida(app, caja) {
       : `La máquina no ha superado la prueba (${app.acierto.ok} de ${app.acierto.n}): solo cuenta lo que usted declaró`],
     [sinOir === 0, sinOir ? `${sinOir} de ${nDec} decisiones se tomaron sin oír la línea: quedan anotadas «sin oír» y no cuentan para la claridad` : `Todas sus decisiones se tomaron oyendo la línea (al menos el 70 % de cada una)`],
   ]
-  const nombre = `voces declaradas - ${app.modelo.datos.titulo}`
+  const nombre = nombreVigente(app.modelo.datos.titulo)
+  const enCarpeta = app.carpeta?.disponible
+  const destino = app.carpeta?.donde?.modo === 'proyecto'
+    ? `“${app.carpeta.donde.proyecto} › 2-Borradores › Voces”` : 'la carpeta “Voces” del proyecto'
   caja.append(
     el('h2', { text: 'Lo que se entrega' }),
     el('ul', { class: 'comprobaciones' }, ...comprobaciones.map(([ok, t, fn]) =>
@@ -133,7 +137,9 @@ export function renderSalida(app, caja) {
         fn && !ok ? el('button', { class: 'btn mini', type: 'button', text: 'Resolver', onclick: fn }) : null))),
     el('div', { class: 'salida-botones' },
       el('button', { class: 'btn primario', type: 'button', onclick: () => app.exportar() },
-        '⤓ Guardar mi declaración (.json)'),
+        enCarpeta ? '💾 Guardar mi declaración en el proyecto' : '💾 Guardar mi declaración (se descarga)'),
+      el('button', { class: 'btn', type: 'button', onclick: () => app.descargarDeclaracion() },
+        '⤓ Descargar una copia (.json)'),
       el('button', { class: 'btn', type: 'button', onclick: () => {
         descargar(`Transcripcion con voces - ${app.modelo.datos.titulo}.md`, transcripcionMd(app), 'text/markdown')
       } }, '⤓ Transcripción con voces (.md)'),
@@ -144,7 +150,10 @@ export function renderSalida(app, caja) {
         el('input', { type: 'file', accept: '.json,application/json', hidden: true, onchange: (e) => app.importar(e.target.files[0]) }))),
     el('p', { class: 'nota' },
       el('b', { text: 'La declaración es lo que vale. ' }),
-      `Guárdela junto a la grabación con un nombre como «${nombre}.json». El arnés la convierte en la transcripción con voces, el registro de su declaración y la biblioteca de voces para la próxima reunión. `,
+      enCarpeta
+        ? `Con “💾 Guardar” se escribe en ${destino} como “${nombre}”, y desde entonces se guarda sola con cada decisión; cada vez que pulse, además, queda una copia con la fecha. `
+        : `Con “💾 Guardar” se descarga como “${nombre}”. Al terminar, arrástrela desde Descargas a la carpeta “Lo que declaré” del proyecto (dentro de “2-Borradores”). `,
+      'El arnés la convierte en la transcripción con voces, el registro de su declaración y la biblioteca de voces para la próxima reunión. ',
       el('b', { text: 'Lo que usted marca aquí se guarda también en este navegador' }),
       ', pero eso es una comodidad: si se borran los datos del navegador, se pierde.'),
     el('h3', { text: 'Vista previa de la transcripción con voces' }),

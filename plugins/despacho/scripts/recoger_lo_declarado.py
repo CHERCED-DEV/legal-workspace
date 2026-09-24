@@ -8,7 +8,9 @@ si la entrega está dentro de un proyecto del Despacho (…/3-Para presentar/),
 en el PROYECTO, en «2-Borradores/Lo que declaré/<entrega>/», para que rehacer
 la entrega no lo toque; si no, dentro de la propia entrega, en cualquier
 carpeta «Lo que declaré» que haya dentro, a cualquier nivel. (En navegadores
-que no lo permiten, se descarga: esos archivos se pasan a mano.) También se
+que no dejan escribir en carpetas, como Safari en el Mac, se descarga: ella
+arrastra esos archivos a «2-Borradores/Lo que declaré» del proyecto, que
+también se mira; o se pasan a mano como argumentos.) También se
 mira, solo para leer, donde lo guardaban las páginas antes: «1-Documentos
 recibidos/Lo que declaré/<entrega>/». Este programa los recoge, casa cada uno
 con su página por la CLAVE del documento, y escribe un informe legible y un
@@ -65,6 +67,11 @@ def carpetas_de(entrega):
     if proyecto:
         for donde in (EN_PROYECTO, ANTES_EN_PROYECTO):
             out.append(os.path.join(proyecto, *donde, os.path.basename(entrega)))
+        # Y «2-Borradores/Lo que declaré» a secas: donde ella ARRASTRA lo que
+        # descargó cuando el navegador no deja escribir en carpetas (Safari, en
+        # el Mac; 2026-09-24). Una sola carpeta para todo lo descargado; cada
+        # archivo se casa con su página por la clave, no por el nombre.
+        out.append(os.path.join(proyecto, *EN_PROYECTO))
     return out
 
 
@@ -122,6 +129,11 @@ def declaraciones(entrega, extra):
                 d = json.load(f)
         except (ValueError, OSError) as e:
             sys.stderr.write("AVISO: no se pudo leer %s (%s)\n" % (r, e))
+            continue
+        if isinstance(d, dict) and d.get("formato") == "despacho/voces-linea-a-linea":
+            # La declaración de voces puede ir a parar a la misma carpeta: no es
+            # un error, pero no es de este programa.
+            sys.stderr.write("NOTA: %s es la declaración de voces: se usa con genoma_de_voz.py aplicar\n" % os.path.basename(r))
             continue
         if not isinstance(d, dict) or d.get("formato") != "despacho/estado-de-comprobacion":
             sys.stderr.write("AVISO: %s no es una declaración de la página; se ignora\n" % os.path.basename(r))
